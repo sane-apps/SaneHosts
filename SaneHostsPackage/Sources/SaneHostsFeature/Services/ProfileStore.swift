@@ -1,6 +1,11 @@
 import Foundation
 import SwiftUI
 
+/// Notification posted when ProfileStore data changes
+public extension Notification.Name {
+    static let profileStoreDidChange = Notification.Name("profileStoreDidChange")
+}
+
 /// Manages profile storage and persistence
 @MainActor
 @Observable
@@ -9,6 +14,11 @@ public final class ProfileStore {
 
     /// Shared instance for app-wide access
     public static let shared = ProfileStore()
+
+    /// Posts notification when data changes (for ObservableObject bridges)
+    private func notifyChange() {
+        NotificationCenter.default.post(name: .profileStoreDidChange, object: nil)
+    }
 
     // MARK: - Properties
 
@@ -82,6 +92,7 @@ public final class ProfileStore {
 
         print("[ProfileStore] load() completed, profiles: \(profiles.count)")
         isLoading = false
+        notifyChange()
     }
 
     private func createProfilesDirectoryIfNeeded() throws {
@@ -240,6 +251,7 @@ public final class ProfileStore {
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) {
             profiles[index] = updatedProfile
         }
+        notifyChange()
     }
 
     /// Delete a profile
@@ -252,6 +264,7 @@ public final class ProfileStore {
         try fileManager.removeItem(at: fileURL)
 
         profiles.removeAll { $0.id == profile.id }
+        notifyChange()
     }
 
     /// Batch delete multiple profiles by ID (skips active profiles)
@@ -267,6 +280,7 @@ public final class ProfileStore {
 
         // Remove from in-memory array in single operation
         profiles.removeAll { idsToRemove.contains($0.id) && !$0.isActive }
+        notifyChange()
     }
 
     /// Duplicate a profile
@@ -385,6 +399,7 @@ public final class ProfileStore {
         try await save(profile: activated)
 
         activeProfile = activated
+        notifyChange()
     }
 
     /// Deactivate the current profile
@@ -396,6 +411,7 @@ public final class ProfileStore {
         try await save(profile: deactivated)
 
         activeProfile = nil
+        notifyChange()
     }
 
     // MARK: - Entry Management

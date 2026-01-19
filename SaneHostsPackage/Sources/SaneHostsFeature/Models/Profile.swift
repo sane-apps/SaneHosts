@@ -69,14 +69,29 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
         return lines.joined(separator: "\n")
     }
 
-    /// Number of enabled entries
+    /// Cached entry counts - computed once per access
+    /// For large profiles (100K+ entries), prefer using entryCounts computed once
     public var enabledCount: Int {
-        entries.filter(\.isEnabled).count
+        entryCounts.enabled
     }
 
     /// Number of disabled entries
     public var disabledCount: Int {
-        entries.filter { !$0.isEnabled }.count
+        entryCounts.disabled
+    }
+
+    /// Compute both counts in single O(n) pass instead of two
+    public var entryCounts: (enabled: Int, disabled: Int) {
+        var enabled = 0
+        var disabled = 0
+        for entry in entries {
+            if entry.isEnabled {
+                enabled += 1
+            } else {
+                disabled += 1
+            }
+        }
+        return (enabled, disabled)
     }
 
     // Custom decoder to handle missing sortOrder in existing profiles

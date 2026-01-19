@@ -10,6 +10,8 @@ struct ProfileDetailView: View {
     @State private var showingAddEntry = false
     @State private var editingEntry: HostEntry?
     @State private var searchText = ""
+    @State private var debouncedSearchText = ""
+    @State private var searchDebounceTask: Task<Void, Never>?
 
     // Bulk selection state
     @State private var isSelectionMode = false
@@ -41,6 +43,24 @@ struct ProfileDetailView: View {
             .padding(20)
         }
         .searchable(text: $searchText, prompt: "Filter entries")
+        .onChange(of: searchText) { _, newValue in
+            // Cancel previous debounce task
+            searchDebounceTask?.cancel()
+
+            // If empty, update immediately
+            if newValue.isEmpty {
+                debouncedSearchText = ""
+                return
+            }
+
+            // Debounce: wait 300ms before filtering
+            searchDebounceTask = Task {
+                try? await Task.sleep(for: .milliseconds(300))
+                if !Task.isCancelled {
+                    debouncedSearchText = newValue
+                }
+            }
+        }
         .sheet(isPresented: $showingAddEntry) {
             AddEntrySheet(store: store, profile: profile)
         }
@@ -52,13 +72,15 @@ struct ProfileDetailView: View {
     // MARK: - Computed
 
     private var filteredEntries: [HostEntry] {
-        if searchText.isEmpty {
+        // Use debounced text for filtering large datasets
+        if debouncedSearchText.isEmpty {
             return profile.entries
         }
+        let query = debouncedSearchText.lowercased()
         return profile.entries.filter { entry in
-            entry.ipAddress.localizedCaseInsensitiveContains(searchText) ||
-            entry.hostnames.contains { $0.localizedCaseInsensitiveContains(searchText) } ||
-            (entry.comment?.localizedCaseInsensitiveContains(searchText) ?? false)
+            entry.ipAddress.lowercased().contains(query) ||
+            entry.hostnames.contains { $0.lowercased().contains(query) } ||
+            (entry.comment?.lowercased().contains(query) ?? false)
         }
     }
 
@@ -187,8 +209,14 @@ struct ProfileDetailView: View {
         n.formatted(.number.notation(.compactName))
     }
 
+    /// Cached entry counts - computed once per profile change
+    private var cachedEntryCounts: (enabled: Int, disabled: Int) {
+        profile.entryCounts
+    }
+
     private var statsRow: some View {
-        HStack(spacing: 16) {
+        let counts = cachedEntryCounts  // Compute once for this render
+        return HStack(spacing: 16) {
             StatCard(
                 title: "Total",
                 value: compactNumber(profile.entries.count),
@@ -198,14 +226,14 @@ struct ProfileDetailView: View {
 
             StatCard(
                 title: "Enabled",
-                value: compactNumber(profile.enabledCount),
+                value: compactNumber(counts.enabled),
                 icon: SaneIcons.entryEnabled,
                 color: .saneAccent
             )
 
             StatCard(
                 title: "Disabled",
-                value: compactNumber(profile.disabledCount),
+                value: compactNumber(counts.disabled),
                 icon: SaneIcons.entryDisabled,
                 color: .primary.opacity(0.5)
             )

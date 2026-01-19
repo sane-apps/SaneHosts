@@ -15,47 +15,55 @@ public final class DNSService {
     /// This ensures changes to /etc/hosts take effect immediately
     public func flushCache() async throws {
         isFlushing = true
-        defer { isFlushing = false }
-
-        // Run dscacheutil to flush DNS cache
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/dscacheutil")
-        process.arguments = ["-flushcache"]
-
-        let pipe = Pipe()
-        process.standardOutput = pipe
-        process.standardError = pipe
 
         do {
-            try process.run()
-            process.waitUntilExit()
+            // Run process work on background thread to avoid blocking UI
+            let exitCode = try await Task.detached(priority: .userInitiated) {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/dscacheutil")
+                process.arguments = ["-flushcache"]
 
-            if process.terminationStatus == 0 {
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+
+                try process.run()
+                process.waitUntilExit()
+                return process.terminationStatus
+            }.value
+
+            if exitCode == 0 {
                 lastFlushDate = Date()
+                isFlushing = false
 
-                // Also send HUP to mDNSResponder for complete flush
+                // Also send HUP to mDNSResponder for complete flush (also on background)
                 await killMDNSResponder()
             } else {
-                throw DNSServiceError.flushFailed("dscacheutil exited with code \(process.terminationStatus)")
+                isFlushing = false
+                throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
             }
         } catch {
+            isFlushing = false
             throw DNSServiceError.flushFailed(error.localizedDescription)
         }
     }
 
     /// Send HUP signal to mDNSResponder to force cache clear
     private func killMDNSResponder() async {
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
-        process.arguments = ["-HUP", "mDNSResponder"]
+        // Run on background thread to avoid blocking UI
+        await Task.detached(priority: .utility) {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
+            process.arguments = ["-HUP", "mDNSResponder"]
 
-        do {
-            try process.run()
-            process.waitUntilExit()
-        } catch {
-            // Non-fatal - dscacheutil already ran
-            print("mDNSResponder HUP failed: \(error)")
-        }
+            do {
+                try process.run()
+                process.waitUntilExit()
+            } catch {
+                // Non-fatal - dscacheutil already ran
+                print("mDNSResponder HUP failed: \(error)")
+            }
+        }.value
     }
 
     /// Check if DNS cache was recently flushed
