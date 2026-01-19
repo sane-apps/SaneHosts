@@ -45,4 +45,4 @@ INFOPLIST_KEY_CFBundleIconFile = AppIcon
 // ==========================================
 INFOPLIST_KEY_SUFeedURL = https://sanehosts.com/appcast.xml
 INFOPLIST_KEY_SUEnableAutomaticChecks = YES
-// TODO: Add SUPublicEDKey after generating Sparkle keys
+INFOPLIST_KEY_SUPublicEDKey = QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=

@@ -74,7 +74,7 @@ SaneHosts is a macOS app for managing `/etc/hosts` file through profiles. It all
 # First set session defaults, then use build_run_macos
 
 # Open workspace
-open /Users/sj/Projects/SaneHosts/SaneHosts.xcworkspace
+open /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
 
 # Run tests in Xcode
 # Cmd+U in Xcode, or use XcodeBuildMCP test_macos
@@ -88,7 +88,7 @@ open /Users/sj/Projects/SaneHosts/SaneHosts.xcworkspace
 At session start, set defaults ONCE to avoid repeating on every build:
 ```
 mcp__XcodeBuildMCP__session-set-defaults:
-  workspacePath: /Users/sj/Projects/SaneHosts/SaneHosts.xcworkspace
+  workspacePath: /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
   scheme: SaneHosts
   arch: arm64
 ```
@@ -164,9 +164,8 @@ See `SESSION_HANDOFF.md` for comprehensive UI test plan.
 
 ## Known Limitations
 
-1. **No Sparkle keys** - "Check for Updates" signature verification will fail
-2. **Generic app icon** - Need to design proper icon
-3. **AppleScript auth** - Password prompt for each activation (XPC would remember)
+1. **AppleScript auth** - Password prompt for each activation (XPC would remember)
+2. **No sandbox** - Required to write `/etc/hosts`
 
 ---
 
@@ -207,7 +206,38 @@ Task tool with subagent_type: Explore
 
 ---
 
-## Distribution Notes
+## Distribution (READY)
+
+**See `docs/DISTRIBUTION.md` for full release checklist.**
+
+### Critical Credentials (ALREADY EXIST - DO NOT REGENERATE)
+
+| Credential | Value/Location |
+|------------|----------------|
+| **Sparkle Public Key** | `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=` |
+| **Sparkle Private Key** | macOS Keychain → "Private key for signing Sparkle updates" |
+| **Notarytool Profile** | `notarytool` (in system keychain) |
+| **Team ID** | `M78L6FXD48` |
+
+### Release Scripts
+
+```bash
+# Build, sign, notarize, create DMG
+./scripts/build_release.sh
+
+# Generate Sparkle appcast.xml
+./scripts/generate_appcast.sh
+```
+
+### Remaining Steps for v1.0
+
+- [ ] Purchase domain (sanehosts.com)
+- [ ] Create GitHub repo (github.com/mrsane/SaneHosts)
+- [ ] Run `./scripts/build_release.sh`
+- [ ] Create GitHub release with DMG
+- [ ] Deploy website + appcast.xml
+
+### Notes
 
 - **Cannot sandbox**: Needs to write to `/etc/hosts` (system file)
 - **Notarization**: Use hardened runtime + Developer ID signing

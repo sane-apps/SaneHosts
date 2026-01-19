@@ -91,10 +91,17 @@ Features users requested:
 - [x] Source freshness indicator (days since last sync)
 - [ ] Entry count badge on profiles
 
-### 2.6 Distribution
-- [ ] Generate Sparkle EdDSA keys
-- [ ] Create GitHub repo
-- [ ] Notarization setup
+### 2.6 Distribution (COMPLETE)
+See `docs/DISTRIBUTION.md` for full release checklist.
+
+- [x] Generate Sparkle EdDSA keys (in keychain, public key: `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=`)
+- [x] Sparkle feed URL configured (`https://sanehosts.com/appcast.xml`)
+- [x] Build release script (`scripts/build_release.sh`)
+- [x] Appcast generator (`scripts/generate_appcast.sh`)
+- [x] Website template (`website/index.html`, `website/privacy.html`)
+- [x] Homebrew cask formula (`homebrew/sanehosts.rb`)
+- [ ] Purchase domain (sanehosts.com)
+- [ ] Create GitHub repo (github.com/mrsane/SaneHosts)
 - [ ] First release (v1.0)
 
 ---

@@ -1,9 +1,49 @@
 # SaneHosts Session Handoff
 
-> Updated: 2026-01-19 12:55 PM
-> Status: App icon created, dock menu fixed, all critical bugs resolved
+> Updated: 2026-01-19 2:10 PM
+> Status: **DISTRIBUTION READY** - All scripts, website, docs complete
 
-## Latest: App Icon + Dock Menu (2026-01-19 12:55 PM)
+## Latest: Distribution Pipeline Complete (2026-01-19 2:10 PM)
+
+### Distribution Infrastructure ✅
+Full release pipeline created. See `docs/DISTRIBUTION.md` for complete guide.
+
+**Scripts Created:**
+- `scripts/build_release.sh` - Archive, sign, notarize, create DMG
+- `scripts/generate_appcast.sh` - Generate Sparkle appcast.xml feed
+- `scripts/setup_sparkle_keys.sh` - Key setup (NOT NEEDED - key already exists)
+
+**Website Created:**
+- `website/index.html` - Landing page (dark theme, feature cards)
+- `website/privacy.html` - Privacy policy
+
+**CRITICAL - Sparkle Key Already Exists:**
+- **Public Key**: `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=`
+- **Location**: macOS Keychain (account: ed25519)
+- **Configured in**: `Config/Shared.xcconfig`
+
+### Performance Optimizations ✅
+Optimized for power users with 100K+ entry profiles:
+- Replaced 1-second polling with NotificationCenter sync
+- Single-pass entry counting (O(n) → single iteration)
+- 300ms search debouncing
+- DNS flush moved to background thread
+- Crash resilience with automatic backup/recovery
+
+### Icon Fix ✅
+All PNG icons were 2x wrong dimensions. Fixed with `sips -z` resize.
+
+### Git Commits Today:
+```
+9bbf4b8 feat: Add complete distribution pipeline
+7de3b1b fix: Correct app icon sizes for asset catalog
+d14a11e feat: Add crash resilience with backup and recovery system
+79b1661 perf: Optimize for large datasets and improve responsiveness
+```
+
+---
+
+## Previous: App Icon + Dock Menu (2026-01-19 12:55 PM)
 
 ### App Icon Created ✅
 **Issue:** Dock showed generic Xcode icon - AppIcon.appiconset had empty slots

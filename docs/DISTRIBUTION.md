@@ -2,6 +2,22 @@
 
 Complete guide for releasing SaneHosts to the public.
 
+## CRITICAL: Existing Keys & Credentials
+
+**Sparkle EdDSA Key** (ALREADY EXISTS in sj's keychain):
+- **Public Key**: `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=`
+- **Location**: macOS Keychain → "Private key for signing Sparkle updates"
+- **Configured in**: `Config/Shared.xcconfig` → `INFOPLIST_KEY_SUPublicEDKey`
+
+**Apple Developer Credentials** (in system keychain):
+- **Keychain Profile**: `notarytool`
+- **Key ID**: `7LMFF3A258`
+- **Team ID**: `M78L6FXD48`
+
+**DO NOT regenerate keys** - use the existing ones above.
+
+---
+
 ## Prerequisites
 
 - [ ] Xcode 16+ installed
