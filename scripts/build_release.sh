@@ -84,10 +84,10 @@ xcodebuild -exportArchive \
     -exportPath "$EXPORT_PATH" \
     -exportOptionsPlist "$BUILD_DIR/ExportOptions.plist"
 
-# Verify code signature
+# Verify code signature (basic check before notarization)
 echo ">>> Verifying code signature..."
 codesign --verify --deep --strict --verbose=2 "$EXPORT_PATH/${APP_NAME}.app"
-spctl --assess --type execute --verbose "$EXPORT_PATH/${APP_NAME}.app"
+# Note: spctl --assess will fail until after notarization, so we skip it here
 
 # Create DMG
 echo ">>> Creating DMG..."

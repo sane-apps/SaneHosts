@@ -23,10 +23,11 @@ MACOSX_DEPLOYMENT_TARGET = 14.0
 GENERATE_INFOPLIST_FILE = YES
 
 // ==========================================
-// Entitlements
+// Code Signing & Security
 // ==========================================
 // AI agents can modify Config/SaneHosts.entitlements to add capabilities
 CODE_SIGN_ENTITLEMENTS = Config/SaneHosts.entitlements
+ENABLE_HARDENED_RUNTIME = YES
 
 // ==========================================
 // Framework Search Paths
