@@ -96,12 +96,16 @@ class MenuBarProfileStore: ObservableObject {
     @Published var profiles: [Profile] = []
     @Published var activeProfile: Profile?
     @Published var lastError: String?
-    private var refreshTimer: Timer?
+    private var notificationObserver: NSObjectProtocol?
 
     init() {
         Task { await refresh() }
-        // Poll every second to sync with main ProfileStore
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+        // Listen for ProfileStore changes instead of polling
+        notificationObserver = NotificationCenter.default.addObserver(
+            forName: .profileStoreDidChange,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
             Task { @MainActor in
                 self?.syncFromSharedStore()
             }
@@ -109,7 +113,9 @@ class MenuBarProfileStore: ObservableObject {
     }
 
     deinit {
-        refreshTimer?.invalidate()
+        if let observer = notificationObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
 
     func syncFromSharedStore() {
