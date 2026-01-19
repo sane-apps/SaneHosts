@@ -60,3 +60,13 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png
 fastlane/test_output
+
+# SaneHosts Distribution
+# Sparkle signing keys (NEVER commit private keys!)
+keys/
+
+# Built releases (DMGs, checksums)
+releases/
+
+# Code coverage data
+*.profraw
