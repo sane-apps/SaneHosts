@@ -37,8 +37,17 @@ public final class ProfileStore {
         return appSupport.appendingPathComponent("SaneHosts/Profiles", isDirectory: true)
     }
 
+    /// URL for profile backups (crash resilience)
+    private var backupsDirectoryURL: URL {
+        let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        return appSupport.appendingPathComponent("SaneHosts/Backups", isDirectory: true)
+    }
+
     /// URL for the system hosts file
     private let systemHostsURL = URL(fileURLWithPath: "/etc/hosts")
+
+    /// Maximum number of backups to keep per profile
+    private let maxBackupsPerProfile = 3
 
     // MARK: - Initialization
 
@@ -99,6 +108,80 @@ public final class ProfileStore {
         if !fileManager.fileExists(atPath: profilesDirectoryURL.path) {
             try fileManager.createDirectory(at: profilesDirectoryURL, withIntermediateDirectories: true)
         }
+        // Also create backups directory
+        if !fileManager.fileExists(atPath: backupsDirectoryURL.path) {
+            try fileManager.createDirectory(at: backupsDirectoryURL, withIntermediateDirectories: true)
+        }
+    }
+
+    // MARK: - Backup & Recovery
+
+    /// Create a backup of a profile before destructive operations
+    private func backupProfile(_ profile: Profile) {
+        let sourceURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
+        guard fileManager.fileExists(atPath: sourceURL.path) else { return }
+
+        let timestamp = ISO8601DateFormatter().string(from: Date())
+            .replacingOccurrences(of: ":", with: "-")
+        let backupName = "\(profile.id.uuidString)_\(timestamp).json"
+        let backupURL = backupsDirectoryURL.appendingPathComponent(backupName)
+
+        do {
+            try fileManager.copyItem(at: sourceURL, to: backupURL)
+            cleanupOldBackups(for: profile.id)
+            print("[ProfileStore] Backup created: \(backupName)")
+        } catch {
+            print("[ProfileStore] Backup failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Remove old backups keeping only the most recent ones
+    private func cleanupOldBackups(for profileId: UUID) {
+        do {
+            let files = try fileManager.contentsOfDirectory(at: backupsDirectoryURL, includingPropertiesForKeys: [.creationDateKey])
+            let profileBackups = files
+                .filter { $0.lastPathComponent.hasPrefix(profileId.uuidString) }
+                .sorted { url1, url2 in
+                    let date1 = (try? url1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                    let date2 = (try? url2.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                    return date1 > date2
+                }
+
+            // Delete backups beyond the limit
+            for backup in profileBackups.dropFirst(maxBackupsPerProfile) {
+                try? fileManager.removeItem(at: backup)
+            }
+        } catch {
+            print("[ProfileStore] Cleanup failed: \(error.localizedDescription)")
+        }
+    }
+
+    /// Attempt to recover a corrupted profile from backup
+    private func recoverProfile(id: UUID) -> Profile? {
+        do {
+            let files = try fileManager.contentsOfDirectory(at: backupsDirectoryURL, includingPropertiesForKeys: [.creationDateKey])
+            let backups = files
+                .filter { $0.lastPathComponent.hasPrefix(id.uuidString) }
+                .sorted { url1, url2 in
+                    let date1 = (try? url1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                    let date2 = (try? url2.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
+                    return date1 > date2
+                }
+
+            for backup in backups {
+                do {
+                    let data = try Data(contentsOf: backup)
+                    let profile = try JSONDecoder().decode(Profile.self, from: data)
+                    print("[ProfileStore] Recovered profile from backup: \(backup.lastPathComponent)")
+                    return profile
+                } catch {
+                    continue // Try next backup
+                }
+            }
+        } catch {
+            print("[ProfileStore] Recovery scan failed: \(error.localizedDescription)")
+        }
+        return nil
     }
 
     private func loadSystemHosts() async throws {
@@ -113,10 +196,51 @@ public final class ProfileStore {
         let jsonFiles = files.filter { $0.pathExtension == "json" }
 
         var loadedProfiles: [Profile] = []
+        var corruptedFiles: [URL] = []
+
         for file in jsonFiles {
-            let data = try Data(contentsOf: file)
-            let profile = try JSONDecoder().decode(Profile.self, from: data)
-            loadedProfiles.append(profile)
+            do {
+                let data = try Data(contentsOf: file)
+
+                // Validate JSON structure before decoding
+                guard !data.isEmpty else {
+                    print("[ProfileStore] Empty file detected: \(file.lastPathComponent)")
+                    corruptedFiles.append(file)
+                    continue
+                }
+
+                let profile = try JSONDecoder().decode(Profile.self, from: data)
+
+                // Basic validation: ensure profile has required data
+                guard !profile.name.isEmpty else {
+                    print("[ProfileStore] Invalid profile (empty name): \(file.lastPathComponent)")
+                    corruptedFiles.append(file)
+                    continue
+                }
+
+                loadedProfiles.append(profile)
+            } catch {
+                print("[ProfileStore] Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
+
+                // Attempt recovery from backup
+                let filename = file.deletingPathExtension().lastPathComponent
+                if let profileId = UUID(uuidString: filename),
+                   let recovered = recoverProfile(id: profileId) {
+                    loadedProfiles.append(recovered)
+                    // Restore the recovered profile to the main directory
+                    try? await save(profile: recovered)
+                } else {
+                    corruptedFiles.append(file)
+                }
+            }
+        }
+
+        // Move corrupted files to a quarantine location instead of deleting
+        for corruptedFile in corruptedFiles {
+            let quarantineName = "CORRUPTED_\(corruptedFile.lastPathComponent)"
+            let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
+            try? fileManager.moveItem(at: corruptedFile, to: quarantineURL)
+            print("[ProfileStore] Quarantined corrupted file: \(quarantineName)")
         }
 
         profiles = loadedProfiles.sorted { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
@@ -260,6 +384,9 @@ public final class ProfileStore {
             throw ProfileStoreError.cannotDeleteActive
         }
 
+        // Backup before delete for recovery
+        backupProfile(profile)
+
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
         try fileManager.removeItem(at: fileURL)
 
@@ -271,6 +398,11 @@ public final class ProfileStore {
     /// Synchronous to avoid race conditions with UI updates
     public func deleteProfiles(ids: [UUID]) {
         let idsToRemove = Set(ids)
+
+        // Backup profiles before deletion
+        for profile in profiles where idsToRemove.contains(profile.id) && !profile.isActive {
+            backupProfile(profile)
+        }
 
         // Delete files
         for id in idsToRemove {
