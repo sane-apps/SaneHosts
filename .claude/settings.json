@@ -1,0 +1,94 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git:*)",
+      "Bash(xcodebuild:*)",
+      "Bash(xcrun:*)",
+      "Bash(swift:*)",
+      "Bash(open:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(ruby:*)",
+      "Bash(killall:*)",
+      "Bash(pgrep:*)",
+      "Bash(pkill:*)",
+      "Bash(which:*)",
+      "Bash(wc:*)",
+      "Bash(du:*)",
+      "Bash(df:*)",
+      "Bash(brew:*)",
+      "Bash(curl:*)",
+      "Bash(/opt/homebrew/opt/ruby/bin/*:*)",
+      "mcp__memory__*",
+      "mcp__apple-docs__*",
+      "mcp__context7__*",
+      "mcp__github__*",
+      "mcp__XcodeBuildMCP__*"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f ~/.claude/hooks/session_start.rb ] && ruby ~/.claude/hooks/session_start.rb || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f ~/.claude/hooks/saneprompt.rb ] && ruby ~/.claude/hooks/saneprompt.rb || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f ~/.claude/hooks/sanetools.rb ] && ruby ~/.claude/hooks/sanetools.rb || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f ~/.claude/hooks/sanetrack.rb ] && ruby ~/.claude/hooks/sanetrack.rb || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f ~/.claude/hooks/sanestop.rb ] && ruby ~/.claude/hooks/sanestop.rb || true",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "claude-mem@thedotmack": true
+  }
+}
