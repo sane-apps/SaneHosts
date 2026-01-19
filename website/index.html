@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneHosts - Modern Hosts File Manager for macOS</title>
+    <meta name="description" content="SaneHosts is a modern, profile-based hosts file manager for macOS. Block ads, trackers, and distractions with ease.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        :root {
+            --bg-dark: #0d1525;
+            --bg-card: #1a2744;
+            --accent: #5fa8d3;
+            --accent-glow: rgba(95, 168, 211, 0.3);
+            --text: #e8eef4;
+            --text-muted: #8899aa;
+            --success: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1628 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(13, 21, 37, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(95, 168, 211, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 160px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* App Preview */
+        .app-preview {
+            margin: 60px auto;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(95, 168, 211, 0.2);
+        }
+
+        .app-preview img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(95, 168, 211, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        /* Requirements */
+        .requirements {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .requirements h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+        }
+
+        .req-badges {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .req-badge {
+            background: var(--bg-card);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a2744"/>
+                                <stop offset="100%" style="stop-color:#0d1525"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" rx="22" fill="url(#bg)"/>
+                        <circle cx="50" cy="50" r="25" stroke="#5fa8d3" stroke-width="3" fill="none"/>
+                        <ellipse cx="50" cy="50" rx="25" ry="10" stroke="#5fa8d3" stroke-width="2" fill="none"/>
+                        <line x1="50" y1="25" x2="50" y2="75" stroke="#5fa8d3" stroke-width="2"/>
+                        <path d="M70 35 L80 30 L75 42 Z" fill="#5fa8d3"/>
+                    </svg>
+                    SaneHosts
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="https://github.com/mrsane/SaneHosts">GitHub</a></li>
+                    <li><a href="privacy.html">Privacy</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Take Control of Your Hosts File</h1>
+                <p>SaneHosts is a modern, profile-based hosts file manager for macOS. Block ads, trackers, and distractions with a beautiful native app.</p>
+                <div class="hero-buttons">
+                    <a href="https://github.com/mrsane/SaneHosts/releases/latest/download/SaneHosts-1.0.dmg" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        Download for macOS
+                    </a>
+                    <a href="https://github.com/mrsane/SaneHosts" class="btn btn-secondary">
+                        View on GitHub
+                    </a>
+                </div>
+
+                <div class="app-preview">
+                    <img src="screenshot.png" alt="SaneHosts App Screenshot">
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Profile-Based Management</h3>
+                        <p>Create multiple profiles for different purposes - work, home, focus mode. Switch between them instantly.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3>Import Blocklists</h3>
+                        <p>Import from popular sources like StevenBlack, AdGuard, and more. Handle 100K+ entries with ease.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Menu Bar Access</h3>
+                        <p>Quick access from your menu bar. Activate and deactivate profiles without opening the full app.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Automatic DNS Flush</h3>
+                        <p>DNS cache is automatically flushed when you activate a profile. Changes take effect immediately.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure by Design</h3>
+                        <p>Uses macOS admin authentication. Your data stays local. No analytics, no tracking.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💾</div>
+                        <h3>Crash Resilient</h3>
+                        <p>Automatic backups before destructive operations. Corrupted profiles are automatically recovered.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="requirements">
+            <div class="container">
+                <h2>Requirements</h2>
+                <div class="req-badges">
+                    <div class="req-badge">
+                        <span>🍎</span>
+                        <span>macOS 14.0 (Sonoma) or later</span>
+                    </div>
+                    <div class="req-badge">
+                        <span>💻</span>
+                        <span>Apple Silicon or Intel Mac</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="https://github.com/mrsane/SaneHosts">GitHub</a>
+                <a href="https://github.com/mrsane/SaneHosts/issues">Report Issue</a>
+            </div>
+            <p>Made with care by <a href="https://mrsane.com">Mr. Sane</a></p>
+        </div>
+    </footer>
+</body>
+</html>
