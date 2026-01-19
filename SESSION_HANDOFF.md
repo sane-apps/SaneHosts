@@ -1,9 +1,64 @@
 # SaneHosts Session Handoff
 
-> Updated: 2026-01-19 2:10 PM
-> Status: **DISTRIBUTION READY** - All scripts, website, docs complete
+> Updated: 2026-01-19 2:30 PM
+> Status: **AWAITING NOTARIZATION** - GitHub repo created, notarization pending
 
-## Latest: Distribution Pipeline Complete (2026-01-19 2:10 PM)
+## Latest: Release Pipeline Execution (2026-01-19 2:30 PM)
+
+### GitHub Repo Created ✅
+- **URL**: https://github.com/stephanjoseph/SaneHosts
+- All code pushed to main branch
+
+### Notarization Pending ⏳
+- **Submission ID**: `9df5f544-1176-40f1-99b6-0cce0c5772ea`
+- **Status**: In Progress (may take hours or fail)
+- **Previous failure**: Missing hardened runtime (now fixed)
+
+### Build Config Fixed ✅
+- Added `ENABLE_HARDENED_RUNTIME = YES` to Shared.xcconfig
+- Added `com.apple.security.automation.apple-events` to entitlements
+- Fixed build_release.sh to skip spctl before notarization
+
+### When Notarization Completes
+
+**If Accepted:**
+```bash
+# Staple the ticket
+xcrun stapler staple build/SaneHosts-1.0.dmg
+
+# Move to releases
+mkdir -p releases
+mv build/SaneHosts-1.0.dmg releases/
+shasum -a 256 releases/SaneHosts-1.0.dmg > releases/SaneHosts-1.0.dmg.sha256
+
+# Generate appcast
+./scripts/generate_appcast.sh
+
+# Create GitHub release
+VERSION=1.0
+gh release create "v${VERSION}" "releases/SaneHosts-${VERSION}.dmg" \
+  --title "SaneHosts ${VERSION}" \
+  --notes "Initial release"
+```
+
+**If Rejected:**
+```bash
+# Check the log
+xcrun notarytool log 9df5f544-1176-40f1-99b6-0cce0c5772ea --keychain-profile "notarytool"
+
+# Fix issues, rebuild
+./scripts/build_release.sh
+```
+
+### Touch ID Status
+- AuthenticationService.swift: Touch ID code implemented
+- HostsService.swift: Falls back to AppleScript (helper not registered)
+- SaneHostsHelper/: Code exists but not built/registered with SMAppService
+- **Current behavior**: Password prompt via AppleScript (works, not ideal)
+
+---
+
+## Previous: Distribution Pipeline Complete (2026-01-19 2:10 PM)
 
 ### Distribution Infrastructure ✅
 Full release pipeline created. See `docs/DISTRIBUTION.md` for complete guide.
