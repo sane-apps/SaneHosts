@@ -8,6 +8,7 @@ struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let updaterController: SPUStandardUpdaterController
     @AppStorage("showInMenuBar") private var showInMenuBar = true
+    @AppStorage("hideDockIcon") private var hideDockIcon = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
 
     init() {
@@ -49,6 +50,15 @@ struct SaneHostsApp: App {
                 .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }
+        .onChange(of: hideDockIcon) { _, newValue in
+            if newValue {
+                NSApp.setActivationPolicy(.accessory)
+            } else {
+                NSApp.setActivationPolicy(.regular)
+                // Bring to front when switching to regular
+                NSApp.activate(ignoringOtherApps: true)
+            }
+        }
 
         Settings {
             SaneHostsSettingsView()
@@ -64,6 +74,14 @@ struct SaneHostsApp: App {
 // MARK: - App Delegate for Dock Menu
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        // Initialize activation policy based on preference
+        // Since LSUIElement=YES, default is accessory. If hideDockIcon is false, we must force regular.
+        if !UserDefaults.standard.bool(forKey: "hideDockIcon") {
+            NSApp.setActivationPolicy(.regular)
+        }
+    }
+
     func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
         let menu = NSMenu()
 
@@ -282,12 +300,28 @@ struct SaneHostsSettingsView: View {
 
 struct GeneralSettingsTab: View {
     @AppStorage("showInMenuBar") private var showInMenuBar = true
+    @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("launchAtLogin") private var launchAtLogin = false
 
     var body: some View {
         Form {
             Section {
                 Toggle("Show in menu bar", isOn: $showInMenuBar)
+                    .onChange(of: showInMenuBar) { _, newValue in
+                        // Prevent hiding both
+                        if !newValue && hideDockIcon {
+                            hideDockIcon = false
+                        }
+                    }
+                
+                Toggle("Hide Dock icon", isOn: $hideDockIcon)
+                    .onChange(of: hideDockIcon) { _, newValue in
+                        // Prevent hiding both
+                        if newValue {
+                            showInMenuBar = true
+                        }
+                    }
+                
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in
                         do {
@@ -300,6 +334,12 @@ struct GeneralSettingsTab: View {
                             print("Failed to \(newValue ? "register" : "unregister") login item: \(error)")
                         }
                     }
+            } footer: {
+                if hideDockIcon {
+                    Text("When Dock icon is hidden, access SaneHosts from the menu bar.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
         .formStyle(.grouped)

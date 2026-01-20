@@ -111,3 +111,9 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 - **Dead Code Removal**: Removed unused `DownloadProgressDelegate` from `RemoteSyncService`.
 - **Memory**: Acknowledged `HostsParser` memory usage but deemed acceptable for local files; remote imports use efficient streaming.
 
+
+### Feature: Hide Dock Icon (Post-Handoff)
+- **Settings**: Added 'Hide Dock icon' toggle to General Settings.
+- **Config**: Set `LSUIElement = YES` to allow accessory mode.
+- **Logic**: Implemented runtime activation policy switching (`.regular` vs `.accessory`) with lockout protection (forces Menu Bar icon if Dock icon is hidden).
+
