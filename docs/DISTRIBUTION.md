@@ -107,20 +107,6 @@ Upload to sanehosts.com:
 - `docs/appcast.xml` → `/appcast.xml`
 - App screenshot → `/screenshot.png`
 
-### Step 7: Update Homebrew Cask
-
-```bash
-SHA256=$(cat releases/SaneHosts-${VERSION}.dmg.sha256 | awk '{print $1}')
-```
-
-Update `homebrew/sanehosts.rb`:
-```ruby
-version "X.X.X"
-sha256 "NEW_SHA256_HERE"
-```
-
-Submit PR to homebrew-cask or your tap.
-
 ## File Locations
 
 | File | Purpose |
@@ -133,7 +119,6 @@ Submit PR to homebrew-cask or your tap.
 | `releases/` | Built DMGs and checksums |
 | `docs/appcast.xml` | Sparkle update feed |
 | `website/` | Website HTML files |
-| `homebrew/sanehosts.rb` | Homebrew cask formula |
 
 ## Checklist for Each Release
 
@@ -144,7 +129,6 @@ Submit PR to homebrew-cask or your tap.
 [ ] ./scripts/generate_appcast.sh completed
 [ ] GitHub release created with DMG
 [ ] appcast.xml deployed to sanehosts.com
-[ ] Homebrew cask SHA256 updated
 [ ] Tested download and update flow
 ```
 
@@ -182,5 +166,5 @@ spctl --assess --type execute -vvv /path/to/SaneHosts.app
 
 ## Support
 
-- GitHub Issues: https://github.com/mrsane/SaneHosts/issues
+- GitHub Issues: https://github.com/sane-apps/SaneHosts/issues
 - Email: support@sanehosts.com

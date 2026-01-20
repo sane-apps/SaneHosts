@@ -1,12 +1,151 @@
 # SaneHosts Session Handoff
 
-> Updated: 2026-01-19 2:30 PM
-> Status: **AWAITING NOTARIZATION** - GitHub repo created, notarization pending
+> Updated: 2026-01-19 6:15 PM
+> Status: **AWAITING NOTARIZATION** + **HOMEBREW REMOVED** + **DISTRIBUTION MODEL FINALIZED**
+
+## Latest: Distribution Model Finalized (2026-01-19 6:15 PM)
+
+### Homebrew Removed Completely
+- Deleted local directories: SaneHosts, SaneBar, SaneClip `/homebrew/`
+- Deleted infra repos: `homebrew-sanebar`, `homebrew-saneclip`
+- Deleted GitHub repos: `homebrew-sanebar`, `homebrew-saneclip`, `homebrew-cask`
+- Deleted all GitHub releases (SaneBar 7, SaneClip 4)
+- Updated all documentation to remove Homebrew references
+
+### New Distribution Model
+- **Source code**: Free on GitHub (MIT license)
+- **DMGs**: Sold via websites ($5)
+- **Messaging**: "Open source, free to build yourself. $5 for ready-to-use notarized DMG"
+
+### Sensitive Info Protected
+Added to `.gitignore`:
+- `CLAUDE.md`, `SESSION_HANDOFF.md`, `SESSION_LOG.md`
+- `.claude/`, `.mcp.json`
+- `docs/DISTRIBUTION.md`, `TESTING_RESULTS.md`
+
+---
+
+## Latest: Founder Checklist Automation Complete (2026-01-19 5:45 PM)
+
+### Notarization Status (Checked 5:45 PM)
+- **Submission ID**: `9df5f544-1176-40f1-99b6-0cce0c5772ea`
+- **Status**: Still In Progress
+- Apple sometimes takes hours, especially on weekends
+
+### Automated Tasks Completed ✅
+| Checklist Item | Status | Details |
+|----------------|--------|---------|
+| 1.1 Privacy Policies | ✅ | Added to SaneScript, SaneSync, SaneVideo, SaneAI |
+| 1.6 Trademark search | ✅ | TRADEMARK_RESEARCH.md created |
+| 4.2-4.7 Disaster Recovery | ✅ | DISASTER_RECOVERY.md with credentials |
+| 6.1-6.2 Press Kit | ✅ | infra/press-kit/ with pitches |
+| 8.1 SECURITY.md | ✅ | Added to SaneScript (all other apps already had it) |
+| 8.2 Dependabot | ✅ | All 7 apps configured |
+| 8.4 Sensitive data audit | ✅ | Removed SaneBar debug print |
+
+### Files Created This Session
+| File | Location |
+|------|----------|
+| DISASTER_RECOVERY.md | `infra/SaneProcess/` |
+| TRADEMARK_RESEARCH.md | `infra/SaneProcess/` |
+| REBRANDING_PLAN.md | `infra/SaneProcess/` |
+| Press Kit README | `infra/press-kit/README.md` |
+| SECURITY.md | `apps/SaneScript/` |
+| dependabot.yml | All 7 app repos in `.github/` |
+| LICENSE | `apps/SaneClip/`, `apps/SaneScript/` |
+| PRIVACY.md | `apps/SaneScript/`, `apps/SaneSync/`, `apps/SaneVideo/`, `apps/SaneAI/` |
+
+### Your To-Do (Cannot Automate)
+1. **Check notarization**: `xcrun notarytool info 9df5f544-1176-40f1-99b6-0cce0c5772ea --keychain-profile "notarytool"`
+2. If accepted, run post-notarization steps (see below)
+3. Search [USPTO TESS](https://tmsearch.uspto.gov/) directly for each name
+4. Clarify: Did you acquire saneapps.com or is there a conflict?
+5. Fill in blanks in DISASTER_RECOVERY.md (domain expiry, cert expiry)
+6. Decide: Form LLC? Which state?
+7. Consider: File trademark for "SaneApps" ($350)
+
+### Post-Notarization Steps (When Accepted)
+```bash
+# Staple the ticket
+xcrun stapler staple build/SaneHosts-1.0.dmg
+
+# Move to releases
+mkdir -p releases
+mv build/SaneHosts-1.0.dmg releases/
+shasum -a 256 releases/SaneHosts-1.0.dmg > releases/SaneHosts-1.0.dmg.sha256
+
+# Generate appcast
+./scripts/generate_appcast.sh
+
+# Create GitHub release
+VERSION=1.0
+gh release create "v${VERSION}" "releases/SaneHosts-${VERSION}.dmg" \
+  --title "SaneHosts ${VERSION}" \
+  --notes "Initial release"
+```
+
+---
+
+## Previous: Cross-Project Audit & Fixes (2026-01-19 3:45 PM)
+
+### All SaneApps Audited
+Deep audit of SaneBar, SaneClip, SaneHosts, and cross-project consistency.
+
+### CRITICAL Fixes Applied
+| Fix | App | Details |
+|-----|-----|---------|
+| Homebrew cask outdated | SaneBar | 1.0.5→1.0.8, SHA256 updated |
+| Debug print() logging auth | SaneBar | Removed MenuBarManager.swift:365 |
+| Missing SUFeedURL | SaneClip | Added Sparkle config, ran xcodegen |
+| Mixed GitHub URLs | SaneHosts | mrsane→stephanjoseph (8 files) |
+
+### HIGH Fixes Applied
+- Added LICENSE (MIT) to SaneClip, SaneScript
+- Added PRIVACY.md to SaneScript, SaneSync, SaneVideo, SaneAI
+- Fixed SaneSync copyright conflict (All rights reserved → MIT)
+
+### Rebranding Plan Created
+User wants personal name removed. Plan saved to:
+`/Users/sj/SaneApps/infra/SaneProcess/REBRANDING_PLAN.md`
+
+---
+
+## Latest: Founder Checklist Work (2026-01-19 4:30 PM)
+
+### Documents Created
+| Document | Location | Purpose |
+|----------|----------|---------|
+| **DISASTER_RECOVERY.md** | `SaneProcess/` | All credentials, keys, recovery procedures |
+| **TRADEMARK_RESEARCH.md** | `SaneProcess/` | USPTO search results, next steps |
+| **Press Kit** | `infra/press-kit/` | Folder structure + pitches for all 7 apps |
+| **Dependabot configs** | All 7 apps | `.github/dependabot.yml` for auto dependency updates |
+
+### Trademark Research Findings
+- **SaneBar, SaneClip, SaneHosts**: Appear available (no USPTO conflicts found)
+- **SaneApps**: ⚠️ POTENTIAL CONFLICT - saneapps.com shows old "App Hits" iPad app
+- **Action needed**: Clarify saneapps.com ownership history
+
+### Your To-Do (Cannot automate)
+1. Search [USPTO TESS](https://tmsearch.uspto.gov/) directly for each name
+2. Clarify: Did you acquire saneapps.com or is there a conflict?
+3. Fill in blanks in DISASTER_RECOVERY.md (domain expiry, cert expiry)
+4. Decide: Form LLC? Which state?
+5. Consider: File trademark for "SaneApps" ($350)
+
+### Bootstrap Template Updated
+`FULL_PROJECT_BOOTSTRAP.md` now includes:
+- Required entitlements (automation.apple-events)
+- Notarization preflight checks
+- full_release.sh comprehensive pattern
+- Menu bar app config (LSUIElement)
+- arm64 architecture recommendation
+
+---
 
 ## Latest: Release Pipeline Execution (2026-01-19 2:30 PM)
 
 ### GitHub Repo Created ✅
-- **URL**: https://github.com/stephanjoseph/SaneHosts
+- **URL**: https://github.com/sane-apps/SaneHosts
 - All code pushed to main branch
 
 ### Notarization Pending ⏳

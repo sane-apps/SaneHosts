@@ -70,3 +70,22 @@ releases/
 
 # Code coverage data
 *.profraw
+
+# macOS
+.DS_Store
+
+# Claude Code (internal development)
+CLAUDE.md
+SESSION_HANDOFF.md
+SESSION_LOG.md
+.claude/
+.mcp.json
+
+# Internal documentation (not needed for building)
+docs/DISTRIBUTION.md
+TESTING_RESULTS.md
+
+# Fastlane keys (never commit!)
+fastlane/keys/
+
+build/

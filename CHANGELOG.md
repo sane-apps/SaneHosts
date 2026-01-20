@@ -25,5 +25,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - No network access except for remote hosts import
 - All data stored locally in Application Support
 
-[Unreleased]: https://github.com/stephanjoseph/SaneHosts/compare/v1.0.0...HEAD
-[1.0.0]: https://github.com/stephanjoseph/SaneHosts/releases/tag/v1.0.0
+[Unreleased]: https://github.com/sane-apps/SaneHosts/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/sane-apps/SaneHosts/releases/tag/v1.0.0

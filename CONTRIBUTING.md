@@ -12,7 +12,7 @@ Thank you for your interest in contributing to SaneHosts! This document provides
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/stephanjoseph/SaneHosts.git
+git clone https://github.com/sane-apps/SaneHosts.git
 cd SaneHosts
 ```
 

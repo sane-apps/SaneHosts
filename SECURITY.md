@@ -62,9 +62,7 @@ Security researchers who report valid vulnerabilities will be:
 ## Security Best Practices for Users
 
 1. **Download from official sources only**
-   - GitHub Releases
    - sanehosts.com
-   - Homebrew tap
 
 2. **Verify code signature**
    ```bash
