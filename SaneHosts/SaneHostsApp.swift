@@ -3,6 +3,12 @@ import SaneHostsFeature
 import ServiceManagement
 import Sparkle
 
+// MARK: - Notifications
+
+extension Notification.Name {
+    static let openSettings = Notification.Name("openSettings")
+}
+
 @main
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -18,6 +24,7 @@ struct SaneHostsApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modifier(SettingsLauncher())
         }
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
@@ -66,8 +73,23 @@ struct SaneHostsApp: App {
 
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network", isInserted: $showInMenuBar) {
             MenuBarView(store: menuBarStore)
+                .modifier(SettingsLauncher())
         }
         .menuBarExtraStyle(.window)
+    }
+}
+
+// MARK: - Settings Launcher Modifier
+
+struct SettingsLauncher: ViewModifier {
+    @Environment(\.openSettings) private var openSettings
+
+    func body(content: Content) -> some View {
+        content
+            .onReceive(NotificationCenter.default.publisher(for: .openSettings)) { _ in
+                try? openSettings()
+                NSApp.activate(ignoringOtherApps: true)
+            }
     }
 }
 
@@ -99,6 +121,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func openSettings() {
+        // Try notification first (handled by SettingsLauncher in SwiftUI views)
+        NotificationCenter.default.post(name: .openSettings, object: nil)
+        
+        // Fallback: Try standard selector chain
         NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -181,6 +207,7 @@ class MenuBarProfileStore: ObservableObject {
 struct MenuBarView: View {
     @ObservedObject var store: MenuBarProfileStore
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -258,7 +285,7 @@ struct MenuBarView: View {
             .padding(.horizontal)
 
             Button("Settings...") {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+                try? openSettings()
                 NSApp.activate(ignoringOtherApps: true)
             }
             .padding(.horizontal)

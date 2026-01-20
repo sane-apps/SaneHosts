@@ -117,3 +117,9 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 - **Config**: Set `LSUIElement = YES` to allow accessory mode.
 - **Logic**: Implemented runtime activation policy switching (`.regular` vs `.accessory`) with lockout protection (forces Menu Bar icon if Dock icon is hidden).
 
+
+### Bug Fix: Settings Access (Post-Handoff)
+- **Menu Bar**: Updated 'Settings...' button to use `@Environment(\.openSettings)` instead of legacy selector, ensuring it works in modern SwiftUI context.
+- **Dock Menu**: Updated `AppDelegate.openSettings` to post a `.openSettings` notification first, handled by a new `SettingsLauncher` modifier in SwiftUI, fixing the issue where the selector failed when no window was key.
+- **Robustness**: Added `SettingsLauncher` to both `ContentView` and `MenuBarView` to ensure Settings can be opened from any context.
+
