@@ -92,3 +92,6 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 
 ### Notarization
 - Still In Progress (Submission ID: 9df5f544-1176-40f1-99b6-0cce0c5772ea)
+### Fix Applied (Post-Handoff)
+- Added `com.apple.security.cs.disable-library-validation` to `Config/SaneHosts.entitlements` to fix crash on launch due to Hardened Runtime and library validation failure with ad-hoc signing.
+
