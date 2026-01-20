@@ -185,62 +185,81 @@ public final class ProfileStore {
     }
 
     private func loadSystemHosts() async throws {
-        let content = try String(contentsOf: systemHostsURL, encoding: .utf8)
-        let lines = parser.parse(content)
-        let entries = parser.extractEntries(from: lines)
-        systemEntries = parser.extractSystemEntries(from: entries)
+        let url = systemHostsURL
+        // Capture parser struct (value type) for background use
+        let parser = self.parser
+        
+        // Perform I/O and parsing on background thread
+        let entries = try await Task.detached(priority: .userInitiated) {
+            let content = try String(contentsOf: url, encoding: .utf8)
+            let lines = parser.parse(content)
+            let allEntries = parser.extractEntries(from: lines)
+            return parser.extractSystemEntries(from: allEntries)
+        }.value
+        
+        self.systemEntries = entries
     }
 
     private func loadProfiles() async throws {
-        let files = try fileManager.contentsOfDirectory(at: profilesDirectoryURL, includingPropertiesForKeys: nil)
-        let jsonFiles = files.filter { $0.pathExtension == "json" }
+        let profilesDir = profilesDirectoryURL
+        
+        // Phase 1: Read and decode valid profiles in background
+        let result = try await Task.detached(priority: .userInitiated) {
+            let fileManager = FileManager.default
+            let files = try fileManager.contentsOfDirectory(at: profilesDir, includingPropertiesForKeys: nil)
+            let jsonFiles = files.filter { $0.pathExtension == "json" }
 
-        var loadedProfiles: [Profile] = []
-        var corruptedFiles: [URL] = []
+            var validProfiles: [Profile] = []
+            var corruptedFiles: [URL] = []
 
-        for file in jsonFiles {
-            do {
-                let data = try Data(contentsOf: file)
+            for file in jsonFiles {
+                do {
+                    let data = try Data(contentsOf: file)
 
-                // Validate JSON structure before decoding
-                guard !data.isEmpty else {
-                    print("[ProfileStore] Empty file detected: \(file.lastPathComponent)")
-                    corruptedFiles.append(file)
-                    continue
-                }
+                    // Validate JSON structure before decoding
+                    guard !data.isEmpty else {
+                        print("[ProfileStore] Empty file detected: \(file.lastPathComponent)")
+                        corruptedFiles.append(file)
+                        continue
+                    }
 
-                let profile = try JSONDecoder().decode(Profile.self, from: data)
+                    let profile = try JSONDecoder().decode(Profile.self, from: data)
 
-                // Basic validation: ensure profile has required data
-                guard !profile.name.isEmpty else {
-                    print("[ProfileStore] Invalid profile (empty name): \(file.lastPathComponent)")
-                    corruptedFiles.append(file)
-                    continue
-                }
+                    // Basic validation: ensure profile has required data
+                    guard !profile.name.isEmpty else {
+                        print("[ProfileStore] Invalid profile (empty name): \(file.lastPathComponent)")
+                        corruptedFiles.append(file)
+                        continue
+                    }
 
-                loadedProfiles.append(profile)
-            } catch {
-                print("[ProfileStore] Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
-
-                // Attempt recovery from backup
-                let filename = file.deletingPathExtension().lastPathComponent
-                if let profileId = UUID(uuidString: filename),
-                   let recovered = recoverProfile(id: profileId) {
-                    loadedProfiles.append(recovered)
-                    // Restore the recovered profile to the main directory
-                    try? await save(profile: recovered)
-                } else {
+                    validProfiles.append(profile)
+                } catch {
+                    print("[ProfileStore] Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
                     corruptedFiles.append(file)
                 }
             }
-        }
+            return LoadResult(validProfiles: validProfiles, corruptedFiles: corruptedFiles)
+        }.value
 
-        // Move corrupted files to a quarantine location instead of deleting
-        for corruptedFile in corruptedFiles {
-            let quarantineName = "CORRUPTED_\(corruptedFile.lastPathComponent)"
-            let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
-            try? fileManager.moveItem(at: corruptedFile, to: quarantineURL)
-            print("[ProfileStore] Quarantined corrupted file: \(quarantineName)")
+        var loadedProfiles = result.validProfiles
+        let corruptedFiles = result.corruptedFiles
+
+        // Phase 2: Handle corrupted files (Main Actor)
+        for file in corruptedFiles {
+            // Attempt recovery from backup
+            let filename = file.deletingPathExtension().lastPathComponent
+            if let profileId = UUID(uuidString: filename),
+               let recovered = recoverProfile(id: profileId) {
+                loadedProfiles.append(recovered)
+                // Restore the recovered profile to the main directory
+                try? await save(profile: recovered)
+            } else {
+                // Move corrupted files to a quarantine location instead of deleting
+                let quarantineName = "CORRUPTED_\(file.lastPathComponent)"
+                let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
+                try? fileManager.moveItem(at: file, to: quarantineURL)
+                print("[ProfileStore] Quarantined corrupted file: \(quarantineName)")
+            }
         }
 
         profiles = loadedProfiles.sorted { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
@@ -250,10 +269,16 @@ public final class ProfileStore {
     /// Migrate existing user entries from /etc/hosts on first run
     /// Creates an "Existing Entries" profile if any non-system entries are found
     private func migrateExistingSystemHosts() async throws {
-        let content = try String(contentsOf: systemHostsURL, encoding: .utf8)
-        let lines = parser.parse(content)
-        let allEntries = parser.extractEntries(from: lines)
-        let userEntries = parser.extractUserEntries(from: allEntries)
+        let url = systemHostsURL
+        let parser = self.parser
+        
+        // Read on background thread
+        let userEntries = try await Task.detached(priority: .userInitiated) {
+            let content = try String(contentsOf: url, encoding: .utf8)
+            let lines = parser.parse(content)
+            let allEntries = parser.extractEntries(from: lines)
+            return parser.extractUserEntries(from: allEntries)
+        }.value
 
         guard !userEntries.isEmpty else {
             print("[ProfileStore] No user entries found in /etc/hosts, skipping migration")
@@ -658,6 +683,13 @@ public final class ProfileStore {
     public func exportProfile(_ profile: Profile) -> String {
         return parser.merge(profile: profile, systemEntries: systemEntries)
     }
+}
+
+// MARK: - Private Helpers
+
+private struct LoadResult: Sendable {
+    var validProfiles: [Profile]
+    var corruptedFiles: [URL]
 }
 
 // MARK: - Errors

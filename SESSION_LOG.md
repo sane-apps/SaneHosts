@@ -105,3 +105,9 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
   - Added 'Deactivate All' (Cmd+Shift+D).
 - **Implementation**: Added NotificationCenter plumbing to trigger sheets from App Menu commands.
 
+
+### Performance Audit & Fixes (Post-Handoff)
+- **Critical I/O Fix**: Refactored `ProfileStore` to perform file loading and JSON decoding on a background task (`Task.detached`), resolving potential main thread blocks during app launch.
+- **Dead Code Removal**: Removed unused `DownloadProgressDelegate` from `RemoteSyncService`.
+- **Memory**: Acknowledged `HostsParser` memory usage but deemed acceptable for local files; remote imports use efficient streaming.
+

@@ -38,7 +38,6 @@ public final class RemoteSyncService {
     }
 
     private let parser = HostsParser()
-    private var downloadDelegate: DownloadProgressDelegate?
     private var currentTask: Task<RemoteHostsFile, Error>?
 
     public init() {}
@@ -102,8 +101,6 @@ public final class RemoteSyncService {
     /// Cancel any in-progress fetch
     public func cancel() {
         currentTask?.cancel()
-        downloadDelegate?.cancel()
-        downloadDelegate = nil
     }
 
     // MARK: - Private Download
@@ -285,84 +282,6 @@ public final class RemoteSyncService {
 
         // 304 Not Modified means no updates
         return httpResponse.statusCode != 304
-    }
-}
-
-// MARK: - Download Progress Delegate
-
-/// Separate class to handle URLSession delegate callbacks without MainActor conflicts
-private final class DownloadProgressDelegate: NSObject, URLSessionDownloadDelegate {
-    typealias ProgressHandler = @MainActor (Int64, Int64) -> Void
-
-    private let progressHandler: ProgressHandler
-    private var continuation: CheckedContinuation<URL, Error>?
-    private var session: URLSession?
-    private var task: URLSessionDownloadTask?
-
-    init(onProgress: @escaping ProgressHandler) {
-        self.progressHandler = onProgress
-        super.init()
-    }
-
-    func download(from url: URL) async throws -> URL {
-        let config = URLSessionConfiguration.default
-        config.timeoutIntervalForRequest = 60
-        config.timeoutIntervalForResource = 300
-        session = URLSession(configuration: config, delegate: self, delegateQueue: nil)
-
-        return try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
-            self.task = session?.downloadTask(with: url)
-            self.task?.resume()
-        }
-    }
-
-    func cancel() {
-        task?.cancel()
-        continuation?.resume(throwing: CancellationError())
-        continuation = nil
-    }
-
-    // MARK: - URLSessionDownloadDelegate
-
-    func urlSession(
-        _ session: URLSession,
-        downloadTask: URLSessionDownloadTask,
-        didWriteData bytesWritten: Int64,
-        totalBytesWritten: Int64,
-        totalBytesExpectedToWrite: Int64
-    ) {
-        Task { @MainActor in
-            await self.progressHandler(totalBytesWritten, totalBytesExpectedToWrite)
-        }
-    }
-
-    func urlSession(
-        _ session: URLSession,
-        downloadTask: URLSessionDownloadTask,
-        didFinishDownloadingTo location: URL
-    ) {
-        // Move file SYNCHRONOUSLY before this method returns
-        let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".hosts")
-        do {
-            try FileManager.default.moveItem(at: location, to: tempURL)
-            continuation?.resume(returning: tempURL)
-            continuation = nil
-        } catch {
-            continuation?.resume(throwing: error)
-            continuation = nil
-        }
-    }
-
-    func urlSession(
-        _ session: URLSession,
-        task: URLSessionTask,
-        didCompleteWithError error: Error?
-    ) {
-        if let error = error {
-            continuation?.resume(throwing: error)
-            continuation = nil
-        }
     }
 }
 
