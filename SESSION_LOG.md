@@ -73,3 +73,22 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 - RemoteSyncService.swift - multiple rewrites, currently has unused DownloadProgressDelegate class
 - MainView.swift - added isSourceDownloaded() helper, FetchProgressOverlay with phase-based display
 - ProfileStore.swift - added createRemote() method, added debug logging
+
+---
+
+## Session Summary - 2026-01-19 (DISTRIBUTION PREP & TESTING)
+
+### Accomplishments
+1. **Verified Custom URL Import**: Created an integration test to confirm that custom URL imports work correctly, including handling multiple hostnames per line.
+2. **Verified Menu Bar Logic**: Inspected code to confirm 'Show in menu bar' toggle works via AppStorage binding and ProfileStore/HostsService logic is sound.
+3. **Implemented Keyboard Shortcuts**: Added `Cmd+Shift+A` (Activate) and `Cmd+Shift+D` (Deactivate) to `MainView.swift` and removed non-functional placeholder shortcuts from `SaneHostsApp.swift`.
+4. **Git Cleanup**: Updated `.gitignore` to exclude `build/` directory which was accidentally tracked, ensuring a cleaner repo state.
+
+### Files Modified
+- `SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift`: Added shortcuts.
+- `SaneHosts/SaneHostsApp.swift`: Removed placeholder shortcuts.
+- `.gitignore`: Added `build/`.
+- `SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift`: New test file.
+
+### Notarization
+- Still In Progress (Submission ID: 9df5f544-1176-40f1-99b6-0cce0c5772ea)
