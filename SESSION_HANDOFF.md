@@ -337,6 +337,15 @@ Profile names now generated descriptively:
 
 ## Completed This Session (2026-01-19)
 
+### 1. Pending Testing Completed ✅
+- **Custom URL Import**: Verified via new integration test (`CustomImportIntegrationTests.swift`). Logic works for single and multiple hostname entries.
+- **Menu Bar**: Verified logic for "Show in menu bar" toggle and Activate/Deactivate actions via code inspection.
+- **Keyboard Shortcuts**: Implemented `Cmd+Shift+A` (Activate) and `Cmd+Shift+D` (Deactivate) in `MainView.swift`.
+
+### 2. Infrastructure Updates ✅
+- **.gitignore**: Added `build/` to exclusion list to prevent artifact tracking.
+- **Cleanup**: Removed non-functional placeholder keyboard shortcuts from `SaneHostsApp.swift`.
+
 ### 1. UI Visibility Improvements (Dark Mode) ✅
 - **Add Entry button**: Orange icon (distinct from blue/teal), `.subheadline` text
 - **Last Fetched**: Readable `.primary.opacity(0.8)` text, larger FreshnessIndicator badge
