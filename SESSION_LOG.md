@@ -95,3 +95,13 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 ### Fix Applied (Post-Handoff)
 - Added `com.apple.security.cs.disable-library-validation` to `Config/SaneHosts.entitlements` to fix crash on launch due to Hardened Runtime and library validation failure with ad-hoc signing.
 
+
+### Menu System Audit & Fixes (Post-Handoff)
+- **Dock Menu**: Verified 'Settings' and 'Open SaneHosts'.
+- **Menu Bar**: Verified 'Activate/Deactivate', 'Open', 'Settings', 'Quit'.
+- **System Menu**:
+  - Added 'New Profile' (Cmd+N).
+  - Added 'Import Blocklist' (Cmd+I).
+  - Added 'Deactivate All' (Cmd+Shift+D).
+- **Implementation**: Added NotificationCenter plumbing to trigger sheets from App Menu commands.
+

@@ -90,6 +90,13 @@ public struct MainView: View {
         .onDeleteCommand {
             deleteWithConfirmation()
         }
+        // Handle App Menu commands
+        .onReceive(NotificationCenter.default.publisher(for: .showNewProfileSheet)) { _ in
+            showingNewProfile = true
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showImportSheet)) { _ in
+            showingRemoteImport = true
+        }
     }
 
     // MARK: - Selection Actions

@@ -1,6 +1,13 @@
 import SwiftUI
 import AppKit
 
+// MARK: - Notifications
+
+public extension Notification.Name {
+    static let showNewProfileSheet = Notification.Name("showNewProfileSheet")
+    static let showImportSheet = Notification.Name("showImportSheet")
+}
+
 // MARK: - Visual Effect Blur (NSVisualEffectView wrapper)
 
 struct VisualEffectBlur: NSViewRepresentable {

@@ -21,7 +21,17 @@ struct SaneHostsApp: App {
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
         .commands {
-            CommandGroup(replacing: .newItem) { }
+            CommandGroup(replacing: .newItem) {
+                Button("New Profile") {
+                    NotificationCenter.default.post(name: .showNewProfileSheet, object: nil)
+                }
+                .keyboardShortcut("n", modifiers: .command)
+
+                Button("Import Blocklist...") {
+                    NotificationCenter.default.post(name: .showImportSheet, object: nil)
+                }
+                .keyboardShortcut("i", modifiers: .command)
+            }
 
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
@@ -30,6 +40,13 @@ struct SaneHostsApp: App {
             // Keyboard shortcuts
             CommandGroup(after: .sidebar) {
                 Divider()
+                Button("Deactivate All") {
+                    Task { @MainActor in
+                        try? await HostsService.shared.deactivateProfile()
+                        try? await ProfileStore.shared.deactivate()
+                    }
+                }
+                .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }
 
