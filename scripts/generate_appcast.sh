@@ -8,7 +8,7 @@ set -e
 
 # Configuration
 APP_NAME="SaneHosts"
-DOWNLOAD_BASE_URL="https://github.com/mrsane/SaneHosts/releases/download"
+DOWNLOAD_BASE_URL="https://github.com/sane-apps/SaneHosts/releases/download"
 WEBSITE_URL="https://sanehosts.com"
 
 # Paths

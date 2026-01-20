@@ -99,9 +99,8 @@ See `docs/DISTRIBUTION.md` for full release checklist.
 - [x] Build release script (`scripts/build_release.sh`)
 - [x] Appcast generator (`scripts/generate_appcast.sh`)
 - [x] Website template (`website/index.html`, `website/privacy.html`)
-- [x] Homebrew cask formula (`homebrew/sanehosts.rb`)
 - [ ] Purchase domain (sanehosts.com)
-- [ ] Create GitHub repo (github.com/mrsane/SaneHosts)
+- [ ] Create GitHub repo (github.com/sane-apps/SaneHosts)
 - [ ] First release (v1.0)
 
 ---

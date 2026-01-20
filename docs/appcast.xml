@@ -23,7 +23,7 @@
         </ul>
       ]]></description>
       <enclosure
-        url="https://github.com/stephanjoseph/SaneHosts/releases/download/v1.0.0/SaneHosts-1.0.0.dmg"
+        url="https://github.com/sane-apps/SaneHosts/releases/download/v1.0.0/SaneHosts-1.0.0.dmg"
         sparkle:edSignature="TODO:ADD_SIGNATURE"
         length="TODO:ADD_LENGTH"
         type="application/octet-stream"/>

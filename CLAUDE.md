@@ -232,7 +232,7 @@ Task tool with subagent_type: Explore
 ### Remaining Steps for v1.0
 
 - [ ] Purchase domain (sanehosts.com)
-- [ ] Create GitHub repo (github.com/mrsane/SaneHosts)
+- [ ] Create GitHub repo (github.com/sane-apps/SaneHosts)
 - [ ] Run `./scripts/build_release.sh`
 - [ ] Create GitHub release with DMG
 - [ ] Deploy website + appcast.xml

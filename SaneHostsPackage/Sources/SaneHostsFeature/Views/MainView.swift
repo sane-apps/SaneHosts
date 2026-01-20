@@ -80,6 +80,10 @@ public struct MainView: View {
                     .keyboardShortcut("e", modifiers: .command)
                 Button("Delete", action: deleteWithConfirmation)
                     .keyboardShortcut(.delete, modifiers: .command)
+                Button("Activate", action: activateFirstSelected)
+                    .keyboardShortcut("a", modifiers: [.command, .shift])
+                Button("Deactivate", action: deactivateProfile)
+                    .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }
         // Handle Delete key without modifiers for list items

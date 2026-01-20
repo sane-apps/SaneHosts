@@ -88,7 +88,7 @@ rm -rf ~/Library/Caches/com.sanehosts.app
 
 ## Contact
 
-Questions about privacy? Open an issue on [GitHub](https://github.com/stephanjoseph/SaneHosts/issues).
+Questions about privacy? Open an issue on [GitHub](https://github.com/sane-apps/SaneHosts/issues).
 
 ## Changes
 

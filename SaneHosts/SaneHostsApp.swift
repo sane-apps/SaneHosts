@@ -30,19 +30,6 @@ struct SaneHostsApp: App {
             // Keyboard shortcuts
             CommandGroup(after: .sidebar) {
                 Divider()
-                Button("Activate Profile") {
-                    Task { @MainActor in
-                        // Handled by main view
-                    }
-                }
-                .keyboardShortcut("a", modifiers: [.command, .shift])
-
-                Button("Deactivate Profile") {
-                    Task { @MainActor in
-                        try? await HostsService.shared.deactivateProfile()
-                    }
-                }
-                .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }
 
@@ -324,11 +311,11 @@ struct AboutTab: View {
                     Label("Website", systemImage: "globe")
                 }
 
-                Link(destination: URL(string: "https://github.com/mrsane/sanehosts")!) {
+                Link(destination: URL(string: "https://github.com/sane-apps/SaneHosts")!) {
                     Label("GitHub", systemImage: "link")
                 }
 
-                Link(destination: URL(string: "https://github.com/mrsane/sanehosts/issues")!) {
+                Link(destination: URL(string: "https://github.com/sane-apps/SaneHosts/issues")!) {
                     Label("Report Issue", systemImage: "ladybug")
                 }
             }

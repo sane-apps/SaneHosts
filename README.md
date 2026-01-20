@@ -20,13 +20,9 @@ SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simpl
 
 ## Installation
 
-### Direct Download
-Download the latest release from [GitHub Releases](https://github.com/stephanjoseph/SaneHosts/releases).
+Download from [sanehosts.com](https://sanehosts.com).
 
-### Homebrew
-```bash
-brew install stephanjoseph/sanehosts/sanehosts
-```
+Or build from source (see [Contributing](#contributing)).
 
 ## Requirements
 
@@ -67,8 +63,8 @@ Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before
 
 ## Support
 
-- [Report a Bug](https://github.com/stephanjoseph/SaneHosts/issues/new?template=bug_report.md)
-- [Request a Feature](https://github.com/stephanjoseph/SaneHosts/issues/new?template=feature_request.md)
+- [Report a Bug](https://github.com/sane-apps/SaneHosts/issues/new?template=bug_report.md)
+- [Request a Feature](https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md)
 
 ## License
 
@@ -76,4 +72,4 @@ MIT License - see [LICENSE](LICENSE) for details.
 
 ---
 
-Made with care by [Mr. Sane](https://github.com/stephanjoseph)
+Made with care by [Mr. Sane](https://github.com/sane-apps)
