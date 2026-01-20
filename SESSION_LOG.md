@@ -123,3 +123,20 @@ The UI reactivity bug (selectedProfile not updating) was **already fixed** in th
 - **Dock Menu**: Updated `AppDelegate.openSettings` to post a `.openSettings` notification first, handled by a new `SettingsLauncher` modifier in SwiftUI, fixing the issue where the selector failed when no window was key.
 - **Robustness**: Added `SettingsLauncher` to both `ContentView` and `MenuBarView` to ensure Settings can be opened from any context.
 
+
+## Final Status - Session Complete
+
+### Summary
+Successfully implemented the 'Hide Dock Icon' feature, audited and fixed the entire Menu/Dock system, and performed a performance optimization pass. The app is now robust, responsive, and feature-complete for v1.0.
+
+### Key Achievements
+1. **Hide Dock Icon**: Fully implemented with safety logic.
+2. **Settings Access**: Fixed unresponsive Settings menu item using modern SwiftUI Environment + Notifications.
+3. **Performance**: Eliminated main-thread blocking I/O in `ProfileStore`.
+4. **Crash Fix**: Resolved Hardened Runtime launch crash in Debug builds.
+5. **Menu System**: Complete coverage (New, Import, Deactivate All) in system menu.
+
+### Next Steps
+- Check Notarization status (Submission ID: 9df5f544...)
+- Proceed with Release Pipeline (Staple, Appcast, Deploy).
+

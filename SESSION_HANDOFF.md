@@ -337,14 +337,28 @@ Profile names now generated descriptively:
 
 ## Completed This Session (2026-01-19)
 
-### 1. Pending Testing Completed ✅
-- **Custom URL Import**: Verified via new integration test (`CustomImportIntegrationTests.swift`). Logic works for single and multiple hostname entries.
-- **Menu Bar**: Verified logic for "Show in menu bar" toggle and Activate/Deactivate actions via code inspection.
-- **Keyboard Shortcuts**: Implemented `Cmd+Shift+A` (Activate) and `Cmd+Shift+D` (Deactivate) in `MainView.swift`.
+### 1. New Feature: Hide Dock Icon ✅
+- **Setting**: Added "Hide Dock icon" toggle in General Settings.
+- **Config**: Updated `LSUIElement = YES` (Accessory mode).
+- **Logic**: Implemented robust activation policy switching at runtime with lockout prevention (forces Menu Bar icon if Dock icon is hidden).
 
-### 2. Infrastructure Updates ✅
-- **.gitignore**: Added `build/` to exclusion list to prevent artifact tracking.
-- **Cleanup**: Removed non-functional placeholder keyboard shortcuts from `SaneHostsApp.swift`.
+### 2. Full Menu System Audit & Fixes ✅
+- **Settings Access**: Fixed critical bug where "Settings..." was unresponsive from Dock/Menu Bar. Implemented robust `NotificationCenter` based launcher (`SettingsLauncher`).
+- **Dock Menu**: Verified and wired "Open SaneHosts" and "Settings".
+- **System Menu**: Added "New Profile" (Cmd+N), "Import Blocklist" (Cmd+I), and "Deactivate All" (Cmd+Shift+D).
+- **Shortcuts**: Implemented all missing shortcuts and removed dead code.
+
+### 3. Performance & Stability ✅
+- **Blocking I/O Fixed**: Refactored `ProfileStore` to load/parse on background threads (`Task.detached`), preventing launch hangs.
+- **Dead Code**: Removed unused `DownloadProgressDelegate`.
+- **Launch Crash**: Fixed crash on launch by adding `disable-library-validation` entitlement for Hardened Runtime compatibility.
+
+### 4. Custom URL Import ✅
+- Verified via integration test. Works for single and multiple hostname entries.
+
+### 5. Infrastructure ✅
+- **.gitignore**: Added `build/` exclusion.
+- **Code Signing**: Added entitlements for local debug with Hardened Runtime.
 
 ### 1. UI Visibility Improvements (Dark Mode) ✅
 - **Add Entry button**: Orange icon (distinct from blue/teal), `.subheadline` text
