@@ -21,11 +21,11 @@
       "Bash(brew:*)",
       "Bash(curl:*)",
       "Bash(/opt/homebrew/opt/ruby/bin/*:*)",
-      "mcp__memory__*",
       "mcp__apple-docs__*",
       "mcp__context7__*",
       "mcp__github__*",
-      "mcp__XcodeBuildMCP__*"
+      "mcp__XcodeBuildMCP__*",
+      "mcp__macos-automator__*"
     ]
   },
   "hooks": {
@@ -34,7 +34,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f ~/.claude/hooks/session_start.rb ] && ruby ~/.claude/hooks/session_start.rb || true",
+            "command": "[ -n \"$CLAUDE_CODE\" ] && [ -f ~/SaneApps/infra/SaneProcess/scripts/hooks/session_start.rb ] && ruby ~/SaneApps/infra/SaneProcess/scripts/hooks/session_start.rb || true",
             "timeout": 5
           }
         ]
@@ -45,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f ~/.claude/hooks/saneprompt.rb ] && ruby ~/.claude/hooks/saneprompt.rb || true",
+            "command": "[ -n \"$CLAUDE_CODE\" ] && [ -f ~/SaneApps/infra/SaneProcess/scripts/hooks/saneprompt.rb ] && ruby ~/SaneApps/infra/SaneProcess/scripts/hooks/saneprompt.rb || true",
             "timeout": 5
           }
         ]
@@ -56,7 +56,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f ~/.claude/hooks/sanetools.rb ] && ruby ~/.claude/hooks/sanetools.rb || true",
+            "command": "[ -n \"$CLAUDE_CODE\" ] && [ -f ~/SaneApps/infra/SaneProcess/scripts/hooks/sanetools.rb ] && ruby ~/SaneApps/infra/SaneProcess/scripts/hooks/sanetools.rb || true",
             "timeout": 5
           }
         ]
@@ -67,7 +67,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f ~/.claude/hooks/sanetrack.rb ] && ruby ~/.claude/hooks/sanetrack.rb || true",
+            "command": "[ -n \"$CLAUDE_CODE\" ] && [ -f ~/SaneApps/infra/SaneProcess/scripts/hooks/sanetrack.rb ] && ruby ~/SaneApps/infra/SaneProcess/scripts/hooks/sanetrack.rb || true",
             "timeout": 5
           }
         ]
@@ -78,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "[ -f ~/.claude/hooks/sanestop.rb ] && ruby ~/.claude/hooks/sanestop.rb || true",
+            "command": "[ -n \"$CLAUDE_CODE\" ] && [ -f ~/SaneApps/infra/SaneProcess/scripts/hooks/sanestop.rb ] && ruby ~/SaneApps/infra/SaneProcess/scripts/hooks/sanestop.rb || true",
             "timeout": 5
           }
         ]

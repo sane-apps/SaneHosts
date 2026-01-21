@@ -116,6 +116,10 @@ struct ProfileDetailView: View {
                     } else {
                         Button {
                             onActivate()
+                            // Complete tutorial when user activates
+                            if TutorialState.shared.currentStep == .activateProfile {
+                                TutorialState.shared.completeTutorial()
+                            }
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: SaneIcons.activate)
@@ -124,6 +128,7 @@ struct ProfileDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.saneAccent)  // Futuristic teal accent
+                        .activateButtonAnchor()
                     }
                 }
                 .padding(.horizontal, 12)
@@ -134,7 +139,7 @@ struct ProfileDetailView: View {
                 // Source info
                 CompactRow("Source", icon: sourceIcon, iconColor: .saneAccent) {
                     Text(profile.source.displayName)
-                        .foregroundStyle(.primary.opacity(0.8))
+                        .foregroundStyle(.primary)
                 }
 
                 CompactDivider()
@@ -142,7 +147,7 @@ struct ProfileDetailView: View {
                 // Modified date
                 CompactRow("Modified", icon: "clock", iconColor: .saneAccent) {
                     Text(profile.modifiedAt, style: .relative)
-                        .foregroundStyle(.primary.opacity(0.8))
+                        .foregroundStyle(.primary)
                 }
 
                 // Remote source freshness indicator
@@ -151,7 +156,7 @@ struct ProfileDetailView: View {
                     CompactRow("Source URL", icon: "link", iconColor: .blue) {
                         Text(url.host ?? url.absoluteString)
                             .font(.body)
-                            .foregroundStyle(.primary.opacity(0.8))
+                            .foregroundStyle(.primary)
                             .lineLimit(1)
                     }
 
@@ -161,7 +166,7 @@ struct ProfileDetailView: View {
                             if let lastFetched = lastFetched {
                                 Text(lastFetched, style: .relative)
                                     .font(.body)
-                                    .foregroundStyle(.primary.opacity(0.8))  // Readable text
+                                    .foregroundStyle(.primary)  // Readable text
                                 FreshnessIndicator(date: lastFetched)  // Colored badge shows status
                             } else {
                                 Text("Never")
@@ -235,7 +240,7 @@ struct ProfileDetailView: View {
                 title: "Disabled",
                 value: compactNumber(counts.disabled),
                 icon: SaneIcons.entryDisabled,
-                color: .primary.opacity(0.5)
+                color: .secondary
             )
 
             // Prominent Add Entry button - always visible
@@ -249,7 +254,7 @@ struct ProfileDetailView: View {
                     Text("Add Entry")
                         .font(.subheadline)
                         .fontWeight(.medium)
-                        .foregroundStyle(.primary.opacity(0.8))
+                        .foregroundStyle(.primary)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -357,11 +362,11 @@ struct ProfileDetailView: View {
                     if filteredEntries.count > Self.maxVisibleEntries {
                         Text("Showing \(compactNumber(min(filteredEntries.count, Self.maxVisibleEntries))) of \(compactNumber(filteredEntries.count)) entries")
                             .font(.subheadline)
-                            .foregroundStyle(.primary.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     } else {
                         Text("\(compactNumber(filteredEntries.count)) entries")
                             .font(.subheadline)
-                            .foregroundStyle(.primary.opacity(0.7))
+                            .foregroundStyle(.secondary)
                     }
                     Spacer()
 
@@ -575,7 +580,7 @@ struct StatCard: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundStyle(.primary.opacity(0.7))
+                .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)

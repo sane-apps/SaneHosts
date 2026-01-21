@@ -4,6 +4,28 @@
 
 ---
 
+## Sane Philosophy
+
+```
+┌─────────────────────────────────────────────────────┐
+│           BEFORE YOU SHIP, ASK:                     │
+│                                                     │
+│  1. Does this REDUCE fear or create it?             │
+│  2. Power: Does user have control?                  │
+│  3. Love: Does this help people?                    │
+│  4. Sound Mind: Is this clear and calm?             │
+│                                                     │
+│  Grandma test: Would her life be better?            │
+│                                                     │
+│  "Not fear, but power, love, sound mind"            │
+│  — 2 Timothy 1:7                                    │
+└─────────────────────────────────────────────────────┘
+```
+
+→ Full philosophy: `~/SaneApps/meta/Brand/NORTH_STAR.md`
+
+---
+
 ## Project Location
 
 | Path | Description |
@@ -14,7 +36,7 @@
 | **Shared UI** | `~/SaneApps/infra/SaneUI/` |
 | **Hooks/tooling** | `~/SaneApps/infra/SaneProcess/` |
 
-**Sister apps:** SaneBar, SaneClip, SaneVideo, SaneSync, SaneAI
+**Sister apps:** SaneBar, SaneClip, SaneVideo, SaneSync, SaneAI, SaneScript
 
 ---
 
