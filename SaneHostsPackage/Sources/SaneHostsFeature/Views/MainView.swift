@@ -734,14 +734,8 @@ struct NewProfileSheet: View {
 
                 Button("Create") {
                     Task {
-                        var profile = try? await store.create(name: name)
-                        if var p = profile {
-                            // Update color tag
-                            if let index = store.profiles.firstIndex(where: { $0.id == p.id }) {
-                                var updated = store.profiles[index]
-                                // Note: Would need to update profile color in store
-                            }
-                            onCreated(p)
+                        if let profile = try? await store.create(name: name) {
+                            onCreated(profile)
                             dismiss()
                         }
                     }
@@ -954,16 +948,10 @@ struct RemoteImportSheet: View {
             }
         }
         .onChange(of: selectedSources) { _, newValue in
-            print("[RemoteImportSheet] onChange fired! newValue count: \(newValue.count)")
-            print("[RemoteImportSheet] profileName: '\(profileName)', previousSuggestedName: '\(previousSuggestedName)'")
-            print("[RemoteImportSheet] suggestedName: '\(suggestedName)'")
             // Auto-fill name when selection changes (only if user hasn't typed a custom name)
             if !newValue.isEmpty && (profileName.isEmpty || profileName == previousSuggestedName) {
-                print("[RemoteImportSheet] Condition met, setting profileName to: \(suggestedName)")
                 profileName = suggestedName
                 previousSuggestedName = suggestedName
-            } else {
-                print("[RemoteImportSheet] Condition NOT met, not updating profileName")
             }
         }
         .onChange(of: customURL) { _, newValue in
@@ -1165,10 +1153,8 @@ struct RemoteImportSheet: View {
 
             if isSelected {
                 selectedSources.remove(source.id)
-                print("[RemoteImportSheet] Deselected: \(source.name), selectedSources now: \(selectedSources.count)")
             } else {
                 selectedSources.insert(source.id)
-                print("[RemoteImportSheet] Selected: \(source.name), selectedSources now: \(selectedSources.count)")
             }
         } label: {
             HStack(spacing: 12) {
@@ -1480,29 +1466,8 @@ struct RemoteImportSheet: View {
 
     // MARK: - Import Logic
 
-    private func debugLog(_ message: String) {
-        let logFile = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Desktop/sanehosts_debug.log")
-        let timestamp = ISO8601DateFormatter().string(from: Date())
-        let line = "[\(timestamp)] \(message)\n"
-        if let data = line.data(using: .utf8) {
-            if FileManager.default.fileExists(atPath: logFile.path) {
-                if let handle = try? FileHandle(forWritingTo: logFile) {
-                    handle.seekToEndOfFile()
-                    handle.write(data)
-                    handle.closeFile()
-                }
-            } else {
-                try? data.write(to: logFile)
-            }
-        }
-        print(message)  // Also print to console
-    }
-
     private func startImport() {
         let finalName = profileName.isEmpty ? suggestedName : profileName
-        debugLog("[RemoteImportSheet] startImport called, finalName: \(finalName)")
-        debugLog("[RemoteImportSheet] selectedSources: \(selectedSources)")
-        debugLog("[RemoteImportSheet] profileName: '\(profileName)', suggestedName: '\(suggestedName)'")
         isImporting = true
         importProgress = 0
         error = nil
@@ -1511,12 +1476,9 @@ struct RemoteImportSheet: View {
             do {
                 // Handle custom URL
                 if !customURL.isEmpty, let url = URL(string: customURL) {
-                    print("[RemoteImportSheet] Importing custom URL: \(url)")
                     currentImportName = "Downloading \(url.host ?? "custom")..."
                     let remoteFile = try await RemoteSyncService.shared.fetch(from: url)
-                    print("[RemoteImportSheet] Fetched \(remoteFile.entries.count) entries")
                     let profile = try await store.createRemote(name: finalName, url: url, entries: remoteFile.entries)
-                    print("[RemoteImportSheet] Created profile: \(profile.name), id: \(profile.id)")
                     onCreated(profile)
                     dismiss()
                     return
@@ -1524,17 +1486,14 @@ struct RemoteImportSheet: View {
 
                 // Handle catalog selections
                 let sources = BlocklistCatalog.all.filter { selectedSources.contains($0.id) }
-                print("[RemoteImportSheet] Importing \(sources.count) catalog sources")
                 var allEntries: [HostEntry] = []
                 var seenHostnames: Set<String> = []
 
                 for (index, source) in sources.enumerated() {
-                    print("[RemoteImportSheet] Fetching source \(index + 1)/\(sources.count): \(source.name)")
                     currentImportName = "Downloading \(source.name)..."
                     importProgress = Double(index) / Double(sources.count)
 
                     let remoteFile = try await RemoteSyncService.shared.fetch(from: source.url)
-                    print("[RemoteImportSheet] Got \(remoteFile.entries.count) entries from \(source.name)")
 
                     // Deduplicate as we go
                     for entry in remoteFile.entries {
@@ -1546,7 +1505,6 @@ struct RemoteImportSheet: View {
                     }
                 }
 
-                print("[RemoteImportSheet] Total deduplicated entries: \(allEntries.count)")
                 importProgress = 1.0
                 currentImportName = "Saving profile..."
 
@@ -1554,7 +1512,6 @@ struct RemoteImportSheet: View {
                 let profile: Profile
                 if sources.count == 1 {
                     // Single source - create as remote
-                    print("[RemoteImportSheet] Creating single-source remote profile")
                     profile = try await store.createRemote(
                         name: finalName,
                         url: sources[0].url,
@@ -1562,7 +1519,6 @@ struct RemoteImportSheet: View {
                     )
                 } else {
                     // Multiple sources - create as merged
-                    print("[RemoteImportSheet] Creating merged profile with \(sources.count) sources")
                     profile = try await store.createMerged(
                         name: finalName,
                         entries: allEntries,
@@ -1570,13 +1526,10 @@ struct RemoteImportSheet: View {
                     )
                 }
 
-                print("[RemoteImportSheet] Profile created successfully: \(profile.name), id: \(profile.id)")
-                print("[RemoteImportSheet] Store now has \(store.profiles.count) profiles")
                 onCreated(profile)
                 dismiss()
 
             } catch {
-                print("[RemoteImportSheet] ERROR: \(error)")
                 self.error = error.localizedDescription
                 isImporting = false
             }
