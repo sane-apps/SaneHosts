@@ -15,6 +15,7 @@ struct SaneHostsApp: App {
     private let updaterController: SPUStandardUpdaterController
     @AppStorage("showInMenuBar") private var showInMenuBar = true
     @AppStorage("hideDockIcon") private var hideDockIcon = false
+    @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
 
     init() {
@@ -23,7 +24,7 @@ struct SaneHostsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(hasSeenWelcome: $hasSeenWelcome)
                 .modifier(SettingsLauncher())
         }
         .defaultSize(width: 900, height: 650)
