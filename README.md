@@ -10,13 +10,17 @@ SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simpl
 
 ## Features
 
-- **Profile Management** - Create and manage multiple hosts configurations
+- **Profile Management** - Create and manage multiple hosts configurations with color tagging
+- **50+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, and more
 - **Built-in Templates** - Ad blocking, privacy, social media blocking, development
-- **Remote Import** - Import hosts from URLs (e.g., ad-blocking lists)
+- **Remote Import** - Import hosts from any URL, supports domain-only format
+- **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles
 - **Menu Bar Access** - Quick profile switching from the menu bar
+- **Touch ID Support** - Authenticate with biometrics when available
+- **Crash Resilient** - Automatic backups, corrupted profiles recovered automatically
 - **Native macOS** - Built with SwiftUI, follows system conventions
-- **Privacy-First** - All data stored locally, no analytics
+- **Privacy-First** - All data stored locally, no analytics, no cloud
 
 ## Installation
 
@@ -38,7 +42,20 @@ Or build from source (see [Contributing](#contributing)).
 
 ## Screenshots
 
-Coming soon.
+See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| `⌘N` | New Profile |
+| `⌘I` | Import Blocklist |
+| `⌘D` | Duplicate Profile |
+| `⌘M` | Merge Selected |
+| `⌘E` | Export Profile |
+| `⌘⇧A` | Activate Profile |
+| `⌘⇧D` | Deactivate All |
+| `⌘⌫` | Delete Profile |
 
 ## Privacy
 
