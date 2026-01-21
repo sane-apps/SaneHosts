@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneHosts - Your Mac, Your Rules</title>
+    <meta name="description" content="SaneHosts gives you complete control over your Mac's network connections. Block ads, trackers, and distractions locally. No cloud, no tracking, no fear.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        :root {
+            --bg-dark: #0d1525;
+            --bg-card: #1a2744;
+            --accent: #5fa8d3;
+            --accent-glow: rgba(95, 168, 211, 0.3);
+            --text: #e8eef4;
+            --text-muted: #8899aa;
+            --success: #4ade80;
+            --warm: #f4a261;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1628 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Header */
+        header {
+            padding: 24px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+            background: rgba(13, 21, 37, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(95, 168, 211, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero */
+        .hero {
+            padding: 160px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            color: var(--warm);
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 650px;
+            margin: 0 auto 40px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg-dark);
+            box-shadow: 0 4px 20px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* App Preview */
+        .app-preview {
+            margin: 60px auto;
+            max-width: 900px;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(95, 168, 211, 0.2);
+        }
+
+        .app-preview img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Philosophy Section */
+        .philosophy {
+            padding: 80px 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(26, 39, 68, 0.3) 50%, transparent 100%);
+        }
+
+        .philosophy-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .philosophy-header h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .philosophy-header .verse {
+            font-style: italic;
+            color: var(--warm);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .philosophy-header .verse-ref {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .pillars {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 48px;
+        }
+
+        .pillar {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px 32px;
+            border: 1px solid rgba(95, 168, 211, 0.15);
+            text-align: center;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .pillar:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+
+        .pillar-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .pillar h3 {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--accent);
+        }
+
+        .pillar .domain {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .pillar p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Promise Section */
+        .promise {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .promise h2 {
+            font-size: 2rem;
+            margin-bottom: 40px;
+        }
+
+        .promise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .promise-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-card);
+            padding: 20px 24px;
+            border-radius: 12px;
+            border: 1px solid rgba(95, 168, 211, 0.1);
+        }
+
+        .promise-item .check {
+            color: var(--success);
+            font-size: 1.5rem;
+        }
+
+        .promise-item span {
+            text-align: left;
+        }
+
+        /* Features */
+        .features {
+            padding: 80px 0;
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(95, 168, 211, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+        }
+
+        /* What is a hosts file */
+        .explainer {
+            padding: 80px 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(26, 39, 68, 0.3) 50%, transparent 100%);
+        }
+
+        .explainer-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .explainer h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+        }
+
+        .explainer p {
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .explainer-visual {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
+            font-size: 0.9rem;
+            border: 1px solid rgba(95, 168, 211, 0.2);
+        }
+
+        .explainer-visual .comment {
+            color: var(--text-muted);
+        }
+
+        .explainer-visual .ip {
+            color: var(--accent);
+        }
+
+        .explainer-visual .domain {
+            color: var(--warm);
+        }
+
+        /* Requirements */
+        .requirements {
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .requirements h2 {
+            font-size: 2rem;
+            margin-bottom: 24px;
+        }
+
+        .req-badges {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .req-badge {
+            background: var(--bg-card);
+            padding: 16px 24px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* CTA */
+        .cta {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .cta h2 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+        }
+
+        .cta p {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-bottom: 32px;
+        }
+
+        .cta .tagline {
+            color: var(--warm);
+            font-size: 1.1rem;
+            margin-top: 24px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .footer-philosophy {
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-top: 16px;
+            color: var(--text-muted);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .explainer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="/" class="logo">
+                    <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#1a2744"/>
+                                <stop offset="100%" style="stop-color:#0d1525"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="100" height="100" rx="22" fill="url(#bg)"/>
+                        <circle cx="50" cy="50" r="25" stroke="#5fa8d3" stroke-width="3" fill="none"/>
+                        <ellipse cx="50" cy="50" rx="25" ry="10" stroke="#5fa8d3" stroke-width="2" fill="none"/>
+                        <line x1="50" y1="25" x2="50" y2="75" stroke="#5fa8d3" stroke-width="2"/>
+                        <path d="M70 35 L80 30 L75 42 Z" fill="#5fa8d3"/>
+                    </svg>
+                    SaneHosts
+                </a>
+                <ul class="nav-links">
+                    <li><a href="#philosophy">Philosophy</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="https://github.com/sane-apps/SaneHosts">GitHub</a></li>
+                    <li><a href="privacy.html">Privacy</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <p class="tagline">Your Mac. Your Rules.</p>
+                <h1>Take Command of Your Network</h1>
+                <p>SaneHosts gives you complete control over what your Mac connects to. Block ads, trackers, and distractions at the system level. No cloud required. No data collected. Just you, in control.</p>
+                <div class="hero-buttons">
+                    <a href="https://github.com/sane-apps/SaneHosts/releases/latest/download/SaneHosts.dmg" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        Download Free
+                    </a>
+                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                        View Source
+                    </a>
+                </div>
+
+                <div class="app-preview">
+                    <img src="screenshot.png" alt="SaneHosts App Screenshot">
+                </div>
+            </div>
+        </section>
+
+        <section id="philosophy" class="philosophy">
+            <div class="container">
+                <div class="philosophy-header">
+                    <h2>Built for a Sound Mind</h2>
+                    <p class="verse">"For God has not given us a spirit of fear, but of power and of love and of a sound mind."</p>
+                    <p class="verse-ref">2 Timothy 1:7</p>
+                </div>
+
+                <div class="pillars">
+                    <div class="pillar">
+                        <div class="pillar-icon">💪</div>
+                        <h3>Power</h3>
+                        <div class="domain">Agency</div>
+                        <p>Your data stays on your device. No cloud sync, no accounts, no phone home. You control what your Mac talks to, and you can verify every line of code.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">❤️</div>
+                        <h3>Love</h3>
+                        <div class="domain">Function</div>
+                        <p>Built to serve, not to extract. SaneHosts solves a real problem without dark patterns, nag screens, or hidden upsells. It helps you focus on what matters.</p>
+                    </div>
+                    <div class="pillar">
+                        <div class="pillar-icon">🧠</div>
+                        <h3>Sound Mind</h3>
+                        <div class="domain">Form</div>
+                        <p>A calm, focused interface that reduces noise. No visual clutter, no anxiety-inducing notifications. Just clear information and simple controls.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="promise">
+            <div class="container">
+                <h2>The Sane Promise</h2>
+                <div class="promise-grid">
+                    <div class="promise-item">
+                        <span class="check">✓</span>
+                        <span>100% local - your data never leaves your Mac</span>
+                    </div>
+                    <div class="promise-item">
+                        <span class="check">✓</span>
+                        <span>Zero analytics or tracking of any kind</span>
+                    </div>
+                    <div class="promise-item">
+                        <span class="check">✓</span>
+                        <span>Open source - verify everything we do</span>
+                    </div>
+                    <div class="promise-item">
+                        <span class="check">✓</span>
+                        <span>Free forever - no subscriptions or hidden fees</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="explainer">
+            <div class="container">
+                <div class="explainer-content">
+                    <div>
+                        <h2>What is a hosts file?</h2>
+                        <p>Every time your Mac tries to connect to a website, it first checks a local file called <code>/etc/hosts</code>. This file can redirect domains to different addresses, or block them entirely.</p>
+                        <p>By adding ad servers and trackers to this file, you can block them at the system level, before they even load. No browser extension needed, works in every app.</p>
+                        <p>SaneHosts makes managing this file simple and safe, with profiles you can switch between instantly.</p>
+                    </div>
+                    <div class="explainer-visual">
+                        <div class="comment"># Block ads and trackers</div>
+                        <div><span class="ip">0.0.0.0</span> <span class="domain">ads.example.com</span></div>
+                        <div><span class="ip">0.0.0.0</span> <span class="domain">tracker.analytics.com</span></div>
+                        <div><span class="ip">0.0.0.0</span> <span class="domain">pixel.facebook.com</span></div>
+                        <br>
+                        <div class="comment"># Local development</div>
+                        <div><span class="ip">127.0.0.1</span> <span class="domain">myapp.local</span></div>
+                        <div><span class="ip">127.0.0.1</span> <span class="domain">api.myapp.local</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Features</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📋</div>
+                        <h3>Profile-Based Management</h3>
+                        <p>Create multiple profiles for different purposes. Switch between work, home, and focus mode instantly with a single click.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌐</div>
+                        <h3>Import Popular Blocklists</h3>
+                        <p>Import from curated sources like Steven Black, AdGuard, and Hagezi. Handle 100,000+ entries with ease.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h3>Menu Bar Access</h3>
+                        <p>Quick access from your menu bar. Activate and deactivate profiles without opening the full app.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <h3>Automatic DNS Flush</h3>
+                        <p>DNS cache is automatically flushed when you activate a profile. Changes take effect immediately.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔒</div>
+                        <h3>Secure by Design</h3>
+                        <p>Uses macOS admin authentication. No background services running. You approve every change.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💾</div>
+                        <h3>Crash Resilient</h3>
+                        <p>Automatic backups before every change. Corrupted profiles are automatically recovered.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="requirements">
+            <div class="container">
+                <h2>Requirements</h2>
+                <div class="req-badges">
+                    <div class="req-badge">
+                        <span>🍎</span>
+                        <span>macOS 14.0 (Sonoma) or later</span>
+                    </div>
+                    <div class="req-badge">
+                        <span>💻</span>
+                        <span>Apple Silicon or Intel Mac</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta">
+            <div class="container">
+                <h2>Ready to Take Control?</h2>
+                <p>Download SaneHosts and decide what your Mac connects to.</p>
+                <a href="https://github.com/sane-apps/SaneHosts/releases/latest/download/SaneHosts.dmg" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    Download Free
+                </a>
+                <p class="tagline">Keep your head. Stay Sane.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
+                <a href="https://github.com/sane-apps/SaneHosts/issues">Report Issue</a>
+            </div>
+            <p>Made with care by <a href="https://saneapps.com">Sane Apps</a></p>
+            <p class="footer-philosophy">100% Local. 0% Fear.</p>
+        </div>
+    </footer>
+</body>
+</html>
