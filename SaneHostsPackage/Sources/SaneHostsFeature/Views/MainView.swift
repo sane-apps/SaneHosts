@@ -10,6 +10,7 @@ public struct MainView: View {
     @State private var showingTemplates = false
     @State private var showingRemoteImport = false
     @State private var showingMergeProfiles = false
+    @State private var showingMoreOptions = false
     @State private var showingDeleteConfirmation = false
     @State private var showingRenameSheet = false
     @State private var isActivating = false
@@ -32,6 +33,7 @@ public struct MainView: View {
     public var body: some View {
         NavigationSplitView {
             sidebar
+                .navigationSplitViewColumnWidth(min: 260, ideal: 280, max: 350)
         } detail: {
             ZStack {
                 SaneGradientBackground()
@@ -118,47 +120,65 @@ public struct MainView: View {
     @ViewBuilder
     private var sidebar: some View {
         List(selection: $selectedProfileIDs) {
-            // Quick Actions - All actions visible, no hidden menus
+            // Quick Actions - Clean UI, power features tucked away
             Section {
-                // Primary: Import Blocklist (most common)
+                // Primary: Import Blocklist (the main action most users need)
                 QuickActionButton(
                     title: "Import Blocklist",
-                    subtitle: "From curated sources or URL",
+                    subtitle: "Block ads, trackers & more",
                     icon: "arrow.down.circle.fill",
                     color: .blue
                 ) {
                     showingRemoteImport = true
                 }
+                .importButtonAnchor()
 
-                // New Empty Profile
-                QuickActionButton(
-                    title: "New Empty Profile",
-                    subtitle: "Start from scratch",
-                    icon: "plus.circle.fill",
-                    color: .orange
-                ) {
-                    showingNewProfile = true
+                // More Options - clean expandable section
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        showingMoreOptions.toggle()
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 11, weight: .semibold))
+                            .rotationEffect(.degrees(showingMoreOptions ? 90 : 0))
+                        Text("More Options")
+                            .font(.system(size: 13, weight: .medium))
+                    }
+                    .foregroundStyle(.blue.opacity(0.8))
+                    .padding(.vertical, 8)
                 }
+                .buttonStyle(.plain)
 
-                // From Template
-                QuickActionButton(
-                    title: "From Template",
-                    subtitle: "Ad blocking, privacy, etc.",
-                    icon: "doc.badge.plus",
-                    color: .purple
-                ) {
-                    showingTemplates = true
-                }
-
-                // Merge Profiles (only show when useful)
-                if store.profiles.count >= 2 {
+                if showingMoreOptions {
                     QuickActionButton(
-                        title: "Merge Profiles",
-                        subtitle: "Combine \(store.profiles.count) profiles",
-                        icon: "arrow.triangle.merge",
-                        color: .pink
+                        title: "New Empty Profile",
+                        subtitle: "Start from scratch",
+                        icon: "plus.circle.fill",
+                        color: .orange
                     ) {
-                        showingMergeProfiles = true
+                        showingNewProfile = true
+                    }
+
+                    QuickActionButton(
+                        title: "From Template",
+                        subtitle: "Ad blocking, privacy, etc.",
+                        icon: "doc.badge.plus",
+                        color: .purple
+                    ) {
+                        showingTemplates = true
+                    }
+
+                    if store.profiles.count >= 2 {
+                        QuickActionButton(
+                            title: "Merge Profiles",
+                            subtitle: "Combine \(store.profiles.count) profiles",
+                            icon: "arrow.triangle.merge",
+                            color: .pink
+                        ) {
+                            showingMergeProfiles = true
+                        }
                     }
                 }
             } header: {
@@ -168,7 +188,7 @@ public struct MainView: View {
                     Text("QUICK ACTIONS")
                         .font(.system(size: 12, weight: .bold))
                 }
-                .foregroundStyle(.primary.opacity(0.85))
+                .foregroundStyle(.primary)
             }
 
             Section {
@@ -191,7 +211,7 @@ public struct MainView: View {
                     Text("PROFILES")
                         .font(.system(size: 12, weight: .bold))
                 }
-                .foregroundStyle(.primary.opacity(0.85))
+                .foregroundStyle(.primary)
             }
         }
         .listStyle(.sidebar)
@@ -228,8 +248,7 @@ public struct MainView: View {
                 profiles: selectedProfiles,
                 onMerge: { showingMergeProfiles = true },
                 onExport: { exportSelectedProfiles() },
-                onDelete: { deleteWithConfirmation() },
-                onActivate: { activateFirstSelected() }
+                onDelete: { deleteWithConfirmation() }
             )
         } else if let profile = selectedProfile {
             // Single selection - show detail
@@ -452,7 +471,7 @@ struct QuickActionButton: View {
                         .foregroundStyle(.primary)
                     Text(subtitle)
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.7))
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
@@ -495,7 +514,7 @@ struct ProfileRowView: View {
 
                 Text(entrySummary)
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(0.6))
+                    .foregroundStyle(.secondary)
             }
 
             Spacer()
@@ -528,7 +547,6 @@ struct MultiSelectDetailView: View {
     let onMerge: () -> Void
     let onExport: () -> Void
     let onDelete: () -> Void
-    let onActivate: () -> Void
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -554,7 +572,7 @@ struct MultiSelectDetailView: View {
 
                 Text(totalEntriesSummary)
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
 
             // Selected profiles list
@@ -562,7 +580,7 @@ struct MultiSelectDetailView: View {
                 Text("Selected")
                     .font(.subheadline)
                     .fontWeight(.medium)
-                    .foregroundStyle(.primary.opacity(0.7))
+                    .foregroundStyle(.secondary)
                     .padding(.leading, 4)
 
                 VStack(spacing: 0) {
@@ -581,7 +599,7 @@ struct MultiSelectDetailView: View {
 
                             Text(profile.entries.count.formatted(.number.notation(.compactName)))
                                 .font(.subheadline)
-                                .foregroundStyle(.primary.opacity(0.5))
+                                .foregroundStyle(.secondary)
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -622,16 +640,6 @@ struct MultiSelectDetailView: View {
                         HStack {
                             Image(systemName: SaneIcons.export)
                             Text("Export All")
-                        }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-
-                    // Activate first
-                    Button(action: onActivate) {
-                        HStack {
-                            Image(systemName: SaneIcons.activate)
-                            Text("Activate First")
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -837,11 +845,11 @@ struct TemplateRow: View {
 
                 Text("\(template.entries.count.formatted(.number.notation(.compactName))) entries")
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(0.5))
+                    .foregroundStyle(.secondary)
 
                 Image(systemName: "chevron.right")
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(0.4))
+                    .foregroundStyle(.secondary)
             }
             .padding(12)
             .background(
@@ -1064,7 +1072,7 @@ struct RemoteImportSheet: View {
 
             Text("Select one or more blocklists to import. Multiple selections will be merged into a single profile.")
                 .font(.subheadline)
-                .foregroundStyle(.primary.opacity(0.7))
+                .foregroundStyle(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -1112,7 +1120,7 @@ struct RemoteImportSheet: View {
 
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.5))
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -1169,7 +1177,7 @@ struct RemoteImportSheet: View {
                         Text(source.name)
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundStyle(.primary.opacity(isUnavailable ? 0.4 : 1.0))
+                            .foregroundStyle(isUnavailable ? .secondary : .primary)
 
                         if source.isRecommended && !isUnavailable {
                             Text("Recommended")
@@ -1185,7 +1193,7 @@ struct RemoteImportSheet: View {
 
                     Text(source.description)
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(isUnavailable ? 0.3 : 0.6))
+                        .foregroundStyle(.secondary)
                         .lineLimit(2)
                 }
 
@@ -1194,10 +1202,10 @@ struct RemoteImportSheet: View {
                 // Entry count estimate
                 Text(source.estimatedEntries)
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(isUnavailable ? 0.2 : 0.5))
+                    .foregroundStyle(.secondary)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(Color.secondary.opacity(isUnavailable ? 0.05 : 0.15))
+                    .background(Color.secondary.opacity(0.15))
                     .clipShape(Capsule())
 
                 // URL status indicator
@@ -1261,7 +1269,7 @@ struct RemoteImportSheet: View {
 
                     Image(systemName: showingCustomURL ? "chevron.down" : "chevron.right")
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.5))
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 12)
@@ -1300,7 +1308,7 @@ struct RemoteImportSheet: View {
                 HStack {
                     Text("Profile Name:")
                         .font(.body)
-                        .foregroundStyle(.primary.opacity(0.7))
+                        .foregroundStyle(.secondary)
                     TextField(suggestedName, text: $profileName)
                         .textFieldStyle(.plain)
                         .font(.body)
@@ -1315,11 +1323,11 @@ struct RemoteImportSheet: View {
                 if selectedSources.isEmpty && customURL.isEmpty {
                     Text("Select blocklists to import")
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.6))
+                        .foregroundStyle(.secondary)
                 } else if selectedSources.count == 1 {
                     Text("1 blocklist selected")
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.7))
+                        .foregroundStyle(.secondary)
                 } else if selectedSources.count > 1 {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.triangle.merge")
@@ -1333,7 +1341,7 @@ struct RemoteImportSheet: View {
                 } else if !customURL.isEmpty {
                     Text("Custom URL ready to import")
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.7))
+                        .foregroundStyle(.secondary)
                 }
 
                 Spacer()
@@ -1527,6 +1535,14 @@ struct RemoteImportSheet: View {
                 }
 
                 onCreated(profile)
+
+                // Advance tutorial to activate step after import
+                if TutorialState.shared.currentStep == .importBlocklist {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                        TutorialState.shared.advanceToActivate()
+                    }
+                }
+
                 dismiss()
 
             } catch {
@@ -1667,7 +1683,7 @@ struct MergeProfilesSheet: View {
 
             Text("Select profiles to combine into one. Duplicate entries will be removed.")
                 .font(.subheadline)
-                .foregroundStyle(.primary.opacity(0.7))
+                .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
 
             // Profile selection list
@@ -1680,7 +1696,7 @@ struct MergeProfilesSheet: View {
                             HStack(spacing: 12) {
                                 Image(systemName: selectedProfiles.contains(profile.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title3)
-                                    .foregroundStyle(selectedProfiles.contains(profile.id) ? .purple : .primary.opacity(0.4))
+                                    .foregroundStyle(selectedProfiles.contains(profile.id) ? .purple : .secondary)
 
                                 ProfileColorDot(color: profile.colorTag)
 
@@ -1692,7 +1708,7 @@ struct MergeProfilesSheet: View {
 
                                 Text("\(profile.entries.count.formatted(.number.notation(.compactName))) entries")
                                     .font(.subheadline)
-                                    .foregroundStyle(.primary.opacity(0.6))
+                                    .foregroundStyle(.secondary)
                             }
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
@@ -1728,7 +1744,7 @@ struct MergeProfilesSheet: View {
                 let totalEntries = store.profiles.filter { selectedProfiles.contains($0.id) }.reduce(0) { $0 + $1.entries.count }
                 Text("Will combine ~\(totalEntries) entries (duplicates removed)")
                     .font(.subheadline)
-                    .foregroundStyle(.primary.opacity(0.6))
+                    .foregroundStyle(.secondary)
             }
 
             if let error = error {

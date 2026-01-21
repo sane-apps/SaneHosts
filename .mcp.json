@@ -1,30 +1,37 @@
 {
   "mcpServers": {
     "apple-docs": {
-      "command": "npx",
-      "args": ["-y", "@mweinbach/apple-docs-mcp@latest"]
+      "command": "node",
+      "args": [
+        "/Users/sj/Dev/apple-docs-mcp-local/dist/index.js"
+      ]
     },
     "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "command": "node",
+      "args": [
+        "/Users/sj/.npm-global/lib/node_modules/@modelcontextprotocol/server-github/dist/index.js"
+      ],
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${GITHUB_TOKEN}"
       }
     },
-    "memory": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory", "/Users/sj/SaneApps/apps/SaneHosts/.claude/memory.json"]
-    },
     "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
+      "command": "node",
+      "args": [
+        "/Users/sj/.npm-global/lib/node_modules/@upstash/context7-mcp/dist/index.js"
+      ]
     },
     "XcodeBuildMCP": {
-      "command": "npx",
-      "args": ["-y", "xcodebuildmcp@latest"],
-      "env": {
-        "XCODEBUILDMCP_ENABLED_WORKFLOWS": "project-discovery,doctor"
-      }
+      "command": "node",
+      "args": [
+        "/Users/sj/Dev/xcodebuild-mcp-local/build/index.js"
+      ]
+    },
+    "macos-automator": {
+      "command": "node",
+      "args": [
+        "/Users/sj/.npm-global/lib/node_modules/@steipete/macos-automator-mcp/dist/server.js"
+      ]
     }
   }
 }

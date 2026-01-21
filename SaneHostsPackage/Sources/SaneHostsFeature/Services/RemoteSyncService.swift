@@ -170,24 +170,47 @@ public final class RemoteSyncService {
                 let trimmed = line.trimmingCharacters(in: .whitespaces)
                 guard !trimmed.isEmpty, !trimmed.hasPrefix("#") else { continue }
 
-                // Parse hosts entry: IP hostname [hostname2 ...]
+                // Parse hosts entry - supports both formats:
+                // 1. Standard hosts: IP hostname [hostname2 ...]
+                // 2. Domain-only: hostname (common in blocklists)
                 let components = trimmed.split(separator: " ", omittingEmptySubsequences: true)
-                guard components.count >= 2 else { continue }
+                guard !components.isEmpty else { continue }
 
-                let ipString = String(components[0])
-                // Validate IP address format (allow any valid IP, not just localhost)
-                guard parser.isValidIPAddress(ipString) else { continue }
+                var ipString: String
+                var hostnames: [String]
 
-                // Extract hostnames (skip IP)
-                let hostnames = components.dropFirst().compactMap { hostname -> String? in
-                    let host = String(hostname)
-                    // Skip localhost variations
-                    guard host != "localhost",
-                          host != "localhost.localdomain",
-                          host != "local",
-                          host != "broadcasthost",
-                          !host.hasPrefix("#") else { return nil }
-                    return host
+                if components.count == 1 {
+                    // Domain-only format: just a hostname
+                    let domain = String(components[0])
+                    // Must look like a domain (contains a dot)
+                    guard domain.contains(".") && parser.isValidHostname(domain) else { continue }
+                    ipString = "0.0.0.0"
+                    hostnames = [domain]
+                } else {
+                    // Standard hosts format: IP hostname [hostname2 ...]
+                    ipString = String(components[0])
+                    // Validate IP address format
+                    guard parser.isValidIPAddress(ipString) else { continue }
+
+                    // Extract hostnames (skip IP)
+                    hostnames = components.dropFirst().compactMap { hostname -> String? in
+                        let host = String(hostname)
+                        // Skip localhost variations and inline comments
+                        guard host != "localhost",
+                              host != "localhost.localdomain",
+                              host != "local",
+                              host != "broadcasthost",
+                              !host.hasPrefix("#") else { return nil }
+                        return host
+                    }
+                }
+
+                // Skip localhost variations in domain-only format too
+                hostnames = hostnames.filter { host in
+                    host != "localhost" &&
+                    host != "localhost.localdomain" &&
+                    host != "local" &&
+                    host != "broadcasthost"
                 }
 
                 guard !hostnames.isEmpty else { continue }

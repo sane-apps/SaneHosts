@@ -34,6 +34,7 @@ public struct HostsParser: Sendable {
     }
 
     /// Parse a single line into a HostEntry
+    /// Supports both standard hosts format (IP hostname) and domain-only format (just hostname)
     private func parseEntry(_ line: String, lineNumber: Int) -> HostEntry? {
         var workingLine = line.trimmingCharacters(in: .whitespaces)
         var isEnabled = true
@@ -63,8 +64,25 @@ public struct HostsParser: Sendable {
 
         // Split by whitespace
         let parts = workingLine.split { $0.isWhitespace }.map(String.init)
-        guard parts.count >= 2 else { return nil }
+        guard !parts.isEmpty else { return nil }
 
+        // Handle domain-only format (single hostname per line, no IP)
+        if parts.count == 1 {
+            let potentialDomain = parts[0]
+            // Must look like a domain (contains a dot, valid hostname chars)
+            if potentialDomain.contains(".") && isValidHostname(potentialDomain) {
+                return HostEntry(
+                    ipAddress: "0.0.0.0",
+                    hostnames: [potentialDomain],
+                    comment: comment,
+                    isEnabled: isEnabled,
+                    lineNumber: lineNumber
+                )
+            }
+            return nil
+        }
+
+        // Standard hosts format: IP hostname [hostname2 ...]
         let ipAddress = parts[0]
         let hostnames = Array(parts.dropFirst())
 

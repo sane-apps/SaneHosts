@@ -2,21 +2,40 @@ import SwiftUI
 
 public struct ContentView: View {
     @Binding var hasSeenWelcome: Bool
-    @State private var showingWelcome = false
+    @State private var tutorial = TutorialState.shared
+    @State private var windowFrame: CGRect = .zero
 
     public var body: some View {
-        MainView()
-            .sheet(isPresented: $showingWelcome) {
-                WelcomeView {
+        if hasSeenWelcome {
+            GeometryReader { geometry in
+                ZStack {
+                    MainView()
+
+                    // Tutorial overlay
+                    if tutorial.isActive {
+                        CoachMarkOverlay(tutorial: tutorial, windowFrame: windowFrame)
+                    }
+                }
+                .onAppear {
+                    windowFrame = geometry.frame(in: .global)
+                }
+                .onChange(of: geometry.size) { _, _ in
+                    windowFrame = geometry.frame(in: .global)
+                }
+            }
+        } else {
+            WelcomeView {
+                withAnimation {
                     hasSeenWelcome = true
-                    showingWelcome = false
+                }
+                // Start tutorial after welcome if not completed
+                if !TutorialState.hasCompletedTutorial {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        tutorial.startTutorial()
+                    }
                 }
             }
-            .onAppear {
-                if !hasSeenWelcome {
-                    showingWelcome = true
-                }
-            }
+        }
     }
 
     public init(hasSeenWelcome: Binding<Bool>) {
