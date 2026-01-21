@@ -167,4 +167,4 @@ spctl --assess --type execute -vvv /path/to/SaneHosts.app
 ## Support
 
 - GitHub Issues: https://github.com/sane-apps/SaneHosts/issues
-- Email: support@sanehosts.com
+- Email: hi@saneapps.com
