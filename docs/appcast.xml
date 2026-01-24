@@ -23,7 +23,7 @@
         </ul>
       ]]></description>
       <enclosure
-        url="https://github.com/sane-apps/SaneHosts/releases/download/v1.0/SaneHosts-1.0.dmg"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.dmg"
         length="3546805"
         type="application/octet-stream"
         sparkle:edSignature="E3d+mrspMDN2ixY9w+TYCIeUiFnBjvu/0KggE43JeVtr05Hcd2vyPnmOgan55zEdkL4v98FOAtWHD8wNiBtACQ=="
