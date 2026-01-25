@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "HostsHelper")
 
 // MARK: - XPC Protocol
 
@@ -64,7 +67,7 @@ public class HostsHelperConnection {
         }
 
         guard let proxy = connection?.remoteObjectProxyWithErrorHandler({ error in
-            print("[HostsHelper] XPC error: \(error.localizedDescription)")
+            logger.error(" XPC error: \(error.localizedDescription)")
         }) as? HostsHelperProtocol else {
             throw HostsHelperError.connectionFailed
         }

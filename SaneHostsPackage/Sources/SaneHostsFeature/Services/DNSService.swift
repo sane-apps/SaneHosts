@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "DNS")
 
 /// Service for DNS cache operations
 @MainActor
@@ -61,7 +64,7 @@ public final class DNSService {
                 process.waitUntilExit()
             } catch {
                 // Non-fatal - dscacheutil already ran
-                print("mDNSResponder HUP failed: \(error)")
+                logger.error("mDNSResponder HUP failed: \(error)")
             }
         }.value
     }

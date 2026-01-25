@@ -1,6 +1,9 @@
 import Foundation
 import AppKit
 import LocalAuthentication
+import OSLog
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "HostsService")
 
 /// Service for reading and writing to /etc/hosts
 /// Uses Touch ID for authentication, with fallback to AppleScript privilege elevation
@@ -66,9 +69,9 @@ public final class HostsService {
         #if DEBUG
         // Debug bypass - skip auth entirely in debug builds if enabled
         if AuthenticationService.debugBypassEnabled {
-            print("[HostsService] DEBUG: Bypassing authentication, simulating write")
+            logger.debug(" Bypassing authentication, simulating write")
             // In debug mode, just print what would be written
-            print("[HostsService] Would write \(content.count) bytes to /etc/hosts")
+            logger.debug(" Would write \(content.count) bytes to /etc/hosts")
             return
         }
         #endif

@@ -1,4 +1,7 @@
 import Foundation
+import OSLog
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "RemoteSync")
 
 /// Import phase for UI tracking
 public enum ImportPhase: Equatable, Sendable {
@@ -113,12 +116,12 @@ public final class RemoteSyncService {
         let (localURL, response) = try await URLSession.shared.download(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            print("[RemoteSyncService] ERROR: Response is not HTTPURLResponse")
+            logger.error(" Response is not HTTPURLResponse")
             throw RemoteSyncError.invalidResponse
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
-            print("[RemoteSyncService] ERROR: HTTP status \(httpResponse.statusCode) for \(url)")
+            logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
             throw RemoteSyncError.httpError(httpResponse.statusCode)
         }
 

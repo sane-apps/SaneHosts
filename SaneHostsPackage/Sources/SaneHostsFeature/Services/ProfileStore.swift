@@ -1,5 +1,8 @@
 import Foundation
+import OSLog
 import SwiftUI
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "ProfileStore")
 
 /// Notification posted when ProfileStore data changes
 public extension Notification.Name {
@@ -57,34 +60,36 @@ public final class ProfileStore {
 
     /// Load all profiles and system hosts
     public func load() async {
-        print("[ProfileStore] load() started")
+        logger.debug(" load() started")
         isLoading = true
         error = nil
 
         do {
             // Ensure profiles directory exists
-            print("[ProfileStore] Creating profiles directory...")
+            logger.debug(" Creating profiles directory...")
             try createProfilesDirectoryIfNeeded()
 
             // Load system hosts to extract system entries
-            print("[ProfileStore] Loading system hosts...")
+            logger.debug("Loading system hosts...")
             try await loadSystemHosts()
-            print("[ProfileStore] System hosts loaded: \(systemEntries.count) entries")
+            let sysCount = systemEntries.count
+            logger.debug("System hosts loaded: \(sysCount) entries")
 
             // Load saved profiles
-            print("[ProfileStore] Loading profiles...")
+            logger.debug("Loading profiles...")
             try await loadProfiles()
-            print("[ProfileStore] Loaded \(profiles.count) profiles")
+            let profCount = profiles.count
+            logger.debug("Loaded \(profCount) profiles")
 
             // First run: migrate existing user entries from /etc/hosts
             if profiles.isEmpty {
-                print("[ProfileStore] First run - checking for existing user hosts entries...")
+                logger.debug(" First run - checking for existing user hosts entries...")
                 try await migrateExistingSystemHosts()
             }
 
             // Create default profile if none exist (migration may have created one)
             if profiles.isEmpty {
-                print("[ProfileStore] No profiles found, creating default...")
+                logger.debug(" No profiles found, creating default...")
                 let defaultProfile = Profile(
                     name: "Default",
                     entries: [],
@@ -95,11 +100,12 @@ public final class ProfileStore {
                 try await save(profile: defaultProfile)
             }
         } catch {
-            print("[ProfileStore] ERROR: \(error.localizedDescription)")
+            logger.debug(" ERROR: \(error.localizedDescription)")
             self.error = .loadFailed(error.localizedDescription)
         }
 
-        print("[ProfileStore] load() completed, profiles: \(profiles.count)")
+        let finalCount = profiles.count
+        logger.debug("load() completed, profiles: \(finalCount)")
         isLoading = false
         notifyChange()
     }
@@ -129,9 +135,9 @@ public final class ProfileStore {
         do {
             try fileManager.copyItem(at: sourceURL, to: backupURL)
             cleanupOldBackups(for: profile.id)
-            print("[ProfileStore] Backup created: \(backupName)")
+            logger.debug(" Backup created: \(backupName)")
         } catch {
-            print("[ProfileStore] Backup failed: \(error.localizedDescription)")
+            logger.debug(" Backup failed: \(error.localizedDescription)")
         }
     }
 
@@ -152,7 +158,7 @@ public final class ProfileStore {
                 try? fileManager.removeItem(at: backup)
             }
         } catch {
-            print("[ProfileStore] Cleanup failed: \(error.localizedDescription)")
+            logger.debug(" Cleanup failed: \(error.localizedDescription)")
         }
     }
 
@@ -172,14 +178,14 @@ public final class ProfileStore {
                 do {
                     let data = try Data(contentsOf: backup)
                     let profile = try JSONDecoder().decode(Profile.self, from: data)
-                    print("[ProfileStore] Recovered profile from backup: \(backup.lastPathComponent)")
+                    logger.debug(" Recovered profile from backup: \(backup.lastPathComponent)")
                     return profile
                 } catch {
                     continue // Try next backup
                 }
             }
         } catch {
-            print("[ProfileStore] Recovery scan failed: \(error.localizedDescription)")
+            logger.debug(" Recovery scan failed: \(error.localizedDescription)")
         }
         return nil
     }
@@ -218,7 +224,7 @@ public final class ProfileStore {
 
                     // Validate JSON structure before decoding
                     guard !data.isEmpty else {
-                        print("[ProfileStore] Empty file detected: \(file.lastPathComponent)")
+                        logger.debug(" Empty file detected: \(file.lastPathComponent)")
                         corruptedFiles.append(file)
                         continue
                     }
@@ -227,14 +233,14 @@ public final class ProfileStore {
 
                     // Basic validation: ensure profile has required data
                     guard !profile.name.isEmpty else {
-                        print("[ProfileStore] Invalid profile (empty name): \(file.lastPathComponent)")
+                        logger.debug(" Invalid profile (empty name): \(file.lastPathComponent)")
                         corruptedFiles.append(file)
                         continue
                     }
 
                     validProfiles.append(profile)
                 } catch {
-                    print("[ProfileStore] Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
+                    logger.debug(" Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
                     corruptedFiles.append(file)
                 }
             }
@@ -258,7 +264,7 @@ public final class ProfileStore {
                 let quarantineName = "CORRUPTED_\(file.lastPathComponent)"
                 let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
                 try? fileManager.moveItem(at: file, to: quarantineURL)
-                print("[ProfileStore] Quarantined corrupted file: \(quarantineName)")
+                logger.debug(" Quarantined corrupted file: \(quarantineName)")
             }
         }
 
@@ -281,11 +287,11 @@ public final class ProfileStore {
         }.value
 
         guard !userEntries.isEmpty else {
-            print("[ProfileStore] No user entries found in /etc/hosts, skipping migration")
+            logger.debug(" No user entries found in /etc/hosts, skipping migration")
             return
         }
 
-        print("[ProfileStore] Found \(userEntries.count) user entries in /etc/hosts, creating backup profile...")
+        logger.debug(" Found \(userEntries.count) user entries in /etc/hosts, creating backup profile...")
 
         let backupProfile = Profile(
             name: "Existing Entries",
@@ -298,7 +304,7 @@ public final class ProfileStore {
 
         try await save(profile: backupProfile)
         profiles.append(backupProfile)
-        print("[ProfileStore] Created 'Existing Entries' profile with \(userEntries.count) entries")
+        logger.debug(" Created 'Existing Entries' profile with \(userEntries.count) entries")
     }
 
     // MARK: - CRUD Operations
