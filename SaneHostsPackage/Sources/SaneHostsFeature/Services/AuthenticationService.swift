@@ -1,5 +1,8 @@
 import Foundation
 import LocalAuthentication
+import OSLog
+
+private let logger = Logger(subsystem: "com.sanehosts.app", category: "Auth")
 
 // MARK: - Authentication Service
 
@@ -61,7 +64,7 @@ public final class AuthenticationService {
     public func authenticate(reason: String) async -> Bool {
         #if DEBUG
         if Self.debugBypassEnabled {
-            print("[Auth] DEBUG: Bypassing authentication")
+            logger.debug(" Bypassing authentication")
             return true
         }
         #endif
@@ -82,27 +85,28 @@ public final class AuthenticationService {
         do {
             let success = try await context.evaluatePolicy(policy, localizedReason: reason)
             if success {
-                print("[Auth] Authentication successful")
+                logger.info(" Authentication successful")
                 return true
             } else {
-                print("[Auth] Authentication returned false")
+                logger.info(" Authentication returned false")
                 lastError = .failed("Authentication was not successful")
                 return false
             }
         } catch let error as LAError {
             lastError = mapLAError(error)
-            print("[Auth] LAError: \(lastError?.localizedDescription ?? "unknown")")
+            let errorDesc = lastError?.localizedDescription ?? "unknown"
+            logger.info("LAError: \(errorDesc)")
 
             // If biometrics failed, try password fallback
             if policy == .deviceOwnerAuthenticationWithBiometrics {
-                print("[Auth] Falling back to password authentication")
+                logger.info(" Falling back to password authentication")
                 return await authenticateWithPassword(reason: reason)
             }
 
             return false
         } catch {
             lastError = .failed(error.localizedDescription)
-            print("[Auth] Error: \(error.localizedDescription)")
+            logger.info(" Error: \(error.localizedDescription)")
             return false
         }
     }

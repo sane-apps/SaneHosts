@@ -637,6 +637,12 @@
             border-color: #F4B728;
         }
 
+        .crypto-eth:hover .crypto-addr {
+            background: rgba(98, 126, 234, 0.2);
+            color: #627EEA;
+            border-color: #627EEA;
+        }
+
         .crypto-hint {
             font-size: 0.85rem;
             color: var(--accent);
@@ -909,7 +915,7 @@
         <div class="container">
             <!-- DRAFT COPY - FOR REVIEW -->
             <h1 class="animate-in delay-2">Show Uninvited <em>Guests</em> the Door</h1>
-            <p class="subtitle animate-in delay-3">Your Mac's bouncer. Ads, trackers, and junk get blocked before they knock.</p>
+            <p class="subtitle animate-in delay-3">Your Mac's bouncer. Ads, trackers, and junk get blocked before they knock. No Terminal. No scary commands. Just click.</p>
 
             <div class="trust-badges animate-in delay-3">
                 <span class="trust-badge highlight">🔒 Buy once, own forever</span>
@@ -1081,6 +1087,10 @@
                     <div class="crypto-item crypto-zec">
                         <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
                         <code class="crypto-addr" onclick="copyToClipboard(this)">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
+                    </div>
+                    <div class="crypto-item crypto-eth">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
                     </div>
                 </div>
                 <p class="crypto-hint">Click any address to copy</p>
