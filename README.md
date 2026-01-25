@@ -11,16 +11,20 @@ SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simpl
 ## Features
 
 - **Profile Management** - Create and manage multiple hosts configurations with color tagging
-- **50+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, and more
+- **200+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, OISD, and 10+ categories
 - **Built-in Templates** - Ad blocking, privacy, social media blocking, development
-- **Remote Import** - Import hosts from any URL, supports domain-only format
+- **Remote Import** - Import hosts from any URL or paste custom blocklist URLs
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles
 - **Menu Bar Access** - Quick profile switching from the menu bar
 - **Touch ID Support** - Authenticate with biometrics when available
-- **Crash Resilient** - Automatic backups, corrupted profiles recovered automatically
+- **Crash Resilient** - Automatic backups (3 per profile), corrupted profiles recovered automatically
 - **Native macOS** - Built with SwiftUI, follows system conventions
 - **Privacy-First** - All data stored locally, no analytics, no cloud
+- **Export Profiles** - Save profiles as standard `.hosts` format files
+- **Drag to Reorder** - Organize profiles by dragging in the sidebar
+- **Search & Filter** - Find entries across large profiles (handles 100K+ entries)
+- **URL Health Checks** - Visual indicators show blocklist source availability
 
 ## Installation
 
@@ -50,12 +54,14 @@ See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
 |----------|--------|
 | `⌘N` | New Profile |
 | `⌘I` | Import Blocklist |
+| `⌘A` | Select All Profiles |
 | `⌘D` | Duplicate Profile |
-| `⌘M` | Merge Selected |
+| `⌘M` | Merge Selected Profiles |
 | `⌘E` | Export Profile |
 | `⌘⇧A` | Activate Profile |
 | `⌘⇧D` | Deactivate All |
 | `⌘⌫` | Delete Profile |
+| `Delete` | Delete Selected (in list) |
 
 ## Privacy
 

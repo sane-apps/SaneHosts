@@ -744,10 +744,15 @@ struct AddEntrySheet: View {
     }
 
     private func addEntry() {
+        // Strip newlines from comment to prevent hosts file format corruption
+        let sanitizedComment = comment.replacingOccurrences(of: "\n", with: " ")
+            .replacingOccurrences(of: "\r", with: " ")
+            .trimmingCharacters(in: .whitespaces)
+
         let entry = HostEntry(
             ipAddress: ipAddress,
             hostnames: hostname.split(separator: " ").map(String.init),
-            comment: comment.isEmpty ? nil : comment
+            comment: sanitizedComment.isEmpty ? nil : sanitizedComment
         )
 
         Task {
@@ -855,10 +860,15 @@ struct EditEntrySheet: View {
     }
 
     private func saveEntry() {
+        // Strip newlines from comment to prevent hosts file format corruption
+        let sanitizedComment = comment.replacingOccurrences(of: "\n", with: " ")
+            .replacingOccurrences(of: "\r", with: " ")
+            .trimmingCharacters(in: .whitespaces)
+
         var updated = entry
         updated.ipAddress = ipAddress
         updated.hostnames = hostname.split(separator: " ").map(String.init)
-        updated.comment = comment.isEmpty ? nil : comment
+        updated.comment = sanitizedComment.isEmpty ? nil : sanitizedComment
 
         Task {
             try? await store.updateEntry(updated, in: profile)

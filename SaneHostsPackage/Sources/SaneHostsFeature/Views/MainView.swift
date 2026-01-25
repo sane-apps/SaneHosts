@@ -1278,12 +1278,26 @@ struct RemoteImportSheet: View {
             .buttonStyle(.plain)
 
             if showingCustomURL {
-                HStack {
-                    TextField("https://example.com/hosts.txt", text: $customURL)
-                        .textFieldStyle(.plain)
-                        .padding(8)
-                        .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
-                        .cornerRadius(6)
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        TextField("https://example.com/hosts.txt", text: $customURL)
+                            .textFieldStyle(.plain)
+                            .padding(8)
+                            .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
+                            .cornerRadius(6)
+                    }
+
+                    // HTTP warning
+                    if customURL.lowercased().hasPrefix("http://") {
+                        HStack(spacing: 4) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                            Text("HTTP is not secure. Consider using HTTPS.")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                    }
                 }
                 .padding(.horizontal, 12)
                 .padding(.bottom, 10)

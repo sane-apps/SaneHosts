@@ -1,9 +1,49 @@
 # SaneHosts Session Handoff
 
-> Updated: 2026-01-19 6:15 PM
-> Status: **AWAITING NOTARIZATION** + **HOMEBREW REMOVED** + **DISTRIBUTION MODEL FINALIZED**
+> Updated: 2026-01-24 8:20 PM
+> Status: **DOCS AUDITED** + **SECURITY FIXES APPLIED**
 
-## Latest: Distribution Model Finalized (2026-01-19 6:15 PM)
+## Latest: Documentation Audit Complete (2026-01-24 8:20 PM)
+
+### Full 14-Perspective Audit Completed
+Comprehensive docs-audit run. Overall score: **8/10**
+
+### Security Fixes Applied ✅
+| Fix | File | Details |
+|-----|------|---------|
+| Comment newline injection | ProfileDetailView.swift | Both AddEntrySheet and EditEntrySheet now sanitize newlines |
+| HTTPS warning | MainView.swift | Custom URL import shows warning for HTTP URLs |
+| PRIVACY.md date | PRIVACY.md | Fixed "January 18, 2025" → "January 24, 2026" |
+
+### Documentation Updates ✅
+| File | Changes |
+|------|---------|
+| README.md | Added 4 undocumented features, updated blocklist count (50→200+), added keyboard shortcuts |
+| PRIVACY.md | Fixed date typo |
+
+### Issues Found (User Action May Needed)
+| Issue | Priority | Action |
+|-------|----------|--------|
+| Notarization status | HIGH | Check: `xcrun notarytool info 9df5f544-... --keychain-profile "notarytool"` |
+| Domain verification | HIGH | Verify sanehosts.com is registered and pointing correctly |
+| Dev certificate expiry | MEDIUM | Document expiry date in DISASTER_RECOVERY.md |
+| 34 print() statements | LOW | Replace with os_log before v1.1 |
+| 60 uses of .gray/.secondary | LOW | Replace with brand colors for consistency |
+
+### Audit Summary by Perspective
+| Audit | Score | Key Finding |
+|-------|-------|-------------|
+| Engineer | 8/10 | 1 race condition (edge case, fail-safe), 34 print() |
+| Security | 8/10 | HTTP accepted, newlines now fixed |
+| Website | 9/10 | Good - trust badges, cross-linking present |
+| Brand | 6/10 | Uses generic .gray, should use brand palette |
+| Marketing | 7/10 | Missing explicit Barrier A copy on website |
+| Freshness | 9/10 | Date typo fixed |
+| Ops | 9/10 | Clean git, 0 TODOs in code |
+
+---
+
+## Previous: Distribution Model Finalized (2026-01-19 6:15 PM)
 
 ### Homebrew Removed Completely
 - Deleted local directories: SaneHosts, SaneBar, SaneClip `/homebrew/`

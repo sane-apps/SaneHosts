@@ -1,6 +1,6 @@
 # Privacy Policy
 
-**Last updated: January 18, 2025**
+**Last updated: January 24, 2026**
 
 SaneHosts is designed with privacy as a core principle. This document explains how the app handles your data.
 
