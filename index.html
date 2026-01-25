@@ -3,19 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneHosts - Your Mac, Your Rules</title>
-    <meta name="description" content="SaneHosts gives you complete control over your Mac's network connections. Block ads, trackers, and distractions locally. No cloud, no tracking, no fear.">
+    <title>SaneHosts - Show Uninvited Guests the Door</title>
+    <meta name="description" content="Block ads, trackers, and distractions at the system level. $5 once. Works in every app on your Mac.">
+    <meta name="keywords" content="macOS, hosts file, ad blocker, privacy, tracker blocker, Mac app, hosts manager">
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="canonical" href="https://sanehosts.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="SaneHosts - Show Uninvited Guests the Door">
+    <meta property="og:description" content="Block ads and trackers at the system level. $5 once. Works in every app.">
+    <meta property="og:image" content="https://sanehosts.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaneHosts - Show Uninvited Guests the Door">
+    <meta name="twitter:description" content="Block ads and trackers at the system level. $5 once.">
+    <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SaneHosts",
+      "operatingSystem": "macOS",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "5",
+        "priceCurrency": "USD"
+      },
+      "description": "Block ads, trackers, and distractions at the system level using your Mac's built-in hosts file.",
+      "image": "https://sanehosts.com/favicon.png",
+      "downloadUrl": "https://github.com/sane-apps/SaneHosts"
+    }
+    </script>
+
     <style>
         :root {
-            --bg-dark: #0d1525;
-            --bg-card: #1a2744;
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
             --accent: #5fa8d3;
-            --accent-glow: rgba(95, 168, 211, 0.3);
-            --text: #e8eef4;
-            --text-muted: #8899aa;
-            --success: #4ade80;
+            --accent-soft: #4a9bc8;
+            --accent-glow: rgba(95, 168, 211, 0.25);
+            --accent-subtle: rgba(95, 168, 211, 0.08);
+            --text-primary: #f5f5f8;
+            --text-secondary: #c0c0d0;
+            --text-muted: #a0a0b0;
+            --success: #34d399;
+            --success-soft: rgba(52, 211, 153, 0.15);
             --warm: #f4a261;
+            --border: #252530;
+            --border-subtle: #1e1e28;
         }
 
         * {
@@ -25,32 +73,85 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1628 100%);
-            color: var(--text);
-            min-height: 100vh;
-            line-height: 1.6;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
         }
 
+        /* Gradient background with subtle noise */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 90%, rgba(244, 162, 97, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
         .container {
-            max-width: 1200px;
+            max-width: 1100px;
             margin: 0 auto;
             padding: 0 24px;
         }
 
-        /* Header */
-        header {
-            padding: 24px 0;
+        /* Navigation */
+        nav {
+            padding: 20px 0;
             position: fixed;
-            width: 100%;
             top: 0;
-            z-index: 100;
-            background: rgba(13, 21, 37, 0.9);
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.85);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(95, 168, 211, 0.1);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
         }
 
-        nav {
+        nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -60,379 +161,678 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.5rem;
             font-weight: 600;
-            color: var(--text);
+            font-size: 1.25rem;
             text-decoration: none;
+            color: var(--text-primary);
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+
+        .logo-family {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .logo-family:hover {
+            color: var(--accent);
         }
 
         .nav-links {
             display: flex;
             gap: 32px;
-            list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
-            color: var(--text-muted);
+            color: var(--text-secondary);
             text-decoration: none;
+            font-size: 0.95rem;
             transition: color 0.2s;
         }
 
         .nav-links a:hover {
-            color: var(--accent);
+            color: var(--text-primary);
         }
 
-        /* Hero */
+        .nav-cta {
+            padding: 10px 20px !important;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section */
         .hero {
             padding: 160px 0 80px;
             text-align: center;
         }
 
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            line-height: 1.15;
         }
 
-        .hero .tagline {
-            font-size: 1.5rem;
-            color: var(--warm);
-            margin-bottom: 16px;
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 520px;
+            margin: 0 auto 32px;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        /* Trust Badges - The Latte Play */
+        .trust-badges {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 0.9rem;
             font-weight: 500;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 650px;
-            margin: 0 auto 40px;
+        .trust-badge.highlight {
+            background: var(--success-soft);
+            border-color: rgba(52, 211, 153, 0.25);
+            color: var(--success);
         }
 
-        .hero-buttons {
+        .cta-buttons {
             display: flex;
             gap: 16px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 60px;
         }
 
         .btn {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
+            gap: 10px;
+            letter-spacing: 0.01em;
         }
 
         .btn-primary {
-            background: var(--accent);
-            color: var(--bg-dark);
-            box-shadow: 0 4px 20px var(--accent-glow);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow:
+                0 4px 24px var(--accent-glow),
+                0 1px 3px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px var(--accent-glow);
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 40px var(--accent-glow),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            filter: brightness(1.05);
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
         }
 
-        /* App Preview */
-        .app-preview {
-            margin: 60px auto;
-            max-width: 900px;
+        .hero-image {
+            max-width: 800px;
+            margin: 0 auto;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(95, 168, 211, 0.2);
-        }
-
-        .app-preview img {
-            width: 100%;
-            display: block;
-        }
-
-        /* Philosophy Section */
-        .philosophy {
-            padding: 80px 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(26, 39, 68, 0.3) 50%, transparent 100%);
-        }
-
-        .philosophy-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .philosophy-header h2 {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        .philosophy-header .verse {
-            font-style: italic;
-            color: var(--warm);
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .philosophy-header .verse-ref {
-            color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 8px;
-        }
-
-        .pillars {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 32px;
-            margin-top: 48px;
-        }
-
-        .pillar {
             background: var(--bg-card);
-            border-radius: 20px;
-            padding: 40px 32px;
-            border: 1px solid rgba(95, 168, 211, 0.15);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            min-height: 200px;
+            object-fit: contain;
+        }
+
+        /* Family Shield Section */
+        .family-shield {
+            padding: 100px 0;
+            background: linear-gradient(180deg, transparent, rgba(95, 168, 211, 0.04));
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
             text-align: center;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .pillar:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-        }
-
-        .pillar-icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .pillar h3 {
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-            color: var(--accent);
-        }
-
-        .pillar .domain {
-            font-size: 0.9rem;
-            color: var(--text-muted);
             margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
 
-        .pillar p {
-            color: var(--text-muted);
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 500px;
+            margin: 0 auto 56px;
             line-height: 1.7;
         }
 
-        /* Promise Section */
-        .promise {
-            padding: 60px 0;
-            text-align: center;
-        }
-
-        .promise h2 {
-            font-size: 2rem;
-            margin-bottom: 40px;
-        }
-
-        .promise-grid {
+        .shield-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
             max-width: 900px;
             margin: 0 auto;
         }
 
-        .promise-item {
-            display: flex;
-            align-items: center;
-            gap: 16px;
+        .shield-card {
             background: var(--bg-card);
-            padding: 20px 24px;
-            border-radius: 12px;
-            border: 1px solid rgba(95, 168, 211, 0.1);
-        }
-
-        .promise-item .check {
-            color: var(--success);
-            font-size: 1.5rem;
-        }
-
-        .promise-item span {
-            text-align: left;
-        }
-
-        /* Features */
-        .features {
-            padding: 80px 0;
-        }
-
-        .features h2 {
-            text-align: center;
-            font-size: 2.5rem;
-            margin-bottom: 60px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 24px;
-        }
-
-        .feature-card {
-            background: var(--bg-card);
-            border-radius: 16px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
             padding: 32px;
-            border: 1px solid rgba(95, 168, 211, 0.1);
-            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+            transition: all 0.3s ease;
         }
 
-        .feature-card:hover {
+        .shield-card:hover {
+            border-color: var(--accent);
             transform: translateY(-4px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .feature-icon {
+        .shield-emoji {
             font-size: 2.5rem;
             margin-bottom: 16px;
         }
 
-        .feature-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 12px;
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-        }
-
-        /* What is a hosts file */
-        .explainer {
-            padding: 80px 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(26, 39, 68, 0.3) 50%, transparent 100%);
-        }
-
-        .explainer-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        .explainer h2 {
-            font-size: 2rem;
-            margin-bottom: 24px;
-        }
-
-        .explainer p {
-            color: var(--text-muted);
-            margin-bottom: 16px;
+        .shield-card h3 {
             font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .explainer-visual {
-            background: var(--bg-card);
-            border-radius: 16px;
-            padding: 32px;
-            font-family: 'SF Mono', Monaco, 'Courier New', monospace;
-            font-size: 0.9rem;
-            border: 1px solid rgba(95, 168, 211, 0.2);
+        .shield-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
         }
 
-        .explainer-visual .comment {
-            color: var(--text-muted);
+        /* Three-Second Features */
+        .quick-features {
+            padding: 80px 0;
         }
 
-        .explainer-visual .ip {
-            color: var(--accent);
-        }
-
-        .explainer-visual .domain {
-            color: var(--warm);
-        }
-
-        /* Requirements */
-        .requirements {
-            padding: 60px 0;
+        .features-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
             text-align: center;
         }
 
-        .requirements h2 {
+        .feature-item {
+            padding: 20px;
+        }
+
+        .feature-icon-small {
             font-size: 2rem;
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
-        .req-badges {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            flex-wrap: wrap;
+        .feature-item h3 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            font-weight: 600;
         }
 
-        .req-badge {
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Open Source Trust */
+        .open-source {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .open-source-card {
             background: var(--bg-card);
-            padding: 16px 24px;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 56px 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .open-source h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .open-source .tagline {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .open-source p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .open-source .btn-secondary {
+            padding: 14px 28px;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            padding: 80px 0;
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            margin: 0 -24px;
+            padding: 0 24px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            min-width: 600px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table th.highlight-col {
+            background: linear-gradient(180deg, rgba(95, 168, 211, 0.15) 0%, rgba(95, 168, 211, 0.05) 100%);
+            color: var(--accent);
+        }
+
+        .comparison-table td.highlight-col {
+            background: rgba(95, 168, 211, 0.05);
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .feature-name {
+            text-align: left !important;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .check {
+            color: var(--success);
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .cross {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        /* Support Section */
+        .support {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .support-subtitle {
+            font-style: italic;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .github-sponsor-btn {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #ea4aaa 0%, #db61a2 100%);
+            border: none;
+        }
+
+        .github-sponsor-btn:hover {
+            background: linear-gradient(135deg, #f06bc4 0%, #ea4aaa 100%);
+            transform: translateY(-2px);
+        }
+
+        .crypto-addresses {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
             border-radius: 12px;
+            padding: 24px;
+        }
+
+        .crypto-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .crypto-item {
             display: flex;
             align-items: center;
             gap: 12px;
         }
 
-        /* CTA */
-        .cta {
-            padding: 80px 0;
-            text-align: center;
+        .crypto-logo {
+            flex-shrink: 0;
+            border-radius: 50%;
         }
 
-        .cta h2 {
-            font-size: 2.5rem;
+        .crypto-addr {
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: left;
+            word-break: break-all;
+            border: 1px solid transparent;
+        }
+
+        .crypto-btc:hover .crypto-addr {
+            background: rgba(247, 147, 26, 0.2);
+            color: #F7931A;
+            border-color: #F7931A;
+        }
+
+        .crypto-sol:hover .crypto-addr {
+            background: rgba(153, 69, 255, 0.2);
+            color: #9945FF;
+            border-color: #9945FF;
+        }
+
+        .crypto-zec:hover .crypto-addr {
+            background: rgba(244, 183, 40, 0.2);
+            color: #F4B728;
+            border-color: #F4B728;
+        }
+
+        .crypto-eth:hover .crypto-addr {
+            background: rgba(98, 126, 234, 0.2);
+            color: #627EEA;
+            border-color: #627EEA;
+        }
+
+        .crypto-hint {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        /* Cross-Sell Section */
+        .more-apps {
+            padding: 80px 0;
+            background: linear-gradient(180deg, transparent, rgba(95, 168, 211, 0.03));
+        }
+
+        .more-apps h2 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .more-apps-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            font-size: 1.05rem;
+        }
+
+        .more-apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .app-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .app-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .app-card-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .app-card-tagline {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
             margin-bottom: 16px;
         }
 
-        .cta p {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            margin-bottom: 32px;
+        .app-card-cta {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .cta .tagline {
-            color: var(--warm);
-            font-size: 1.1rem;
-            margin-top: 24px;
+        .app-card:hover .app-card-cta {
+            gap: 10px;
+        }
+
+        .more-apps-hub {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .more-apps-hub a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .more-apps-hub a:hover {
+            color: var(--accent);
+        }
+
+        /* Download Section */
+        .download {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .download-card {
+            background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            padding: 64px 48px;
+            max-width: 680px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .download h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .download p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .download-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            max-width: 300px;
+            margin: 12px 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .download-divider::before,
+        .download-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border-subtle);
         }
 
         /* Footer */
         footer {
-            padding: 40px 0;
-            border-top: 1px solid rgba(95, 168, 211, 0.1);
+            padding: 60px 0 40px;
+            border-top: 1px solid var(--border-subtle);
             text-align: center;
-            color: var(--text-muted);
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.2));
         }
 
-        footer a {
+        .footer-privacy {
+            font-size: 1rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+
+        .footer-privacy strong {
             color: var(--accent);
-            text-decoration: none;
+            font-weight: 600;
         }
 
         .footer-links {
@@ -442,236 +842,332 @@
             margin-bottom: 24px;
         }
 
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copy {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
         .footer-philosophy {
             font-style: italic;
-            font-size: 0.9rem;
-            margin-top: 16px;
             color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 12px;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
             .nav-links {
                 display: none;
             }
 
-            .explainer-content {
-                grid-template-columns: 1fr;
+            .hero {
+                padding: 120px 0 60px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .trust-badges {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
 </head>
 <body>
-    <header>
+    <div class="gradient-bg"></div>
+
+    <nav>
         <div class="container">
-            <nav>
-                <a href="/" class="logo">
-                    <svg class="logo-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-                                <stop offset="0%" style="stop-color:#1a2744"/>
-                                <stop offset="100%" style="stop-color:#0d1525"/>
-                            </linearGradient>
-                        </defs>
-                        <rect width="100" height="100" rx="22" fill="url(#bg)"/>
-                        <circle cx="50" cy="50" r="25" stroke="#5fa8d3" stroke-width="3" fill="none"/>
-                        <ellipse cx="50" cy="50" rx="25" ry="10" stroke="#5fa8d3" stroke-width="2" fill="none"/>
-                        <line x1="50" y1="25" x2="50" y2="75" stroke="#5fa8d3" stroke-width="2"/>
-                        <path d="M70 35 L80 30 L75 42 Z" fill="#5fa8d3"/>
-                    </svg>
-                    SaneHosts
-                </a>
-                <ul class="nav-links">
-                    <li><a href="#philosophy">Philosophy</a></li>
-                    <li><a href="#features">Features</a></li>
-                    <li><a href="https://github.com/sane-apps/SaneHosts">GitHub</a></li>
-                    <li><a href="privacy.html">Privacy</a></li>
-                </ul>
-            </nav>
+            <a href="#" class="logo">
+                <img src="favicon.png" alt="SaneHosts">
+                SaneHosts
+            </a>
+            <a href="https://saneapps.com" class="logo-family">Part of the Sane Apps family</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
+                <span class="nav-cta" style="opacity: 0.6; cursor: default;">DMG Coming Soon</span>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <p class="tagline">Your Mac. Your Rules.</p>
-                <h1>Take Command of Your Network</h1>
-                <p>SaneHosts gives you complete control over what your Mac connects to. Block ads, trackers, and distractions at the system level. No cloud required. No data collected. Just you, in control.</p>
-                <div class="hero-buttons">
-                    <a href="https://github.com/sane-apps/SaneHosts/releases/latest/download/SaneHosts.dmg" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                        Download Free
-                    </a>
-                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
-                        View Source
-                    </a>
-                </div>
+    <section class="hero">
+        <div class="container">
+            <!-- DRAFT COPY - FOR REVIEW -->
+            <h1 class="animate-in delay-2">Show Uninvited <em>Guests</em> the Door</h1>
+            <p class="subtitle animate-in delay-3">Your Mac's bouncer. Ads, trackers, and junk get blocked before they knock. No Terminal. No scary commands. Just click.</p>
 
-                <div class="app-preview">
-                    <img src="screenshot.png" alt="SaneHosts App Screenshot">
-                </div>
+            <div class="trust-badges animate-in delay-3">
+                <span class="trust-badge highlight">🔓 100% Open Source</span>
+                <span class="trust-badge">🛠️ Build it yourself (free)</span>
+                <span class="trust-badge">📵 No data collection</span>
             </div>
-        </section>
 
-        <section id="philosophy" class="philosophy">
-            <div class="container">
-                <div class="philosophy-header">
-                    <h2>Built for a Sound Mind</h2>
-                    <p class="verse">"For God has not given us a spirit of fear, but of power and of love and of a sound mind."</p>
-                    <p class="verse-ref">2 Timothy 1:7</p>
-                </div>
-
-                <div class="pillars">
-                    <div class="pillar">
-                        <div class="pillar-icon">💪</div>
-                        <h3>Power</h3>
-                        <div class="domain">Agency</div>
-                        <p>Your data stays on your device. No cloud sync, no accounts, no phone home. You control what your Mac talks to, and you can verify every line of code.</p>
-                    </div>
-                    <div class="pillar">
-                        <div class="pillar-icon">❤️</div>
-                        <h3>Love</h3>
-                        <div class="domain">Function</div>
-                        <p>Built to serve, not to extract. SaneHosts solves a real problem without dark patterns, nag screens, or hidden upsells. It helps you focus on what matters.</p>
-                    </div>
-                    <div class="pillar">
-                        <div class="pillar-icon">🧠</div>
-                        <h3>Sound Mind</h3>
-                        <div class="domain">Form</div>
-                        <p>A calm, focused interface that reduces noise. No visual clutter, no anxiety-inducing notifications. Just clear information and simple controls.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="promise">
-            <div class="container">
-                <h2>The Sane Promise</h2>
-                <div class="promise-grid">
-                    <div class="promise-item">
-                        <span class="check">✓</span>
-                        <span>100% local - your data never leaves your Mac</span>
-                    </div>
-                    <div class="promise-item">
-                        <span class="check">✓</span>
-                        <span>Zero analytics or tracking of any kind</span>
-                    </div>
-                    <div class="promise-item">
-                        <span class="check">✓</span>
-                        <span>Open source - verify everything we do</span>
-                    </div>
-                    <div class="promise-item">
-                        <span class="check">✓</span>
-                        <span>Free forever - no subscriptions or hidden fees</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="explainer">
-            <div class="container">
-                <div class="explainer-content">
-                    <div>
-                        <h2>What is a hosts file?</h2>
-                        <p>Every time your Mac tries to connect to a website, it first checks a local file called <code>/etc/hosts</code>. This file can redirect domains to different addresses, or block them entirely.</p>
-                        <p>By adding ad servers and trackers to this file, you can block them at the system level, before they even load. No browser extension needed, works in every app.</p>
-                        <p>SaneHosts makes managing this file simple and safe, with profiles you can switch between instantly.</p>
-                    </div>
-                    <div class="explainer-visual">
-                        <div class="comment"># Block ads and trackers</div>
-                        <div><span class="ip">0.0.0.0</span> <span class="domain">ads.example.com</span></div>
-                        <div><span class="ip">0.0.0.0</span> <span class="domain">tracker.analytics.com</span></div>
-                        <div><span class="ip">0.0.0.0</span> <span class="domain">pixel.facebook.com</span></div>
-                        <br>
-                        <div class="comment"># Local development</div>
-                        <div><span class="ip">127.0.0.1</span> <span class="domain">myapp.local</span></div>
-                        <div><span class="ip">127.0.0.1</span> <span class="domain">api.myapp.local</span></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="features" class="features">
-            <div class="container">
-                <h2>Features</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📋</div>
-                        <h3>Profile-Based Management</h3>
-                        <p>Create multiple profiles for different purposes. Switch between work, home, and focus mode instantly with a single click.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🌐</div>
-                        <h3>Import Popular Blocklists</h3>
-                        <p>Import from curated sources like Steven Black, AdGuard, and Hagezi. Handle 100,000+ entries with ease.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">⚡</div>
-                        <h3>Menu Bar Access</h3>
-                        <p>Quick access from your menu bar. Activate and deactivate profiles without opening the full app.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔄</div>
-                        <h3>Automatic DNS Flush</h3>
-                        <p>DNS cache is automatically flushed when you activate a profile. Changes take effect immediately.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🔒</div>
-                        <h3>Secure by Design</h3>
-                        <p>Uses macOS admin authentication. No background services running. You approve every change.</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💾</div>
-                        <h3>Crash Resilient</h3>
-                        <p>Automatic backups before every change. Corrupted profiles are automatically recovered.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="requirements">
-            <div class="container">
-                <h2>Requirements</h2>
-                <div class="req-badges">
-                    <div class="req-badge">
-                        <span>🍎</span>
-                        <span>macOS 14.0 (Sonoma) or later</span>
-                    </div>
-                    <div class="req-badge">
-                        <span>💻</span>
-                        <span>Apple Silicon or Intel Mac</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section class="cta">
-            <div class="container">
-                <h2>Ready to Take Control?</h2>
-                <p>Download SaneHosts and decide what your Mac connects to.</p>
-                <a href="https://github.com/sane-apps/SaneHosts/releases/latest/download/SaneHosts.dmg" class="btn btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
-                    Download Free
+            <div class="cta-buttons animate-in delay-4">
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    Build from Source (Free)
                 </a>
-                <p class="tagline">Keep your head. Stay Sane.</p>
+                <span class="btn btn-secondary" style="opacity: 0.6; cursor: default;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    DMG — $5 (Coming Soon)
+                </span>
             </div>
-        </section>
-    </main>
+
+            <div class="hero-image animate-in delay-5">
+                <img src="screenshot.png" alt="SaneHosts App Screenshot">
+            </div>
+        </div>
+    </section>
+
+    <section class="family-shield">
+        <div class="container">
+            <h2 class="section-title">Protect the Whole Family</h2>
+            <p class="section-subtitle">One app. Every Mac in the house.</p>
+            <div class="shield-grid">
+                <div class="shield-card">
+                    <div class="shield-emoji">👵</div>
+                    <h3>For Grandma</h3>
+                    <p>Stop those "Your Computer is Infected" pop-ups. No more panicked phone calls.</p>
+                </div>
+                <div class="shield-card">
+                    <div class="shield-emoji">👶</div>
+                    <h3>For the Kids</h3>
+                    <p>Block the junk they shouldn't see. Gambling sites, adult content, sketchy apps.</p>
+                </div>
+                <div class="shield-card">
+                    <div class="shield-emoji">💻</div>
+                    <h3>For You</h3>
+                    <p>Focus without distractions. Social media, news feeds, time-wasters—gone.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="quick-features" id="features">
+        <div class="container">
+            <div class="features-row">
+                <div class="feature-item">
+                    <div class="feature-icon-small">🎯</div>
+                    <h3>Zero Configuration</h3>
+                    <p>One click to go Sane. Pick a blocklist. Click activate. Done.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">🌐</div>
+                    <h3>System-Wide</h3>
+                    <p>Every app, not just browsers. Safari, Chrome, Slack, games—all protected.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">🔒</div>
+                    <h3>Privacy First</h3>
+                    <p>Your data stays on your Mac. No cloud. No accounts. No tracking.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="open-source">
+        <div class="container">
+            <div class="open-source-card">
+                <h2>The Code is Public</h2>
+                <p class="tagline">The protection is private.</p>
+                <p>SaneHosts is open source. Read every line. No hidden tricks. No data harvesting. Just a Mac app that does what it says.</p>
+                <p><strong>Why $5?</strong> You're supporting open-source development. The app is signed, notarized, and ready to run. You could build it yourself—or you could grab a latte and let us handle it.</p>
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="comparison">
+        <div class="container">
+            <h2 class="section-title">Why SaneHosts?</h2>
+            <p class="section-subtitle">Works locally. No VPN. No cloud. No subscription.</p>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="highlight-col">SaneHosts</th>
+                            <th>Browser Extensions</th>
+                            <th>VPN Blockers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feature-name">Works in all apps</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">100% local</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">No subscription</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">No speed impact</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Open source</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td>Some</td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <section class="support" id="support">
+        <div class="container">
+            <h2 class="section-title">Support SaneHosts</h2>
+            <p class="section-subtitle support-subtitle">
+                <em>"The worker is worthy of his wages."</em><br>
+                — 1 Timothy 5:18<br><br>
+                Thank you. — Mr. Sane
+            </p>
+            <a href="https://github.com/sponsors/stephanjoseph" class="btn btn-primary github-sponsor-btn" target="_blank" rel="noopener">
+                <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
+                    <path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/>
+                </svg>
+                Sponsor on GitHub
+            </a>
+            <div class="crypto-addresses">
+                <div class="crypto-grid">
+                    <div class="crypto-item crypto-btc">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg" alt="BTC" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
+                    </div>
+                    <div class="crypto-item crypto-sol">
+                        <img class="crypto-logo" src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
+                    </div>
+                    <div class="crypto-item crypto-zec">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
+                    </div>
+                    <div class="crypto-item crypto-eth">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
+                    </div>
+                </div>
+                <p class="crypto-hint">Click any address to copy</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="more-apps">
+        <div class="container">
+            <h2 class="section-title">More from Sane Apps</h2>
+            <p class="more-apps-subtitle">Privacy-first Mac utilities that respect you</p>
+            <div class="more-apps-grid">
+                <a href="https://sanebar.com" class="app-card">
+                    <div class="app-card-header">
+                        <img src="images/sanebar-icon.png" alt="SaneBar" class="app-card-icon">
+                        <div class="app-card-name">SaneBar</div>
+                    </div>
+                    <p class="app-card-tagline">Menu bar manager. Hide clutter. Find any icon instantly.</p>
+                    <span class="app-card-cta">Learn more →</span>
+                </a>
+                <a href="https://saneclip.com" class="app-card">
+                    <div class="app-card-header">
+                        <img src="images/saneclip-icon.png" alt="SaneClip" class="app-card-icon">
+                        <div class="app-card-name">SaneClip</div>
+                    </div>
+                    <p class="app-card-tagline">Clipboard manager. Unlimited history. Quick search.</p>
+                    <span class="app-card-cta">Learn more →</span>
+                </a>
+            </div>
+            <div class="more-apps-hub">
+                <a href="https://saneapps.com">See all apps at saneapps.com →</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-card">
+                <h2>Ready to Go Sane?</h2>
+                <p>Open source. Build it yourself, or wait for the signed DMG ($5, coming soon).</p>
+                <div class="download-options">
+                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-primary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        Build from Source (Free)
+                    </a>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 20px;">
+                    Requires macOS 14.0+ · Signed DMG ($5) coming soon
+                </p>
+            </div>
+        </div>
+    </section>
 
     <footer>
         <div class="container">
+            <p class="footer-privacy"><strong>No telemetry</strong>. <strong>No cloud</strong>. <strong>100% on your Mac</strong>.</p>
             <div class="footer-links">
-                <a href="privacy.html">Privacy Policy</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
-                <a href="https://github.com/sane-apps/SaneHosts/issues">Report Issue</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="https://github.com/sane-apps/SaneHosts/issues">Support</a>
+                <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">MIT License</a>
             </div>
-            <p>Made with care by <a href="https://saneapps.com">Sane Apps</a></p>
-            <p class="footer-philosophy">100% Local. 0% Fear.</p>
+            <p class="footer-copy">Made with care by Mr. Sane · © 2026 SaneHosts</p>
+            <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." — 2 Timothy 1:7</p>
+            <p class="footer-philosophy">"Built for a Sound Mind" · <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
         </div>
     </footer>
+
+    <script>
+        function copyToClipboard(el) {
+            navigator.clipboard.writeText(el.textContent);
+            const orig = el.textContent;
+            el.textContent = 'Copied!';
+            setTimeout(() => el.textContent = orig, 1500);
+        }
+    </script>
 </body>
 </html>
