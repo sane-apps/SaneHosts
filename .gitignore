@@ -80,6 +80,7 @@ SESSION_HANDOFF.md
 SESSION_LOG.md
 .claude/
 .mcp.json
+.serena/
 
 # Internal documentation (not needed for building)
 docs/DISTRIBUTION.md

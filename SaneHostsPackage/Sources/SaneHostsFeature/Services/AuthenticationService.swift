@@ -2,7 +2,7 @@ import Foundation
 import LocalAuthentication
 import OSLog
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "Auth")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "Auth")
 
 // MARK: - Authentication Service
 

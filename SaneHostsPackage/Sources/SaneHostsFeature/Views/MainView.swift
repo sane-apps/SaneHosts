@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 
 /// Main view with sidebar navigation - SaneClip design language
 public struct MainView: View {
-    @State private var store = ProfileStore()
+    private var store: ProfileStore { ProfileStore.shared }
     @State private var selectedProfileIDs: Set<UUID> = []
     @State private var showingNewProfile = false
     @State private var showingTemplates = false
@@ -15,6 +15,8 @@ public struct MainView: View {
     @State private var showingRenameSheet = false
     @State private var isActivating = false
     @State private var activationError: String?
+    @State private var selectedPreset: ProfilePreset?
+    @State private var isDownloadingPreset = false
 
     /// Selected profiles (computed from IDs)
     private var selectedProfiles: [Profile] {
@@ -26,6 +28,12 @@ public struct MainView: View {
         guard selectedProfileIDs.count == 1,
               let id = selectedProfileIDs.first else { return nil }
         return store.profiles.first { $0.id == id }
+    }
+
+    /// Presets that haven't been downloaded yet (not in profiles by name)
+    private var availablePresets: [ProfilePreset] {
+        let existingNames = Set(store.profiles.map(\.name))
+        return ProfilePreset.allCases.filter { !existingNames.contains($0.displayName) }
     }
 
     public init() {}
@@ -41,6 +49,12 @@ public struct MainView: View {
             }
         }
         .groupBoxStyle(GlassGroupBoxStyle())
+        .onChange(of: selectedProfileIDs) { _, newValue in
+            // Clear preset selection when a profile is selected
+            if !newValue.isEmpty {
+                selectedPreset = nil
+            }
+        }
         .task {
             await store.load()
             if let first = store.profiles.first {
@@ -131,7 +145,6 @@ public struct MainView: View {
                 ) {
                     showingRemoteImport = true
                 }
-                .importButtonAnchor()
 
                 // More Options - clean expandable section
                 Button {
@@ -192,9 +205,11 @@ public struct MainView: View {
             }
 
             Section {
-                ForEach(store.profiles) { profile in
+                ForEach(Array(store.profiles.enumerated()), id: \.element.id) { index, profile in
                     ProfileRowView(profile: profile)
                         .tag(profile.id)
+                        .essentialsProfileAnchor(enabled: index == 0)
+                        .accessibilityLabel("\(profile.name), \(profile.isActive ? "active" : "inactive"), \(profile.entries.count) entries")
                         .contextMenu {
                             profileContextMenu(for: profile)
                         }
@@ -212,6 +227,28 @@ public struct MainView: View {
                         .font(.system(size: 12, weight: .bold))
                 }
                 .foregroundStyle(.primary)
+            }
+
+            // Protection Levels - presets not yet downloaded
+            if !availablePresets.isEmpty {
+                Section {
+                    ForEach(availablePresets) { preset in
+                        PresetRowView(preset: preset, isSelected: selectedPreset == preset)
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                selectedProfileIDs = []
+                                selectedPreset = preset
+                            }
+                    }
+                } header: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "shield.checkered")
+                            .font(.system(size: 13, weight: .semibold))
+                        Text("PROTECTION LEVELS")
+                            .font(.system(size: 12, weight: .bold))
+                    }
+                    .foregroundStyle(.primary)
+                }
             }
         }
         .listStyle(.sidebar)
@@ -242,7 +279,15 @@ public struct MainView: View {
 
     @ViewBuilder
     private var detail: some View {
-        if selectedProfileIDs.count > 1 {
+        if let preset = selectedPreset {
+            // Preset selected - show info and download
+            PresetDetailView(
+                preset: preset,
+                isDownloading: isDownloadingPreset
+            ) {
+                downloadPreset(preset)
+            }
+        } else if selectedProfileIDs.count > 1 {
             // Multiple selection - show batch actions
             MultiSelectDetailView(
                 profiles: selectedProfiles,
@@ -263,11 +308,33 @@ public struct MainView: View {
             SaneEmptyState(
                 icon: SaneIcons.hosts,
                 title: "No Profile Selected",
-                description: "Select a profile from the sidebar or create a new one.",
-                actionTitle: "New Profile"
+                description: "Select a profile or choose a protection level to get started.",
+                actionTitle: "Import Blocklist"
             ) {
-                showingNewProfile = true
+                showingRemoteImport = true
             }
+            .accessibilityLabel("No profile selected. Select a profile or choose a protection level to get started.")
+        }
+    }
+
+    // MARK: - Preset Download
+
+    private func downloadPreset(_ preset: ProfilePreset) {
+        guard !isDownloadingPreset else { return }
+        isDownloadingPreset = true
+
+        Task {
+            do {
+                try await store.createProfile(from: preset)
+                // Select the newly created profile
+                if let newProfile = store.profiles.first(where: { $0.name == preset.displayName }) {
+                    selectedProfileIDs = [newProfile.id]
+                    selectedPreset = nil
+                }
+            } catch {
+                activationError = "Failed to download \(preset.displayName): \(error.localizedDescription)"
+            }
+            isDownloadingPreset = false
         }
     }
 
@@ -892,8 +959,8 @@ struct RemoteImportSheet: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
 
-    // Selection state
-    @State private var selectedSources: Set<String> = []
+    // Selection state - pre-select recommended blocklists for better UX
+    @State private var selectedSources: Set<String> = Set(BlocklistCatalog.recommended.map(\.id))
     @State private var profileName = ""
     @State private var previousSuggestedName = ""  // Track auto-filled value to detect user edits
     @State private var expandedCategories: Set<BlocklistCategory> = [.recommended, .adsTrackers]
@@ -971,6 +1038,11 @@ struct RemoteImportSheet: View {
         }
         .onAppear {
             checkAllURLs()
+            // Auto-fill profile name based on pre-selected recommended sources
+            if !selectedSources.isEmpty && profileName.isEmpty {
+                profileName = suggestedName
+                previousSuggestedName = suggestedName
+            }
         }
     }
 
@@ -1396,7 +1468,7 @@ struct RemoteImportSheet: View {
 
     private var suggestedName: String {
         if selectedSources.count == 1 {
-            let sourceId = selectedSources.first!
+            let sourceId = selectedSources.first ?? ""
             return BlocklistCatalog.all.first { $0.id == sourceId }?.name ?? "Blocklist"
         } else if selectedSources.count > 1 {
             // Generate descriptive name from selected sources
@@ -1549,14 +1621,6 @@ struct RemoteImportSheet: View {
                 }
 
                 onCreated(profile)
-
-                // Advance tutorial to activate step after import
-                if TutorialState.shared.currentStep == .importBlocklist {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        TutorialState.shared.advanceToActivate()
-                    }
-                }
-
                 dismiss()
 
             } catch {
@@ -1851,6 +1915,175 @@ struct MergeProfilesSheet: View {
             shortened = String(shortened.prefix(17)) + "..."
         }
         return shortened.isEmpty ? name : shortened
+    }
+}
+
+// MARK: - Preset Row View
+
+struct PresetRowView: View {
+    let preset: ProfilePreset
+    let isSelected: Bool
+
+    private var presetColor: Color {
+        switch preset.colorTag {
+        case .blue: return .blue
+        case .green: return .green
+        case .purple: return .purple
+        case .orange: return .orange
+        case .red: return .red
+        default: return .gray
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: preset.icon)
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(presetColor)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(preset.displayName)
+                    .font(.body)
+                    .lineLimit(1)
+                Text(preset.tagline)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            Image(systemName: "icloud.and.arrow.down")
+                .font(.system(size: 14))
+                .foregroundStyle(.secondary)
+        }
+        .padding(.vertical, 5)
+        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
+        .clipShape(RoundedRectangle(cornerRadius: 6))
+    }
+}
+
+// MARK: - Preset Detail View
+
+struct PresetDetailView: View {
+    let preset: ProfilePreset
+    let isDownloading: Bool
+    let onDownload: () -> Void
+
+    @Environment(\.colorScheme) private var colorScheme
+
+    private var presetColor: Color {
+        switch preset.colorTag {
+        case .blue: return .blue
+        case .green: return .green
+        case .purple: return .purple
+        case .orange: return .orange
+        case .red: return .red
+        default: return .gray
+        }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 32) {
+                // Header
+                VStack(spacing: 16) {
+                    Image(systemName: preset.icon)
+                        .font(.system(size: 64))
+                        .foregroundStyle(presetColor)
+
+                    VStack(spacing: 6) {
+                        Text(preset.displayName)
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
+
+                        Text(preset.tagline)
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .padding(.top, 40)
+
+                // Description
+                Text(preset.description)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: 400)
+
+                // Stats
+                HStack(spacing: 32) {
+                    VStack(spacing: 4) {
+                        Text(preset.estimatedEntries)
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(presetColor)
+                        Text("Blocked domains")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    VStack(spacing: 4) {
+                        Text("\(preset.blocklistSourceIds.count)")
+                            .font(.title2)
+                            .fontWeight(.semibold)
+                            .foregroundStyle(presetColor)
+                        Text("Blocklists")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                // Blocklist sources included
+                GroupBox {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Includes")
+                            .font(.subheadline)
+                            .fontWeight(.medium)
+                            .foregroundStyle(.secondary)
+
+                        ForEach(preset.blocklistSources, id: \.id) { source in
+                            HStack(spacing: 8) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.system(size: 14))
+                                    .foregroundStyle(presetColor)
+                                Text(source.name)
+                                    .font(.subheadline)
+                                Spacer()
+                            }
+                        }
+                    }
+                    .padding(4)
+                }
+                .frame(maxWidth: 400)
+
+                // Download button
+                Button {
+                    onDownload()
+                } label: {
+                    HStack(spacing: 8) {
+                        if isDownloading {
+                            ProgressView()
+                                .controlSize(.small)
+                            Text("Downloading blocklists...")
+                        } else {
+                            Image(systemName: "icloud.and.arrow.down")
+                            Text("Add \(preset.displayName)")
+                        }
+                    }
+                    .font(.headline)
+                    .frame(maxWidth: 280)
+                    .padding(.vertical, 12)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(presetColor)
+                .disabled(isDownloading)
+
+                Spacer()
+            }
+            .padding(.horizontal, 40)
+        }
     }
 }
 

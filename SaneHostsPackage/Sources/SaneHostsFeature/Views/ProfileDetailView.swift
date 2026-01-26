@@ -95,8 +95,10 @@ struct ProfileDetailView: View {
 
                     if profile.isActive {
                         StatusBadge("Active", color: .saneSuccess, icon: SaneIcons.success)
+                            .accessibilityLabel("Profile status: Active")
                     } else {
                         StatusBadge("Inactive", color: .secondary, icon: SaneIcons.profileInactive)
+                            .accessibilityLabel("Profile status: Inactive")
                     }
 
                     Spacer()
@@ -113,6 +115,7 @@ struct ProfileDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.red)
+                        .accessibilityHint("Double-tap to deactivate this profile")
                     } else {
                         Button {
                             onActivate()
@@ -129,6 +132,7 @@ struct ProfileDetailView: View {
                         .buttonStyle(.borderedProminent)
                         .tint(.saneAccent)  // Futuristic teal accent
                         .activateButtonAnchor()
+                        .accessibilityHint("Double-tap to activate this profile")
                     }
                 }
                 .padding(.horizontal, 12)
@@ -592,6 +596,8 @@ struct StatCard: View {
             RoundedRectangle(cornerRadius: 10)
                 .stroke(colorScheme == .dark ? color.opacity(0.3) : color.opacity(0.2), lineWidth: 1)
         )
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title): \(value)")
     }
 }
 
@@ -652,6 +658,8 @@ struct EntryRow: View {
         .background(isHovering ? Color.primary.opacity(0.03) : Color.clear)
         .onHover { isHovering = $0 }
         .opacity(entry.isEnabled ? 1 : 0.6)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(entry.ipAddress) \(entry.hostnames.joined(separator: ", ")), \(entry.isEnabled ? "enabled" : "disabled")")
     }
 }
 
@@ -896,6 +904,7 @@ struct FreshnessIndicator: View {
         .padding(.vertical, 4)
         .background(freshnessColor.opacity(0.2))
         .clipShape(Capsule())
+        .accessibilityLabel("Source freshness: \(freshnessLabel)")
     }
 
     private var freshnessColor: Color {

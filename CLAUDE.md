@@ -44,11 +44,12 @@
 
 | Need | Check |
 |------|-------|
-| Build/test commands | `scripts/SaneMaster.rb --help` or XcodeBuildMCP |
+| Build/test commands | XcodeBuildMCP (`build_macos`, `test_macos`, `build_run_macos`) |
 | Project structure | `SaneHosts.xcworkspace` (open this!) |
-| Past bugs/learnings | `.claude/memory.json` or MCP memory |
-| Swift services | `SaneHostsFeatures/Sources/` |
-| UI components | `SaneHosts/Views/` directory |
+| Past bugs/learnings | MCP memory (`claude-mem search`) |
+| Swift services | `SaneHostsPackage/Sources/SaneHostsFeature/Services/` |
+| UI components | `SaneHostsPackage/Sources/SaneHostsFeature/Views/` |
+| Models & presets | `SaneHostsPackage/Sources/SaneHostsFeature/Models/` |
 | Admin operations | Look for `do shell script` with `administrator privileges` |
 
 ---
@@ -63,10 +64,12 @@
 ## Project Overview
 
 SaneHosts is a macOS app for managing `/etc/hosts` file through profiles. It allows users to:
+- Choose from 5 **Protection Levels** (Essentials → Kitchen Sink) with curated preset blocklists
 - Create and manage host blocking profiles
-- Import hosts from remote URLs (ad blocking lists, etc.)
+- Import from 200+ curated blocklists across 10+ categories
 - Activate/deactivate profiles with admin authentication
 - Flush DNS cache automatically
+- First-run **coach mark tutorial** guides new users through activation
 
 **Key Architecture Note**: The app modifies `/etc/hosts` using AppleScript with administrator privileges (`do shell script with administrator privileges`). This triggers a system password prompt for the user.
 
@@ -144,10 +147,12 @@ Note: SaneHosts is a **macOS app** - no simulator needed. Use `build_macos`, `te
 | Service | Purpose |
 |---------|---------|
 | `HostsService` | Reads/writes `/etc/hosts` via AppleScript with admin privileges |
-| `ProfileStore` | Profile CRUD and persistence (UserDefaults) |
+| `ProfileStore` | Profile CRUD, JSON file persistence, activation state management |
 | `DNSService` | Flushes DNS cache after hosts file changes |
 | `RemoteSyncService` | Imports hosts from remote URLs |
 | `HostsParser` | Parses hosts file format |
+| `ProfilePresets` | 5-tier protection level definitions with curated blocklist bundles |
+| `BlocklistCatalog` | 200+ curated blocklist sources across 10+ categories |
 
 ---
 

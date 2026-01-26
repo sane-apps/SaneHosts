@@ -39,9 +39,12 @@ public struct WelcomeView: View {
                     Circle()
                         .fill(currentPage == index ? Color.accentColor : Color.secondary.opacity(0.3))
                         .frame(width: 8, height: 8)
+                        .accessibilityHidden(true)
                 }
             }
             .padding(.bottom, 20)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Page \(currentPage + 1) of \(totalPages)")
 
             // Bottom Controls
             HStack {
@@ -197,7 +200,7 @@ private struct BarrierPage: View {
                 BarrierRow(
                     number: "2",
                     title: "The Alternatives",
-                    description: "Other apps exist, but they track you too, require subscriptions, or phone home with your data. You're trading one tracker for another."
+                    description: "Other apps exist, but they track you too, require subscriptions, or spy on you. You're trading one tracker for another."
                 )
             }
             .frame(maxWidth: 520)
@@ -229,6 +232,7 @@ private struct BarrierRow: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -248,7 +252,7 @@ private struct SolutionPage: View {
                 SolutionSection(
                     number: "1",
                     title: "Simple, Not Scary",
-                    description: "No Terminal. No commands. Import blocklists with one click, activate with another. If something breaks, just deactivate.",
+                    description: "No Terminal. No commands. Choose a protection level, activate it, done. If something breaks, just deactivate.",
                     color: .green
                 )
 
@@ -408,6 +412,7 @@ private struct PillarCard: View {
         .padding(.horizontal, 14)
         .background(Color.primary.opacity(0.08))
         .cornerRadius(12)
+        .accessibilityElement(children: .combine)
     }
 }
 

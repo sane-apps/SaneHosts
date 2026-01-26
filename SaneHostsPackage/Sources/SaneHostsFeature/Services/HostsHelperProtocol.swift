@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "HostsHelper")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsHelper")
 
 // MARK: - XPC Protocol
 

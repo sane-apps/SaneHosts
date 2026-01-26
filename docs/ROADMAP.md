@@ -76,7 +76,7 @@ Features users requested:
 - [x] Bulk enable/disable entries (selection mode)
 - [x] Bulk delete entries
 - [ ] Import from text/csv file
-- [ ] Export profile to shareable format
+- [x] Export profile to shareable format
 - [x] Duplicate profile
 
 ### 2.4 Debug/Testing Support
@@ -85,11 +85,11 @@ Features users requested:
 - [ ] Unit tests with mocked HostsService
 
 ### 2.5 UI Polish
-- [ ] App icon design
+- [x] App icon design
 - [x] Keyboard shortcuts (Cmd+Shift+A activate, Cmd+Shift+D deactivate)
 - [ ] Entry drag-and-drop reordering
 - [x] Source freshness indicator (days since last sync)
-- [ ] Entry count badge on profiles
+- [x] Entry count badge on profiles
 
 ### 2.6 Distribution (COMPLETE)
 See `docs/DISTRIBUTION.md` for full release checklist.
@@ -100,7 +100,7 @@ See `docs/DISTRIBUTION.md` for full release checklist.
 - [x] Appcast generator (`scripts/generate_appcast.sh`)
 - [x] Website template (`website/index.html`, `website/privacy.html`)
 - [ ] Purchase domain (sanehosts.com)
-- [ ] Create GitHub repo (github.com/sane-apps/SaneHosts)
+- [x] Create GitHub repo (github.com/sane-apps/SaneHosts)
 - [ ] First release (v1.0)
 
 ---
@@ -124,6 +124,9 @@ Advanced Features
 ### 3.4 Network
 - [ ] Per-network profiles (auto-activate on home WiFi)
 - [ ] VPN-aware activation
+
+### 3.5 Platform Research
+- [ ] Research iOS/iPadOS feasibility (requires DNS Content Blocker or local VPN proxy — fundamentally different architecture from hosts file approach; depends on demand)
 
 ---
 

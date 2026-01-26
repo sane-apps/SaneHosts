@@ -79,11 +79,11 @@ To remove all SaneHosts data:
 rm -rf /Applications/SaneHosts.app
 
 # Remove preferences
-defaults delete com.sanehosts.app
+defaults delete com.mrsane.SaneHosts
 
 # Remove application data
 rm -rf ~/Library/Application\ Support/SaneHosts
-rm -rf ~/Library/Caches/com.sanehosts.app
+rm -rf ~/Library/Caches/com.mrsane.SaneHosts
 ```
 
 ## Contact

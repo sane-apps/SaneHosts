@@ -2,18 +2,27 @@ import SwiftUI
 import SaneHostsFeature
 import ServiceManagement
 import Sparkle
+import os
 
 // MARK: - Notifications
 
 extension Notification.Name {
     static let openSettings = Notification.Name("openSettings")
+    static let openMainWindow = Notification.Name("openMainWindow")
+}
+
+// MARK: - Window Action Storage
+
+/// Stores the openWindow action so it can be called from MenuBarExtra
+final class WindowActionStorage {
+    static let shared = WindowActionStorage()
+    var openWindow: OpenWindowAction?
 }
 
 @main
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let updaterController: SPUStandardUpdaterController
-    @AppStorage("showInMenuBar") private var showInMenuBar = true
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
@@ -23,9 +32,10 @@ struct SaneHostsApp: App {
     }
 
     var body: some Scene {
-        WindowGroup {
+        WindowGroup(id: "main") {
             ContentView(hasSeenWelcome: $hasSeenWelcome)
                 .modifier(SettingsLauncher())
+                .modifier(WindowActionCapture())
         }
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
@@ -44,6 +54,13 @@ struct SaneHostsApp: App {
 
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
+            }
+
+            CommandGroup(replacing: .help) {
+                Button("Show Tutorial") {
+                    TutorialState.shared.resetTutorial()
+                    hasSeenWelcome = false
+                }
             }
 
             // Keyboard shortcuts
@@ -72,11 +89,70 @@ struct SaneHostsApp: App {
             SaneHostsSettingsView()
         }
 
-        MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network", isInserted: $showInMenuBar) {
-            MenuBarView(store: menuBarStore)
-                .modifier(SettingsLauncher())
+        MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
+            // Status section
+            if let active = menuBarStore.activeProfile {
+                Text("Active: \(active.name)")
+                    .font(.headline)
+                Button("Deactivate") {
+                    Task { await menuBarStore.deactivateProfile() }
+                }
+            } else {
+                Text("No Active Profile")
+                    .foregroundStyle(.secondary)
+            }
+
+            Divider()
+
+            // Profiles section
+            Section("Profiles") {
+                ForEach(menuBarStore.profiles) { profile in
+                    Button {
+                        Task { await menuBarStore.activateProfile(profile) }
+                    } label: {
+                        HStack {
+                            if menuBarStore.activeProfile?.id == profile.id {
+                                Image(systemName: "checkmark")
+                            }
+                            Text(profile.name)
+                        }
+                    }
+                }
+            }
+
+            Divider()
+
+            Button("Open SaneHosts") {
+                // Try to find and show existing window first
+                if let window = NSApp.windows.first(where: {
+                    $0.canBecomeMain &&
+                    $0.contentView != nil &&
+                    !$0.isMiniaturized &&
+                    $0.className.contains("NSWindow")
+                }) {
+                    window.makeKeyAndOrderFront(nil)
+                    NSApp.activate(ignoringOtherApps: true)
+                } else {
+                    // No window exists - use stored openWindow action
+                    WindowActionStorage.shared.openWindow?(id: "main")
+                    NSApp.activate(ignoringOtherApps: true)
+                }
+            }
+            .keyboardShortcut("o")
+
+            SettingsLink {
+                Text("Settings...")
+            }
+            .keyboardShortcut(",")
+
+            Divider()
+
+            Button("Quit SaneHosts") {
+                NSApp.terminate(nil)
+            }
+            .keyboardShortcut("q")
         }
-        .menuBarExtraStyle(.window)
+        .menuBarExtraStyle(.menu)
     }
 }
 
@@ -90,6 +166,19 @@ struct SettingsLauncher: ViewModifier {
             .onReceive(NotificationCenter.default.publisher(for: .openSettings)) { _ in
                 try? openSettings()
                 NSApp.activate(ignoringOtherApps: true)
+            }
+    }
+}
+
+// MARK: - Window Action Capture Modifier
+
+struct WindowActionCapture: ViewModifier {
+    @Environment(\.openWindow) private var openWindow
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                WindowActionStorage.shared.openWindow = openWindow
             }
     }
 }
@@ -132,9 +221,20 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     @objc func openMainWindow() {
         NSApp.activate(ignoringOtherApps: true)
-        if let window = NSApp.windows.first(where: { $0.title == "SaneHosts" || $0.identifier?.rawValue == "main" }) {
+
+        // Try to find and show existing main window
+        if let window = NSApp.windows.first(where: {
+            $0.title.contains("SaneHosts") ||
+            $0.identifier?.rawValue == "main" ||
+            ($0.canBecomeMain && $0.contentView != nil)
+        }) {
             window.makeKeyAndOrderFront(nil)
+            return
         }
+
+        // No window found - create a new one via notification
+        // This triggers SwiftUI's WindowGroup to open
+        NotificationCenter.default.post(name: .openMainWindow, object: nil)
     }
 }
 
@@ -203,6 +303,27 @@ class MenuBarProfileStore: ObservableObject {
     }
 }
 
+// MARK: - Menu Item Button Style
+
+struct MenuItemButtonStyle: ButtonStyle {
+    @State private var isHovered = false
+
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(isHovered || configuration.isPressed ? Color.accentColor.opacity(0.8) : Color.clear)
+            )
+            .foregroundStyle(isHovered || configuration.isPressed ? .white : .primary)
+            .onHover { hovering in
+                isHovered = hovering
+            }
+    }
+}
+
 // MARK: - Menu Bar View
 
 struct MenuBarView: View {
@@ -211,7 +332,7 @@ struct MenuBarView: View {
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 2) {
             // Error display
             if let error = store.lastError {
                 HStack {
@@ -221,7 +342,8 @@ struct MenuBarView: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 4)
                 Divider()
             }
 
@@ -240,7 +362,8 @@ struct MenuBarView: View {
                     .tint(.red)
                     .controlSize(.small)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
             } else {
                 HStack {
                     Image(systemName: "circle")
@@ -248,16 +371,19 @@ struct MenuBarView: View {
                     Text("No active profile")
                         .foregroundStyle(.secondary)
                 }
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
             }
 
             Divider()
+                .padding(.vertical, 4)
 
             // Profile list
             Text("Profiles")
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.horizontal)
+                .padding(.horizontal, 12)
+                .padding(.bottom, 2)
 
             ForEach(store.profiles) { profile in
                 Button {
@@ -270,36 +396,42 @@ struct MenuBarView: View {
                         Spacer()
                         Text("\(profile.entries.count)")
                             .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .opacity(0.7)
                     }
                 }
-                .buttonStyle(.plain)
-                .padding(.horizontal)
-                .padding(.vertical, 4)
+                .buttonStyle(MenuItemButtonStyle())
             }
 
             Divider()
+                .padding(.vertical, 4)
 
-            Button("Open SaneHosts") {
+            Button {
                 NSApp.activate(ignoringOtherApps: true)
+            } label: {
+                Text("Open SaneHosts")
             }
-            .padding(.horizontal)
+            .buttonStyle(MenuItemButtonStyle())
 
-            Button("Settings...") {
+            Button {
                 try? openSettings()
                 NSApp.activate(ignoringOtherApps: true)
+            } label: {
+                Text("Settings...")
             }
-            .padding(.horizontal)
+            .buttonStyle(MenuItemButtonStyle())
 
             Divider()
+                .padding(.vertical, 4)
 
-            Button("Quit") {
+            Button {
                 NSApp.terminate(nil)
+            } label: {
+                Text("Quit SaneHosts")
             }
-            .padding(.horizontal)
+            .buttonStyle(MenuItemButtonStyle())
         }
-        .padding(.vertical, 8)
-        .frame(width: 280)
+        .padding(.vertical, 6)
+        .frame(width: 260)
     }
 }
 
@@ -327,29 +459,14 @@ struct SaneHostsSettingsView: View {
 }
 
 struct GeneralSettingsTab: View {
-    @AppStorage("showInMenuBar") private var showInMenuBar = true
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("launchAtLogin") private var launchAtLogin = false
 
     var body: some View {
         Form {
             Section {
-                Toggle("Show in menu bar", isOn: $showInMenuBar)
-                    .onChange(of: showInMenuBar) { _, newValue in
-                        // Prevent hiding both
-                        if !newValue && hideDockIcon {
-                            hideDockIcon = false
-                        }
-                    }
-                
                 Toggle("Hide Dock icon", isOn: $hideDockIcon)
-                    .onChange(of: hideDockIcon) { _, newValue in
-                        // Prevent hiding both
-                        if newValue {
-                            showInMenuBar = true
-                        }
-                    }
-                
+
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in
                         do {
@@ -359,7 +476,8 @@ struct GeneralSettingsTab: View {
                                 try SMAppService.mainApp.unregister()
                             }
                         } catch {
-                            print("Failed to \(newValue ? "register" : "unregister") login item: \(error)")
+                            Logger(subsystem: Bundle.main.bundleIdentifier ?? "SaneHosts", category: "Settings")
+                                .error("Failed to \(newValue ? "register" : "unregister") login item: \(error)")
                         }
                     }
             } footer: {

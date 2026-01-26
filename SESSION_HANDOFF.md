@@ -1,12 +1,126 @@
 # SaneHosts Session Handoff
 
-> Updated: 2026-01-24 8:20 PM
-> Status: **DOCS AUDITED** + **SECURITY FIXES APPLIED**
+> Updated: 2026-01-25 11:00 PM
+> Status: **AUDIT COMPLETE — 19/26 items resolved. 7 remain (all USER ACTION). Ready to ship after screenshots.**
 
-## Latest: Documentation Audit Complete (2026-01-24 8:20 PM)
+> **Note:** For the canonical feature tracker and roadmap status, see [`docs/ROADMAP.md`](docs/ROADMAP.md).
+> This file tracks session-specific context and handoff notes. Avoid duplicating feature completion status here.
+
+## Latest: Bulk Audit Fix Execution (2026-01-25 Night Session)
+
+### What Happened
+6 parallel subagents executed all fixable audit items. Build clean, 62/62 tests pass.
+
+### Fixes Applied This Session
+| # | Fix | Details |
+|---|-----|---------|
+| 5 | ProfilePresets tests | 15 tests in ProfilePresetsTests.swift (cumulative hierarchy, catalog resolution, profile creation) |
+| 6 | Accessibility labels | 15 modifiers across ProfileDetailView, MainView, WelcomeView, DesignSystem |
+| 8 | Write serialization | Guard + HostsServiceError.writeInProgress in HostsService.swift |
+| 11 | ROADMAP review | Checkboxes updated (app icon, export, entry count badge, GitHub repo) |
+| 18 | Website marketing | Full Threat→Barrier→Solution→Promise rewrite of index.html |
+| 24 | Doc consolidation | ROADMAP cleaned, cross-reference note in SESSION_HANDOFF |
+| 25 | CHANGELOG | Created CHANGELOG.md with v1.0 + Unreleased sections |
+| 26 | Show Tutorial | Help menu → "Show Tutorial" + TutorialState.resetTutorial() |
+
+### Remaining (USER ACTION)
+- [ ] Update website screenshots (new Protection Levels UI)
+- [ ] Create og-image.png (1200x630 social preview)
+- [ ] Wire download button → Lemon Squeezy ($5 DMG)
+- [ ] Accent color decision (indigo vs Shield Teal #5fa8d3)
+- [ ] Brand color migration (blocked on accent decision)
+- [ ] SaneUI integration (LOW)
+- [ ] Dynamic Type support (LOW)
+
+---
+
+## Previous: Audit Fix Execution + Pipeline Fix (2026-01-25 Late Session)
+
+### What Happened This Session
+
+Two prior sessions built Protection Levels + ran the 14-perspective docs-audit.
+This session processed all 14 returning audit agents and applied fixes.
+
+### Fixes Applied This Session ✅
+
+#### Code Fixes (from Engineer + Ops audits)
+| Fix | File | Details |
+|-----|------|---------|
+| Force unwrap → guard-let | ProfileStore.swift:39,45 | `first!` → `guard let ... else { fatalError }` |
+| Force unwrap → guard-let | ProfilePresets.swift:141 | Same pattern for Application Support dir |
+| Force unwrap → nil coalesce | MainView.swift:1469 | `selectedSources.first!` → `first ?? ""` |
+| Semaphore caching | HostsService.swift:27-35 | Cache `checkHelperInstalled()` to avoid repeated 1s blocking |
+| Logger subsystem (6 files) | All Services/*.swift | `com.sanehosts.app` → `com.mrsane.SaneHosts` |
+| print() → Logger | SaneHostsApp.swift:471 | Login item error now uses os_log |
+| git rm cached profraw | default.profraw | Removed tracked binary coverage file |
+| Added .serena/ | .gitignore | Exclude Serena MCP working dir |
+
+#### Documentation Fixes (from multiple audits)
+| Fix | File | Details |
+|-----|------|---------|
+| False sandbox claim | SECURITY.md | Replaced "runs with App Sandbox" with accurate no-sandbox + compensating controls |
+| Wrong macOS version | CONTRIBUTING.md | `macOS 15.0+` → `macOS 14.0+ (Sonoma)` |
+| Wrong bundle ID | PRIVACY.md | `com.sanehosts.app` → `com.mrsane.SaneHosts` |
+| Wrong Swift badge | README.md | `Swift 5.9` → `Swift 6.1` |
+| Wrong persistence description | CLAUDE.md | ProfileStore "UserDefaults" → "JSON file persistence" |
+| Broken path references (3) | CLAUDE.md | Fixed Where to Look First table |
+| Protection Levels added | README.md, CLAUDE.md | New tier table, updated How It Works |
+| iOS research noted | ROADMAP.md | Added Phase 3.5 noting architectural infeasibility |
+
+#### Audit Pipeline Fix ✅
+| Fix | File | Details |
+|-----|------|---------|
+| Pipeline bug fixed | `~/.claude/skills/docs-audit/SKILL.md` | Agents now use `general-purpose` type (can Write) |
+| Per-agent files | SKILL.md | Each agent writes `DOCS_AUDIT_FINDINGS_[perspective].md` |
+| Consolidation phase | SKILL.md | New Phase 2.5 merges per-agent files into master doc |
+| Template included | SKILL.md | Exact Task tool invocation with allowed_tools + prompt |
+
+### Remaining User Action Items (Cannot Automate)
+| Issue | Priority | Source Audit |
+|-------|----------|-------------|
+| Update website screenshots | HIGH | Freshness, Website |
+| Add accessibility labels | HIGH | Designer (4/10 score) |
+| Create og-image.png for social sharing | HIGH | Website |
+| Serialize hosts file writes (mutex) | HIGH | QA (race condition) |
+| Website marketing rewrite (Threat/Barrier) | MEDIUM | Marketing (1/5 score) |
+| Add tests for ProfilePresets.swift | MEDIUM | QA (0% coverage) |
+| Wire download button → Lemon Squeezy | MEDIUM | Website |
+| Brand accent color decision (indigo vs Shield Teal) | MEDIUM | Brand (6/10 score) |
+| Consolidate overlapping docs | LOW | Hygiene (4/10 score) |
+| Dynamic Type support | LOW | Designer |
+| Recruit beta testers | LOW | Marketing |
+| Update CHANGELOG | LOW | Completeness |
+
+### Audit Scores (14-Perspective, 2026-01-25)
+| # | Perspective | Score | Status |
+|---|-------------|-------|--------|
+| 1 | Engineer | 8/10 | Force unwraps + logger fixed |
+| 2 | Designer | 7/10 | Accessibility still needs work |
+| 3 | Marketer | 6/10 | README updated, website still weak |
+| 4 | User Advocate | 7.8/10 | Help/Support gap (3/10) |
+| 5 | QA | 7/10 | Tests needed for new code |
+| 6 | Hygiene | 4/10 | Content duplication severe |
+| 7 | Security | 9/10 | Solid, SECURITY.md corrected |
+| 8 | Freshness | 7/10 | Swift badge + persistence fixed |
+| 9 | Completeness | 6/10 | Many unchecked items across docs |
+| 10 | Ops | 8/10 | Logger + profraw fixed |
+| 11 | Brand | 6/10 | System colors vs brand palette |
+| 12 | Consistency | 8/10 | Broken paths fixed |
+| 13 | Website | 6/10 | Screenshots + CTA need update |
+| 14 | Marketing | 3/10 | Website missing framework entirely |
+
+**Overall: 7/10** — code quality solid, marketing/docs lagging
+
+### Previous Fixes Still Relevant
+- Security: Comment newline injection, HTTPS warning (Jan 24)
+- Docs: README blocklist count 50→200+, PRIVACY.md date fix (Jan 24)
+
+---
+
+## Previous: Documentation Audit + Security Fixes (2026-01-24 8:20 PM)
 
 ### Full 14-Perspective Audit Completed
-Comprehensive docs-audit run. Overall score: **8/10**
+Comprehensive docs-audit run. Overall score: **7/10** (revised from 8/10 with enriched data)
 
 ### Security Fixes Applied ✅
 | Fix | File | Details |
@@ -14,32 +128,6 @@ Comprehensive docs-audit run. Overall score: **8/10**
 | Comment newline injection | ProfileDetailView.swift | Both AddEntrySheet and EditEntrySheet now sanitize newlines |
 | HTTPS warning | MainView.swift | Custom URL import shows warning for HTTP URLs |
 | PRIVACY.md date | PRIVACY.md | Fixed "January 18, 2025" → "January 24, 2026" |
-
-### Documentation Updates ✅
-| File | Changes |
-|------|---------|
-| README.md | Added 4 undocumented features, updated blocklist count (50→200+), added keyboard shortcuts |
-| PRIVACY.md | Fixed date typo |
-
-### Issues Found (User Action May Needed)
-| Issue | Priority | Action |
-|-------|----------|--------|
-| Notarization status | HIGH | Check: `xcrun notarytool info 9df5f544-... --keychain-profile "notarytool"` |
-| Domain verification | HIGH | Verify sanehosts.com is registered and pointing correctly |
-| Dev certificate expiry | MEDIUM | Document expiry date in DISASTER_RECOVERY.md |
-| 34 print() statements | LOW | Replace with os_log before v1.1 |
-| 60 uses of .gray/.secondary | LOW | Replace with brand colors for consistency |
-
-### Audit Summary by Perspective
-| Audit | Score | Key Finding |
-|-------|-------|-------------|
-| Engineer | 8/10 | 1 race condition (edge case, fail-safe), 34 print() |
-| Security | 8/10 | HTTP accepted, newlines now fixed |
-| Website | 9/10 | Good - trust badges, cross-linking present |
-| Brand | 6/10 | Uses generic .gray, should use brand palette |
-| Marketing | 7/10 | Missing explicit Barrier A copy on website |
-| Freshness | 9/10 | Date typo fixed |
-| Ops | 9/10 | Clean git, 0 TODOs in code |
 
 ---
 

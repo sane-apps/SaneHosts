@@ -5,7 +5,7 @@ Thank you for your interest in contributing to SaneHosts! This document provides
 ## Development Setup
 
 ### Prerequisites
-- macOS 15.0+
+- macOS 14.0+ (Sonoma)
 - Xcode 16.0+
 
 ### Getting Started

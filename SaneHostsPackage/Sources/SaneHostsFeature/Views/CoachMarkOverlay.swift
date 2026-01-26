@@ -11,14 +11,14 @@ public class TutorialState {
     public var isActive: Bool = false
 
     // Anchor positions for UI elements (set by views)
-    public var importButtonFrame: CGRect = .zero
+    public var essentialsProfileFrame: CGRect = .zero
     public var activateButtonFrame: CGRect = .zero
 
     private init() {}
 
     public func startTutorial() {
         isActive = true
-        currentStep = .importBlocklist
+        currentStep = .essentialsReady
     }
 
     public func advanceToActivate() {
@@ -41,11 +41,17 @@ public class TutorialState {
     public static var hasCompletedTutorial: Bool {
         UserDefaults.standard.bool(forKey: "hasCompletedTutorial")
     }
+
+    public func resetTutorial() {
+        currentStep = .none
+        isActive = false
+        UserDefaults.standard.set(false, forKey: "hasCompletedTutorial")
+    }
 }
 
 public enum TutorialStep {
     case none
-    case importBlocklist
+    case essentialsReady
     case activateProfile
     case complete
 }
@@ -62,7 +68,7 @@ public struct CoachMarkOverlay: View {
     }
 
     public var body: some View {
-        if tutorial.isActive && tutorial.currentStep != .none && tutorial.currentStep != .complete {
+        if tutorial.isActive && tutorial.currentStep != .none && tutorial.currentStep != .complete && currentHighlightFrame != .zero {
             ZStack {
                 // Dimmed background with cutout
                 SpotlightBackground(
@@ -80,13 +86,15 @@ public struct CoachMarkOverlay: View {
                 )
             }
             .ignoresSafeArea()
+            .transition(.opacity)
+            .animation(.easeIn(duration: 0.3), value: currentHighlightFrame)
         }
     }
 
     private var currentHighlightFrame: CGRect {
         switch tutorial.currentStep {
-        case .importBlocklist:
-            return tutorial.importButtonFrame
+        case .essentialsReady:
+            return tutorial.essentialsProfileFrame
         case .activateProfile:
             return tutorial.activateButtonFrame
         default:
@@ -96,10 +104,8 @@ public struct CoachMarkOverlay: View {
 
     private func handleNext() {
         switch tutorial.currentStep {
-        case .importBlocklist:
-            // Don't advance here - wait for import to complete
-            // The import sheet will advance when done
-            break
+        case .essentialsReady:
+            tutorial.advanceToActivate()
         case .activateProfile:
             tutorial.completeTutorial()
         default:
@@ -169,16 +175,10 @@ struct CoachMarkTooltip: View {
 
                 Spacer()
 
-                if step == .importBlocklist {
-                    Text("Click the button above")
-                        .font(.system(size: 13))
-                        .foregroundStyle(.secondary)
-                } else {
-                    Button("Got it!") {
-                        onNext()
-                    }
-                    .buttonStyle(.borderedProminent)
+                Button(step == .essentialsReady ? "Next" : "Got it!") {
+                    onNext()
                 }
+                .buttonStyle(.borderedProminent)
             }
         }
         .padding(20)
@@ -197,10 +197,10 @@ struct CoachMarkTooltip: View {
 
     private var titleForStep: String {
         switch step {
-        case .importBlocklist:
-            return "Start by Importing a Blocklist"
+        case .essentialsReady:
+            return "Essentials Is Ready"
         case .activateProfile:
-            return "Activate Your Profile"
+            return "Activate to Start Blocking"
         default:
             return ""
         }
@@ -208,10 +208,10 @@ struct CoachMarkTooltip: View {
 
     private var descriptionForStep: String {
         switch step {
-        case .importBlocklist:
-            return "Click here to import a curated blocklist. We recommend starting with one of the popular ad-blocking lists."
+        case .essentialsReady:
+            return "This profile blocks ads, trackers, and malware. Want more? Choose a different protection level below, or import your own blocklists."
         case .activateProfile:
-            return "Your blocklist is ready! Click Activate to start blocking ads and trackers. You'll need to enter your password once."
+            return "Click Activate to apply your profile. You'll enter your password once, then you're protected."
         default:
             return ""
         }
@@ -246,7 +246,7 @@ struct CoachMarkTooltip: View {
 
 // MARK: - Preference Key for Anchor Frames
 
-struct ImportButtonFrameKey: PreferenceKey {
+struct EssentialsProfileFrameKey: PreferenceKey {
     nonisolated(unsafe) static var defaultValue: CGRect = .zero
     static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
         value = nextValue()
@@ -263,15 +263,19 @@ struct ActivateButtonFrameKey: PreferenceKey {
 // MARK: - View Extension for Tutorial Anchors
 
 extension View {
-    public func importButtonAnchor() -> some View {
+    public func essentialsProfileAnchor(enabled: Bool = true) -> some View {
         self.background(
             GeometryReader { geometry in
                 Color.clear
                     .onAppear {
-                        TutorialState.shared.importButtonFrame = geometry.frame(in: .global)
+                        if enabled {
+                            TutorialState.shared.essentialsProfileFrame = geometry.frame(in: .global)
+                        }
                     }
                     .onChange(of: geometry.frame(in: .global)) { _, newFrame in
-                        TutorialState.shared.importButtonFrame = newFrame
+                        if enabled {
+                            TutorialState.shared.essentialsProfileFrame = newFrame
+                        }
                     }
             }
         )

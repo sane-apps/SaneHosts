@@ -286,6 +286,7 @@ struct ProfileColorDot: View {
         Circle()
             .fill(swiftUIColor)
             .frame(width: 10, height: 10)
+            .accessibilityLabel("\(color.rawValue) color tag")
     }
 
     private var swiftUIColor: Color {

@@ -3,7 +3,7 @@ import AppKit
 import LocalAuthentication
 import OSLog
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "HostsService")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsService")
 
 /// Service for reading and writing to /etc/hosts
 /// Uses Touch ID for authentication, with fallback to AppleScript privilege elevation
@@ -23,14 +23,18 @@ public final class HostsService {
     /// Whether to use Touch ID (true) or legacy AppleScript (false)
     public var useTouchID = true
 
-    /// Whether the privileged helper is installed
+    /// Whether the privileged helper is installed (cached to avoid repeated 1s blocking checks)
+    private var _helperInstalledChecked = false
+    private var _helperInstalled = false
     public var isHelperInstalled: Bool {
-        // Check if we can connect to the helper
-        // For now, return false until helper is properly installed
         #if DEBUG
         return false // Use AppleScript in debug for now
         #else
-        return checkHelperInstalled()
+        if !_helperInstalledChecked {
+            _helperInstalled = checkHelperInstalled()
+            _helperInstalledChecked = true
+        }
+        return _helperInstalled
         #endif
     }
 
@@ -61,6 +65,11 @@ public final class HostsService {
     /// Write content to /etc/hosts using Touch ID or privilege elevation
     /// Returns true on success, throws on failure
     public func writeHostsFile(content: String) async throws {
+        guard !isWriting else {
+            logger.warning("Write already in progress, skipping concurrent write")
+            throw HostsServiceError.writeInProgress
+        }
+
         isWriting = true
         lastError = nil
 
@@ -235,6 +244,7 @@ public enum HostsServiceError: LocalizedError {
     case invalidContent
     case authenticationFailed(String)
     case userCancelled
+    case writeInProgress
 
     public var errorDescription: String? {
         switch self {
@@ -250,6 +260,8 @@ public enum HostsServiceError: LocalizedError {
             return "Authentication failed: \(reason)"
         case .userCancelled:
             return "Operation cancelled"
+        case .writeInProgress:
+            return "A write operation is already in progress. Please wait and try again."
         }
     }
 }

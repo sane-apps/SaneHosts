@@ -9,10 +9,10 @@
 ## Security Model
 
 ### App Sandbox
-SaneHosts runs with App Sandbox enabled with specific entitlements:
-- File access for `/etc/hosts` modifications
-- Network client (for optional remote hosts import)
-- User-selected file access
+SaneHosts runs **without** App Sandbox because it must write directly to `/etc/hosts` (a system file outside any sandbox container). To compensate:
+- Hardened runtime is enabled
+- Code is signed with Developer ID and notarized by Apple
+- No unnecessary entitlements beyond what is required
 
 ### Privileged Operations
 Modifying `/etc/hosts` requires elevated privileges:

@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "RemoteSync")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "RemoteSync")
 
 /// Import phase for UI tracking
 public enum ImportPhase: Equatable, Sendable {

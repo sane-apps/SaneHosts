@@ -1,7 +1,7 @@
 import Foundation
 import OSLog
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "DNS")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "DNS")
 
 /// Service for DNS cache operations
 @MainActor

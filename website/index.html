@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneHosts - Show Uninvited Guests the Door</title>
-    <meta name="description" content="Block ads, trackers, and distractions at the system level. $5 once. Works in every app on your Mac.">
+    <title>SaneHosts - Your Mac Is Talking Behind Your Back</title>
+    <meta name="description" content="Block ads, trackers, and data collectors at the system level. No Terminal. No commands. $5 once. Works in every app on your Mac.">
     <meta name="keywords" content="macOS, hosts file, ad blocker, privacy, tracker blocker, Mac app, hosts manager">
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="canonical" href="https://sanehosts.com/" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="SaneHosts - Show Uninvited Guests the Door">
-    <meta property="og:description" content="Block ads and trackers at the system level. $5 once. Works in every app.">
+    <meta property="og:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta property="og:description" content="Block ads and trackers at the system level. No Terminal. No commands. $5 once.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -19,8 +19,8 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SaneHosts - Show Uninvited Guests the Door">
-    <meta name="twitter:description" content="Block ads and trackers at the system level. $5 once.">
+    <meta name="twitter:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta name="twitter:description" content="Block ads and trackers at the system level. No Terminal. $5 once.">
     <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
 
     <!-- Fonts -->
@@ -62,6 +62,9 @@
             --success: #34d399;
             --success-soft: rgba(52, 211, 153, 0.15);
             --warm: #f4a261;
+            --warm-soft: rgba(244, 162, 97, 0.15);
+            --danger: #ef4444;
+            --danger-soft: rgba(239, 68, 68, 0.12);
             --border: #252530;
             --border-subtle: #1e1e28;
         }
@@ -218,7 +221,7 @@
             transform: translateY(-2px);
         }
 
-        /* Hero Section */
+        /* Hero Section - THE THREAT */
         .hero {
             padding: 160px 0 80px;
             text-align: center;
@@ -228,7 +231,7 @@
             font-family: 'Playfair Display', Georgia, serif;
             font-size: clamp(2.5rem, 6vw, 4rem);
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             letter-spacing: -0.03em;
             color: var(--text-primary);
             line-height: 1.15;
@@ -242,93 +245,18 @@
         .hero .subtitle {
             font-size: 1.2rem;
             color: var(--text-secondary);
-            max-width: 520px;
-            margin: 0 auto 32px;
+            max-width: 600px;
+            margin: 0 auto 20px;
             font-weight: 400;
             line-height: 1.7;
         }
 
-        /* Trust Badges - The Latte Play */
-        .trust-badges {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 36px;
-        }
-
-        .trust-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 10px 18px;
-            border-radius: 100px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            color: var(--text-secondary);
-        }
-
-        .trust-badge.highlight {
-            background: var(--success-soft);
-            border-color: rgba(52, 211, 153, 0.25);
-            color: var(--success);
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 60px;
-        }
-
-        .btn {
-            padding: 16px 32px;
-            border-radius: 14px;
-            font-size: 0.95rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 0.01em;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
-            color: #ffffff;
-            font-weight: 600;
-            box-shadow:
-                0 4px 24px var(--accent-glow),
-                0 1px 3px rgba(0, 0, 0, 0.2),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow:
-                0 8px 40px var(--accent-glow),
-                0 4px 12px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            filter: brightness(1.05);
-        }
-
-        .btn-secondary {
-            background: var(--bg-card);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-secondary);
-            border-color: var(--accent);
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-            transform: translateY(-2px);
+        .hero .threat-detail {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 540px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
         }
 
         .hero-image {
@@ -350,12 +278,7 @@
             object-fit: contain;
         }
 
-        /* Family Shield Section */
-        .family-shield {
-            padding: 100px 0;
-            background: linear-gradient(180deg, transparent, rgba(95, 168, 211, 0.04));
-        }
-
+        /* Section shared styles */
         .section-title {
             font-family: 'Playfair Display', Georgia, serif;
             font-size: clamp(1.75rem, 4vw, 2.5rem);
@@ -370,53 +293,259 @@
             text-align: center;
             color: var(--text-secondary);
             font-size: 1.05rem;
-            max-width: 500px;
+            max-width: 540px;
             margin: 0 auto 56px;
             line-height: 1.7;
         }
 
-        .shield-grid {
+        /* Barriers Section */
+        .barriers {
+            padding: 100px 0 80px;
+            background: linear-gradient(180deg, transparent, rgba(244, 162, 97, 0.04));
+        }
+
+        .barrier-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .barrier-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            transition: all 0.3s ease;
+        }
+
+        .barrier-card:hover {
+            border-color: var(--warm);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .barrier-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--warm-soft);
+            color: var(--warm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .barrier-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .barrier-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 100px 0 80px;
+            background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.04));
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .solution-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            transition: all 0.3s ease;
+        }
+
+        .solution-card:hover {
+            border-color: var(--success);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .solution-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--success-soft);
+            color: var(--success);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .solution-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .solution-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Promise Section - Power, Love, Sound Mind */
+        .promise {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .promise-verse {
+            max-width: 540px;
+            margin: 0 auto 48px;
+        }
+
+        .promise-verse blockquote {
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .promise-verse cite {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
             max-width: 900px;
             margin: 0 auto;
         }
 
-        .shield-card {
+        .pillar-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 32px;
+            padding: 36px 28px;
             text-align: center;
             transition: all 0.3s ease;
         }
 
-        .shield-card:hover {
+        .pillar-card:hover {
             border-color: var(--accent);
             transform: translateY(-4px);
             box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .shield-emoji {
+        .pillar-icon {
             font-size: 2.5rem;
             margin-bottom: 16px;
+            display: block;
         }
 
-        .shield-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 8px;
+        .pillar-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 10px;
             font-weight: 600;
         }
 
-        .shield-card p {
+        .pillar-card p {
             color: var(--text-secondary);
             font-size: 0.95rem;
             line-height: 1.5;
         }
 
-        /* Three-Second Features */
-        .quick-features {
+        /* Protection Levels */
+        .protection-levels {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        }
+
+        .levels-table-wrapper {
+            overflow-x: auto;
+            margin: 0 -24px;
+            padding: 0 24px;
+        }
+
+        .levels-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            min-width: 600px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .levels-table th,
+        .levels-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .levels-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .levels-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .levels-table tbody tr:hover {
+            background: var(--accent-subtle);
+        }
+
+        .level-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .level-tagline {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .level-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .level-entries {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Features Section */
+        .features {
             padding: 80px 0;
         }
 
@@ -453,7 +582,6 @@
         .how-it-works {
             padding: 80px 0;
             text-align: center;
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
         }
 
         .how-it-works-image {
@@ -467,46 +595,6 @@
         .how-it-works-image img {
             width: 100%;
             display: block;
-        }
-
-        /* Open Source Trust */
-        .open-source {
-            padding: 80px 0;
-            text-align: center;
-        }
-
-        .open-source-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 56px 40px;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .open-source h2 {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 1.75rem;
-            margin-bottom: 16px;
-            font-weight: 600;
-        }
-
-        .open-source .tagline {
-            color: var(--accent);
-            font-size: 1.1rem;
-            margin-bottom: 24px;
-            font-style: italic;
-        }
-
-        .open-source p {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.7;
-            margin-bottom: 28px;
-        }
-
-        .open-source .btn-secondary {
-            padding: 14px 28px;
         }
 
         /* Comparison Table */
@@ -572,6 +660,130 @@
         .cross {
             color: #6b7280;
             font-size: 1.1rem;
+        }
+
+        /* Open Source */
+        .open-source {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .open-source-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 56px 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .open-source h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .open-source .tagline {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .open-source p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .open-source .btn-secondary {
+            padding: 14px 28px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow:
+                0 4px 24px var(--accent-glow),
+                0 1px 3px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 40px var(--accent-glow),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        /* Trust Badges */
+        .trust-badges {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .trust-badge.highlight {
+            background: var(--success-soft);
+            border-color: rgba(52, 211, 153, 0.25);
+            color: var(--success);
         }
 
         /* Support Section */
@@ -817,23 +1029,16 @@
             align-items: center;
         }
 
-        .download-divider {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            width: 100%;
-            max-width: 300px;
-            margin: 12px 0;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-
-        .download-divider::before,
-        .download-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-subtle);
+        .price-tag {
+            display: inline-block;
+            background: var(--success-soft);
+            color: var(--success);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            border: 1px solid rgba(52, 211, 153, 0.2);
         }
 
         /* Footer */
@@ -910,6 +1115,17 @@
                 flex-direction: column;
                 align-items: center;
             }
+
+            .barrier-grid,
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pillars-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -925,124 +1141,247 @@
             <a href="https://saneapps.com" class="logo-family">Part of the Sane Apps family</a>
             <div class="nav-links">
                 <a href="#features">Features</a>
+                <a href="#download">Download</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <span class="nav-cta" style="opacity: 0.6; cursor: default;">DMG Coming Soon</span>
             </div>
         </div>
     </nav>
 
+    <!-- ============================================ -->
+    <!-- SECTION 1: HERO - THE THREAT                -->
+    <!-- ============================================ -->
     <section class="hero">
         <div class="container">
-            <!-- DRAFT COPY - FOR REVIEW -->
-            <h1 class="animate-in delay-2">Show Uninvited <em>Guests</em> the Door</h1>
-            <p class="subtitle animate-in delay-3">Your Mac's bouncer. Ads, trackers, and junk get blocked before they knock. No Terminal. No scary commands. Just click.</p>
-
-            <div class="trust-badges animate-in delay-3">
-                <span class="trust-badge highlight">🔓 100% Open Source</span>
-                <span class="trust-badge">🛠️ Build it yourself (free)</span>
-                <span class="trust-badge">📵 No data collection</span>
-            </div>
+            <h1 class="animate-in delay-2">Your Mac Is Talking<br><em>Behind Your Back</em></h1>
+            <p class="subtitle animate-in delay-3">Every time you open an app, hidden connections reach out to ad networks, trackers, and data collectors. They watch what you browse, what you use, and build profiles about you.</p>
+            <p class="threat-detail animate-in delay-3">All without your knowledge or consent.</p>
 
             <div class="cta-buttons animate-in delay-4">
-                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-primary">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Take Back Control
+                </a>
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                     </svg>
-                    Build from Source (Free)
+                    View Source
                 </a>
-                <span class="btn btn-secondary" style="opacity: 0.6; cursor: default;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    DMG — $5 (Coming Soon)
-                </span>
             </div>
 
             <div class="hero-image animate-in delay-5">
-                <img src="screenshot.png" alt="SaneHosts App Screenshot">
+                <img src="screenshot.png" alt="SaneHosts App - System-wide tracker blocking for macOS">
             </div>
         </div>
     </section>
 
-    <section class="family-shield">
+    <!-- ============================================ -->
+    <!-- SECTION 2: THE BARRIERS                     -->
+    <!-- ============================================ -->
+    <section class="barriers">
         <div class="container">
-            <h2 class="section-title">Protect the Whole Family</h2>
-            <p class="section-subtitle">One app. Every Mac in the house.</p>
-            <div class="shield-grid">
-                <div class="shield-card">
-                    <div class="shield-emoji">👵</div>
-                    <h3>For Grandma</h3>
-                    <p>Stop those "Your Computer is Infected" pop-ups. No more panicked phone calls.</p>
+            <h2 class="section-title">You Shouldn't Need a CS Degree<br>to Stop Being Tracked</h2>
+            <p class="section-subtitle">Your Mac already has the tool to block trackers. So why isn't everyone using it?</p>
+
+            <div class="barrier-grid">
+                <div class="barrier-card">
+                    <div class="barrier-number">1</div>
+                    <h3>The DIY Way Is Painful</h3>
+                    <p>Your Mac has a hosts file that can block trackers. But you'd need Terminal, admin commands, and thousands of manual entries. One typo breaks your internet.</p>
                 </div>
-                <div class="shield-card">
-                    <div class="shield-emoji">👶</div>
-                    <h3>For the Kids</h3>
-                    <p>Block the junk they shouldn't see. Gambling sites, adult content, sketchy apps.</p>
-                </div>
-                <div class="shield-card">
-                    <div class="shield-emoji">💻</div>
-                    <h3>For You</h3>
-                    <p>Focus without distractions. Social media, news feeds, time-wasters—gone.</p>
+                <div class="barrier-card">
+                    <div class="barrier-number">2</div>
+                    <h3>The Alternatives Track You Too</h3>
+                    <p>Other apps exist, but they collect your data, require subscriptions, or route your traffic through their servers. You're trading one tracker for another.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="quick-features" id="features">
+    <!-- ============================================ -->
+    <!-- SECTION 3: THE SOLUTION                     -->
+    <!-- ============================================ -->
+    <section class="solution">
         <div class="container">
+            <h2 class="section-title">SaneHosts Makes It <em style="font-style: italic; color: var(--success);">Simple</em></h2>
+            <p class="section-subtitle">Two barriers. Two answers. One app.</p>
+
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="solution-number">1</div>
+                    <h3>Simple, Not Scary</h3>
+                    <p>No Terminal. No commands. Choose a protection level, activate it, done. If something breaks, just deactivate. Your Mac's built-in hosts file does the rest.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">2</div>
+                    <h3>Private, Not Exploitative</h3>
+                    <p>100% local. No accounts. No subscriptions. No telemetry. Your data never leaves your Mac. We don't even have a server to send it to.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: THE PROMISE - Power, Love, Sound Mind -->
+    <!-- ============================================ -->
+    <section class="promise">
+        <div class="container">
+            <h2 class="section-title">The Sane Promise</h2>
+
+            <div class="promise-verse">
+                <blockquote>"For God has not given us a spirit of fear, but of power and of love and of a sound mind."</blockquote>
+                <cite>-- 2 Timothy 1:7</cite>
+            </div>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#9889;</span>
+                    <h3>Power</h3>
+                    <p>Your data stays on your device. No cloud, no tracking, no asking permission to protect yourself.</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#9829;</span>
+                    <h3>Love</h3>
+                    <p>Built to serve you, not exploit you. No dark patterns, no manipulation, no guilt-tripping upgrades.</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#129504;</span>
+                    <h3>Sound Mind</h3>
+                    <p>Calm, focused design. No clutter, no anxiety, no 47-step setup wizard. Just clarity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 5: FEATURES                         -->
+    <!-- ============================================ -->
+
+    <!-- 5a: Protection Levels -->
+    <section class="protection-levels" id="features">
+        <div class="container">
+            <h2 class="section-title">Pick Your Protection Level</h2>
+            <p class="section-subtitle">Five curated levels. Each bundles the right blocklists for your needs. Choose one and go.</p>
+
+            <div class="levels-table-wrapper">
+                <table class="levels-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>What It Blocks</th>
+                            <th>Entries</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="level-name">Essentials</span><br>
+                                <span class="level-tagline">Just make it work</span>
+                            </td>
+                            <td class="level-desc">Ads, trackers, and malware -- safe for everyone</td>
+                            <td class="level-entries">~170K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Family Safe</span><br>
+                                <span class="level-tagline">Protect the kids</span>
+                            </td>
+                            <td class="level-desc">Essentials + adult content and gambling sites</td>
+                            <td class="level-entries">~400K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Focus Mode</span><br>
+                                <span class="level-tagline">Get stuff done</span>
+                            </td>
+                            <td class="level-desc">Family Safe + social media distractions</td>
+                            <td class="level-entries">~580K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Privacy Shield</span><br>
+                                <span class="level-tagline">Stop watching me</span>
+                            </td>
+                            <td class="level-desc">Focus Mode + telemetry and advanced trackers</td>
+                            <td class="level-entries">~600K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Kitchen Sink</span><br>
+                                <span class="level-tagline">Nuke it from orbit</span>
+                            </td>
+                            <td class="level-desc">Maximum protection -- blocks everything we can</td>
+                            <td class="level-entries">~700K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5b: Core Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
+            <p class="section-subtitle">200+ curated blocklists from Steven Black, Hagezi, AdGuard, and more.</p>
+
             <div class="features-row">
                 <div class="feature-item">
-                    <div class="feature-icon-small">🎯</div>
+                    <div class="feature-icon-small">&#127919;</div>
                     <h3>Zero Configuration</h3>
-                    <p>One click to go Sane. Pick a blocklist. Click activate. Done.</p>
+                    <p>Pick a protection level. Click activate. Done. No Terminal, no commands, no manual editing.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">🌐</div>
-                    <h3>System-Wide</h3>
-                    <p>Every app, not just browsers. Safari, Chrome, Slack, games—all protected.</p>
+                    <div class="feature-icon-small">&#127760;</div>
+                    <h3>System-Wide Protection</h3>
+                    <p>Every app, not just browsers. Safari, Chrome, Slack, games -- all protected at the system level.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">🔒</div>
-                    <h3>Privacy First</h3>
-                    <p>Your data stays on your Mac. No cloud. No accounts. No tracking.</p>
+                    <div class="feature-icon-small">&#128274;</div>
+                    <h3>100% Local</h3>
+                    <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Network only when you choose to import.</p>
+                </div>
+            </div>
+
+            <div class="features-row" style="margin-top: 24px;">
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128203;</div>
+                    <h3>Multiple Profiles</h3>
+                    <p>Create profiles for different contexts -- work, family, focus. Switch instantly from the menu bar.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128260;</div>
+                    <h3>Automatic DNS Flush</h3>
+                    <p>DNS cache cleared automatically when you activate or switch profiles. Changes take effect immediately.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128736;</div>
+                    <h3>Crash Resilient</h3>
+                    <p>Automatic backups (3 per profile). Corrupted data recovered automatically. Your protection stays up.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- 5c: How It Works -->
     <section class="how-it-works">
         <div class="container">
             <h2 class="section-title">Pick. Click. Protected.</h2>
-            <p class="section-subtitle">Curated blocklists from security researchers. Merged into one profile.</p>
+            <p class="section-subtitle">Curated blocklists from security researchers, merged into one profile. You choose what to block.</p>
             <div class="how-it-works-image">
                 <img src="images/sanehosts-import.png" alt="SaneHosts blocklist import - choose from curated lists like Steven Black, Hagezi, and Peter Lowe">
             </div>
         </div>
     </section>
 
-    <section class="open-source">
-        <div class="container">
-            <div class="open-source-card">
-                <h2>The Code is Public</h2>
-                <p class="tagline">The protection is private.</p>
-                <p>SaneHosts is open source. Read every line. No hidden tricks. No data harvesting. Just a Mac app that does what it says.</p>
-                <p><strong>Why $5?</strong> You're supporting open-source development. The app is signed, notarized, and ready to run. You could build it yourself—or you could grab a latte and let us handle it.</p>
-                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    View on GitHub
-                </a>
-            </div>
-        </div>
-    </section>
-
+    <!-- 5d: Comparison -->
     <section class="comparison">
         <div class="container">
             <h2 class="section-title">Why SaneHosts?</h2>
-            <p class="section-subtitle">Works locally. No VPN. No cloud. No subscription.</p>
+            <p class="section-subtitle">No VPN. No cloud. No subscription. Just your Mac's built-in hosts file, made usable.</p>
             <div class="comparison-table-wrapper">
                 <table class="comparison-table">
                     <thead>
@@ -1090,13 +1429,64 @@
         </div>
     </section>
 
+    <!-- 5e: Open Source -->
+    <section class="open-source">
+        <div class="container">
+            <div class="open-source-card">
+                <h2>The Code Is Public</h2>
+                <p class="tagline">The protection is private.</p>
+                <p>SaneHosts is open source. Read every line. No hidden tricks. No data harvesting. Just a Mac app that does what it says.</p>
+                <p><strong>Why $5?</strong> You're supporting independent, open-source development. The app is signed, notarized, and ready to run. You could build it yourself -- or you could grab a latte and let us handle it.</p>
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 6: DOWNLOAD + PRICING               -->
+    <!-- ============================================ -->
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-card">
+                <h2>Ready to Go Sane?</h2>
+                <span class="price-tag">$5 once -- yours forever</span>
+                <p>Open source. Build it yourself for free, or grab the signed, notarized DMG.</p>
+                <div class="download-options">
+                    <span class="btn btn-primary" style="opacity: 0.6; cursor: default;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download DMG -- Coming Soon
+                    </span>
+                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        Build from Source (Free)
+                    </a>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 20px;">
+                    Requires macOS 14.0 (Sonoma) or later
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support -->
     <section class="support" id="support">
         <div class="container">
             <h2 class="section-title">Support SaneHosts</h2>
             <p class="section-subtitle support-subtitle">
                 <em>"The worker is worthy of his wages."</em><br>
-                — 1 Timothy 5:18<br><br>
-                Thank you. — Mr. Sane
+                -- 1 Timothy 5:18<br><br>
+                Thank you. -- Mr. Sane
             </p>
             <a href="https://github.com/sponsors/stephanjoseph" class="btn btn-primary github-sponsor-btn" target="_blank" rel="noopener">
                 <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
@@ -1128,6 +1518,7 @@
         </div>
     </section>
 
+    <!-- More Apps -->
     <section class="more-apps">
         <div class="container">
             <h2 class="section-title">More from Sane Apps</h2>
@@ -1139,7 +1530,7 @@
                         <div class="app-card-name">SaneBar</div>
                     </div>
                     <p class="app-card-tagline">Menu bar manager. Hide clutter. Find any icon instantly.</p>
-                    <span class="app-card-cta">Learn more →</span>
+                    <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
                 <a href="https://saneclip.com" class="app-card">
                     <div class="app-card-header">
@@ -1147,31 +1538,11 @@
                         <div class="app-card-name">SaneClip</div>
                     </div>
                     <p class="app-card-tagline">Clipboard manager. Unlimited history. Quick search.</p>
-                    <span class="app-card-cta">Learn more →</span>
+                    <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
             </div>
             <div class="more-apps-hub">
-                <a href="https://saneapps.com">See all apps at saneapps.com →</a>
-            </div>
-        </div>
-    </section>
-
-    <section class="download" id="download">
-        <div class="container">
-            <div class="download-card">
-                <h2>Ready to Go Sane?</h2>
-                <p>Open source. Build it yourself, or wait for the signed DMG ($5, coming soon).</p>
-                <div class="download-options">
-                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        Build from Source (Free)
-                    </a>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 20px;">
-                    Requires macOS 14.0+ · Signed DMG ($5) coming soon
-                </p>
+                <a href="https://saneapps.com">See all apps at saneapps.com &#8594;</a>
             </div>
         </div>
     </section>
@@ -1184,10 +1555,11 @@
                 <a href="privacy.html">Privacy</a>
                 <a href="https://github.com/sane-apps/SaneHosts/issues">Support</a>
                 <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">MIT License</a>
+                <a href="https://saneapps.com">Sane Apps</a>
             </div>
-            <p class="footer-copy">Made with care by Mr. Sane · © 2026 SaneHosts</p>
-            <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." — 2 Timothy 1:7</p>
-            <p class="footer-philosophy">"Built for a Sound Mind" · <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
+            <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts</p>
+            <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
+            <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
         </div>
     </footer>
 

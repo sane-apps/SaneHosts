@@ -2,7 +2,7 @@ import Foundation
 import OSLog
 import SwiftUI
 
-private let logger = Logger(subsystem: "com.sanehosts.app", category: "ProfileStore")
+private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "ProfileStore")
 
 /// Notification posted when ProfileStore data changes
 public extension Notification.Name {
@@ -36,13 +36,17 @@ public final class ProfileStore {
 
     /// URL for storing profiles
     private var profilesDirectoryURL: URL {
-        let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            fatalError("Application Support directory unavailable")
+        }
         return appSupport.appendingPathComponent("SaneHosts/Profiles", isDirectory: true)
     }
 
     /// URL for profile backups (crash resilience)
     private var backupsDirectoryURL: URL {
-        let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+        guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            fatalError("Application Support directory unavailable")
+        }
         return appSupport.appendingPathComponent("SaneHosts/Backups", isDirectory: true)
     }
 
@@ -87,17 +91,10 @@ public final class ProfileStore {
                 try await migrateExistingSystemHosts()
             }
 
-            // Create default profile if none exist (migration may have created one)
+            // Create Essentials profile if none exist (migration may have created one)
             if profiles.isEmpty {
-                logger.debug(" No profiles found, creating default...")
-                let defaultProfile = Profile(
-                    name: "Default",
-                    entries: [],
-                    isActive: false,
-                    colorTag: .blue
-                )
-                profiles.append(defaultProfile)
-                try await save(profile: defaultProfile)
+                logger.debug(" No profiles found, creating Essentials preset...")
+                await createEssentialsProfile()
             }
         } catch {
             logger.debug(" ERROR: \(error.localizedDescription)")
@@ -118,6 +115,51 @@ public final class ProfileStore {
         if !fileManager.fileExists(atPath: backupsDirectoryURL.path) {
             try fileManager.createDirectory(at: backupsDirectoryURL, withIntermediateDirectories: true)
         }
+    }
+
+    // MARK: - Preset Profiles
+
+    /// Create the Essentials preset profile on first launch
+    private func createEssentialsProfile() async {
+        logger.debug("Creating Essentials preset profile...")
+
+        do {
+            // Load entries from PresetManager (will fetch from network if needed)
+            let entries = try await PresetManager.shared.loadEntries(for: .essentials)
+            logger.debug("Loaded \(entries.count) entries for Essentials")
+
+            let essentialsProfile = ProfilePreset.essentials.createProfile(with: entries)
+            profiles.append(essentialsProfile)
+            try await save(profile: essentialsProfile)
+
+            logger.debug("Essentials profile created with \(entries.count) entries")
+        } catch {
+            logger.debug("Failed to load Essentials preset: \(error.localizedDescription)")
+            // Fallback: create empty profile so app doesn't crash
+            let fallbackProfile = Profile(
+                name: "Essentials",
+                entries: [],
+                isActive: false,
+                colorTag: .blue
+            )
+            profiles.append(fallbackProfile)
+            try? await save(profile: fallbackProfile)
+            logger.debug("Created empty fallback Essentials profile")
+        }
+    }
+
+    /// Create a profile from a preset
+    public func createProfile(from preset: ProfilePreset) async throws {
+        logger.debug("Creating profile from preset: \(preset.displayName)")
+
+        let entries = try await PresetManager.shared.loadEntries(for: preset)
+        let profile = preset.createProfile(with: entries)
+
+        profiles.append(profile)
+        try await save(profile: profile)
+        notifyChange()
+
+        logger.debug("Created \(preset.displayName) with \(entries.count) entries")
     }
 
     // MARK: - Backup & Recovery
