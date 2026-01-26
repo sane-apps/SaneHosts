@@ -8,7 +8,7 @@
 
     <item>
       <title>Version 1.0</title>
-      <pubDate>Wed, 21 Jan 2026 15:37:04 +0000</pubDate>
+      <pubDate>Mon, 26 Jan 2026 20:01:56 +0000</pubDate>
       <sparkle:version>1.0</sparkle:version>
       <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
@@ -24,9 +24,9 @@
       ]]></description>
       <enclosure
         url="https://github.com/sane-apps/SaneHosts/releases/download/v1.0/SaneHosts-1.0.dmg"
-        length="3546805"
+        length="5917450"
         type="application/octet-stream"
-        sparkle:edSignature="E3d+mrspMDN2ixY9w+TYCIeUiFnBjvu/0KggE43JeVtr05Hcd2vyPnmOgan55zEdkL4v98FOAtWHD8wNiBtACQ=="
+        sparkle:edSignature="rKx5ZxyR9RmvIery3AEttBi1VQfV3HR2uf+VFogBqtLE6tUfhq++Z+qI3DnKrzjjzpinSY4BoEq7+Me8tZIGDg=="
       />
     </item>
 
