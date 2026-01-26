@@ -1,0 +1,806 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.xctest/Contents/MacOS/SaneHostsFeaturePackageTests",
+      "packagePath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage",
+      "productName" : "SaneHostsFeaturePackageTests"
+    }
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.SaneHostsFeature-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/sources",
+      "importPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SaneHostsFeature",
+      "moduleOutputPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeature.swiftmodule",
+      "objects" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-Onone",
+        "-enable-testing",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/include/SaneHostsFeature-Swift.h",
+        "-swift-version",
+        "6",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sanehostspackage"
+      ],
+      "outputFileMapPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeature.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift"
+      ],
+      "tempsPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.SaneHostsFeaturePackageTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/sources",
+      "importPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.derived/runner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeatureTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SaneHostsFeaturePackageTests",
+      "moduleOutputPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeaturePackageTests.swiftmodule",
+      "objects" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/include/SaneHostsFeaturePackageTests-Swift.h",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sanehostspackage"
+      ],
+      "outputFileMapPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeaturePackageTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.derived/runner.swift"
+      ],
+      "tempsPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.SaneHostsFeatureTests-arm64-apple-macosx26.0-debug.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/sources",
+      "importPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeature.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "SaneHostsFeatureTests",
+      "moduleOutputPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeatureTests.swiftmodule",
+      "objects" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests.swift.o",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx14.0",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j10",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-swift-version",
+        "6",
+        "-Xfrontend",
+        "-experimental-lazy-typecheck",
+        "-Xfrontend",
+        "-experimental-skip-all-function-bodies",
+        "-Xfrontend",
+        "-experimental-allow-module-with-compiler-errors",
+        "-Xfrontend",
+        "-empty-abi-descriptor",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "sanehostspackage"
+      ],
+      "outputFileMapPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules/SaneHostsFeatureTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : true,
+      "sources" : [
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift",
+        "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift"
+      ],
+      "tempsPath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "SaneHostsFeature" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SaneHostsFeature",
+      "-package-name",
+      "sanehostspackage",
+      "-c",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift",
+      "-I",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-Onone",
+      "-enable-testing",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/include/SaneHostsFeature-Swift.h",
+      "-swift-version",
+      "6",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sanehostspackage",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "SaneHostsFeaturePackageTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SaneHostsFeaturePackageTests",
+      "-package-name",
+      "sanehostspackage",
+      "-c",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.derived/runner.swift",
+      "-I",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/include/SaneHostsFeaturePackageTests-Swift.h",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sanehostspackage",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ],
+    "SaneHostsFeatureTests" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "SaneHostsFeatureTests",
+      "-package-name",
+      "sanehostspackage",
+      "-c",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift",
+      "-I",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/Modules",
+      "-target",
+      "arm64-apple-macosx14.0",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j10",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-swift-version",
+      "6",
+      "-Xfrontend",
+      "-experimental-lazy-typecheck",
+      "-Xfrontend",
+      "-experimental-skip-all-function-bodies",
+      "-Xfrontend",
+      "-experimental-allow-module-with-compiler-errors",
+      "-Xfrontend",
+      "-empty-abi-descriptor",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.2.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/PrivateFrameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "sanehostspackage",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "SaneHostsFeature" : [
+
+    ],
+    "SaneHostsFeaturePackageTests" : [
+      "SaneHostsFeatureTests",
+      "SaneHostsFeature"
+    ],
+    "SaneHostsFeatureTests" : [
+      "SaneHostsFeature"
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/sources"
+    },
+    "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.derived/runner.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/sources"
+    },
+    "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/sources"
+    },
+    "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

@@ -1,0 +1,408 @@
+2026-01-21 15:36:12 +0000 [MT] Initial pipeline context: <IDEDistributionProcessingPipelineContext: 0x7a3c2c000; archive(resolved)="<IDEArchive: 0x7a5b935d0>", distributionTask(resolved)="2", distributionDestination(resolved)="1", distributionMethod(resolved)="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team(resolved)="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	Chain (12, self inclusive):
+	<IDEDistributionProcessingPipelineContext: 0x7a3c2c000; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionProcessingPipelineContext: 0x7a3c2d500; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6411400; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6411180; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410f00; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410c80; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410a00; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410780; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410500; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="<IDEProvisioningBasicTeam: 0x7a3c121c0; teamID='M78L6FXD48', teamName='(null)'>">
+	<IDEDistributionContext: 0x7a6410280; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="(null)">
+	<IDEDistributionContext: 0x7a6410000; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="<IDEDistributionMethodDeveloperID: 0x7a645c950>", team="(null)">
+	<IDEDistributionContext: 0x102d0e6b0; archive = "<IDEArchive: 0x7a5b935d0>", distributionMethod="(null)", team="(null)">
+</IDEDistributionProcessingPipelineContext: 0x7a3c2c000>
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionCreateDestRootStep
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionCopyItemStep
+2026-01-21 15:36:12 +0000 [MT] Running /usr/bin/ditto '-V' '/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app' '/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app'
+2026-01-21 15:36:12 +0000  >>> Copying /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app 
+2026-01-21 15:36:12 +0000  copying file ./Contents/_CodeSignature/CodeResources ... 
+2026-01-21 15:36:12 +0000  3408 bytes for ./Contents/_CodeSignature/CodeResources
+2026-01-21 15:36:12 +0000  copying file ./Contents/MacOS/SaneHosts ... 
+2026-01-21 15:36:12 +0000  2775680 bytes for ./Contents/MacOS/SaneHosts
+2026-01-21 15:36:12 +0000  copying file ./Contents/Resources/AppIcon.icns ... 
+2026-01-21 15:36:12 +0000  90799 bytes for ./Contents/Resources/AppIcon.icns
+2026-01-21 15:36:12 +0000  copying file ./Contents/Resources/Assets.car ... 
+2026-01-21 15:36:12 +0000  956984 bytes for ./Contents/Resources/Assets.car
+2026-01-21 15:36:12 +0000  copying file ./Contents/Resources/SaneHosts.xctestplan ... 
+2026-01-21 15:36:12 +0000  778 bytes for ./Contents/Resources/SaneHosts.xctestplan
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/Resources ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/Resources
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/Versions/Current ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/Versions/Current
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/_CodeSignature/CodeResources ... 
+2026-01-21 15:36:12 +0000  17524 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/_CodeSignature/CodeResources
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/de.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  11648 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/de.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/he.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  9657 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/he.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ar.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  3554 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ar.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/el.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5934 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/el.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ja.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  8697 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ja.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fa.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5716 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fa.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/uk.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5842 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/uk.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_CN.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  7475 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_CN.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nb.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5539 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nb.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/es.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  7040 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/es.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/is.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  3954 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/is.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sl.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5646 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sl.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/da.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  4882 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/da.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/it.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  10956 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/it.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sk.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5675 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sk.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sv.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5160 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/sv.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ReleaseNotesColorStyle.css ... 
+2026-01-21 15:36:12 +0000  231 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ReleaseNotesColorStyle.css
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/cs.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  10774 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/cs.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ko.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  7797 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ko.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/Base.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5831 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/Base.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/hu.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  4449 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/hu.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_HK.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  6469 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_HK.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/tr.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  6183 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/tr.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pl.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5453 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pl.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_TW.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  7625 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/zh_TW.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pt-BR.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  9976 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pt-BR.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ru.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5784 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ru.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdatePermissionPrompt.nib/keyedobjects-110000.nib ... 
+2026-01-21 15:36:12 +0000  25365 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdatePermissionPrompt.nib/keyedobjects-110000.nib
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdatePermissionPrompt.nib/keyedobjects-101300.nib ... 
+2026-01-21 15:36:12 +0000  25388 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdatePermissionPrompt.nib/keyedobjects-101300.nib
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUStatus.nib ... 
+2026-01-21 15:36:12 +0000  13047 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUStatus.nib
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdateAlert.nib ... 
+2026-01-21 15:36:12 +0000  18461 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/SUUpdateAlert.nib
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fr.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  7855 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fr.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fi.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  3252 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/fi.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nl.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  9574 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nl.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/th.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5339 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/th.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nn.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5671 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/nn.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pt-PT.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  5984 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/pt-PT.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ro.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  6115 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ro.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/Info.plist ... 
+2026-01-21 15:36:12 +0000  1340 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/Info.plist
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/hr.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  6367 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/hr.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ca.lproj/Sparkle.strings ... 
+2026-01-21 15:36:12 +0000  3501 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Resources/ca.lproj/Sparkle.strings
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate ... 
+2026-01-21 15:36:12 +0000  694928 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/_CodeSignature/CodeResources ... 
+2026-01-21 15:36:12 +0000  2446 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/_CodeSignature/CodeResources
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater ... 
+2026-01-21 15:36:12 +0000  274752 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/Resources/SUStatus.nib ... 
+2026-01-21 15:36:12 +0000  13047 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/Resources/SUStatus.nib
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/Info.plist ... 
+2026-01-21 15:36:12 +0000  2377 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/Info.plist
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/PkgInfo ... 
+2026-01-21 15:36:12 +0000  8 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/PkgInfo
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/_CodeSignature/CodeResources ... 
+2026-01-21 15:36:12 +0000  2200 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/_CodeSignature/CodeResources
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader ... 
+2026-01-21 15:36:12 +0000  172192 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/Info.plist ... 
+2026-01-21 15:36:12 +0000  1716 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/Info.plist
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/_CodeSignature/CodeResources ... 
+2026-01-21 15:36:12 +0000  2200 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/_CodeSignature/CodeResources
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer ... 
+2026-01-21 15:36:12 +0000  223936 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/Info.plist ... 
+2026-01-21 15:36:12 +0000  1604 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/Info.plist
+2026-01-21 15:36:12 +0000  copying file ./Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle ... 
+2026-01-21 15:36:12 +0000  860560 bytes for ./Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/Autoupdate ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/Autoupdate
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/Updater.app ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/Updater.app
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/XPCServices ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/XPCServices
+2026-01-21 15:36:12 +0000  copying symlink ./Contents/Frameworks/Sparkle.framework/Sparkle ... 
+2026-01-21 15:36:12 +0000  linked ./Contents/Frameworks/Sparkle.framework/Sparkle
+2026-01-21 15:36:12 +0000  copying file ./Contents/Info.plist ... 
+2026-01-21 15:36:12 +0000  1481 bytes for ./Contents/Info.plist
+2026-01-21 15:36:12 +0000  copying file ./Contents/PkgInfo ... 
+2026-01-21 15:36:12 +0000  8 bytes for ./Contents/PkgInfo
+2026-01-21 15:36:12 +0000 [MT] /usr/bin/ditto exited with 0
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionEmbedProfileStep
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c4120; bundleID='org.sparkle-project.DownloaderService', path='<DVTFilePath:0x7a6446940:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c40c0; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.DownloaderService', executablePath='<DVTFilePath:0x7a6446d60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c42a0; bundleID='org.sparkle-project.InstallerLauncher', path='<DVTFilePath:0x7a6447000:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4240; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.InstallerLauncher', executablePath='<DVTFilePath:0x7a6447420:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c41e0; bundleID='(null)', path='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4180; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}', teamID='(null)', identifier='Autoupdate-5555494459251b2ebc0232c783a3e31c4a4e4056', executablePath='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c4060; bundleID='org.sparkle-project.Sparkle.Updater', path='<DVTFilePath:0x7a6445f20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4000; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.Sparkle.Updater', executablePath='<DVTFilePath:0x7a6446340:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c4360; bundleID='org.sparkle-project.Sparkle', path='<DVTFilePath:0x7a5bfd800:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4300; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a00c0; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='(null)', teamID='M78L6FXD48', identifier='org.sparkle-project.Sparkle', executablePath='<DVTFilePath:0x7a6447720:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Skipping profile for item: <IDEDistributionItem: 0x7a64c4420; bundleID='com.mrsane.SaneHosts', path='<DVTFilePath:0x7a5bb3a20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c43c0; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a00c0; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='{
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}', teamID='M78L6FXD48', identifier='com.mrsane.SaneHosts', executablePath='<DVTFilePath:0x7a5bfd080:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'>', hardenedRuntime='1'>'>
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionInfoPlistStep
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionInfoPlistStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionAppThinningPlistStep
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionSymbolsStep
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionSymbolsStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionAppThinningStep
+2026-01-21 15:36:12 +0000 [MT] Skipping step: IDEDistributionAppThinningStep because it said so
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionArchThinningStep
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc are []
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc are []
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate are []
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app are []
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B are []
+2026-01-21 15:36:12 +0000 [MT] Archs to thin for item /Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app are []
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionODRStep
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionStripXattrsStep
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Skipping stripping extended attributes because the codesign step will strip them.
+2026-01-21 15:36:12 +0000 [MT] Processing step: IDEDistributionCodesignStep
+2026-01-21 15:36:12 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4120; bundleID='org.sparkle-project.DownloaderService', path='<DVTFilePath:0x7a6446940:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c40c0; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.DownloaderService', executablePath='<DVTFilePath:0x7a6446d60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader'>', hardenedRuntime='1'>'>: {
+}
+2026-01-21 15:36:12 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:12 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4120; bundleID='org.sparkle-project.DownloaderService', path='<DVTFilePath:0x7a6446940:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c40c0; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.DownloaderService', executablePath='<DVTFilePath:0x7a6446d60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader'>', hardenedRuntime='1'>'> are: {
+}
+2026-01-21 15:36:12 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c4120; bundleID='org.sparkle-project.DownloaderService', path='<DVTFilePath:0x7a6446940:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c40c0; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.DownloaderService', executablePath='<DVTFilePath:0x7a6446d60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/MacOS/Downloader'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~oIOwbN
+2026-01-21 15:36:12 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ad50; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~oIOwbN",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc"
+)'>
+2026-01-21 15:36:13 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc: signed bundle with Mach-O universal (x86_64 arm64) [org.sparkle-project.DownloaderService]
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c42a0; bundleID='org.sparkle-project.InstallerLauncher', path='<DVTFilePath:0x7a6447000:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4240; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.InstallerLauncher', executablePath='<DVTFilePath:0x7a6447420:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer'>', hardenedRuntime='1'>'>: {
+}
+2026-01-21 15:36:13 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c42a0; bundleID='org.sparkle-project.InstallerLauncher', path='<DVTFilePath:0x7a6447000:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4240; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.InstallerLauncher', executablePath='<DVTFilePath:0x7a6447420:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer'>', hardenedRuntime='1'>'> are: {
+}
+2026-01-21 15:36:13 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c42a0; bundleID='org.sparkle-project.InstallerLauncher', path='<DVTFilePath:0x7a6447000:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4240; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.InstallerLauncher', executablePath='<DVTFilePath:0x7a6447420:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/MacOS/Installer'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~xFIx0q
+2026-01-21 15:36:13 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ae90; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~xFIx0q",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc"
+)'>
+2026-01-21 15:36:13 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc: signed bundle with Mach-O universal (x86_64 arm64) [org.sparkle-project.InstallerLauncher]
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c41e0; bundleID='(null)', path='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4180; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}', teamID='(null)', identifier='Autoupdate-5555494459251b2ebc0232c783a3e31c4a4e4056', executablePath='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', hardenedRuntime='1'>'>: {
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}
+2026-01-21 15:36:13 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c41e0; bundleID='(null)', path='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4180; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}', teamID='(null)', identifier='Autoupdate-5555494459251b2ebc0232c783a3e31c4a4e4056', executablePath='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', hardenedRuntime='1'>'> are: {
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}
+2026-01-21 15:36:13 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c41e0; bundleID='(null)', path='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4180; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+    "com.apple.application-identifier" = "org.sparkle-project.Sparkle.Autoupdate";
+}', teamID='(null)', identifier='Autoupdate-5555494459251b2ebc0232c783a3e31c4a4e4056', executablePath='<DVTFilePath:0x7a6445e60:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~lnyPqt
+2026-01-21 15:36:13 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ae90; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~lnyPqt",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate"
+)'>
+2026-01-21 15:36:13 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate: signed Mach-O universal (x86_64 arm64) [Autoupdate-5555494459251b2ebc0232c783a3e31c4a4e4056]
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4060; bundleID='org.sparkle-project.Sparkle.Updater', path='<DVTFilePath:0x7a6445f20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4000; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.Sparkle.Updater', executablePath='<DVTFilePath:0x7a6446340:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater'>', hardenedRuntime='1'>'>: {
+}
+2026-01-21 15:36:13 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4060; bundleID='org.sparkle-project.Sparkle.Updater', path='<DVTFilePath:0x7a6445f20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4000; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.Sparkle.Updater', executablePath='<DVTFilePath:0x7a6446340:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater'>', hardenedRuntime='1'>'> are: {
+}
+2026-01-21 15:36:13 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c4060; bundleID='org.sparkle-project.Sparkle.Updater', path='<DVTFilePath:0x7a6445f20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4000; isSigned='1', isAdHocSigned='1', signingCertificate='(null)', entitlements='{
+}', teamID='(null)', identifier='org.sparkle-project.Sparkle.Updater', executablePath='<DVTFilePath:0x7a6446340:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/MacOS/Updater'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~gVDlXn
+2026-01-21 15:36:13 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ae90; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~gVDlXn",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app"
+)'>
+2026-01-21 15:36:13 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app: signed app bundle with Mach-O universal (x86_64 arm64) [org.sparkle-project.Sparkle.Updater]
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4360; bundleID='org.sparkle-project.Sparkle', path='<DVTFilePath:0x7a5bfd800:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4300; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a00c0; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='(null)', teamID='M78L6FXD48', identifier='org.sparkle-project.Sparkle', executablePath='<DVTFilePath:0x7a6447720:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle'>', hardenedRuntime='1'>'>: {
+}
+2026-01-21 15:36:13 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:13 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4360; bundleID='org.sparkle-project.Sparkle', path='<DVTFilePath:0x7a5bfd800:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4300; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a0c00; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='(null)', teamID='M78L6FXD48', identifier='org.sparkle-project.Sparkle', executablePath='<DVTFilePath:0x7a6447720:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle'>', hardenedRuntime='1'>'> are: {
+}
+2026-01-21 15:36:13 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c4360; bundleID='org.sparkle-project.Sparkle', path='<DVTFilePath:0x7a5bfd800:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c4300; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a0c00; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='(null)', teamID='M78L6FXD48', identifier='org.sparkle-project.Sparkle', executablePath='<DVTFilePath:0x7a6447720:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Sparkle'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~Mj33gY
+2026-01-21 15:36:13 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ae90; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~Mj33gY",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B"
+)'>
+2026-01-21 15:36:14 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B: signed bundle with Mach-O universal (x86_64 arm64) [org.sparkle-project.Sparkle]
+2026-01-21 15:36:14 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4420; bundleID='com.mrsane.SaneHosts', path='<DVTFilePath:0x7a5bb3a20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c43c0; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a00c0; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='{
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}', teamID='M78L6FXD48', identifier='com.mrsane.SaneHosts', executablePath='<DVTFilePath:0x7a5bfd080:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'>', hardenedRuntime='1'>'>: {
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}
+2026-01-21 15:36:14 +0000 [MT] Associated App Clip Identifiers Filter: Skipping because "com.apple.developer.associated-appclip-app-identifiers" is not present
+2026-01-21 15:36:14 +0000 [MT] Entitlements for <IDEDistributionItem: 0x7a64c4420; bundleID='com.mrsane.SaneHosts', path='<DVTFilePath:0x7a5bb3a20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c43c0; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a0c00; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='{
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}', teamID='M78L6FXD48', identifier='com.mrsane.SaneHosts', executablePath='<DVTFilePath:0x7a5bfd080:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'>', hardenedRuntime='1'>'> are: {
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}
+2026-01-21 15:36:14 +0000 [MT] Writing entitlements for <IDEDistributionItem: 0x7a64c4420; bundleID='com.mrsane.SaneHosts', path='<DVTFilePath:0x7a5bb3a20:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app'>', codeSigningInfo='<_DVTCodeSigningInformation_Path: 0x7a64c43c0; isSigned='1', isAdHocSigned='0', signingCertificate='<DVTSigningCertificate: 0x7a66a0c00; name='Developer ID Application: Stephan Joseph (M78L6FXD48)', hash='1D4FABEE7B35C4F450F6C79F681D01754502264C', serialNumber='3261C9413331F1BDF2A823AD4ED17ED', certificateKinds='(
+    "1.2.840.113635.100.6.1.13"
+), issueDate='2026-01-01 15:12:13 +0000''>', entitlements='{
+    "com.apple.security.app-sandbox" = 0;
+    "com.apple.security.automation.apple-events" = 1;
+    "com.apple.security.cs.disable-library-validation" = 1;
+}', teamID='M78L6FXD48', identifier='com.mrsane.SaneHosts', executablePath='<DVTFilePath:0x7a5bfd080:'/Users/sj/SaneApps/apps/SaneHosts/build/SaneHosts.xcarchive/Products/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'>', hardenedRuntime='1'>'> to: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~VtF6wv
+2026-01-21 15:36:14 +0000 [MT] invoking codesign: <NSConcreteTask: 0x7a669ae90; launchPath='/usr/bin/codesign', arguments='(
+    "-f",
+    "-s",
+    1D4FABEE7B35C4F450F6C79F681D01754502264C,
+    "--entitlements",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/entitlements~~~VtF6wv",
+    "--requirements",
+    "=designated => anchor apple generic  and identifier \"$self.identifier\" and ((cert leaf[field.1.2.840.113635.100.6.1.9] exists) or ( certificate 1[field.1.2.840.113635.100.6.2.6] exists and certificate leaf[field.1.2.840.113635.100.6.1.13] exists  and certificate leaf[subject.OU] = \"M78L6FXD48\" ))",
+    "--preserve-metadata=identifier,flags,runtime,launch-constraints,library-constraints",
+    "--generate-entitlement-der",
+    "--strip-disallowed-xattrs",
+    "-vvv",
+    "/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app"
+)'>
+2026-01-21 15:36:14 +0000 [MT] codesign output: /var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app: replacing existing signature
+/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app: signed app bundle with Mach-O universal (x86_64 arm64) [com.mrsane.SaneHosts]
+2026-01-21 15:36:14 +0000 [MT] Processing step: IDEDistributionZipODRItemStep
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionZipODRItemStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Processing step: IDEDistributionSkipPackagingStep
+2026-01-21 15:36:14 +0000 [MT] Processing step: IDEDistributionAppStoreInformationStep
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionAppStoreInformationStep because it said so
+2026-01-21 15:36:14 +0000 [MT] Processing step: IDEDistributionGenerateProcessedDistributionItems
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a64c6a00:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Didn't find embedded provisioning profile for <DVTFilePath:0x7a64c6a00:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc'>: Error Domain=NSCocoaErrorDomain Code=4 "No file at <DVTFilePath:0x7a6648b60:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/embedded.provisionprofile'>" UserInfo={NSLocalizedDescription=No file at <DVTFilePath:0x7a6648b60:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Installer.xpc/Contents/embedded.provisionprofile'>}
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a66b8660:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Didn't find info dictionary for <DVTFilePath:0x7a66b8660:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>: Error Domain=DVTFoundationNSBundleAdditionsErrorDomain Code=1 "Couldn't load Info dictionary for <DVTFilePath:0x7a66b8660:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>" UserInfo={NSLocalizedDescription=Couldn't load Info dictionary for <DVTFilePath:0x7a66b8660:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>}
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Can't have a profile, not a bundle at <DVTFilePath:0x7a66b8660:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Autoupdate'>
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a64c6640:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Didn't find embedded provisioning profile for <DVTFilePath:0x7a64c6640:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app'>: Error Domain=NSCocoaErrorDomain Code=4 "No file at <DVTFilePath:0x7a6648ee0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/embedded.provisionprofile'>" UserInfo={NSLocalizedDescription=No file at <DVTFilePath:0x7a6648ee0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/Updater.app/Contents/embedded.provisionprofile'>}
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a64c74e0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Didn't find embedded provisioning profile for <DVTFilePath:0x7a64c74e0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc'>: Error Domain=NSCocoaErrorDomain Code=4 "No file at <DVTFilePath:0x7a6648c40:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/embedded.provisionprofile'>" UserInfo={NSLocalizedDescription=No file at <DVTFilePath:0x7a6648c40:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B/XPCServices/Downloader.xpc/Contents/embedded.provisionprofile'>}
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a64c7540:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/Frameworks/Sparkle.framework/Versions/B'>
+2026-01-21 15:36:14 +0000 [MT] IDEDistributionItem init <DVTFilePath:0x7a64c44e0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app'>
+2026-01-21 15:36:14 +0000 [MT] [OPTIONAL] Didn't find embedded provisioning profile for <DVTFilePath:0x7a64c44e0:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app'>: Error Domain=NSCocoaErrorDomain Code=4 "No file at <DVTFilePath:0x7a6649030:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/embedded.provisionprofile'>" UserInfo={NSLocalizedDescription=No file at <DVTFilePath:0x7a6649030:'/var/folders/4w/nny6hhc57xnc3c3nnxzn90pw0000gn/T/XcodeDistPipeline.~~~lLbXA6/Root/Applications/SaneHosts.app/Contents/embedded.provisionprofile'>}
+2026-01-21 15:36:14 +0000 [MT] Processing step: IDEDistributionCreateManifestStep
+2026-01-21 15:36:14 +0000 [MT] Skipping step: IDEDistributionCreateManifestStep because it said so

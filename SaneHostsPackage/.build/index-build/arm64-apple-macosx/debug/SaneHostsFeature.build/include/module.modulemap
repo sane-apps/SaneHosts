@@ -1,0 +1,3 @@
+module SaneHostsFeature {
+    header "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/include/SaneHostsFeature-Swift.h"
+}

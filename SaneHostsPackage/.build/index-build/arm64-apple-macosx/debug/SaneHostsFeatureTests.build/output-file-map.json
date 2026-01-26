@@ -1,0 +1,19 @@
+{
+  "": {
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/master.swiftdeps"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/CustomImportIntegrationTests.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/CustomImportIntegrationTests.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeatureTests.build/SaneHostsFeatureTests.dia"
+  }
+}
