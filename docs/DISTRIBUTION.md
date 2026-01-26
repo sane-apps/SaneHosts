@@ -87,25 +87,31 @@ This will:
 
 This creates `docs/appcast.xml` for Sparkle updates.
 
-### Step 5: Create GitHub Release
+### Step 5: Upload DMG to Cloudflare R2
 
 ```bash
 VERSION=$(grep "MARKETING_VERSION" Config/Shared.xcconfig | cut -d'=' -f2 | tr -d ' ')
 DMG="releases/SaneHosts-${VERSION}.dmg"
 
-# Create release
-gh release create "v${VERSION}" "$DMG" \
-  --title "SaneHosts ${VERSION}" \
-  --notes-file CHANGELOG.md
+npx wrangler r2 object put sanebar-downloads/${DMG##*/} \
+  --file="$DMG" --content-type="application/octet-stream" --remote
 ```
 
-### Step 6: Deploy Website
+**NEVER use GitHub Releases for DMG hosting.** Use Cloudflare R2 via `dist.sanehosts.com`.
 
-Upload to sanehosts.com:
-- `website/index.html` → `/index.html`
-- `website/privacy.html` → `/privacy.html`
-- `docs/appcast.xml` → `/appcast.xml`
-- App screenshot → `/screenshot.png`
+### Step 6: Deploy Website + Appcast
+
+```bash
+# Copy appcast into website directory
+cp docs/appcast.xml website/appcast.xml
+
+# Deploy to Cloudflare Pages
+CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \
+  npx wrangler pages deploy ./website --project-name=sanehosts-site \
+  --commit-dirty=true --commit-message="Release v${VERSION}"
+```
+
+This deploys the marketing site and appcast.xml together to `sanehosts.com`.
 
 ## File Locations
 
@@ -127,8 +133,8 @@ Upload to sanehosts.com:
 [ ] CHANGELOG.md updated
 [ ] ./scripts/build_release.sh completed
 [ ] ./scripts/generate_appcast.sh completed
-[ ] GitHub release created with DMG
-[ ] appcast.xml deployed to sanehosts.com
+[ ] DMG uploaded to R2 (sanebar-downloads bucket)
+[ ] Website + appcast deployed to Cloudflare Pages
 [ ] Tested download and update flow
 ```
 
