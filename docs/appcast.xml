@@ -20,7 +20,7 @@
         </ul>
       ]]></description>
       <enclosure
-        url="https://dist.sanehosts.com/SaneHosts-1.0.1.dmg"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.1.dmg"
         length="3609267"
         type="application/octet-stream"
         sparkle:edSignature="tfNiZ5RGatdamc/bAeUh2hE9FUf7X17eyFGgVkfla5Mzgd0iqJvmE9xnnPwJ/WB7XdOdtAod2hgrdaVl2mtPDQ=="
@@ -44,7 +44,7 @@
         </ul>
       ]]></description>
       <enclosure
-        url="https://dist.sanehosts.com/SaneHosts-1.0.dmg"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.dmg"
         length="5917153"
         type="application/octet-stream"
         sparkle:edSignature="YU55C5OoTHvZsDSkdqDvunTmA8NlQTXfueUlZgmv+SegTpdU1mjxhDR+LD0S71LJWlM4+sWtERPVNHPXskiYDA=="
