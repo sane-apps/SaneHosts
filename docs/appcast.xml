@@ -7,6 +7,27 @@
     <language>en</language>
 
     <item>
+      <title>Version 1.0.1</title>
+      <pubDate>Mon, 26 Jan 2026 22:15:00 +0000</pubDate>
+      <sparkle:version>1.0.1</sparkle:version>
+      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h2>What's New in SaneHosts 1.0.1</h2>
+        <ul>
+          <li>New clean 2D app icon</li>
+          <li>Updated website icons</li>
+        </ul>
+      ]]></description>
+      <enclosure
+        url="https://dist.sanehosts.com/SaneHosts-1.0.1.dmg"
+        length="3609267"
+        type="application/octet-stream"
+        sparkle:edSignature="tfNiZ5RGatdamc/bAeUh2hE9FUf7X17eyFGgVkfla5Mzgd0iqJvmE9xnnPwJ/WB7XdOdtAod2hgrdaVl2mtPDQ=="
+      />
+    </item>
+
+    <item>
       <title>Version 1.0</title>
       <pubDate>Mon, 26 Jan 2026 20:01:56 +0000</pubDate>
       <sparkle:version>1.0</sparkle:version>
