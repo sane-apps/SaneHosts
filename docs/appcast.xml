@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>SaneHosts Updates</title>
+    <link>https://sanehosts.com/appcast.xml</link>
+    <description>Most recent changes with links to updates.</description>
+    <language>en</language>
+
+    <item>
+      <title>Version 1.0.1</title>
+      <pubDate>Mon, 26 Jan 2026 22:15:00 +0000</pubDate>
+      <sparkle:version>1.0.1</sparkle:version>
+      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h2>What's New in SaneHosts 1.0.1</h2>
+        <ul>
+          <li>New clean 2D app icon</li>
+          <li>Updated website icons</li>
+        </ul>
+      ]]></description>
+      <enclosure
+        url="https://dist.sanehosts.com/SaneHosts-1.0.1.dmg"
+        length="3609267"
+        type="application/octet-stream"
+        sparkle:edSignature="tfNiZ5RGatdamc/bAeUh2hE9FUf7X17eyFGgVkfla5Mzgd0iqJvmE9xnnPwJ/WB7XdOdtAod2hgrdaVl2mtPDQ=="
+      />
+    </item>
+
+    <item>
+      <title>Version 1.0</title>
+      <pubDate>Mon, 26 Jan 2026 20:01:56 +0000</pubDate>
+      <sparkle:version>1.0</sparkle:version>
+      <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h2>What's New in SaneHosts 1.0</h2>
+        <ul>
+          <li>Initial release</li>
+          <li>Profile-based hosts file management</li>
+          <li>Import blocklists from popular sources</li>
+          <li>Menu bar quick access</li>
+          <li>Automatic DNS cache flush</li>
+        </ul>
+      ]]></description>
+      <enclosure
+        url="https://dist.sanehosts.com/SaneHosts-1.0.dmg"
+        length="5917153"
+        type="application/octet-stream"
+        sparkle:edSignature="YU55C5OoTHvZsDSkdqDvunTmA8NlQTXfueUlZgmv+SegTpdU1mjxhDR+LD0S71LJWlM4+sWtERPVNHPXskiYDA=="
+      />
+    </item>
+
+  </channel>
+</rss>
