@@ -27,58 +27,75 @@ let sizes: [(String, Int)] = [
     ("icon_512x512@2x.png", 1024),
 ]
 
-func createIcon(size: Int) -> NSImage {
-    let image = NSImage(size: NSSize(width: size, height: size))
+func createIcon(px: Int) -> Data? {
+    // Use NSBitmapImageRep directly to guarantee exact pixel dimensions
+    // (NSImage + lockFocus doubles pixels on Retina displays)
+    let rep = NSBitmapImageRep(
+        bitmapDataPlanes: nil,
+        pixelsWide: px,
+        pixelsHigh: px,
+        bitsPerSample: 8,
+        samplesPerPixel: 4,
+        hasAlpha: true,
+        isPlanar: false,
+        colorSpaceName: .deviceRGB,
+        bytesPerRow: 0,
+        bitsPerPixel: 0
+    )!
+    rep.size = NSSize(width: px, height: px) // 1:1 point-to-pixel
 
-    image.lockFocus()
+    NSGraphicsContext.saveGraphicsState()
+    let context = NSGraphicsContext(bitmapImageRep: rep)!
+    NSGraphicsContext.current = context
 
     // Draw gradient background
     let gradient = NSGradient(starting: bgColorTop, ending: bgColorBottom)!
-    let rect = NSRect(x: 0, y: 0, width: size, height: size)
+    let rect = NSRect(x: 0, y: 0, width: px, height: px)
     gradient.draw(in: rect, angle: -45)
 
     // Get SF Symbol
-    let config = NSImage.SymbolConfiguration(pointSize: CGFloat(size) * 0.55, weight: .regular)
+    let config = NSImage.SymbolConfiguration(pointSize: CGFloat(px) * 0.55, weight: .regular)
     if let symbolImage = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil)?.withSymbolConfiguration(config) {
 
-        // Create colored version
-        let coloredImage = NSImage(size: symbolImage.size)
-        coloredImage.lockFocus()
+        // Create colored version using a temporary bitmap at 1x
+        let symSize = symbolImage.size
+        let colorRep = NSBitmapImageRep(
+            bitmapDataPlanes: nil,
+            pixelsWide: Int(symSize.width),
+            pixelsHigh: Int(symSize.height),
+            bitsPerSample: 8,
+            samplesPerPixel: 4,
+            hasAlpha: true,
+            isPlanar: false,
+            colorSpaceName: .deviceRGB,
+            bytesPerRow: 0,
+            bitsPerPixel: 0
+        )!
+        colorRep.size = symSize
+
+        NSGraphicsContext.saveGraphicsState()
+        NSGraphicsContext.current = NSGraphicsContext(bitmapImageRep: colorRep)
         iconColor.set()
-        let imageRect = NSRect(origin: .zero, size: symbolImage.size)
-        symbolImage.draw(in: imageRect)
-        imageRect.fill(using: .sourceAtop)
-        coloredImage.unlockFocus()
+        let symRect = NSRect(origin: .zero, size: symSize)
+        symbolImage.draw(in: symRect)
+        symRect.fill(using: .sourceAtop)
+        NSGraphicsContext.restoreGraphicsState()
 
-        // Center the symbol
-        let symbolSize = coloredImage.size
-        let x = (CGFloat(size) - symbolSize.width) / 2
-        let y = (CGFloat(size) - symbolSize.height) / 2
+        let coloredImage = NSImage(size: symSize)
+        coloredImage.addRepresentation(colorRep)
 
-        coloredImage.draw(in: NSRect(x: x, y: y, width: symbolSize.width, height: symbolSize.height),
-                         from: NSRect(origin: .zero, size: symbolSize),
+        // Center the symbol in the icon
+        let x = (CGFloat(px) - symSize.width) / 2
+        let y = (CGFloat(px) - symSize.height) / 2
+
+        coloredImage.draw(in: NSRect(x: x, y: y, width: symSize.width, height: symSize.height),
+                         from: NSRect(origin: .zero, size: symSize),
                          operation: .sourceOver,
                          fraction: 1.0)
     }
 
-    image.unlockFocus()
-    return image
-}
-
-func savePNG(image: NSImage, to path: String) {
-    guard let tiffData = image.tiffRepresentation,
-          let bitmap = NSBitmapImageRep(data: tiffData),
-          let pngData = bitmap.representation(using: .png, properties: [:]) else {
-        print("Failed to create PNG for \(path)")
-        return
-    }
-
-    do {
-        try pngData.write(to: URL(fileURLWithPath: path))
-        print("Created: \(path)")
-    } catch {
-        print("Failed to write \(path): \(error)")
-    }
+    NSGraphicsContext.restoreGraphicsState()
+    return rep.representation(using: .png, properties: [:])
 }
 
 // Get script directory and construct output path
@@ -89,9 +106,13 @@ print("Generating app icons with SF Symbol: \(symbolName)")
 print("Project directory: \(projectDir)")
 
 for (filename, size) in sizes {
-    let icon = createIcon(size: size)
     let outputPath = "\(projectDir)/\(outputDir)/\(filename)"
-    savePNG(image: icon, to: outputPath)
+    if let pngData = createIcon(px: size) {
+        try! pngData.write(to: URL(fileURLWithPath: outputPath))
+        print("Created: \(outputPath) (\(size)x\(size) pixels)")
+    } else {
+        print("Failed: \(filename)")
+    }
 }
 
 print("\nDone! Generated \(sizes.count) icon files.")
