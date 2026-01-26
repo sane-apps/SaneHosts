@@ -1,0 +1,1575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneHosts - Your Mac Is Talking Behind Your Back</title>
+    <meta name="description" content="Block ads, trackers, and data collectors at the system level. No Terminal. No commands. $5 once. Works in every app on your Mac.">
+    <meta name="keywords" content="macOS, hosts file, ad blocker, privacy, tracker blocker, Mac app, hosts manager">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="canonical" href="https://sanehosts.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta property="og:description" content="Block ads and trackers at the system level. No Terminal. No commands. $5 once.">
+    <meta property="og:image" content="https://sanehosts.com/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta name="twitter:description" content="Block ads and trackers at the system level. No Terminal. $5 once.">
+    <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SaneHosts",
+      "operatingSystem": "macOS",
+      "applicationCategory": "UtilitiesApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "5",
+        "priceCurrency": "USD"
+      },
+      "description": "Block ads, trackers, and distractions at the system level using your Mac's built-in hosts file.",
+      "image": "https://sanehosts.com/favicon.png",
+      "downloadUrl": "https://github.com/sane-apps/SaneHosts"
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #5fa8d3;
+            --accent-soft: #4a9bc8;
+            --accent-glow: rgba(95, 168, 211, 0.25);
+            --accent-subtle: rgba(95, 168, 211, 0.08);
+            --text-primary: #f5f5f8;
+            --text-secondary: #c0c0d0;
+            --text-muted: #a0a0b0;
+            --success: #34d399;
+            --success-soft: rgba(52, 211, 153, 0.15);
+            --warm: #f4a261;
+            --warm-soft: rgba(244, 162, 97, 0.15);
+            --danger: #ef4444;
+            --danger-soft: rgba(239, 68, 68, 0.12);
+            --border: #252530;
+            --border-subtle: #1e1e28;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+            font-weight: 400;
+            letter-spacing: -0.01em;
+        }
+
+        /* Gradient background with subtle noise */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
+                radial-gradient(ellipse at 85% 90%, rgba(244, 162, 97, 0.08) 0%, transparent 45%),
+                radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .gradient-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* Animation keyframes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        nav {
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 15, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.25rem;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo img {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+        }
+
+        .logo-family {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 12px;
+            padding-left: 12px;
+            border-left: 1px solid var(--border);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .logo-family:hover {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            padding: 10px 20px !important;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff !important;
+            font-weight: 600;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Hero Section - THE THREAT */
+        .hero {
+            padding: 160px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 600;
+            margin-bottom: 24px;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            line-height: 1.15;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero .subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 20px;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .hero .threat-detail {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            max-width: 540px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+        }
+
+        .hero-image {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--bg-card);
+            box-shadow:
+                0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                0 0 0 1px var(--border);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+            min-height: 200px;
+            object-fit: contain;
+        }
+
+        /* Section shared styles */
+        .section-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 16px;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            max-width: 540px;
+            margin: 0 auto 56px;
+            line-height: 1.7;
+        }
+
+        /* Barriers Section */
+        .barriers {
+            padding: 100px 0 80px;
+            background: linear-gradient(180deg, transparent, rgba(244, 162, 97, 0.04));
+        }
+
+        .barrier-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .barrier-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            transition: all 0.3s ease;
+        }
+
+        .barrier-card:hover {
+            border-color: var(--warm);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .barrier-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--warm-soft);
+            color: var(--warm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .barrier-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .barrier-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Solution Section */
+        .solution {
+            padding: 100px 0 80px;
+            background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.04));
+        }
+
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .solution-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            transition: all 0.3s ease;
+        }
+
+        .solution-card:hover {
+            border-color: var(--success);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .solution-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--success-soft);
+            color: var(--success);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .solution-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .solution-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Promise Section - Power, Love, Sound Mind */
+        .promise {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .promise-verse {
+            max-width: 540px;
+            margin: 0 auto 48px;
+        }
+
+        .promise-verse blockquote {
+            font-style: italic;
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .promise-verse cite {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 28px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .pillar-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 28px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .pillar-icon {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .pillar-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .pillar-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Protection Levels */
+        .protection-levels {
+            padding: 80px 0;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 100%);
+        }
+
+        .levels-table-wrapper {
+            overflow-x: auto;
+            margin: 0 -24px;
+            padding: 0 24px;
+        }
+
+        .levels-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            min-width: 600px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .levels-table th,
+        .levels-table td {
+            padding: 16px 20px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .levels-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .levels-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .levels-table tbody tr:hover {
+            background: var(--accent-subtle);
+        }
+
+        .level-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .level-tagline {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .level-desc {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .level-entries {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+        }
+
+        .features-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .feature-item {
+            padding: 20px;
+        }
+
+        .feature-icon-small {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.15rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .feature-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .how-it-works-image {
+            max-width: 800px;
+            margin: 40px auto 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .how-it-works-image img {
+            width: 100%;
+            display: block;
+        }
+
+        /* Comparison Table */
+        .comparison {
+            padding: 80px 0;
+        }
+
+        .comparison-table-wrapper {
+            overflow-x: auto;
+            margin: 0 -24px;
+            padding: 0 24px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            min-width: 600px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table th.highlight-col {
+            background: linear-gradient(180deg, rgba(95, 168, 211, 0.15) 0%, rgba(95, 168, 211, 0.05) 100%);
+            color: var(--accent);
+        }
+
+        .comparison-table td.highlight-col {
+            background: rgba(95, 168, 211, 0.05);
+        }
+
+        .comparison-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .feature-name {
+            text-align: left !important;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .check {
+            color: var(--success);
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .cross {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        /* Open Source */
+        .open-source {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .open-source-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 56px 40px;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .open-source h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.75rem;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .open-source .tagline {
+            color: var(--accent);
+            font-size: 1.1rem;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .open-source p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 28px;
+        }
+
+        .open-source .btn-secondary {
+            padding: 14px 28px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 0.01em;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #ffffff;
+            font-weight: 600;
+            box-shadow:
+                0 4px 24px var(--accent-glow),
+                0 1px 3px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 8px 40px var(--accent-glow),
+                0 4px 12px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            filter: brightness(1.05);
+        }
+
+        .btn-secondary {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: var(--accent);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        /* Trust Badges */
+        .trust-badges {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 36px;
+        }
+
+        .trust-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+        }
+
+        .trust-badge.highlight {
+            background: var(--success-soft);
+            border-color: rgba(52, 211, 153, 0.25);
+            color: var(--success);
+        }
+
+        /* Support Section */
+        .support {
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .support-subtitle {
+            font-style: italic;
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        .github-sponsor-btn {
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 32px;
+            background: linear-gradient(135deg, #ea4aaa 0%, #db61a2 100%);
+            border: none;
+        }
+
+        .github-sponsor-btn:hover {
+            background: linear-gradient(135deg, #f06bc4 0%, #ea4aaa 100%);
+            transform: translateY(-2px);
+        }
+
+        .crypto-addresses {
+            max-width: 600px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .crypto-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .crypto-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .crypto-logo {
+            flex-shrink: 0;
+            border-radius: 50%;
+        }
+
+        .crypto-addr {
+            background: var(--bg-primary);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+            text-align: left;
+            word-break: break-all;
+            border: 1px solid transparent;
+        }
+
+        .crypto-btc:hover .crypto-addr {
+            background: rgba(247, 147, 26, 0.2);
+            color: #F7931A;
+            border-color: #F7931A;
+        }
+
+        .crypto-sol:hover .crypto-addr {
+            background: rgba(153, 69, 255, 0.2);
+            color: #9945FF;
+            border-color: #9945FF;
+        }
+
+        .crypto-zec:hover .crypto-addr {
+            background: rgba(244, 183, 40, 0.2);
+            color: #F4B728;
+            border-color: #F4B728;
+        }
+
+        .crypto-eth:hover .crypto-addr {
+            background: rgba(98, 126, 234, 0.2);
+            color: #627EEA;
+            border-color: #627EEA;
+        }
+
+        .crypto-hint {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            margin-top: 12px;
+        }
+
+        /* Cross-Sell Section */
+        .more-apps {
+            padding: 80px 0;
+            background: linear-gradient(180deg, transparent, rgba(95, 168, 211, 0.03));
+        }
+
+        .more-apps h2 {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .more-apps-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 48px;
+            font-size: 1.05rem;
+        }
+
+        .more-apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .app-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            display: block;
+        }
+
+        .app-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-card-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .app-card-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            object-fit: contain;
+        }
+
+        .app-card-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .app-card-tagline {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            margin-bottom: 16px;
+        }
+
+        .app-card-cta {
+            color: var(--accent);
+            font-weight: 500;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-card:hover .app-card-cta {
+            gap: 10px;
+        }
+
+        .more-apps-hub {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .more-apps-hub a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .more-apps-hub a:hover {
+            color: var(--accent);
+        }
+
+        /* Download Section */
+        .download {
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .download-card {
+            background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle);
+            border-radius: 28px;
+            padding: 64px 48px;
+            max-width: 680px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.5;
+        }
+
+        .download h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+
+        .download p {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 1rem;
+        }
+
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .price-tag {
+            display: inline-block;
+            background: var(--success-soft);
+            color: var(--success);
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            border: 1px solid rgba(52, 211, 153, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 60px 0 40px;
+            border-top: 1px solid var(--border-subtle);
+            text-align: center;
+            background: linear-gradient(180deg, transparent, rgba(0,0,0,0.2));
+        }
+
+        .footer-privacy {
+            font-size: 1rem;
+            margin-bottom: 24px;
+            letter-spacing: 0.02em;
+        }
+
+        .footer-privacy strong {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            margin-bottom: 24px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent);
+        }
+
+        .footer-copy {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .footer-philosophy {
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 12px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 120px 0 60px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .trust-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .barrier-grid,
+            .solution-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pillars-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">
+                <img src="favicon.png" alt="SaneHosts">
+                SaneHosts
+            </a>
+            <a href="https://saneapps.com" class="logo-family">Part of the Sane Apps family</a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#download">Download</a>
+                <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
+                <span class="nav-cta" style="opacity: 0.6; cursor: default;">DMG Coming Soon</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============================================ -->
+    <!-- SECTION 1: HERO - THE THREAT                -->
+    <!-- ============================================ -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="animate-in delay-2">Your Mac Is Talking<br><em>Behind Your Back</em></h1>
+            <p class="subtitle animate-in delay-3">Every time you open an app, hidden connections reach out to ad networks, trackers, and data collectors. They watch what you browse, what you use, and build profiles about you.</p>
+            <p class="threat-detail animate-in delay-3">All without your knowledge or consent.</p>
+
+            <div class="cta-buttons animate-in delay-4">
+                <a href="#download" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    Take Back Control
+                </a>
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View Source
+                </a>
+            </div>
+
+            <div class="hero-image animate-in delay-5">
+                <img src="screenshot.png" alt="SaneHosts App - System-wide tracker blocking for macOS">
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 2: THE BARRIERS                     -->
+    <!-- ============================================ -->
+    <section class="barriers">
+        <div class="container">
+            <h2 class="section-title">You Shouldn't Need a CS Degree<br>to Stop Being Tracked</h2>
+            <p class="section-subtitle">Your Mac already has the tool to block trackers. So why isn't everyone using it?</p>
+
+            <div class="barrier-grid">
+                <div class="barrier-card">
+                    <div class="barrier-number">1</div>
+                    <h3>The DIY Way Is Painful</h3>
+                    <p>Your Mac has a hosts file that can block trackers. But you'd need Terminal, admin commands, and thousands of manual entries. One typo breaks your internet.</p>
+                </div>
+                <div class="barrier-card">
+                    <div class="barrier-number">2</div>
+                    <h3>The Alternatives Track You Too</h3>
+                    <p>Other apps exist, but they collect your data, require subscriptions, or route your traffic through their servers. You're trading one tracker for another.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 3: THE SOLUTION                     -->
+    <!-- ============================================ -->
+    <section class="solution">
+        <div class="container">
+            <h2 class="section-title">SaneHosts Makes It <em style="font-style: italic; color: var(--success);">Simple</em></h2>
+            <p class="section-subtitle">Two barriers. Two answers. One app.</p>
+
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="solution-number">1</div>
+                    <h3>Simple, Not Scary</h3>
+                    <p>No Terminal. No commands. Choose a protection level, activate it, done. If something breaks, just deactivate. Your Mac's built-in hosts file does the rest.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-number">2</div>
+                    <h3>Private, Not Exploitative</h3>
+                    <p>100% on-device. No accounts. No subscriptions. No telemetry. Your data never leaves your Mac. We don't even have a server to send it to.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 4: THE PROMISE - Power, Love, Sound Mind -->
+    <!-- ============================================ -->
+    <section class="promise">
+        <div class="container">
+            <h2 class="section-title">The Sane Promise</h2>
+
+            <div class="promise-verse">
+                <blockquote>"For God has not given us a spirit of fear, but of power and of love and of a sound mind."</blockquote>
+                <cite>-- 2 Timothy 1:7</cite>
+            </div>
+
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#9889;</span>
+                    <h3>Power</h3>
+                    <p>Your data stays on your device. No cloud, no tracking, no asking permission to protect yourself.</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#9829;</span>
+                    <h3>Love</h3>
+                    <p>Built to serve you, not exploit you. No dark patterns, no manipulation, no guilt-tripping upgrades.</p>
+                </div>
+                <div class="pillar-card">
+                    <span class="pillar-icon">&#129504;</span>
+                    <h3>Sound Mind</h3>
+                    <p>Calm, focused design. No clutter, no anxiety, no 47-step setup wizard. Just clarity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 5: FEATURES                         -->
+    <!-- ============================================ -->
+
+    <!-- 5a: Protection Levels -->
+    <section class="protection-levels" id="features">
+        <div class="container">
+            <h2 class="section-title">Pick Your Protection Level</h2>
+            <p class="section-subtitle">Five curated levels. Each bundles the right blocklists for your needs. Choose one and go.</p>
+
+            <div class="levels-table-wrapper">
+                <table class="levels-table">
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>What It Blocks</th>
+                            <th>Entries</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="level-name">Essentials</span><br>
+                                <span class="level-tagline">Just make it work</span>
+                            </td>
+                            <td class="level-desc">Ads, trackers, and malware -- safe for everyone</td>
+                            <td class="level-entries">~170K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Family Safe</span><br>
+                                <span class="level-tagline">Protect the kids</span>
+                            </td>
+                            <td class="level-desc">Essentials + adult content and gambling sites</td>
+                            <td class="level-entries">~400K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Focus Mode</span><br>
+                                <span class="level-tagline">Get stuff done</span>
+                            </td>
+                            <td class="level-desc">Family Safe + social media distractions</td>
+                            <td class="level-entries">~580K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Privacy Shield</span><br>
+                                <span class="level-tagline">Stop watching me</span>
+                            </td>
+                            <td class="level-desc">Focus Mode + telemetry and advanced trackers</td>
+                            <td class="level-entries">~600K</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="level-name">Kitchen Sink</span><br>
+                                <span class="level-tagline">Nuke it from orbit</span>
+                            </td>
+                            <td class="level-desc">Maximum protection -- blocks everything we can</td>
+                            <td class="level-entries">~700K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5b: Core Features -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
+            <p class="section-subtitle">200+ curated blocklists from Steven Black, Hagezi, AdGuard, and more.</p>
+
+            <div class="features-row">
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#127919;</div>
+                    <h3>Zero Configuration</h3>
+                    <p>Pick a protection level. Click activate. Done. No Terminal, no commands, no manual editing.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#127760;</div>
+                    <h3>System-Wide Protection</h3>
+                    <p>Every app, not just browsers. Safari, Chrome, Slack, games -- all protected at the system level.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128274;</div>
+                    <h3>100% On-Device</h3>
+                    <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Network only when you choose to import.</p>
+                </div>
+            </div>
+
+            <div class="features-row" style="margin-top: 24px;">
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128203;</div>
+                    <h3>Multiple Profiles</h3>
+                    <p>Create profiles for different contexts -- work, family, focus. Switch instantly from the menu bar.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128260;</div>
+                    <h3>Automatic DNS Flush</h3>
+                    <p>DNS cache cleared automatically when you activate or switch profiles. Changes take effect immediately.</p>
+                </div>
+                <div class="feature-item">
+                    <div class="feature-icon-small">&#128736;</div>
+                    <h3>Crash Resilient</h3>
+                    <p>Automatic backups (3 per profile). Corrupted data recovered automatically. Your protection stays up.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5c: How It Works -->
+    <section class="how-it-works">
+        <div class="container">
+            <h2 class="section-title">Pick. Click. Protected.</h2>
+            <p class="section-subtitle">Curated blocklists from security researchers, merged into one profile. You choose what to block.</p>
+            <div class="how-it-works-image">
+                <img src="images/sanehosts-import.png" alt="SaneHosts blocklist import - choose from curated lists like Steven Black, Hagezi, and Peter Lowe">
+            </div>
+        </div>
+    </section>
+
+    <!-- 5d: Comparison -->
+    <section class="comparison">
+        <div class="container">
+            <h2 class="section-title">Why SaneHosts?</h2>
+            <p class="section-subtitle">No VPN. No cloud. No subscription. Just your Mac's built-in hosts file, made usable.</p>
+            <div class="comparison-table-wrapper">
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="highlight-col">SaneHosts</th>
+                            <th>Browser Extensions</th>
+                            <th>VPN Blockers</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="feature-name">Works in all apps</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">100% on-device</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">No subscription</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">No speed impact</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td><span class="check">&#10003;</span></td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                        <tr>
+                            <td class="feature-name">Open source</td>
+                            <td class="highlight-col"><span class="check">&#10003;</span></td>
+                            <td>Some</td>
+                            <td><span class="cross">&#10007;</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5e: Open Source -->
+    <section class="open-source">
+        <div class="container">
+            <div class="open-source-card">
+                <h2>The Code Is Public</h2>
+                <p class="tagline">The protection is private.</p>
+                <p>SaneHosts is open source. Read every line. No hidden tricks. No data harvesting. Just a Mac app that does what it says.</p>
+                <p><strong>Why $5?</strong> You're supporting independent, open-source development. The app is signed, notarized, and ready to run. You could build it yourself -- or you could grab a latte and let us handle it.</p>
+                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                    </svg>
+                    View on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- SECTION 6: DOWNLOAD + PRICING               -->
+    <!-- ============================================ -->
+    <section class="download" id="download">
+        <div class="container">
+            <div class="download-card">
+                <h2>Ready to Go Sane?</h2>
+                <span class="price-tag">$5 once -- yours forever</span>
+                <p>Open source. Build it yourself for free, or grab the signed, notarized DMG.</p>
+                <div class="download-options">
+                    <span class="btn btn-primary" style="opacity: 0.6; cursor: default;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Download DMG -- Coming Soon
+                    </span>
+                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                        Build from Source (Free)
+                    </a>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 20px;">
+                    Requires macOS 14.0 (Sonoma) or later
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Support -->
+    <section class="support" id="support">
+        <div class="container">
+            <h2 class="section-title">Support SaneHosts</h2>
+            <p class="section-subtitle support-subtitle">
+                <em>"The worker is worthy of his wages."</em><br>
+                -- 1 Timothy 5:18<br><br>
+                Thank you. -- Mr. Sane
+            </p>
+            <a href="https://github.com/sponsors/stephanjoseph" class="btn btn-primary github-sponsor-btn" target="_blank" rel="noopener">
+                <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
+                    <path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/>
+                </svg>
+                Sponsor on GitHub
+            </a>
+            <div class="crypto-addresses">
+                <div class="crypto-grid">
+                    <div class="crypto-item crypto-btc">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg" alt="BTC" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
+                    </div>
+                    <div class="crypto-item crypto-sol">
+                        <img class="crypto-logo" src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
+                    </div>
+                    <div class="crypto-item crypto-zec">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
+                    </div>
+                    <div class="crypto-item crypto-eth">
+                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
+                        <code class="crypto-addr" onclick="copyToClipboard(this)">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
+                    </div>
+                </div>
+                <p class="crypto-hint">Click any address to copy</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- More Apps -->
+    <section class="more-apps">
+        <div class="container">
+            <h2 class="section-title">More from Sane Apps</h2>
+            <p class="more-apps-subtitle">Privacy-first Mac utilities that respect you</p>
+            <div class="more-apps-grid">
+                <a href="https://sanebar.com" class="app-card">
+                    <div class="app-card-header">
+                        <img src="images/sanebar-icon.png" alt="SaneBar" class="app-card-icon">
+                        <div class="app-card-name">SaneBar</div>
+                    </div>
+                    <p class="app-card-tagline">Menu bar manager. Hide clutter. Find any icon instantly.</p>
+                    <span class="app-card-cta">Learn more &#8594;</span>
+                </a>
+                <a href="https://saneclip.com" class="app-card">
+                    <div class="app-card-header">
+                        <img src="images/saneclip-icon.png" alt="SaneClip" class="app-card-icon">
+                        <div class="app-card-name">SaneClip</div>
+                    </div>
+                    <p class="app-card-tagline">Clipboard manager. Unlimited history. Quick search.</p>
+                    <span class="app-card-cta">Learn more &#8594;</span>
+                </a>
+            </div>
+            <div class="more-apps-hub">
+                <a href="https://saneapps.com">See all apps at saneapps.com &#8594;</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p class="footer-privacy"><strong>No telemetry</strong>. <strong>No cloud</strong>. <strong>100% on your Mac</strong>.</p>
+            <div class="footer-links">
+                <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
+                <a href="privacy.html">Privacy</a>
+                <a href="https://github.com/sane-apps/SaneHosts/issues">Support</a>
+                <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">MIT License</a>
+                <a href="https://saneapps.com">Sane Apps</a>
+            </div>
+            <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts</p>
+            <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
+            <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
+        </div>
+    </footer>
+
+    <script>
+        function copyToClipboard(el) {
+            navigator.clipboard.writeText(el.textContent);
+            const orig = el.textContent;
+            el.textContent = 'Copied!';
+            setTimeout(() => el.textContent = orig, 1500);
+        }
+    </script>
+</body>
+</html>

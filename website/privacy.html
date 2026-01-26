@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - SaneHosts</title>
+    <style>
+        :root {
+            --bg-dark: #0d1525;
+            --bg-card: #1a2744;
+            --accent: #5fa8d3;
+            --text: #e8eef4;
+            --text-muted: #8899aa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0a1628 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.8;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--bg-card);
+            padding: 48px;
+            border-radius: 16px;
+            border: 1px solid rgba(95, 168, 211, 0.1);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 32px;
+            color: var(--accent);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin: 32px 0 16px;
+            color: var(--text);
+        }
+
+        p {
+            margin-bottom: 16px;
+            color: var(--text-muted);
+        }
+
+        ul {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: var(--text-muted);
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .updated {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to SaneHosts</a>
+
+        <h1>Privacy Policy</h1>
+        <p class="updated">Last updated: January 2026</p>
+
+        <h2>Summary</h2>
+        <p><strong>SaneHosts does not collect, transmit, or store any personal data.</strong> Your hosts file configurations and profiles remain entirely on your Mac.</p>
+
+        <h2>Data Collection</h2>
+        <p>SaneHosts does not collect:</p>
+        <ul>
+            <li>Personal information</li>
+            <li>Usage analytics</li>
+            <li>Crash reports</li>
+            <li>Telemetry of any kind</li>
+        </ul>
+
+        <h2>Local Storage</h2>
+        <p>SaneHosts stores the following data locally on your Mac:</p>
+        <ul>
+            <li><strong>Profiles:</strong> ~/Library/Application Support/SaneHosts/Profiles/</li>
+            <li><strong>Backups:</strong> ~/Library/Application Support/SaneHosts/Backups/</li>
+            <li><strong>Preferences:</strong> Standard macOS UserDefaults</li>
+        </ul>
+        <p>This data never leaves your computer.</p>
+
+        <h2>Network Access</h2>
+        <p>SaneHosts accesses the network only when:</p>
+        <ul>
+            <li>You explicitly import a blocklist from a remote URL</li>
+            <li>Checking for app updates via Sparkle (can be disabled in Settings)</li>
+        </ul>
+        <p>No data about your profiles or hosts configurations is ever transmitted.</p>
+
+        <h2>System Access</h2>
+        <p>SaneHosts requires administrator privileges to modify /etc/hosts. This is handled through macOS's standard authentication dialog. We do not store or have access to your admin password.</p>
+
+        <h2>Third-Party Services</h2>
+        <p>SaneHosts uses:</p>
+        <ul>
+            <li><strong>Sparkle:</strong> For checking app updates. Only checks for updates from sanehosts.com. No personal data is transmitted.</li>
+        </ul>
+
+        <h2>Open Source</h2>
+        <p>SaneHosts is open source. You can review the code at <a href="https://github.com/sane-apps/SaneHosts">github.com/sane-apps/SaneHosts</a>.</p>
+
+        <h2>Contact</h2>
+        <p>Questions about privacy? Open an issue on <a href="https://github.com/sane-apps/SaneHosts/issues">GitHub</a>.</p>
+    </div>
+</body>
+</html>
