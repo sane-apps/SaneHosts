@@ -53,7 +53,7 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
         case .essentials: return .blue
         case .familySafe: return .green
         case .focusMode: return .purple
-        case .privacyShield: return .orange
+        case .privacyShield: return .pink
         case .kitchenSink: return .red
         }
     }

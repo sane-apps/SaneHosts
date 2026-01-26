@@ -93,9 +93,9 @@ private struct OnboardingBackground: View {
 
             LinearGradient(
                 colors: [
-                    Color.indigo.opacity(0.08),
+                    Color.saneAccent.opacity(0.08),
                     Color.blue.opacity(0.05),
-                    Color.indigo.opacity(0.03)
+                    Color.saneAccent.opacity(0.03)
                 ],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing

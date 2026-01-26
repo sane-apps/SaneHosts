@@ -1289,6 +1289,8 @@ struct RemoteImportSheet: View {
         }
         .buttonStyle(.plain)
         .opacity(isUnavailable ? 0.6 : 1.0)
+        .accessibilityLabel("\(source.name), \(isSelected ? "selected" : "not selected")\(isUnavailable ? ", unavailable" : "")")
+        .accessibilityHint(isUnavailable ? "This blocklist is currently unavailable" : "Double-tap to \(isSelected ? "deselect" : "select") this blocklist")
     }
 
     @ViewBuilder

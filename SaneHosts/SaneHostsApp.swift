@@ -29,6 +29,8 @@ struct SaneHostsApp: App {
 
     init() {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+        // Faster tooltip appearance (default ~700ms, set to 300ms)
+        UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
     var body: some Scene {
@@ -86,7 +88,7 @@ struct SaneHostsApp: App {
         }
 
         Settings {
-            SaneHostsSettingsView()
+            SaneHostsSettingsView(updater: updaterController.updater)
         }
 
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
@@ -232,9 +234,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         }
 
-        // No window found - create a new one via notification
-        // This triggers SwiftUI's WindowGroup to open
-        NotificationCenter.default.post(name: .openMainWindow, object: nil)
+        // No window found - use stored OpenWindowAction from SwiftUI
+        WindowActionStorage.shared.openWindow?(id: "main")
     }
 }
 
@@ -439,34 +440,34 @@ struct MenuBarView: View {
 
 struct SaneHostsSettingsView: View {
     @State private var selectedTab = 0
+    let updater: SPUUpdater
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GeneralSettingsTab()
+            GeneralSettingsTab(updater: updater)
                 .tabItem {
                     Label("General", systemImage: "gear")
                 }
                 .tag(0)
 
-            AboutTab()
+            AboutTab(updater: updater)
                 .tabItem {
                     Label("About", systemImage: "info.circle")
                 }
                 .tag(1)
         }
-        .frame(width: 450, height: 300)
+        .frame(width: 560, height: 500)
     }
 }
 
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("launchAtLogin") private var launchAtLogin = false
+    let updater: SPUUpdater
 
     var body: some View {
         Form {
             Section {
-                Toggle("Hide Dock icon", isOn: $hideDockIcon)
-
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in
                         do {
@@ -480,11 +481,24 @@ struct GeneralSettingsTab: View {
                                 .error("Failed to \(newValue ? "register" : "unregister") login item: \(error)")
                         }
                     }
+
+                Toggle("Hide Dock icon", isOn: $hideDockIcon)
             } footer: {
                 if hideDockIcon {
                     Text("When Dock icon is hidden, access SaneHosts from the menu bar.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+            }
+
+            Section("Software Updates") {
+                Toggle("Check for updates automatically", isOn: Binding(
+                    get: { updater.automaticallyChecksForUpdates },
+                    set: { updater.automaticallyChecksForUpdates = $0 }
+                ))
+
+                Button("Check Now") {
+                    updater.checkForUpdates()
                 }
             }
         }
@@ -494,42 +508,252 @@ struct GeneralSettingsTab: View {
 }
 
 struct AboutTab: View {
+    let updater: SPUUpdater
+    @State private var showingLicenses = false
+    @State private var showingSupport = false
+
     var body: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "network.badge.shield.half.filled")
-                .font(.system(size: 64))
-                .foregroundStyle(.indigo)
+        VStack(spacing: 24) {
+            Spacer()
 
-            Text("SaneHosts")
-                .font(.title)
-                .fontWeight(.bold)
-
-            Text("Version 1.0")
-                .foregroundStyle(.secondary)
-
-            Divider()
+            // App icon — use runtime icon for proper macOS rendering
+            Image(nsImage: NSApp.applicationIconImage)
+                .resizable()
+                .frame(width: 96, height: 96)
+                .shadow(color: .black.opacity(0.1), radius: 6, x: 0, y: 4)
 
             VStack(spacing: 8) {
-                Link(destination: URL(string: "https://sanehosts.com")!) {
-                    Label("Website", systemImage: "globe")
-                }
+                Text("SaneHosts")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.primary)
 
+                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    Text("Version \(version)")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            // Trust info
+            HStack(spacing: 0) {
+                Text("Made with ❤️ in 🇺🇸")
+                    .fontWeight(.medium)
+                Text(" · ")
+                Text("100% On-Device")
+                Text(" · ")
+                Text("No Analytics")
+            }
+            .font(.callout)
+            .foregroundStyle(.secondary)
+            .padding(.top, 4)
+
+            // Action buttons
+            HStack(spacing: 16) {
                 Link(destination: URL(string: "https://github.com/sane-apps/SaneHosts")!) {
                     Label("GitHub", systemImage: "link")
                 }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+
+                Button {
+                    showingLicenses = true
+                } label: {
+                    Label("Licenses", systemImage: "doc.text")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+
+                Button {
+                    showingSupport = true
+                } label: {
+                    Label {
+                        Text("Support")
+                    } icon: {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(.red)
+                    }
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
 
                 Link(destination: URL(string: "https://github.com/sane-apps/SaneHosts/issues")!) {
                     Label("Report Issue", systemImage: "ladybug")
                 }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
             }
+            .padding(.top, 12)
+
+            Button {
+                updater.checkForUpdates()
+            } label: {
+                Label("Check for Updates", systemImage: "arrow.triangle.2.circlepath")
+            }
+            .buttonStyle(.bordered)
+            .controlSize(.regular)
 
             Spacer()
+        }
+        .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .sheet(isPresented: $showingLicenses) {
+            LicensesSheet()
+        }
+        .sheet(isPresented: $showingSupport) {
+            SupportSheet()
+        }
+    }
+}
 
-            Text("Made with care by Mr. Sane")
+// MARK: - Licenses Sheet
+
+struct LicensesSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Open Source Licenses")
+                .font(.title2)
+                .fontWeight(.bold)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    LicenseEntry(
+                        name: "Sparkle",
+                        copyright: "Copyright (c) 2006-2013 Andy Matuschak.\nCopyright (c) 2009-2013 Elgato Systems GmbH.",
+                        license: """
+                        Permission is hereby granted, free of charge, to any person obtaining a copy of this software \
+                        and associated documentation files (the "Software"), to deal in the Software without restriction, \
+                        including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, \
+                        and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, \
+                        subject to the following conditions:
+
+                        The above copyright notice and this permission notice shall be included in all copies or substantial \
+                        portions of the Software.
+
+                        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT \
+                        LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO \
+                        EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER \
+                        IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE \
+                        USE OR OTHER DEALINGS IN THE SOFTWARE.
+                        """
+                    )
+                }
+                .padding()
+            }
+            .frame(maxHeight: 300)
+
+            Button("Done") { dismiss() }
+                .buttonStyle(.borderedProminent)
+                .keyboardShortcut(.cancelAction)
+        }
+        .padding()
+        .frame(width: 500, height: 420)
+    }
+}
+
+struct LicenseEntry: View {
+    let name: String
+    let copyright: String
+    let license: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(name)
+                .font(.headline)
+            Text(copyright)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            Text(license)
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
+    }
+}
+
+// MARK: - Support Sheet
+
+struct SupportSheet: View {
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 16) {
+            Text("Support SaneHosts")
+                .font(.title2)
+                .fontWeight(.bold)
+
+            Text("\u{201C}The worker is worthy of his wages.\u{201D}")
+                .font(.subheadline)
+                .italic()
+                .foregroundStyle(.secondary)
+            Text("— 1 Timothy 5:18")
+                .font(.caption)
+                .foregroundStyle(.tertiary)
+
+            Text("SaneHosts is open source and sustained by your support. No VC funding, no ads, no data harvesting — just software that works because someone is paid to maintain it.")
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal)
+
+            Text("— Mr. Sane")
+                .font(.subheadline)
+                .fontWeight(.medium)
+
+            Divider()
+
+            Link(destination: URL(string: "https://github.com/sponsors/sane-apps")!) {
+                Label("GitHub Sponsors", systemImage: "heart.fill")
+            }
+            .buttonStyle(.borderedProminent)
+
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Or send crypto:")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                CryptoAddressRow(label: "BTC", address: "3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke")
+                CryptoAddressRow(label: "ETH", address: "0x026668feA51c27F0803055B8c0d881ac2F1e7C3e")
+                CryptoAddressRow(label: "SOL", address: "FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ")
+                CryptoAddressRow(label: "ZEC", address: "t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN")
+            }
+
+            Button("Done") { dismiss() }
+                .buttonStyle(.bordered)
+                .keyboardShortcut(.cancelAction)
+        }
         .padding()
+        .frame(width: 480, height: 480)
+    }
+}
+
+struct CryptoAddressRow: View {
+    let label: String
+    let address: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(label)
+                .font(.caption)
+                .fontWeight(.bold)
+                .frame(width: 30, alignment: .leading)
+
+            Text(address)
+                .font(.system(.caption, design: .monospaced))
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
+                .textSelection(.enabled)
+
+            Button {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(address, forType: .string)
+            } label: {
+                Image(systemName: "doc.on.doc")
+                    .font(.caption)
+            }
+            .buttonStyle(.plain)
+            .help("Copy \(label) address")
+        }
     }
 }
 

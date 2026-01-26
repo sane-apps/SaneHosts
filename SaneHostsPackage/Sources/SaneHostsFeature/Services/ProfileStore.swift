@@ -340,7 +340,7 @@ public final class ProfileStore {
             entries: userEntries,
             isActive: false,
             source: .system,
-            colorTag: .orange,
+            colorTag: .gray,
             sortOrder: 0
         )
 

@@ -272,6 +272,7 @@ struct ProfileDetailView: View {
                 )
             }
             .buttonStyle(.plain)
+            .help("Add a custom hosts entry to this profile")
         }
     }
 
@@ -340,6 +341,7 @@ struct ProfileDetailView: View {
             }
             .buttonStyle(.borderedProminent)
             .tint(.saneAccent)
+            .help("Exit selection mode")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -383,6 +385,7 @@ struct ProfileDetailView: View {
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
+                        .help("Select entries for bulk enable, disable, or delete")
                     }
                 }
                 .padding(.horizontal, 12)
@@ -404,6 +407,7 @@ struct ProfileDetailView: View {
                                     .foregroundStyle(selectedEntries.contains(entry.id) ? .blue : .secondary)
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel(selectedEntries.contains(entry.id) ? "Deselect \(entry.hostnames.first ?? "entry")" : "Select \(entry.hostnames.first ?? "entry")")
                             .padding(.leading, 12)
                             .padding(.trailing, 4)
                         }
@@ -618,6 +622,8 @@ struct EntryRow: View {
                     EntryStatusIcon(isEnabled: entry.isEnabled)
                 }
                 .buttonStyle(.plain)
+                .help(entry.isEnabled ? "Disable this entry" : "Enable this entry")
+                .accessibilityLabel(entry.isEnabled ? "Disable \(entry.hostnames.first ?? "entry")" : "Enable \(entry.hostnames.first ?? "entry")")
             }
 
             // IP Address
@@ -649,7 +655,7 @@ struct EntryRow: View {
 
             // System badge
             if entry.isSystemEntry {
-                StatusBadge("System", color: .orange, icon: SaneIcons.lock)
+                StatusBadge("System", color: .secondary, icon: SaneIcons.lock)
             }
         }
         .padding(.horizontal, 12)

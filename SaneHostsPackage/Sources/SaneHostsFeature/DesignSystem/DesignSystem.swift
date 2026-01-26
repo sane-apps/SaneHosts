@@ -39,12 +39,12 @@ struct SaneGradientBackground: View {
                 // Dark mode: beautiful glass effect
                 VisualEffectBlur(material: .hudWindow, blendingMode: .behindWindow)
 
-                // Subtle indigo/blue tint (hosts/network theme)
+                // Subtle teal/blue tint (hosts/network theme)
                 LinearGradient(
                     colors: [
-                        Color.indigo.opacity(0.08),
+                        Color.saneAccent.opacity(0.08),
                         Color.blue.opacity(0.05),
-                        Color.indigo.opacity(0.03)
+                        Color.saneAccent.opacity(0.03)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -119,10 +119,10 @@ struct CompactSection<Content: View>: View {
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(colorScheme == .dark
                         ? Color.white.opacity(0.12)
-                        : Color.indigo.opacity(0.15), lineWidth: 1)
+                        : Color.saneAccent.opacity(0.15), lineWidth: 1)
             )
             .shadow(
-                color: colorScheme == .dark ? .black.opacity(0.15) : .indigo.opacity(0.08),
+                color: colorScheme == .dark ? .black.opacity(0.15) : .saneAccent.opacity(0.08),
                 radius: colorScheme == .dark ? 8 : 6,
                 x: 0,
                 y: 3
@@ -500,7 +500,7 @@ enum SaneIcons {
 // MARK: - Semantic Colors
 
 extension Color {
-    static let saneAccent = Color.indigo
+    static let saneAccent = Color(red: 0.373, green: 0.659, blue: 0.827) // Shield Teal #5fa8d3
     static let saneSuccess = Color.green
     static let saneWarning = Color.orange
     static let saneError = Color.red
