@@ -1,0 +1,12 @@
+{
+  "": {
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/master.swiftdeps"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.derived/runner.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeaturePackageTests.build/runner.dia"
+  }
+}

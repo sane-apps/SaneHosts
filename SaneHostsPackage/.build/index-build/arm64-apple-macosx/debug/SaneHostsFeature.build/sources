@@ -1,0 +1,16 @@
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift
+/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift

@@ -1,0 +1,132 @@
+[2026-01-20T18:37:32-05:00] Starting session_start hook
+[2026-01-20T18:37:32-05:00] cleanup: my_session_pid=13296, ancestors=[13296, 13252, 13231, 13230, 988]
+[2026-01-20T18:37:32-05:00] cleanup: evaluating PID 13252
+[2026-01-20T18:37:32-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T18:37:32-05:00] cleanup: evaluating PID 8437
+[2026-01-20T18:37:32-05:00] cleanup: KILL 8437
+[2026-01-20T18:37:32-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T18:37:32-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 13291 (context7-mcp)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 13290 (mcp-server.cjs)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 2590 (worker-service.cjs)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 8591 (apple-docs-mcp)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 8523 (apple-docs-mcp)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 2632 (chroma-mcp)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 2629 (chroma-mcp)
+[2026-01-20T18:37:32-05:00] mcp_cleanup: KILL 2595 (mcp-server.cjs)
+[2026-01-20T18:37:32-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T18:37:32-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T18:37:32-05:00] cleanup_orphaned_subagents done
+[2026-01-20T18:37:32-05:00] ensure_claude_dir done
+[2026-01-20T18:37:32-05:00] reset_session_state done
+[2026-01-20T18:37:32-05:00] clear_stale_satisfaction done
+[2026-01-20T18:37:32-05:00] handle_stale_saneloop done
+[2026-01-20T18:37:32-05:00] reset_mcp_verification done
+[2026-01-20T18:37:32-05:00] output_session_context done
+[2026-01-20T18:37:32-05:00] check_pending_mcp_actions done
+[2026-01-20T18:37:32-05:00] show_mcp_verification_status done
+[2026-01-20T18:37:32-05:00] JSON output written - SUCCESS
+[2026-01-20T18:53:39-05:00] Starting session_start hook
+[2026-01-20T18:53:39-05:00] cleanup: my_session_pid=16272, ancestors=[16272, 13252, 13231, 13230, 988]
+[2026-01-20T18:53:40-05:00] cleanup: evaluating PID 13252
+[2026-01-20T18:53:40-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T18:53:40-05:00] cleanup: evaluating PID 14775
+[2026-01-20T18:53:40-05:00] cleanup: KILL 14775
+[2026-01-20T18:53:40-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T18:53:40-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13434 (mcp-server-memory)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13390 (mcp-server-github)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13363 (context7-mcp)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13337 (context7-mcp)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13336 (apple-docs-mcp)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 13326 (mcp-server.cjs)
+[2026-01-20T18:53:40-05:00] mcp_cleanup: KILL 14814 (apple-docs-mcp)
+[2026-01-20T18:53:40-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T18:53:40-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T18:53:40-05:00] cleanup_orphaned_subagents done
+[2026-01-20T18:53:40-05:00] ensure_claude_dir done
+[2026-01-20T18:53:40-05:00] reset_session_state done
+[2026-01-20T18:53:40-05:00] clear_stale_satisfaction done
+[2026-01-20T18:53:40-05:00] handle_stale_saneloop done
+[2026-01-20T18:53:40-05:00] reset_mcp_verification done
+[2026-01-20T18:53:40-05:00] output_session_context done
+[2026-01-20T18:53:40-05:00] check_pending_mcp_actions done
+[2026-01-20T18:53:40-05:00] show_mcp_verification_status done
+[2026-01-20T18:53:40-05:00] JSON output written - SUCCESS
+[2026-01-20T19:11:56-05:00] Starting session_start hook
+[2026-01-20T19:11:56-05:00] cleanup: my_session_pid=19050, ancestors=[19050, 13252, 13231, 13230, 988]
+[2026-01-20T19:11:56-05:00] cleanup: evaluating PID 13252
+[2026-01-20T19:11:56-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T19:11:56-05:00] cleanup: evaluating PID 18683
+[2026-01-20T19:11:56-05:00] cleanup: KILL 18683
+[2026-01-20T19:11:56-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T19:11:56-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T19:11:56-05:00] mcp_cleanup: KILL 18721 (apple-docs-mcp)
+[2026-01-20T19:11:56-05:00] mcp_cleanup: KILL 17120 (mcp-server-github)
+[2026-01-20T19:11:56-05:00] mcp_cleanup: KILL 17031 (mcp-server-memory)
+[2026-01-20T19:11:56-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T19:11:56-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T19:11:56-05:00] cleanup_orphaned_subagents done
+[2026-01-20T19:11:56-05:00] ensure_claude_dir done
+[2026-01-20T19:11:56-05:00] reset_session_state done
+[2026-01-20T19:11:56-05:00] clear_stale_satisfaction done
+[2026-01-20T19:11:56-05:00] handle_stale_saneloop done
+[2026-01-20T19:11:56-05:00] reset_mcp_verification done
+[2026-01-20T19:11:56-05:00] output_session_context done
+[2026-01-20T19:11:56-05:00] check_pending_mcp_actions done
+[2026-01-20T19:11:56-05:00] show_mcp_verification_status done
+[2026-01-20T19:11:56-05:00] JSON output written - SUCCESS
+[2026-01-20T19:39:27-05:00] Starting session_start hook
+[2026-01-20T19:39:27-05:00] cleanup: my_session_pid=22831, ancestors=[22831, 13252, 13231, 13230, 988]
+[2026-01-20T19:39:27-05:00] cleanup: evaluating PID 13252
+[2026-01-20T19:39:27-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T19:39:27-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T19:39:27-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T19:39:27-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T19:39:27-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T19:39:27-05:00] cleanup_orphaned_subagents done
+[2026-01-20T19:39:27-05:00] ensure_claude_dir done
+[2026-01-20T19:39:27-05:00] reset_session_state done
+[2026-01-20T19:39:27-05:00] clear_stale_satisfaction done
+[2026-01-20T19:39:27-05:00] handle_stale_saneloop done
+[2026-01-20T19:39:27-05:00] reset_mcp_verification done
+[2026-01-20T19:39:27-05:00] output_session_context done
+[2026-01-20T19:39:27-05:00] check_pending_mcp_actions done
+[2026-01-20T19:39:27-05:00] show_mcp_verification_status done
+[2026-01-20T19:39:27-05:00] JSON output written - SUCCESS
+[2026-01-20T20:03:29-05:00] Starting session_start hook
+[2026-01-20T20:03:29-05:00] cleanup: my_session_pid=24725, ancestors=[24725, 13252, 13231, 13230, 988]
+[2026-01-20T20:03:29-05:00] cleanup: evaluating PID 13252
+[2026-01-20T20:03:29-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T20:03:29-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T20:03:29-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T20:03:29-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T20:03:29-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T20:03:29-05:00] cleanup_orphaned_subagents done
+[2026-01-20T20:03:29-05:00] ensure_claude_dir done
+[2026-01-20T20:03:29-05:00] reset_session_state done
+[2026-01-20T20:03:29-05:00] clear_stale_satisfaction done
+[2026-01-20T20:03:29-05:00] handle_stale_saneloop done
+[2026-01-20T20:03:29-05:00] reset_mcp_verification done
+[2026-01-20T20:03:29-05:00] output_session_context done
+[2026-01-20T20:03:29-05:00] check_pending_mcp_actions done
+[2026-01-20T20:03:29-05:00] show_mcp_verification_status done
+[2026-01-20T20:03:29-05:00] JSON output written - SUCCESS
+[2026-01-20T20:31:46-05:00] Starting session_start hook
+[2026-01-20T20:31:46-05:00] cleanup: my_session_pid=27520, ancestors=[27520, 13252, 13231, 13230, 988]
+[2026-01-20T20:31:46-05:00] cleanup: evaluating PID 13252
+[2026-01-20T20:31:46-05:00] cleanup: SKIP 13252 (current session or ancestor)
+[2026-01-20T20:31:46-05:00] cleanup_orphaned_claude_processes done
+[2026-01-20T20:31:46-05:00] mcp_cleanup: session_tree size=4
+[2026-01-20T20:31:46-05:00] cleanup_orphaned_mcp_daemons done
+[2026-01-20T20:31:46-05:00] subagent_cleanup: session_tree size=4
+[2026-01-20T20:31:46-05:00] cleanup_orphaned_subagents done
+[2026-01-20T20:31:46-05:00] ensure_claude_dir done
+[2026-01-20T20:31:46-05:00] reset_session_state done
+[2026-01-20T20:31:46-05:00] clear_stale_satisfaction done
+[2026-01-20T20:31:46-05:00] handle_stale_saneloop done
+[2026-01-20T20:31:46-05:00] reset_mcp_verification done
+[2026-01-20T20:31:46-05:00] output_session_context done
+[2026-01-20T20:31:46-05:00] check_pending_mcp_actions done
+[2026-01-20T20:31:46-05:00] show_mcp_verification_status done
+[2026-01-20T20:31:46-05:00] JSON output written - SUCCESS

@@ -1,0 +1,117 @@
+{
+  "": {
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/master.swiftdeps"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ContentView.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DesignSystem.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/BlocklistCatalog.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/BlocklistCatalog.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/HostEntry.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostEntry.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Models/Profile.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/Profile.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/AuthenticationService.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/AuthenticationService.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/DNSService.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/DNSService.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsHelperProtocol.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsHelperProtocol.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsParser.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/HostsService.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileStore.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/RemoteSyncService.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/CoachMarkOverlay.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/MainView.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/ProfileDetailView.dia"
+  },
+  "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift": {
+    "dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView.d",
+    "object": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView.swift.o",
+    "swiftmodule": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView~partial.swiftmodule",
+    "swift-dependencies": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView.swiftdeps",
+    "diagnostics": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/.build/index-build/arm64-apple-macosx/debug/SaneHostsFeature.build/WelcomeView.dia"
+  }
+}

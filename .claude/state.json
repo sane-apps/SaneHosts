@@ -1,0 +1,697 @@
+{
+  "circuit_breaker": {
+    "failures": 0,
+    "tripped": false,
+    "tripped_at": null,
+    "last_error": null,
+    "error_signatures": {}
+  },
+  "requirements": {
+    "requested": [],
+    "satisfied": [],
+    "is_task": true,
+    "is_big_task": true,
+    "is_research_only": false,
+    "frustration_count": 8
+  },
+  "research": {
+    "memory": null,
+    "docs": null,
+    "web": null,
+    "github": null,
+    "local": {
+      "completed_at": "2026-01-20T20:44:16-05:00",
+      "tool": "Read",
+      "via_task": false
+    }
+  },
+  "edits": {
+    "count": 66,
+    "unique_files": [
+      "/Users/sj/SaneApps/apps/SaneHosts/docs/STATE_MACHINE_AUDIT.md",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SESSION_HANDOFF.md",
+      "/Users/sj/SaneApps/apps/SaneHosts/website/index.html",
+      "/Users/sj/SaneApps/apps/SaneHosts/website/CNAME",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/WelcomeView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHosts/SaneHostsApp.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsParser.swift",
+      "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Services/RemoteSyncService.swift"
+    ],
+    "last_file": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+  },
+  "saneloop": {
+    "active": false,
+    "task": null,
+    "iteration": 0,
+    "max_iterations": 20,
+    "acceptance_criteria": [],
+    "started_at": null
+  },
+  "enforcement": {
+    "blocks": [
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:28:56-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:33:54-05:00"
+      },
+      {
+        "tool": "Write",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:36:44-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:39:37-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:44:07-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:44:16-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:44:28-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:48:13-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:48:20-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:48:47-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:48:52-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T19:51:36-05:00"
+      },
+      {
+        "tool": "Write",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:00:10-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:00:26-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:00:33-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:01:15-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:01:38-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:01:47-05:00"
+      },
+      {
+        "tool": "Write",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:02:02-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:02:17-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:02:24-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:09:03-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:09:09-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:10:19-05:00"
+      },
+      {
+        "tool": "Bash",
+        "rule": "bypass_attempt",
+        "reason": "BASH FILE WRITE BLOCKED",
+        "timestamp": "2026-01-20T20:14:48-05:00"
+      },
+      {
+        "tool": "Bash",
+        "rule": "bypass_attempt",
+        "reason": "BASH FILE WRITE BLOCKED",
+        "timestamp": "2026-01-20T20:14:59-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:16:09-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:18:40-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:21:47-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:24:46-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:29:00-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:30:29-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:33:03-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:34:30-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:34:41-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:39:56-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:40:26-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:40:32-05:00"
+      },
+      {
+        "tool": "mcp__memory__add_observations",
+        "rule": "mutation_blocked",
+        "reason": "GLOBAL MUTATION BLOCKED",
+        "timestamp": "2026-01-20T20:41:22-05:00"
+      },
+      {
+        "tool": "Bash",
+        "rule": "bypass_attempt",
+        "reason": "STATE BYPASS BLOCKED",
+        "timestamp": "2026-01-20T20:41:30-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:42:07-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:42:12-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:42:16-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:42:33-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:42:43-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:43:00-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:43:17-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:43:44-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:43:57-05:00"
+      },
+      {
+        "tool": "Edit",
+        "rule": "Rule #2",
+        "reason": "MCP VERIFICATION INCOMPLETE",
+        "timestamp": "2026-01-20T20:44:04-05:00"
+      }
+    ],
+    "halted": false,
+    "halted_at": null,
+    "halted_reason": null
+  },
+  "edit_attempts": {
+    "count": 0,
+    "last_attempt": null,
+    "reset_at": null
+  },
+  "action_log": [
+    {
+      "tool": "Grep",
+      "timestamp": "2026-01-20T20:42:23-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": null
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:42:33-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:42:38-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:42:43-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:42:54-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:43:00-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+    },
+    {
+      "tool": "Grep",
+      "timestamp": "2026-01-20T20:43:06-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": null
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:43:12-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:43:17-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+    },
+    {
+      "tool": "Grep",
+      "timestamp": "2026-01-20T20:43:24-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": null
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:43:31-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:43:44-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:43:50-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:43:57-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "Edit",
+      "timestamp": "2026-01-20T20:44:04-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+    },
+    {
+      "tool": "Grep",
+      "timestamp": "2026-01-20T20:44:09-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": null
+    },
+    {
+      "tool": "Read",
+      "timestamp": "2026-01-20T20:44:16-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "/Users/sj/SaneApps/apps/SaneHosts/SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"
+    },
+    {
+      "tool": "TodoWrite",
+      "timestamp": "2026-01-20T20:44:25-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": null
+    },
+    {
+      "tool": "Bash",
+      "timestamp": "2026-01-20T20:44:42-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "xcodebuild -workspace SaneHosts.xcworkspace -schem"
+    },
+    {
+      "tool": "Bash",
+      "timestamp": "2026-01-20T20:44:48-05:00",
+      "success": true,
+      "error_sig": null,
+      "input_summary": "killall SaneHosts 2>/dev/null; sleep 1; open /User"
+    }
+  ],
+  "learnings": [
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "mcp__macos-automator__execute_script",
+        "Bash",
+        "Read"
+      ],
+      "prompt_fragment": "I think threat, barrier and solution should be three slides. its crowded on one. Last slide if our s",
+      "timestamp": "2026-01-20T19:36:00-05:00"
+    },
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "mcp__macos-automator__execute_script",
+        "Bash",
+        "Read"
+      ],
+      "prompt_fragment": "i still think the text in sane promise is small and the overall text doesn thave enough contrast fro",
+      "timestamp": "2026-01-20T19:43:51-05:00"
+    },
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "Edit",
+        "Bash",
+        "Bash"
+      ],
+      "prompt_fragment": "Yes what do you think?",
+      "timestamp": "2026-01-20T19:54:33-05:00"
+    },
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "Edit",
+        "Bash",
+        "Bash"
+      ],
+      "prompt_fragment": "make it functional show them how to import their first blocklist. Pros will know the rest. It just n",
+      "timestamp": "2026-01-20T19:56:45-05:00"
+    },
+    {
+      "type": "correction",
+      "pattern": "^no[,.]?\\s",
+      "recent_actions": [
+        "TodoWrite",
+        "Bash",
+        "mcp__XcodeBuildMCP__launch_mac_app"
+      ],
+      "prompt_fragment": "no you made the same mistake as before do you still have two conflicting startup things going? this ",
+      "timestamp": "2026-01-20T20:05:20-05:00"
+    },
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "mcp__XcodeBuildMCP__build_macos",
+        "Bash",
+        "mcp__XcodeBuildMCP__launch_mac_app"
+      ],
+      "prompt_fragment": "the sane solution needs to mirror the barriers better. what do you think? it doesnt directly speak t",
+      "timestamp": "2026-01-20T20:18:18-05:00"
+    },
+    {
+      "type": "impatience",
+      "pattern": "\\bthink\\b",
+      "recent_actions": [
+        "Edit",
+        "mcp__XcodeBuildMCP__build_macos",
+        "Bash"
+      ],
+      "prompt_fragment": "It worked!! ok one last thing. I think import blocklist shoud be the only default view under quick a",
+      "timestamp": "2026-01-20T20:27:01-05:00"
+    },
+    {
+      "type": "correction",
+      "pattern": "^no[,.]?\\s",
+      "recent_actions": [
+        "Grep",
+        "Read",
+        "Edit"
+      ],
+      "prompt_fragment": "no i want it there but I want it to not be confusing and poorly indicated. hit of color one indicato",
+      "timestamp": "2026-01-20T20:34:14-05:00"
+    }
+  ],
+  "patterns": {
+    "weak_spots": {
+      "Rule #2": 39,
+      "mutation_blocked": 1,
+      "bypass_attempt": 3
+    },
+    "triggers": {},
+    "strengths": [],
+    "session_scores": [
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      8,
+      7
+    ]
+  },
+  "validation": {
+    "sessions_total": 0,
+    "sessions_with_tests_passing": 0,
+    "sessions_with_breaker_trip": 0,
+    "blocks_that_were_correct": 0,
+    "blocks_that_were_wrong": 0,
+    "doom_loops_caught": 0,
+    "doom_loops_missed": 0,
+    "time_saved_estimates": [],
+    "first_tracked": null,
+    "last_updated": null
+  },
+  "mcp_health": {
+    "verified_this_session": false,
+    "last_verified": null,
+    "mcps": {
+      "memory": {
+        "verified": false,
+        "last_success": "2026-01-20T18:37:49-05:00",
+        "last_failure": null,
+        "failure_count": 0
+      },
+      "apple_docs": {
+        "verified": false,
+        "last_success": null,
+        "last_failure": null,
+        "failure_count": 0
+      },
+      "context7": {
+        "verified": false,
+        "last_success": null,
+        "last_failure": null,
+        "failure_count": 0
+      },
+      "github": {
+        "verified": false,
+        "last_success": "2026-01-20T19:00:51-05:00",
+        "last_failure": null,
+        "failure_count": 0
+      }
+    }
+  },
+  "refusal_tracking": {
+    "mcp_verification": {
+      "count": 1,
+      "last_tool": "Edit",
+      "last_at": "2026-01-20T20:44:04-05:00"
+    },
+    "other": {
+      "count": 1,
+      "last_tool": "mcp__memory__add_observations",
+      "last_at": "2026-01-20T20:41:22-05:00"
+    },
+    "state_bypass": {
+      "count": 1,
+      "last_tool": "Bash",
+      "last_at": "2026-01-20T20:41:30-05:00"
+    },
+    "bash_write": {
+      "count": 1,
+      "last_tool": "Bash",
+      "last_at": "2026-01-20T20:14:59-05:00"
+    }
+  },
+  "task_context": {
+    "task_type": "general",
+    "task_keywords": [
+      "follow",
+      "never",
+      "obsession",
+      "template",
+      "update"
+    ],
+    "task_hash": "92058118",
+    "researched_at": "2026-01-20T20:41:13-05:00"
+  },
+  "__ts__": "2026-01-21T01:45:03Z",
+  "__sig__": "19c5fc081fe9ec8bba0b38dc9d6d318a828908817b3470849775db24bab3894d"
+}
