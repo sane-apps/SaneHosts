@@ -8,7 +8,7 @@ set -e
 
 # Configuration
 APP_NAME="SaneHosts"
-DOWNLOAD_BASE_URL="https://github.com/sane-apps/SaneHosts/releases/download"
+DOWNLOAD_BASE_URL="https://dist.sanehosts.com"
 WEBSITE_URL="https://sanehosts.com"
 
 # Paths
@@ -45,7 +45,7 @@ fi
 FILE_SIZE=$(stat -f%z "$DMG_PATH")
 SHA256=$(shasum -a 256 "$DMG_PATH" | awk '{print $1}')
 PUB_DATE=$(date -u +"%a, %d %b %Y %H:%M:%S +0000")
-DOWNLOAD_URL="${DOWNLOAD_BASE_URL}/v${VERSION}/${DMG_NAME}"
+DOWNLOAD_URL="${DOWNLOAD_BASE_URL}/${DMG_NAME}"
 
 # EdDSA signature (if keys exist)
 EDDSA_SIGNATURE=""
