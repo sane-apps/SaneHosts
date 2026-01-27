@@ -17,6 +17,26 @@ extension Notification.Name {
 final class WindowActionStorage {
     static let shared = WindowActionStorage()
     var openWindow: OpenWindowAction?
+
+    /// Bring existing main window to front, or create one if none exists
+    @MainActor func showMainWindow() {
+        // Find an existing main window (SwiftUI WindowGroup id: "main")
+        let mainWindow = NSApp.windows.first(where: {
+            $0.canBecomeMain &&
+            $0.contentView != nil &&
+            $0.identifier?.rawValue.contains("main") == true
+        })
+
+        if let window = mainWindow {
+            if window.isMiniaturized {
+                window.deminiaturize(nil)
+            }
+            window.makeKeyAndOrderFront(nil)
+        } else {
+            openWindow?(id: "main")
+        }
+        NSApp.activate(ignoringOtherApps: true)
+    }
 }
 
 @main
@@ -95,14 +115,16 @@ struct SaneHostsApp: App {
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
             // Status section
             if let active = menuBarStore.activeProfile {
-                Text("Active: \(active.name)")
-                    .font(.headline)
+                Button("🟢 Active: \(active.name)") {
+                    WindowActionStorage.shared.showMainWindow()
+                }
                 Button("Deactivate") {
                     Task { await menuBarStore.deactivateProfile() }
                 }
             } else {
-                Text("No Active Profile")
-                    .foregroundStyle(.secondary)
+                Button("🔴 No Active Profile") {
+                    WindowActionStorage.shared.showMainWindow()
+                }
             }
 
             Divider()
@@ -126,20 +148,7 @@ struct SaneHostsApp: App {
             Divider()
 
             Button("Open SaneHosts") {
-                // Try to find and show existing window first
-                if let window = NSApp.windows.first(where: {
-                    $0.canBecomeMain &&
-                    $0.contentView != nil &&
-                    !$0.isMiniaturized &&
-                    $0.className.contains("NSWindow")
-                }) {
-                    window.makeKeyAndOrderFront(nil)
-                    NSApp.activate(ignoringOtherApps: true)
-                } else {
-                    // No window exists - use stored openWindow action
-                    WindowActionStorage.shared.openWindow?(id: "main")
-                    NSApp.activate(ignoringOtherApps: true)
-                }
+                WindowActionStorage.shared.showMainWindow()
             }
             .keyboardShortcut("o")
 
@@ -256,20 +265,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     @objc func openMainWindow() {
-        NSApp.activate(ignoringOtherApps: true)
-
-        // Try to find and show existing main window
-        if let window = NSApp.windows.first(where: {
-            $0.title.contains("SaneHosts") ||
-            $0.identifier?.rawValue == "main" ||
-            ($0.canBecomeMain && $0.contentView != nil)
-        }) {
-            window.makeKeyAndOrderFront(nil)
-            return
+        Task { @MainActor in
+            WindowActionStorage.shared.showMainWindow()
         }
-
-        // No window found - use stored OpenWindowAction from SwiftUI
-        WindowActionStorage.shared.openWindow?(id: "main")
     }
 }
 

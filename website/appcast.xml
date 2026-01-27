@@ -7,24 +7,27 @@
     <language>en</language>
 
     <item>
-      <title>Version 1.0.6</title>
-      <pubDate>Tue, 27 Jan 2026 05:22:13 +0000</pubDate>
-      <sparkle:version>1.0.6</sparkle:version>
-      <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
+      <title>Version 1.0.7</title>
+      <pubDate>Tue, 27 Jan 2026 18:04:55 +0000</pubDate>
+      <sparkle:version>1.0.7</sparkle:version>
+      <sparkle:shortVersionString>1.0.7</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
-        <h2>What's New in SaneHosts 1.0.6</h2>
+        <h2>What's New in SaneHosts 1.0.7</h2>
         <ul>
-          <li>Fixed auto-update feed configuration</li>
-          <li>Improved authentication flow — fewer prompts</li>
-          <li>Better DNS cache flushing after profile changes</li>
+          <li>Menu bar now shows green/red status indicators for active protection</li>
+          <li>Fixed: "Open SaneHosts" now brings existing window to front instead of opening duplicates</li>
+          <li>Window opens to your active profile instead of always showing the first one</li>
+          <li>Faster app launch — reduced hosts file parsing time dramatically</li>
+          <li>Network timeout added for blocklist fetches to prevent hangs</li>
+          <li>Updated Kitchen Sink preset description</li>
         </ul>
       ]]></description>
       <enclosure
-        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.6.dmg"
-        length="3228043"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.7.dmg"
+        length="3231563"
         type="application/octet-stream"
-        sparkle:edSignature="5uA8ttKYI7b3i5owY+5MrmNm33rl0NNfDrUSkNhI5NEAGWsalmAoQU8KOiul+/YZDCYuPXBhuQn3mUOg9Rn3Aw=="
+        sparkle:edSignature="/jeA7MEUoN2PI6HalC3ZYR/grXJwXx38emkoLi0WB+OwGFvPJGXlbmUiSsUFwIBvb1eZYOIkZRc4bk3PjKmpAw=="
       />
     </item>
 

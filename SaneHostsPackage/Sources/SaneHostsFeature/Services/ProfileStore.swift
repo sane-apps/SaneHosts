@@ -234,17 +234,27 @@ public final class ProfileStore {
 
     private func loadSystemHosts() async throws {
         let url = systemHostsURL
-        // Capture parser struct (value type) for background use
         let parser = self.parser
-        
-        // Perform I/O and parsing on background thread
+
+        // Only parse the system entries header, not the full 200K+ line hosts file.
+        // System entries (localhost, broadcasthost) appear before the "# ---- Profile:" marker.
         let entries = try await Task.detached(priority: .userInitiated) {
             let content = try String(contentsOf: url, encoding: .utf8)
-            let lines = parser.parse(content)
+
+            // Extract only the header section before profile entries begin
+            let headerContent: String
+            if let markerRange = content.range(of: "# ---- Profile:") {
+                headerContent = String(content[content.startIndex..<markerRange.lowerBound])
+            } else {
+                // No managed section - parse the whole file (small /etc/hosts)
+                headerContent = content
+            }
+
+            let lines = parser.parse(headerContent)
             let allEntries = parser.extractEntries(from: lines)
             return parser.extractSystemEntries(from: allEntries)
         }.value
-        
+
         self.systemEntries = entries
     }
 
@@ -440,9 +450,14 @@ public final class ProfileStore {
         var updatedProfile = profile
         updatedProfile.modifiedAt = Date()
 
+        // Encode and write on background thread to avoid blocking UI for large profiles
+        let profileToSave = updatedProfile
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
-        let data = try JSONEncoder().encode(updatedProfile)
-        try data.write(to: fileURL, options: .atomic)
+
+        try await Task.detached(priority: .userInitiated) {
+            let data = try JSONEncoder().encode(profileToSave)
+            try data.write(to: fileURL, options: .atomic)
+        }.value
 
         // Update in-memory list
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) {

@@ -59,7 +59,9 @@ public struct MainView: View {
         }
         .task {
             await store.load()
-            if let first = store.profiles.first {
+            if let active = store.activeProfile {
+                selectedProfileIDs = [active.id]
+            } else if let first = store.profiles.first {
                 selectedProfileIDs = [first.id]
             }
         }

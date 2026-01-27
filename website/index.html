@@ -16,6 +16,7 @@
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sanehosts.com/">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
@@ -52,13 +53,13 @@
             --bg-primary: #08080c;
             --bg-secondary: #0f0f16;
             --bg-card: #16161f;
-            --accent: #5fa8d3;
-            --accent-soft: #4a9bc8;
-            --accent-glow: rgba(95, 168, 211, 0.25);
-            --accent-subtle: rgba(95, 168, 211, 0.08);
+            --accent: #4f8ffa;
+            --accent-soft: #3b7ce8;
+            --accent-glow: rgba(79, 143, 250, 0.25);
+            --accent-subtle: rgba(74, 173, 232, 0.08);
             --text-primary: #f5f5f8;
-            --text-secondary: #c0c0d0;
-            --text-muted: #a0a0b0;
+            --text-secondary: #d8d8e8;
+            --text-muted: #c0c0d0;
             --success: #34d399;
             --success-soft: rgba(52, 211, 153, 0.15);
             --warm: #f4a261;
@@ -177,10 +178,11 @@
         }
 
         .logo-family {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             color: var(--text-muted);
             font-weight: 400;
             margin-left: 12px;
+            margin-right: auto;
             padding-left: 12px;
             border-left: 1px solid var(--border);
             text-decoration: none;
@@ -229,7 +231,7 @@
 
         .hero h1 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-size: clamp(2.75rem, 7vw, 4.5rem);
             font-weight: 600;
             margin-bottom: 24px;
             letter-spacing: -0.03em;
@@ -246,7 +248,7 @@
             font-size: 1.2rem;
             color: var(--text-secondary);
             max-width: 600px;
-            margin: 0 auto 20px;
+            margin: 0 auto 36px;
             font-weight: 400;
             line-height: 1.7;
         }
@@ -281,12 +283,17 @@
         /* Section shared styles */
         .section-title {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-size: clamp(2rem, 5vw, 2.75rem);
             font-weight: 600;
             text-align: center;
             margin-bottom: 16px;
             letter-spacing: -0.02em;
             line-height: 1.2;
+        }
+
+        .section-title em {
+            font-style: italic;
+            color: var(--accent);
         }
 
         .section-subtitle {
@@ -299,180 +306,6 @@
         }
 
         /* Barriers Section */
-        .barriers {
-            padding: 100px 0 80px;
-            background: linear-gradient(180deg, transparent, rgba(244, 162, 97, 0.04));
-        }
-
-        .barrier-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 28px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .barrier-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 36px 32px;
-            transition: all 0.3s ease;
-        }
-
-        .barrier-card:hover {
-            border-color: var(--warm);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .barrier-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--warm-soft);
-            color: var(--warm);
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 16px;
-        }
-
-        .barrier-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .barrier-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* Solution Section */
-        .solution {
-            padding: 100px 0 80px;
-            background: linear-gradient(180deg, transparent, rgba(52, 211, 153, 0.04));
-        }
-
-        .solution-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 28px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .solution-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 36px 32px;
-            transition: all 0.3s ease;
-        }
-
-        .solution-card:hover {
-            border-color: var(--success);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .solution-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--success-soft);
-            color: var(--success);
-            font-weight: 700;
-            font-size: 0.95rem;
-            margin-bottom: 16px;
-        }
-
-        .solution-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .solution-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        /* Promise Section - Power, Love, Sound Mind */
-        .promise {
-            padding: 100px 0;
-            text-align: center;
-        }
-
-        .promise-verse {
-            max-width: 540px;
-            margin: 0 auto 48px;
-        }
-
-        .promise-verse blockquote {
-            font-style: italic;
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            line-height: 1.7;
-            margin-bottom: 8px;
-        }
-
-        .promise-verse cite {
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            font-style: normal;
-            font-weight: 500;
-        }
-
-        .pillars-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .pillar-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 36px 28px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-
-        .pillar-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .pillar-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-            display: block;
-        }
-
-        .pillar-card h3 {
-            font-size: 1.15rem;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        .pillar-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
         /* Protection Levels */
         .protection-levels {
             padding: 80px 0;
@@ -528,7 +361,7 @@
 
         .level-tagline {
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             font-style: italic;
         }
 
@@ -841,7 +674,7 @@
             background: var(--bg-primary);
             padding: 8px 12px;
             border-radius: 6px;
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             color: var(--text-secondary);
             cursor: pointer;
             transition: all 0.2s;
@@ -1011,7 +844,7 @@
 
         .download h2 {
             font-family: 'Playfair Display', Georgia, serif;
-            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
             margin-bottom: 16px;
             font-weight: 600;
         }
@@ -1086,15 +919,98 @@
         .footer-philosophy {
             font-style: italic;
             color: var(--text-muted);
-            font-size: 0.85rem;
+            font-size: 0.875rem;
             margin-top: 12px;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            z-index: 200;
+            color: var(--text-primary);
+        }
+
+        .hamburger svg { display: block; }
+
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(8, 8, 12, 0.97);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 150;
+            padding: 80px 32px 40px;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+
+        .mobile-nav.open { display: flex; }
+
+        .mobile-nav a {
+            display: block;
+            padding: 16px 0;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border);
+            transition: color 0.2s;
+        }
+
+        .mobile-nav a:active { color: var(--accent); }
+
+        .mobile-nav-section {
+            padding: 20px 0 8px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .mobile-nav-section:first-child { padding-top: 0; }
+
+        .mobile-nav .mobile-nav-cta {
+            display: flex;
+            margin-top: 24px;
+            padding: 16px 28px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: #fff !important;
+            font-weight: 600;
+            border-radius: 12px;
+            text-align: center;
+            justify-content: center;
+            border-bottom: none;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 20px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            font-size: 1.5rem;
+            line-height: 1;
+            z-index: 200;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
+            .hamburger { display: block; }
+            .nav-links { display: none; }
+            .logo-family { display: none; }
 
             .hero {
                 padding: 120px 0 60px;
@@ -1116,15 +1032,19 @@
                 align-items: center;
             }
 
-            .barrier-grid,
-            .solution-grid {
-                grid-template-columns: 1fr;
+            .footer-links {
+                flex-direction: column;
+                gap: 12px;
+                align-items: center;
             }
 
-            .pillars-grid {
-                grid-template-columns: 1fr;
-                max-width: 400px;
-                margin: 0 auto;
+            section {
+                padding-top: 48px !important;
+                padding-bottom: 48px !important;
+            }
+
+            .hero {
+                padding-top: 110px !important;
             }
         }
     </style>
@@ -1138,25 +1058,47 @@
                 <img src="favicon.png" alt="SaneHosts">
                 SaneHosts
             </a>
-            <a href="https://saneapps.com" class="logo-family">Part of the Sane Apps family</a>
+            <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
             <div class="nav-links">
+                <a href="#protection">Protection</a>
                 <a href="#features">Features</a>
-                <a href="#download">Download</a>
+                <a href="#comparison">Why SaneHosts</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
-                <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="nav-cta">Download $5</a>
+                <a href="https://github.com/sponsors/stephanjoseph" class="nav-cta" target="_blank" rel="noopener" style="display: inline-flex; align-items: center;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ffffff" stroke-width="1.5" style="margin-right: 6px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    Donate
+                </a>
             </div>
+            <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
         </div>
     </nav>
+
+    <div id="mobileNav" class="mobile-nav">
+        <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close menu">&times;</button>
+        <p class="mobile-nav-section">Navigation</p>
+        <a href="#protection" onclick="toggleMobileNav()">Protection Levels</a>
+        <a href="#features" onclick="toggleMobileNav()">Features</a>
+        <a href="#comparison" onclick="toggleMobileNav()">Why SaneHosts</a>
+        <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
+        <a href="https://github.com/sponsors/stephanjoseph">Donate</a>
+        <p class="mobile-nav-section">More SaneApps</p>
+        <a href="https://sanebar.com">SaneBar &mdash; Menu Bar Manager</a>
+        <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
+        <a href="https://saneapps.com">See all SaneApps &rarr;</a>
+        <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="mobile-nav-cta">Download SaneHosts &mdash; $5</a>
+    </div>
 
     <!-- ============================================ -->
     <!-- SECTION 1: HERO - THE THREAT                -->
     <!-- ============================================ -->
     <section class="hero">
         <div class="container">
-            <h1 class="animate-in delay-2">Your Mac Is Talking<br><em>Behind Your Back</em></h1>
-            <p class="subtitle animate-in delay-3">200+ curated blocklists. One click to activate.<br>System-wide protection using your Mac's built-in hosts file.</p>
+            <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Mac's Network</h1>
+            <p class="subtitle animate-in delay-3">It's <em>insane</em> that your Mac is spying on you — hundreds of trackers running in the background. SaneHosts blocks them all. 200+ curated blocklists. One-click protection.</p>
 
-            <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 0.95rem; color: var(--text-muted); margin-bottom: 8px;">
+            <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 1.17rem; color: var(--text-secondary); margin-bottom: 32px;">
                 <a href="https://github.com/sane-apps/SaneHosts" style="color: inherit; text-decoration: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>Provably private</a>
                 <span>💵 No subscription</span>
                 <span>🛠️ Actively maintained</span>
@@ -1168,100 +1110,43 @@
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Download for $5
+                    Download — $5
                 </a>
             </div>
 
+            <h2 class="section-title animate-in delay-5" style="margin-bottom: 8px;">Pick. Click. <em>Protected.</em></h2>
+            <p class="animate-in delay-5" style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 24px;">Choose a protection level. Hit activate. SaneHosts handles the rest.</p>
             <div class="hero-image animate-in delay-5">
-                <img src="screenshot.png" alt="SaneHosts App - System-wide tracker blocking for macOS">
+                <img src="screenshot.png" alt="SaneHosts App - pick a protection level and activate with one click">
             </div>
-        </div>
-    </section>
 
-    <!-- ============================================ -->
-    <!-- SECTION 2: THE BARRIERS                     -->
-    <!-- ============================================ -->
-    <section class="barriers">
-        <div class="container">
-            <h2 class="section-title">You Shouldn't Need a CS Degree<br>to Stop Being Tracked</h2>
-            <p class="section-subtitle">Your Mac already has the tool to block trackers. So why isn't everyone using it?</p>
-
-            <div class="barrier-grid">
-                <div class="barrier-card">
-                    <div class="barrier-number">1</div>
-                    <h3>The DIY Way Is Painful</h3>
-                    <p>Your Mac has a hosts file that can block trackers. But you'd need Terminal, admin commands, and thousands of manual entries. One typo breaks your internet.</p>
-                </div>
-                <div class="barrier-card">
-                    <div class="barrier-number">2</div>
-                    <h3>The Alternatives Track You Too</h3>
-                    <p>Other apps exist, but they collect your data, require subscriptions, or route your traffic through their servers. You're trading one tracker for another.</p>
+            <div style="margin-top: 48px; text-align: center;">
+                <h2 class="section-title" style="margin-bottom: 8px;">Locked with Touch ID</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem;">Your protections are locked behind your fingerprint. Nobody can disable them without you.</p>
+                <div class="hero-image">
+                    <img src="images/sanehosts-touchid.png" alt="SaneHosts Touch ID - biometric protection for your network settings">
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- ============================================ -->
-    <!-- SECTION 3: THE SOLUTION                     -->
-    <!-- ============================================ -->
-    <section class="solution">
-        <div class="container">
-            <h2 class="section-title">SaneHosts Makes It <em style="font-style: italic; color: var(--success);">Simple</em></h2>
-            <p class="section-subtitle">Two barriers. Two answers. One app.</p>
-
-            <div class="solution-grid">
-                <div class="solution-card">
-                    <div class="solution-number">1</div>
-                    <h3>Simple, Not Scary</h3>
-                    <p>No Terminal. No commands. Choose a protection level, activate it, done. If something breaks, just deactivate. Your Mac's built-in hosts file does the rest.</p>
-                </div>
-                <div class="solution-card">
-                    <div class="solution-number">2</div>
-                    <h3>Private, Not Exploitative</h3>
-                    <p>100% on-device. No accounts. No subscriptions. No telemetry. Your data never leaves your Mac. We don't even have a server to send it to.</p>
+            <div style="margin-top: 64px; text-align: center; padding: 40px; border: 1px solid var(--accent-subtle); border-radius: 16px; background: var(--accent-subtle);">
+                <h2 class="section-title" style="margin-bottom: 8px;">Make It Yours</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1rem;">Custom profiles. Hand-picked blocklists from security researchers. Merge protection levels or build from scratch.</p>
+                <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
+                    <div class="hero-image" style="max-width: 340px;">
+                        <img src="images/sanehosts-customize.png" alt="SaneHosts More Options - custom profiles, templates, and merging">
+                    </div>
+                    <div class="hero-image" style="max-width: 340px;">
+                        <img src="images/sanehosts-import.png" alt="SaneHosts Import Blocklists - choose from curated security researcher lists">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ============================================ -->
-    <!-- SECTION 4: THE PROMISE - Power, Love, Sound Mind -->
+    <!-- SECTION 2: PROTECTION LEVELS (MOVED UP)     -->
     <!-- ============================================ -->
-    <section class="promise">
-        <div class="container">
-            <h2 class="section-title">The Sane Promise</h2>
-
-            <div class="promise-verse">
-                <blockquote>"For God has not given us a spirit of fear, but of power and of love and of a sound mind."</blockquote>
-                <cite>-- 2 Timothy 1:7</cite>
-            </div>
-
-            <div class="pillars-grid">
-                <div class="pillar-card">
-                    <span class="pillar-icon">&#9889;</span>
-                    <h3>Power</h3>
-                    <p>Your data stays on your device. No cloud, no tracking, no asking permission to protect yourself.</p>
-                </div>
-                <div class="pillar-card">
-                    <span class="pillar-icon">&#9829;</span>
-                    <h3>Love</h3>
-                    <p>Built to serve you, not exploit you. No dark patterns, no manipulation, no guilt-tripping upgrades.</p>
-                </div>
-                <div class="pillar-card">
-                    <span class="pillar-icon">&#129504;</span>
-                    <h3>Sound Mind</h3>
-                    <p>Calm, focused design. No clutter, no anxiety, no 47-step setup wizard. Just clarity.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- SECTION 5: FEATURES                         -->
-    <!-- ============================================ -->
-
-    <!-- 5a: Protection Levels -->
-    <section class="protection-levels" id="features">
+    <section class="protection-levels" id="protection">
         <div class="container">
             <h2 class="section-title">Pick Your Protection Level</h2>
             <p class="section-subtitle">Five curated levels. Each bundles the right blocklists for your needs. Choose one and go.</p>
@@ -1281,7 +1166,7 @@
                                 <span class="level-name">Essentials</span><br>
                                 <span class="level-tagline">Just make it work</span>
                             </td>
-                            <td class="level-desc">Ads, trackers, and malware -- safe for everyone</td>
+                            <td class="level-desc">Ads, trackers, and malware — safe for everyone</td>
                             <td class="level-entries">~170K</td>
                         </tr>
                         <tr>
@@ -1311,9 +1196,9 @@
                         <tr>
                             <td>
                                 <span class="level-name">Kitchen Sink</span><br>
-                                <span class="level-tagline">Nuke it from orbit</span>
+                                <span class="level-tagline">Block everything we can</span>
                             </td>
-                            <td class="level-desc">Maximum protection -- blocks everything we can</td>
+                            <td class="level-desc">Maximum protection — blocks everything we can</td>
                             <td class="level-entries">~700K</td>
                         </tr>
                     </tbody>
@@ -1322,25 +1207,29 @@
         </div>
     </section>
 
+    <!-- ============================================ -->
+    <!-- SECTION 3: FEATURES                         -->
+    <!-- ============================================ -->
+
     <!-- 5b: Core Features -->
-    <section class="features">
+    <section class="features" id="features">
         <div class="container">
             <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
             <p class="section-subtitle">200+ curated blocklists from Steven Black, Hagezi, AdGuard, and more.</p>
 
             <div class="features-row">
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#127919;</div>
-                    <h3>Zero Configuration</h3>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>
+                    <h3>One-Click Setup</h3>
                     <p>Pick a protection level. Click activate. Done. No Terminal, no commands, no manual editing.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#127760;</div>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5fa8d3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
                     <h3>System-Wide Protection</h3>
-                    <p>Every app, not just browsers. Safari, Chrome, Slack, games -- all protected at the system level.</p>
+                    <p>Every app, not just browsers. Safari, Chrome, Slack, games — all protected at the system level.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#128274;</div>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
                     <h3>100% On-Device</h3>
                     <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Network only when you choose to import.</p>
                 </div>
@@ -1348,37 +1237,28 @@
 
             <div class="features-row" style="margin-top: 24px;">
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#128203;</div>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
                     <h3>Multiple Profiles</h3>
-                    <p>Create profiles for different contexts -- work, family, focus. Switch instantly from the menu bar.</p>
+                    <p>Create profiles for different contexts — work, family, focus. Switch instantly from the menu bar.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#128260;</div>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
                     <h3>Automatic DNS Flush</h3>
                     <p>DNS cache cleared automatically when you activate or switch profiles. Changes take effect immediately.</p>
                 </div>
                 <div class="feature-item">
-                    <div class="feature-icon-small">&#128275;</div>
-                    <h3>Touch ID Locked</h3>
-                    <p>Settings are protected by Touch ID. Nobody -- not your kids, not your coworker -- can disable your protections without your fingerprint.</p>
+                    <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v4"/><path d="M7.5 7a5 5 0 0 1 9 0"/><path d="M4.5 9.5a8 8 0 0 1 3-3.5"/><path d="M16.5 6a8 8 0 0 1 3 3.5"/><path d="M4.5 14.5a8 8 0 0 0 2 3.5"/><path d="M17.5 18a8 8 0 0 0 2-3.5"/><path d="M9.5 5a5 5 0 0 0-2.5 4v3a5 5 0 0 0 1 3"/><path d="M14.5 5a5 5 0 0 1 2.5 4v3a5 5 0 0 1-3 4.5"/><path d="M12 18v-4"/></svg></div>
+                    <h3>Touch ID Protected</h3>
+                    <p>Settings are locked behind your fingerprint. Nobody — not your kids, not your coworker — can disable your protections without Touch ID.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 5c: How It Works -->
-    <section class="how-it-works">
-        <div class="container">
-            <h2 class="section-title">Pick. Click. Protected.</h2>
-            <p class="section-subtitle">Curated blocklists from security researchers, merged into one profile. You choose what to block.</p>
-            <div class="how-it-works-image">
-                <img src="images/sanehosts-import.png" alt="SaneHosts blocklist import - choose from curated lists like Steven Black, Hagezi, and Peter Lowe">
-            </div>
-        </div>
-    </section>
+    <!-- How It Works content moved into hero section above -->
 
     <!-- 5d: Comparison -->
-    <section class="comparison">
+    <section class="comparison" id="comparison">
         <div class="container">
             <h2 class="section-title">Why SaneHosts?</h2>
             <p class="section-subtitle">No VPN. No cloud. No subscription. Just your Mac's built-in hosts file, made usable.</p>
@@ -1435,99 +1315,12 @@
         </div>
     </section>
 
-    <!-- 5e: Open Source -->
-    <section class="open-source">
-        <div class="container">
-            <div class="open-source-card">
-                <h2>The Code Is Public</h2>
-                <p class="tagline">The protection is private.</p>
-                <p>SaneHosts is open source. Read every line. No hidden tricks. No data harvesting. Just a Mac app that does what it says.</p>
-                <p><strong>Why $5?</strong> You're supporting independent, open-source development. The app is signed, notarized, and ready to run. You could build it yourself -- or you could grab a latte and let us handle it.</p>
-                <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                    View on GitHub
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================ -->
-    <!-- SECTION 6: DOWNLOAD + PRICING               -->
-    <!-- ============================================ -->
-    <section class="download" id="download">
-        <div class="container">
-            <div class="download-card">
-                <h2>Ready to Go Sane?</h2>
-                <span class="price-tag">$5 once -- yours forever</span>
-                <p>Open source. Build it yourself for free, or grab the signed, notarized DMG.</p>
-                <div class="download-options">
-                    <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="btn btn-primary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" y1="15" x2="12" y2="3"/>
-                        </svg>
-                        Download for $5
-                    </a>
-                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        Build from Source (Free)
-                    </a>
-                </div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 20px;">
-                    Requires macOS 14.0 (Sonoma) or later
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Support -->
-    <section class="support" id="support">
-        <div class="container">
-            <h2 class="section-title">Support SaneHosts</h2>
-            <p class="section-subtitle support-subtitle">
-                <em>"The worker is worthy of his wages."</em><br>
-                -- 1 Timothy 5:18<br><br>
-                Thank you. -- Mr. Sane
-            </p>
-            <a href="https://github.com/sponsors/stephanjoseph" class="btn btn-primary github-sponsor-btn" target="_blank" rel="noopener">
-                <svg height="16" viewBox="0 0 16 16" width="16" fill="currentColor" style="margin-right: 8px;">
-                    <path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/>
-                </svg>
-                Sponsor on GitHub
-            </a>
-            <div class="crypto-addresses">
-                <div class="crypto-grid">
-                    <div class="crypto-item crypto-btc">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/btc.svg" alt="BTC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">3Go9nJu3dj2qaa4EAYXrTsTf5AnhcrPQke</code>
-                    </div>
-                    <div class="crypto-item crypto-sol">
-                        <img class="crypto-logo" src="https://cryptologos.cc/logos/solana-sol-logo.svg" alt="SOL" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">FBvU83GUmwEYk3HMwZh3GBorGvrVVWSPb8VLCKeLiWZZ</code>
-                    </div>
-                    <div class="crypto-item crypto-zec">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/zec.svg" alt="ZEC" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">t1PaQ7LSoRDVvXLaQTWmy5tKUAiKxuE9hBN</code>
-                    </div>
-                    <div class="crypto-item crypto-eth">
-                        <img class="crypto-logo" src="https://cdn.jsdelivr.net/gh/spothq/cryptocurrency-icons@master/svg/color/eth.svg" alt="ETH" width="24" height="24">
-                        <code class="crypto-addr" onclick="copyToClipboard(this)">0x026668feA51c27F0803055B8c0d881ac2F1e7C3e</code>
-                    </div>
-                </div>
-                <p class="crypto-hint">Click any address to copy</p>
-            </div>
-        </div>
-    </section>
+    <!-- Download section removed — hero CTA is the single download path (matches SaneBar pattern) -->
 
     <!-- More Apps -->
     <section class="more-apps">
         <div class="container">
-            <h2 class="section-title">More from Sane Apps</h2>
+            <h2 class="section-title">More from SaneApps</h2>
             <p class="more-apps-subtitle">Privacy-first Mac utilities that respect you</p>
             <div class="more-apps-grid">
                 <a href="https://sanebar.com" class="app-card">
@@ -1535,7 +1328,7 @@
                         <img src="images/sanebar-icon.png" alt="SaneBar" class="app-card-icon">
                         <div class="app-card-name">SaneBar</div>
                     </div>
-                    <p class="app-card-tagline">Menu bar manager. Hide clutter. Find any icon instantly.</p>
+                    <p class="app-card-tagline">Hide menu bar clutter with a click. Lock sensitive icons behind Touch ID. The open source Bartender alternative that works on macOS Tahoe.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
                 <a href="https://saneclip.com" class="app-card">
@@ -1543,7 +1336,7 @@
                         <img src="images/saneclip-icon.png" alt="SaneClip" class="app-card-icon">
                         <div class="app-card-name">SaneClip</div>
                     </div>
-                    <p class="app-card-tagline">Clipboard manager. Unlimited history. Quick search.</p>
+                    <p class="app-card-tagline">Clipboard history that never leaves your Mac. Touch ID protection, instant search, text transforms. Your copy history stays yours.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
             </div>
@@ -1559,17 +1352,25 @@
             <div class="footer-links">
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="privacy.html">Privacy</a>
-                <a href="https://github.com/sane-apps/SaneHosts/issues">Support</a>
+                <a href="https://github.com/sane-apps/SaneHosts/issues">Help</a>
                 <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">MIT License</a>
-                <a href="https://saneapps.com">Sane Apps</a>
+                <a href="https://github.com/sponsors/stephanjoseph"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
+                <a href="https://saneapps.com">SaneApps</a>
             </div>
-            <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts</p>
+            <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts &middot; Requires macOS 14.0 (Sonoma) or later</p>
             <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
             <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
         </div>
     </footer>
 
     <script>
+        // Mobile Nav Toggle
+        function toggleMobileNav() {
+            var nav = document.getElementById('mobileNav');
+            nav.classList.toggle('open');
+            document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+        }
+
         function copyToClipboard(el) {
             navigator.clipboard.writeText(el.textContent);
             const orig = el.textContent;
