@@ -23,12 +23,13 @@ final class WindowActionStorage {
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     private let updaterController: SPUStandardUpdaterController
+    private let updaterDelegate = SaneHostsUpdaterDelegate()
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
 
     init() {
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
         // Faster tooltip appearance (default ~700ms, set to 300ms)
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
@@ -819,5 +820,13 @@ final class CheckForUpdatesViewModel: ObservableObject {
 
     func checkForUpdates() {
         updater.checkForUpdates()
+    }
+}
+
+// MARK: - Sparkle Updater Delegate
+
+final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
+    func feedURLString(for updater: SPUUpdater) -> String? {
+        return "https://sanehosts.com/appcast.xml"
     }
 }

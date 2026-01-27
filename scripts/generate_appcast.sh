@@ -57,7 +57,7 @@ fi
 # Also try Keychain-stored key if file-based key didn't work
 if [ -z "$EDDSA_SIGNATURE" ] && [ -n "$SPARKLE_BIN" ]; then
     echo ">>> Trying Keychain-stored Sparkle key..."
-    EDDSA_SIGNATURE=$("$SPARKLE_BIN" "$DMG_PATH" 2>/dev/null || echo "")
+    EDDSA_SIGNATURE=$("$SPARKLE_BIN" --account "EdDSA Private Key" "$DMG_PATH" 2>/dev/null || echo "")
 fi
 
 # FAIL if no signature — never ship unsigned updates
@@ -131,6 +131,5 @@ echo "1. Upload DMG to Cloudflare R2:"
 echo "   npx wrangler r2 object put sanebar-downloads/${DMG_NAME} \\"
 echo "     --file=$RELEASES_DIR/$DMG_NAME --content-type=application/octet-stream --remote"
 echo "2. Deploy website + appcast to Cloudflare Pages:"
-echo "   CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \\"
-echo "     npx wrangler pages deploy ./docs --project-name=sanehosts-site"
+echo "   npx wrangler pages deploy ./website --project-name=sanehosts-site"
 echo ""

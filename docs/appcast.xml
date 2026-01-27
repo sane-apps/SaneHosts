@@ -7,24 +7,24 @@
     <language>en</language>
 
     <item>
-      <title>Version 1.0.4</title>
-      <pubDate>Tue, 27 Jan 2026 02:07:46 +0000</pubDate>
-      <sparkle:version>1.0.4</sparkle:version>
-      <sparkle:shortVersionString>1.0.4</sparkle:shortVersionString>
+      <title>Version 1.0.6</title>
+      <pubDate>Tue, 27 Jan 2026 05:22:13 +0000</pubDate>
+      <sparkle:version>1.0.6</sparkle:version>
+      <sparkle:shortVersionString>1.0.6</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
-        <h2>What's New in SaneHosts 1.0.4</h2>
+        <h2>What's New in SaneHosts 1.0.6</h2>
         <ul>
-          <li>Touch ID authentication for hosts file changes</li>
-          <li>Privileged helper daemon for seamless, secure writes</li>
-          <li>Improved stability and crash fixes</li>
+          <li>Fixed auto-update feed configuration</li>
+          <li>Improved authentication flow — fewer prompts</li>
+          <li>Better DNS cache flushing after profile changes</li>
         </ul>
       ]]></description>
       <enclosure
-        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.4.dmg"
-        length="3537072"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.6.dmg"
+        length="3228043"
         type="application/octet-stream"
-        sparkle:edSignature="vIr77sFqODMK8cPtIaxyWtmoG/oOxQNU9L9P2qItus4uj4EfHtExzniy/mNEBPSuoXgShcsQ61M3aRRg/SZ8DA=="
+        sparkle:edSignature="5uA8ttKYI7b3i5owY+5MrmNm33rl0NNfDrUSkNhI5NEAGWsalmAoQU8KOiul+/YZDCYuPXBhuQn3mUOg9Rn3Aw=="
       />
     </item>
 
