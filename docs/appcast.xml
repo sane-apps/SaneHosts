@@ -8,7 +8,7 @@
 
     <item>
       <title>Version 1.0.8</title>
-      <pubDate>Tue, 27 Jan 2026 18:15:00 +0000</pubDate>
+      <pubDate>Tue, 27 Jan 2026 19:10:20 +0000</pubDate>
       <sparkle:version>1.0.8</sparkle:version>
       <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
@@ -20,13 +20,14 @@
           <li>Fixed: "Open SaneHosts" now brings existing window to front instead of opening duplicates.</li>
           <li>Window opens to your active profile instead of always showing the first one.</li>
           <li>Faster app launch — reduced hosts file parsing time dramatically.</li>
+          <li>Added network timeout for blocklist fetches to prevent app hangs.</li>
         </ul>
       ]]></description>
       <enclosure
         url="https://dist.sanehosts.com/updates/SaneHosts-1.0.8.dmg"
-        length="0"
+        length="3231841"
         type="application/octet-stream"
-        sparkle:edSignature=""
+        sparkle:edSignature="Ez9bHUnbmfgD6EhToXcEAMjpHG19RGCgG0kEp90d7I1DrHUoH15leYu46n+mOt+ZVaGaFOPg8gBAkNFGpb/tBA=="
       />
     </item>
 
@@ -39,12 +40,7 @@
       <description><![CDATA[
         <h2>What's New in SaneHosts 1.0.7</h2>
         <ul>
-          <li>Menu bar now shows green/red status indicators for active protection</li>
-          <li>Fixed: "Open SaneHosts" now brings existing window to front instead of opening duplicates</li>
-          <li>Window opens to your active profile instead of always showing the first one</li>
-          <li>Faster app launch — reduced hosts file parsing time dramatically</li>
-          <li>Network timeout added for blocklist fetches to prevent hangs</li>
-          <li>Updated Kitchen Sink preset description</li>
+          <li>Stability and performance improvements.</li>
         </ul>
       ]]></description>
       <enclosure
