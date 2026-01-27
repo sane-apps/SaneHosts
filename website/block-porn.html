@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Block Pornography on Mac (Free Parental Control)</title>
+    <meta name="description" content="Protect your family or yourself. Compare 3 ways to block porn and adult content system-wide on macOS: Manual hosts edits, DNS filters, and SaneHosts.">
+    <meta name="keywords" content="block porn mac, parental control mac free, block adult sites macos, stop porn mac, hosts file porn block">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="How to Block Pornography on Mac (System-Wide)">
+    <meta property="og:description" content="Manual edits vs. DNS vs. SaneHosts. The complete guide.">
+    <meta property="og:image" content="https://sanehosts.com/og-image.png">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sanehosts.com/block-porn.html">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Strict Brand Colors */
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #4f8ffa;
+            --accent-soft: #3b7ce8;
+            --accent-glow: rgba(79, 143, 250, 0.25);
+            --text-primary: #f5f5f8;
+            --text-secondary: #d8d8e8;
+            --text-muted: #c0c0d0;
+            --success: #34d399;
+            --border: #252530;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .gradient-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
+                        radial-gradient(ellipse at 85% 90%, rgba(244, 162, 97, 0.08) 0%, transparent 45%),
+                        radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+        nav { padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 60px; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 600; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+        .logo img { width: 32px; border-radius: 8px; }
+        .nav-cta { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+        article h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        article h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 48px 0 24px;
+            color: var(--text-primary);
+        }
+
+        article h3 {
+            font-size: 1.25rem;
+            margin: 32px 0 16px;
+            color: var(--text-primary);
+        }
+
+        p { margin-bottom: 24px; color: var(--text-secondary); font-size: 1.1rem; }
+        
+        pre {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 32px;
+            font-family: 'Menlo', 'Monaco', monospace;
+            font-size: 0.9rem;
+            color: #a5b3ce;
+        }
+
+        /* Comparison Cards */
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .option-title { font-size: 1.4rem; font-weight: 600; color: var(--text-primary); }
+        .option-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 100px; font-weight: 600; }
+        
+        .badge-free { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
+        .badge-sub { background: rgba(244, 162, 97, 0.15); color: #f4a261; }
+        .badge-sane { background: rgba(79, 143, 250, 0.15); color: var(--accent); }
+
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+        .pc-list { list-style: none; padding: 0; margin: 0; }
+        
+        .pc-list li { 
+            font-size: 0.95rem; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: flex-start;
+            gap: 10px; 
+            line-height: 1.5;
+        }
+        
+        .icon-check, .icon-cross { 
+            flex-shrink: 0; 
+            width: 18px; 
+            margin-top: 2px;
+        }
+        
+        .icon-check { color: var(--success); }
+        .icon-cross { color: #ef4444; }
+
+        /* The Winner Card */
+        .winner-card {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 24px;
+            transition: transform 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-2px); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="logo">
+                <img src="favicon.png" alt="SaneHosts Icon">
+                SaneHosts
+            </a>
+            <a href="/" class="nav-cta">Home &rarr;</a>
+        </div>
+    </nav>
+
+    <article class="container">
+        <h1>How to Block Pornography on Mac (Free System-Wide Guide)</h1>
+        <p>Whether you're setting up a computer for a child or practicing self-discipline, blocking adult content on macOS is a common need. Browser extensions (like "BlockSite") are easy to bypass—any savvy user can just disable the extension or use a private window.</p>
+        <p>To truly block access, you need to cut it off at the system level. Here are three ways to do it.</p>
+
+        <hr style="border: 0; border-top: 1px solid var(--border); margin: 40px 0;">
+
+        <!-- Option 1: Manual -->
+        <div class="option-card">
+            <div class="option-header">
+                <div class="option-title">Option 1: The Hard Way (Terminal)</div>
+                <span class="option-badge badge-free">Free</span>
+            </div>
+            <p>You can use the StevenBlack "Porn" blocklist (a massive text file of adult domains) and paste it into your system hosts file.</p>
+            
+            <pre>sudo nano /etc/hosts</pre>
+            <p>You will need to copy 100,000+ lines of text into this file. <strong>Warning:</strong> Handling this many lines in <code>nano</code> can be slow or crash the terminal.</p>
+
+            <div class="pros-cons">
+                <div>
+                    <strong>Pros</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div>Completely free</div></li>
+                        <li><span class="icon-check">✓</span> <div>Effective blocking</div></li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Cons</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-cross">✗</span> <div>Hard to update (new sites appear daily)</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Risk of system lag with huge files</div></li>
+                        <li><span class="icon-cross">✗</span> <div>No easy way to temporarily disable</div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option 2: DNS -->
+        <div class="option-card">
+            <div class="option-header">
+                <div class="option-title">Option 2: The DNS Way</div>
+                <span class="option-badge badge-free">Free / Paid</span>
+            </div>
+            <p>You can change your Mac's DNS settings to use a "Family Safe" provider like OpenDNS Family Shield or CleanBrowsing.</p>
+
+            <div class="pros-cons">
+                <div>
+                    <strong>Pros</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div>Blocks categories automatically</div></li>
+                        <li><span class="icon-check">✓</span> <div>No software to install</div></li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Cons</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-cross">✗</span> <div>Can be bypassed by changing DNS back</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Does not work if you use a VPN</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Slows down all browsing slightly</div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option 3: SaneHosts -->
+        <div class="option-card winner-card">
+            <div class="option-header">
+                <div class="option-title">Option 3: The Sane Way</div>
+                <span class="option-badge badge-sane">$5 One-Time</span>
+            </div>
+            <p><strong>SaneHosts</strong> makes the hosts file method usable. It downloads the massive "StevenBlack Porn" list for you, parses it safely, and locks it behind Touch ID.</p>
+
+            <div class="pros-cons">
+                <div>
+                    <strong>Why it wins</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div><strong>Touch ID Locked:</strong> Prevents easy bypassing (requires auth)</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Family Safe Preset:</strong> One click to set up</div></li>
+                        <li><span class="icon-check">✓</span> <strong>Fast:</strong> Uses optimized local parsing, no lag</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Auto-Updates:</strong> Keeps the blocklist fresh</div></li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="btn">Get SaneHosts — $5</a>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+        </div>
+
+    </article>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="block-gambling.html" style="color: var(--text-muted);">Block Gambling</a></p>
+        </div>
+    </footer>
+</body>
+</html>
