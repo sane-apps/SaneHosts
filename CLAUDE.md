@@ -256,13 +256,22 @@ Task tool with subagent_type: Explore
 ./scripts/generate_appcast.sh
 ```
 
-### Remaining Steps for v1.0
+### Release Steps
 
-- [ ] Purchase domain (sanehosts.com)
-- [ ] Create GitHub repo (github.com/sane-apps/SaneHosts)
-- [ ] Run `./scripts/build_release.sh`
-- [ ] Create GitHub release with DMG
-- [ ] Deploy website + appcast.xml
+```bash
+# 1. Build, sign, notarize DMG
+./scripts/build_release.sh
+
+# 2. Upload DMG to Cloudflare R2
+npx wrangler r2 object put sanebar-downloads/SaneHosts-X.Y.Z.dmg \
+  --file=releases/SaneHosts-X.Y.Z.dmg --content-type="application/octet-stream" --remote
+
+# 3. Update appcast.xml then deploy website
+cp docs/appcast.xml website/appcast.xml
+CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \
+  npx wrangler pages deploy ./website --project-name=sanehosts-site \
+  --commit-dirty=true --commit-message="Release vX.Y.Z"
+```
 
 ### Notes
 
