@@ -54,6 +54,12 @@ search_keywords:
   - "block trackers macos"
   - "etc hosts macos"
   - "system wide ad blocker mac no vpn"
+  - "block gambling mac"
+  - "block porn mac"
+  - "stop adobe creative cloud traffic"
+  - "block facebook mac"
+  - "stevenblack hosts mac tutorial"
+  - "native mac privacy app"
 
 pain_points:
   - "Gas Mask crashes on modern macOS"
@@ -62,8 +68,15 @@ pain_points:
   - "pihole requires separate hardware"
   - "NextDNS is a subscription"
   - "VPN ad blockers slow connection"
+  - "difficulty blocking specific sites (gambling, porn, social)"
+  - "flushing DNS cache is annoying"
 
 competitor_apps: []
+
+policies:
+  - "ALWAYS link to https://sanehosts.com, NEVER to GitHub repo"
+  - "Position as 'Professional Grade Privacy Switch', not just a file editor"
+  - "Focus on safety (Touch ID, backups) and ease (curated lists)"
 
 known_facts:
   - "Bounced LS order emails are NOT a problem - download delivered on purchase page"
