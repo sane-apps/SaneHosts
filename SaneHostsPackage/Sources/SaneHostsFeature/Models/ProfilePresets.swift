@@ -34,7 +34,7 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
         case .familySafe: return "Protect the kids"
         case .focusMode: return "Get stuff done"
         case .privacyShield: return "Stop watching me"
-        case .kitchenSink: return "Nuke it from orbit"
+        case .kitchenSink: return "Block everything we can"
         }
     }
 
@@ -144,6 +144,14 @@ public actor PresetManager {
         return appSupport.appendingPathComponent("SaneHosts/BlocklistCache", isDirectory: true)
     }
 
+    /// URLSession with reasonable timeout for blocklist fetches
+    private let session: URLSession = {
+        let config = URLSessionConfiguration.default
+        config.timeoutIntervalForRequest = 15
+        config.timeoutIntervalForResource = 30
+        return URLSession(configuration: config)
+    }()
+
     private init() {}
 
     /// Load entries for a preset, using cached data if available, otherwise bundled
@@ -180,8 +188,8 @@ public actor PresetManager {
             return parser.extractEntries(from: lines)
         }
 
-        // Fetch from network
-        let (data, _) = try await URLSession.shared.data(from: source.url)
+        // Fetch from network (with timeout)
+        let (data, _) = try await session.data(from: source.url)
         guard let content = String(data: data, encoding: .utf8) else {
             throw PresetError.invalidData
         }
@@ -214,7 +222,7 @@ public actor PresetManager {
     public func updateCachedBlocklists() async {
         for source in BlocklistCatalog.all {
             do {
-                let (data, _) = try await URLSession.shared.data(from: source.url)
+                let (data, _) = try await session.data(from: source.url)
                 if let content = String(data: data, encoding: .utf8) {
                     let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
                     try? FileManager.default.createDirectory(at: cachedDataURL, withIntermediateDirectories: true)

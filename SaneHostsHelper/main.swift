@@ -17,7 +17,8 @@ private let logger = Logger(subsystem: "com.mrsane.SaneHostsHelper", category: "
 
 class HelperDelegate: NSObject, NSXPCListenerDelegate {
 
-    /// Team identifier that must match the connecting app's code signature
+    /// Team identifier that must match the connecting app's code signature.
+    /// WARNING: This MUST match the DEVELOPMENT_TEAM in Helper.xcconfig.
     private let requiredTeamID = "M78L6FXD48"
     /// Bundle identifier for valid connecting app
     private let requiredBundleID = "com.mrsane.SaneHosts"
@@ -88,11 +89,11 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
         logger.info("writeHostsFile called, content length: \(content.count)")
 
         do {
-            // Create backup first
+            // Create backup ONLY if it doesn't exist (preserve original system state)
             let backupPath = "/etc/hosts.sanehosts.backup"
-            if FileManager.default.fileExists(atPath: hostsPath) {
-                try? FileManager.default.removeItem(atPath: backupPath)
-                try FileManager.default.copyItem(atPath: hostsPath, toPath: backupPath)
+            if !FileManager.default.fileExists(atPath: backupPath) && FileManager.default.fileExists(atPath: hostsPath) {
+                try? FileManager.default.copyItem(atPath: hostsPath, toPath: backupPath)
+                logger.info("Created pristine system backup at \(backupPath)")
             }
 
             // Write new content
