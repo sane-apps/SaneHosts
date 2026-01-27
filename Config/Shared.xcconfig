@@ -9,8 +9,8 @@
 PRODUCT_NAME = SaneHosts
 PRODUCT_DISPLAY_NAME = SaneHosts
 PRODUCT_BUNDLE_IDENTIFIER = com.mrsane.SaneHosts
-MARKETING_VERSION = 1.0.5
-CURRENT_PROJECT_VERSION = 6
+MARKETING_VERSION = 1.0.6
+CURRENT_PROJECT_VERSION = 7
 
 // ==========================================
 // Platform Configuration
@@ -21,6 +21,7 @@ MACOSX_DEPLOYMENT_TARGET = 14.0
 // Info PLIST
 // ==========================================
 GENERATE_INFOPLIST_FILE = YES
+INFOPLIST_FILE = SaneHosts/Info.plist
 INFOPLIST_KEY_LSUIElement = YES
 
 // ==========================================
@@ -51,6 +52,6 @@ INFOPLIST_KEY_CFBundleIconFile = AppIcon
 // ==========================================
 // Sparkle Auto-Updates
 // ==========================================
-INFOPLIST_KEY_SUFeedURL = https://sanehosts.com/appcast.xml
+INFOPLIST_KEY_SUFeedURL = https:/$()/sanehosts.com/appcast.xml
 INFOPLIST_KEY_SUEnableAutomaticChecks = YES
-INFOPLIST_KEY_SUPublicEDKey = QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=
+INFOPLIST_KEY_SUPublicEDKey = 7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=
