@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaneHosts Guides & Tutorials</title>
+    <meta name="description" content="Step-by-step guides for blocking gambling, social media, Adobe, and more on macOS using the hosts file or SaneHosts.">
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Shared CSS */
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #4f8ffa;
+            --accent-soft: #3b7ce8;
+            --accent-glow: rgba(79, 143, 250, 0.25);
+            --text-primary: #f5f5f8;
+            --text-secondary: #d8d8e8;
+            --text-muted: #c0c0d0;
+            --border: #252530;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .gradient-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
+                        radial-gradient(ellipse at 85% 90%, rgba(244, 162, 97, 0.08) 0%, transparent 45%),
+                        radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+        nav { padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 60px; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 600; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+        .logo img { width: 32px; border-radius: 8px; }
+        .nav-cta { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 60px;
+        }
+
+        /* Grid */
+        .guides-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .guide-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .guide-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+        }
+
+        .guide-icon { font-size: 2rem; margin-bottom: 16px; }
+        .guide-title { font-size: 1.25rem; font-weight: 600; margin-bottom: 8px; color: var(--text-primary); }
+        .guide-desc { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; flex-grow: 1; }
+        .read-more { color: var(--accent); font-weight: 500; margin-top: 16px; font-size: 0.9rem; }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="logo">
+                <img src="favicon.png" alt="SaneHosts Icon">
+                SaneHosts
+            </a>
+            <a href="/" class="nav-cta">Home &rarr;</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h1>Guides & Tutorials</h1>
+        <p class="subtitle">Learn how to take control of your Mac's network privacy, block distractions, and secure your system.</p>
+
+        <div class="guides-grid">
+            <a href="block-gambling.html" class="guide-card">
+                <div class="guide-icon">🎲</div>
+                <div class="guide-title">How to Block Gambling Sites</div>
+                <div class="guide-desc">A complete guide to self-exclusion on macOS. Learn how to block betting sites system-wide using the hosts file.</div>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="block-social-media.html" class="guide-card">
+                <div class="guide-icon">📱</div>
+                <div class="guide-title">Block Social Media (Hard Mode)</div>
+                <div class="guide-desc">Stop doomscrolling on Instagram, TikTok, and Twitter. Compare manual terminal edits vs. native focus tools.</div>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="block-adobe.html" class="guide-card">
+                <div class="guide-icon">🎨</div>
+                <div class="guide-title">Stop Adobe Background Processes</div>
+                <div class="guide-desc">Prevent Creative Cloud from draining your battery and sending telemetry. A guide for creatives.</div>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+
+            <a href="gas-mask-alternative.html" class="guide-card">
+                <div class="guide-icon">😷</div>
+                <div class="guide-title">Gas Mask Alternative for macOS</div>
+                <div class="guide-desc">Gas Mask crashing on macOS Sequoia? Here is the modern, native Apple Silicon replacement.</div>
+                <div class="read-more">Read Guide &rarr;</div>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="privacy.html" style="color: var(--text-muted);">Privacy</a></p>
+        </div>
+    </footer>
+</body>
+</html>

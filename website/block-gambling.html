@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Block Gambling Sites on Mac (System-Wide Guide 2026)</title>
-    <meta name="description" content="A complete guide to self-exclusion on macOS. Learn how to block gambling and betting sites system-wide using the hosts file or SaneHosts.">
+    <title>How to Block Gambling Sites on Mac (Hard vs Easy Mode)</title>
+    <meta name="description" content="A complete guide to self-exclusion on macOS. Compare the 3 ways to block gambling sites: Manual Terminal edits, subscription apps, and SaneHosts.">
     <meta name="keywords" content="block gambling mac, self-exclusion macos, stop betting sites mac, hosts file blocklist, gambling blocker mac">
     <link rel="icon" type="image/png" href="favicon.png">
     
     <!-- Open Graph -->
-    <meta property="og:title" content="How to Block Gambling Sites on Mac">
-    <meta property="og:description" content="System-wide protection. No subscription. Two methods explained.">
+    <meta property="og:title" content="How to Block Gambling Sites on Mac (Hard vs Easy Mode)">
+    <meta property="og:description" content="System-wide protection. Manual vs Subscription vs SaneHosts.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://sanehosts.com/block-gambling.html">
@@ -21,19 +21,18 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* Inherited Design System */
+        /* Strict Brand Colors */
         :root {
             --bg-primary: #08080c;
             --bg-secondary: #0f0f16;
             --bg-card: #16161f;
-            --accent: #4f8ffa;
+            --accent: #4f8ffa; /* SaneHosts Blue */
             --accent-soft: #3b7ce8;
             --accent-glow: rgba(79, 143, 250, 0.25);
             --text-primary: #f5f5f8;
             --text-secondary: #d8d8e8;
             --text-muted: #c0c0d0;
             --success: #34d399;
-            --success-soft: rgba(52, 211, 153, 0.15);
             --border: #252530;
         }
 
@@ -46,7 +45,6 @@
             line-height: 1.7;
         }
 
-        /* Reused Gradient Background */
         .gradient-bg {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
@@ -57,14 +55,12 @@
 
         .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
 
-        /* Navigation (Simplified) */
         nav { padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 60px; }
         .nav-content { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 600; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
         .logo img { width: 32px; border-radius: 8px; }
         .nav-cta { color: var(--accent); text-decoration: none; font-weight: 500; }
 
-        /* Article Typography */
         article h1 {
             font-family: 'Playfair Display', serif;
             font-size: clamp(2.5rem, 5vw, 3.5rem);
@@ -87,10 +83,6 @@
 
         p { margin-bottom: 24px; color: var(--text-secondary); font-size: 1.1rem; }
         
-        ul, ol { margin-bottom: 24px; padding-left: 24px; color: var(--text-secondary); }
-        li { margin-bottom: 12px; font-size: 1.1rem; }
-
-        /* Code Blocks */
         pre {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -103,29 +95,59 @@
             color: #a5b3ce;
         }
 
-        code { color: var(--accent); }
-
-        /* Warning Box */
-        .warning-box {
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.2);
-            padding: 24px;
-            border-radius: 12px;
+        /* Comparison Cards */
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
             margin-bottom: 32px;
         }
-        .warning-title { color: #ef4444; font-weight: 600; margin-bottom: 8px; display: block; }
 
-        /* Method 2 Card (The Upsell) */
-        .solution-card {
-            background: linear-gradient(145deg, var(--bg-card), var(--bg-secondary));
-            border: 1px solid var(--accent-glow);
-            border-radius: 20px;
-            padding: 40px;
-            margin: 60px 0;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        .option-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
         }
 
+        .option-title { font-size: 1.4rem; font-weight: 600; color: var(--text-primary); }
+        .option-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 100px; font-weight: 600; }
+        
+        .badge-free { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
+        .badge-sub { background: rgba(244, 162, 97, 0.15); color: #f4a261; }
+        .badge-sane { background: rgba(79, 143, 250, 0.15); color: var(--accent); }
+
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+        .pc-list { list-style: none; padding: 0; margin: 0; }
+        
+        .pc-list li { 
+            font-size: 0.95rem; 
+            margin-bottom: 12px; 
+            display: flex; 
+            align-items: flex-start; /* Align icon to top of text */
+            gap: 10px; 
+            line-height: 1.5;
+        }
+        
+        /* Fixed width for icons to ensure alignment */
+        .icon-check, .icon-cross { 
+            flex-shrink: 0; 
+            width: 18px; 
+            margin-top: 2px; /* Optical alignment with text cap-height */
+        }
+        
+        .icon-check { color: var(--success); }
+        .icon-cross { color: #ef4444; }
+
+        /* The Winner Card */
+        .winner-card {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
+        
         .btn {
             display: inline-block;
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
@@ -136,17 +158,10 @@
             font-weight: 600;
             margin-top: 24px;
             transition: transform 0.2s;
+            width: 100%;
+            text-align: center;
         }
         .btn:hover { transform: translateY(-2px); }
-
-        .trust-list {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            margin-top: 24px;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
 
         footer {
             border-top: 1px solid var(--border);
@@ -172,80 +187,92 @@
     </nav>
 
     <article class="container">
-        <h1>How to Block Gambling Sites on Mac (System-Wide)</h1>
-        <p>Whether you're practicing self-exclusion or just want to remove distractions, blocking gambling sites at the browser level usually isn't enough. Extensions can be easily disabled, and they don't cover every app on your Mac.</p>
-        <p>The most effective method is <strong>system-level blocking</strong> using your Mac's built-in <code>hosts</code> file. This creates a barrier that works across Safari, Chrome, Firefox, and even native apps.</p>
-        <p>Here are two ways to do it: the manual way (free, technical) and the sane way (easy, secure).</p>
+        <h1>How to Block Gambling Sites on Mac (Hard vs. Easy Mode)</h1>
+        <p>Whether you're practicing self-exclusion or removing distractions, blocking gambling sites at the browser level isn't enough. Extensions are too easy to disable. You need <strong>system-level blocking</strong> that works across Safari, Chrome, and native apps.</p>
+        <p>Here are the three ways to do it. Choose the one that fits your needs.</p>
 
         <hr style="border: 0; border-top: 1px solid var(--border); margin: 40px 0;">
 
-        <h2>Method 1: The Manual Way (Terminal)</h2>
-        <p>This method costs nothing but requires using the command line. You will be editing a system configuration file.</p>
-
-        <div class="warning-box">
-            <span class="warning-title">⚠️ Warning</span>
-            Be careful. Incorrectly editing your hosts file can break your internet connection. Make sure you don't delete the existing lines related to <code>localhost</code>.
-        </div>
-
-        <h3>1. Find a Blocklist</h3>
-        <p>First, you need a list of gambling domains. You can't just block "gambling" as a concept; you need specific web addresses. The <strong>StevenBlack Gambling Host file</strong> is the industry standard open-source list.</p>
-        <p>Go to <a href="https://github.com/StevenBlack/hosts" target="_blank" style="color: var(--accent);">StevenBlack's GitHub</a> and find the "Gambling" variant. Copy the text content.</p>
-
-        <h3>2. Open Terminal</h3>
-        <p>Open the <strong>Terminal</strong> app on your Mac and type the following command to open your hosts file in the nano editor:</p>
-        <pre>sudo nano /etc/hosts</pre>
-        <p>You will need to type your Mac's admin password. Nothing will show up on screen as you type—this is normal. Press Enter.</p>
-
-        <h3>3. Paste the Domains</h3>
-        <p>Use the arrow keys to move to the very bottom of the file. Paste the list of domains you copied earlier. Each line should look like this:</p>
-        <pre>0.0.0.0 betting-site.com
-0.0.0.0 poker-site.com</pre>
-
-        <h3>4. Save and Flush DNS</h3>
-        <p>Press <code>Ctrl + O</code> to save, then <code>Enter</code> to confirm. Press <code>Ctrl + X</code> to exit.</p>
-        <p>Finally, clear your Mac's DNS cache to make the block take effect immediately:</p>
-        <pre>sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</pre>
-
-        <p><strong>The Downside:</strong> You have to repeat this entire process every time new gambling sites pop up (which is daily). It's also hard to temporarily disable if you need to.</p>
-
-        <hr style="border: 0; border-top: 1px solid var(--border); margin: 40px 0;">
-
-        <h2>Method 2: The Sane Way (Recommended)</h2>
-        <p>If you want this protection without the risk of breaking your system configuration manually, we built <strong>SaneHosts</strong>.</p>
-        
-        <div class="solution-card">
-            <h2 style="margin-top: 0;">Block Gambling with One Click</h2>
-            <p>SaneHosts is a native Mac app that manages the hosts file for you. It includes the "StevenBlack Gambling" list built-in and keeps it auto-updated.</p>
+        <!-- Option 1: Manual -->
+        <div class="option-card">
+            <div class="option-header">
+                <div class="option-title">Option 1: The Hard Way (Terminal)</div>
+                <span class="option-badge badge-free">Free</span>
+            </div>
+            <p>You can edit your Mac's <code>/etc/hosts</code> file manually. It costs nothing but is technically demanding and risky if you delete the wrong line.</p>
             
-            <ul style="text-align: left; max-width: 400px; margin: 32px auto; list-style: none;">
-                <li style="display: flex; gap: 12px;">
-                    <span style="color: var(--success);">✓</span>
-                    <span><strong>Family Safe Profile:</strong> Pre-configured to block gambling & adult content.</span>
-                </li>
-                <li style="display: flex; gap: 12px;">
-                    <span style="color: var(--success);">✓</span>
-                    <span><strong>Touch ID Locked:</strong> Adds friction. You can't disable it without biometric auth.</span>
-                </li>
-                <li style="display: flex; gap: 12px;">
-                    <span style="color: var(--success);">✓</span>
-                    <span><strong>Auto-Updates:</strong> New betting sites are blocked automatically.</span>
-                </li>
-            </ul>
+            <pre>sudo nano /etc/hosts</pre>
+            <p>You'll need to find a blocklist (like StevenBlack's), paste thousands of domains manually, and flush your DNS cache.</p>
 
-            <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="btn">Get SaneHosts — $5</a>
-            
-            <div class="trust-list">
-                <span>Native Apple Silicon</span>
-                <span>•</span>
-                <span>Open Source</span>
-                <span>•</span>
-                <span>100% On-Device</span>
+            <div class="pros-cons">
+                <div>
+                    <strong>Pros</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div>Completely free</div></li>
+                        <li><span class="icon-check">✓</span> <div>No software to install</div></li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Cons</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-cross">✗</span> <div>Very tedious to update</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Easy to break internet</div></li>
+                        <li><span class="icon-cross">✗</span> <div>No easy toggle</div></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
-        <h2>Why blocking at the system level matters</h2>
-        <p>Browser extensions only work in the browser. If you have a gambling app installed, or if you switch to a different browser (like Chrome vs Safari), extensions won't help you.</p>
-        <p>By using the hosts file (Method 1 or 2), you cut off the connection at the network stack. Your computer simply refuses to acknowledge that the betting site exists. It returns "Connection Failed" instantly.</p>
+        <!-- Option 2: Subscription -->
+        <div class="option-card">
+            <div class="option-header">
+                <div class="option-title">Option 2: The Subscription Way</div>
+                <span class="option-badge badge-sub">$49+ or Monthly</span>
+            </div>
+            <p>Apps like Cold Turkey or Gamban are powerful but expensive. They often use invasive system extensions or VPNs to monitor your traffic.</p>
+
+            <div class="pros-cons">
+                <div>
+                    <strong>Pros</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div>Hard to bypass</div></li>
+                        <li><span class="icon-check">✓</span> <div>Cross-device options</div></li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Cons</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-cross">✗</span> <div>Expensive recurring cost</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Privacy invasive (monitoring)</div></li>
+                        <li><span class="icon-cross">✗</span> <div>Can slow down network</div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Option 3: SaneHosts -->
+        <div class="option-card winner-card">
+            <div class="option-header">
+                <div class="option-title">Option 3: The Sane Way</div>
+                <span class="option-badge badge-sane">$5 One-Time</span>
+            </div>
+            <p><strong>SaneHosts</strong> gives you the power of the hosts file with the safety of a modern Mac app. It includes the "StevenBlack Gambling" list built-in and auto-updates it.</p>
+
+            <div class="pros-cons">
+                <div>
+                    <strong>Why it wins</strong>
+                    <ul class="pc-list">
+                        <li><span class="icon-check">✓</span> <div><strong>Family Safe Profile:</strong> Pre-configured to block gambling & adult content</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Touch ID Locked:</strong> Adds friction. You can't disable it without bio-auth</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Native:</strong> No background monitoring, no VPN, 100% private</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Auto-Updates:</strong> New betting sites blocked automatically</div></li>
+                    </ul>
+                </div>
+            </div>
+
+            <a href="https://sanebar.lemonsqueezy.com/checkout/buy/83977cc9-900f-407f-a098-959141d474f2" class="btn">Get SaneHosts — $5</a>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+        </div>
 
     </article>
 
