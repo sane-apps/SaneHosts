@@ -7,6 +7,30 @@
     <language>en</language>
 
     <item>
+      <title>Version 1.0.8</title>
+      <pubDate>Tue, 27 Jan 2026 18:15:00 +0000</pubDate>
+      <sparkle:version>1.0.8</sparkle:version>
+      <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <description><![CDATA[
+        <h2>What's New in SaneHosts 1.0.8</h2>
+        <ul>
+          <li><strong>Critical:</strong> Fixed a bug in the helper tool where hosts file backups could be overwritten. Now preserves your original system hosts file permanently.</li>
+          <li>Menu bar now shows green/red status indicators for active protection.</li>
+          <li>Fixed: "Open SaneHosts" now brings existing window to front instead of opening duplicates.</li>
+          <li>Window opens to your active profile instead of always showing the first one.</li>
+          <li>Faster app launch — reduced hosts file parsing time dramatically.</li>
+        </ul>
+      ]]></description>
+      <enclosure
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.8.dmg"
+        length="0"
+        type="application/octet-stream"
+        sparkle:edSignature=""
+      />
+    </item>
+
+    <item>
       <title>Version 1.0.7</title>
       <pubDate>Tue, 27 Jan 2026 18:04:55 +0000</pubDate>
       <sparkle:version>1.0.7</sparkle:version>

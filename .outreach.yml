@@ -1,0 +1,110 @@
+# .outreach.yml - Outreach configuration for SaneHosts
+
+project:
+  name: "SaneHosts"
+  url: "https://sanehosts.com"
+  github: "sane-apps/SaneHosts"
+  lemon_squeezy_product_id: 794910
+
+competitors:
+  - repo: "2ndalpha/gasmask"
+    name: "Gas Mask"
+    keywords: ["alternative", "replacement", "broken", "crash", "not working", "Apple Silicon"]
+    min_age_days: 7
+
+  - repo: "StevenBlack/hosts"
+    name: "StevenBlack Hosts"
+    keywords: ["gui", "manager", "mac", "macos", "app"]
+    min_age_days: 3
+
+  - repo: "AdAway/AdAway"
+    name: "AdAway"
+    keywords: ["mac", "macos", "desktop", "alternative"]
+    min_age_days: 7
+
+  - repo: "leibnizli/Helm"
+    name: "Helm"
+    keywords: ["alternative", "broken", "crash"]
+    min_age_days: 7
+
+  - repo: "tim-hub/TrackersAway"
+    name: "TrackersAway"
+    keywords: ["alternative", "broken"]
+    min_age_days: 7
+
+features_we_have:
+  - "200+ curated blocklists"
+  - "5 protection levels (presets)"
+  - "Touch ID authentication"
+  - "Profile-based management"
+  - "Native Apple Silicon"
+  - "macOS 14+ support"
+  - "Menu bar quick access"
+  - "Auto DNS flush"
+  - "Open source"
+  - "No VPN required"
+  - "No DNS service dependency"
+
+search_keywords:
+  - "hosts file manager mac"
+  - "hosts file editor macos"
+  - "block ads hosts file mac"
+  - "Gas Mask alternative mac"
+  - "pihole alternative mac"
+  - "block trackers macos"
+  - "etc hosts macos"
+  - "system wide ad blocker mac no vpn"
+
+pain_points:
+  - "Gas Mask crashes on modern macOS"
+  - "Gas Mask no Apple Silicon support"
+  - "editing /etc/hosts manually is tedious"
+  - "pihole requires separate hardware"
+  - "NextDNS is a subscription"
+  - "VPN ad blockers slow connection"
+
+competitor_apps: []
+
+known_facts:
+  - "Bounced LS order emails are NOT a problem - download delivered on purchase page"
+
+launches: []
+
+pending_outreach:
+  - name: "Peter Lowe"
+    email: "pgl@yoyo.org"
+    website: "https://pgl.yoyo.org/adservers/"
+    context: "Maintains pgl.yoyo.org ad server blocklist (used in SaneHosts Essentials preset). No GitHub repo for the blocklist — website only. Links page (/as/links.php) currently broken (HTTP 500). Ask to be listed on his site as a macOS hosts manager that uses his list."
+    patreon: "https://patreon.com/blocklist"
+    type: "blocklist_maintainer_listing"
+
+influencer_outreach:
+  sent: []
+
+competitor_responses:
+  - repo: "2ndalpha/gasmask"
+    issue: 202
+    url: "https://github.com/2ndalpha/gasmask/issues/202"
+    responded: true
+    date: "2026-01-27"
+    type: "alternative_suggestion"
+  - repo: "2ndalpha/gasmask"
+    issue: 224
+    url: "https://github.com/2ndalpha/gasmask/issues/224"
+    responded: true
+    date: "2026-01-27"
+    type: "alternative_suggestion"
+  - repo: "2ndalpha/gasmask"
+    issue: 223
+    url: "https://github.com/2ndalpha/gasmask/issues/223"
+    responded: true
+    date: "2026-01-27"
+    type: "alternative_suggestion"
+  - repo: "StevenBlack/hosts"
+    issue: 3064
+    url: "https://github.com/StevenBlack/hosts/pull/3064"
+    responded: true
+    date: "2026-01-27"
+    type: "readme_pr"
+
+customer_conversations: []
