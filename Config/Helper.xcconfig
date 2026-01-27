@@ -1,0 +1,34 @@
+// Helper.xcconfig
+// Build configuration for the SaneHostsHelper privileged daemon
+// This is a command-line tool that runs as a LaunchDaemon with root privileges
+
+// ==========================================
+// Product Identity
+// ==========================================
+PRODUCT_NAME = com.mrsane.SaneHostsHelper
+PRODUCT_BUNDLE_IDENTIFIER = com.mrsane.SaneHostsHelper
+
+// ==========================================
+// Platform Configuration
+// ==========================================
+MACOSX_DEPLOYMENT_TARGET = 14.0
+
+// ==========================================
+// Code Signing & Security
+// ==========================================
+ENABLE_HARDENED_RUNTIME = YES
+CODE_SIGN_STYLE = Automatic
+DEVELOPMENT_TEAM = M78L6FXD48
+
+// ==========================================
+// Info.plist (embedded in binary)
+// ==========================================
+INFOPLIST_FILE = SaneHostsHelper/Info.plist
+CREATE_INFOPLIST_SECTION_IN_BINARY = YES
+GENERATE_INFOPLIST_FILE = NO
+
+// ==========================================
+// Installation
+// ==========================================
+// Do not install separately - embedded in app bundle
+SKIP_INSTALL = YES

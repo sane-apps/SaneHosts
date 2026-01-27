@@ -7,47 +7,24 @@
     <language>en</language>
 
     <item>
-      <title>Version 1.0.1</title>
-      <pubDate>Mon, 26 Jan 2026 22:15:00 +0000</pubDate>
-      <sparkle:version>1.0.1</sparkle:version>
-      <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+      <title>Version 1.0.4</title>
+      <pubDate>Tue, 27 Jan 2026 02:07:46 +0000</pubDate>
+      <sparkle:version>1.0.4</sparkle:version>
+      <sparkle:shortVersionString>1.0.4</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
-        <h2>What's New in SaneHosts 1.0.1</h2>
+        <h2>What's New in SaneHosts 1.0.4</h2>
         <ul>
-          <li>New clean 2D app icon</li>
-          <li>Updated website icons</li>
+          <li>Touch ID authentication for hosts file changes</li>
+          <li>Privileged helper daemon for seamless, secure writes</li>
+          <li>Improved stability and crash fixes</li>
         </ul>
       ]]></description>
       <enclosure
-        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.1.dmg"
-        length="3609267"
+        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.4.dmg"
+        length="3537072"
         type="application/octet-stream"
-        sparkle:edSignature="tfNiZ5RGatdamc/bAeUh2hE9FUf7X17eyFGgVkfla5Mzgd0iqJvmE9xnnPwJ/WB7XdOdtAod2hgrdaVl2mtPDQ=="
-      />
-    </item>
-
-    <item>
-      <title>Version 1.0</title>
-      <pubDate>Mon, 26 Jan 2026 20:01:56 +0000</pubDate>
-      <sparkle:version>1.0</sparkle:version>
-      <sparkle:shortVersionString>1.0</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <description><![CDATA[
-        <h2>What's New in SaneHosts 1.0</h2>
-        <ul>
-          <li>Initial release</li>
-          <li>Profile-based hosts file management</li>
-          <li>Import blocklists from popular sources</li>
-          <li>Menu bar quick access</li>
-          <li>Automatic DNS cache flush</li>
-        </ul>
-      ]]></description>
-      <enclosure
-        url="https://dist.sanehosts.com/updates/SaneHosts-1.0.dmg"
-        length="5917153"
-        type="application/octet-stream"
-        sparkle:edSignature="YU55C5OoTHvZsDSkdqDvunTmA8NlQTXfueUlZgmv+SegTpdU1mjxhDR+LD0S71LJWlM4+sWtERPVNHPXskiYDA=="
+        sparkle:edSignature="vIr77sFqODMK8cPtIaxyWtmoG/oOxQNU9L9P2qItus4uj4EfHtExzniy/mNEBPSuoXgShcsQ61M3aRRg/SZ8DA=="
       />
     </item>
 

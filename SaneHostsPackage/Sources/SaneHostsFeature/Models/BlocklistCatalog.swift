@@ -24,7 +24,10 @@ public struct BlocklistSource: Identifiable, Hashable, Sendable {
         self.id = id
         self.name = name
         self.description = description
-        self.url = URL(string: url)!
+        guard let parsedURL = URL(string: url) else {
+            fatalError("Invalid blocklist URL for '\(name)': \(url)")
+        }
+        self.url = parsedURL
         self.category = category
         self.estimatedEntries = estimatedEntries
         self.maintainer = maintainer

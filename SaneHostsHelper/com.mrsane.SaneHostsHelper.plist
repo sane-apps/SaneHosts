@@ -9,10 +9,8 @@
 		<key>com.mrsane.SaneHostsHelper</key>
 		<true/>
 	</dict>
-	<key>ProgramArguments</key>
-	<array>
-		<string>Contents/Library/LaunchDaemons/com.mrsane.SaneHostsHelper</string>
-	</array>
+	<key>BundleProgram</key>
+	<string>Contents/MacOS/com.mrsane.SaneHostsHelper</string>
 	<key>RunAtLoad</key>
 	<false/>
 </dict>

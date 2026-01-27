@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8B90D1482DEDD44A00FBD189 /* SaneHostsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 8B90D1472DEDD44A00FBD189 /* SaneHostsFeature */; };
 		SPARKLE0001000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = SPARKLE0002000000000001 /* Sparkle */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A100000A00000000DEADBEEF /* com.mrsane.SaneHostsHelper in Embed Helper */ = {isa = PBXBuildFile; fileRef = A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -19,11 +20,33 @@
 			remoteGlobalIDString = 8BC2655B2DEDD3F400F279A4;
 			remoteInfo = SaneHosts;
 		};
+		A100000C00000000DEADBEEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8BC265542DEDD3F400F279A4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A100000500000000DEADBEEF;
+			remoteInfo = SaneHostsHelper;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A100000900000000DEADBEEF /* Embed Helper */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				A100000A00000000DEADBEEF /* com.mrsane.SaneHostsHelper in Embed Helper */,
+			);
+			name = "Embed Helper";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		8BC2655C2DEDD3F400F279A4 /* SaneHosts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneHosts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC265742DEDD3F500F279A4 /* SaneHosts.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaneHosts.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "com.mrsane.SaneHostsHelper"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -31,11 +54,20 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Debug.xcconfig,
+				Helper.xcconfig,
 				Release.xcconfig,
 				Shared.xcconfig,
 				Tests.xcconfig,
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
+		};
+		A100000D00000000DEADBEEF /* Exceptions for "SaneHostsHelper" folder in "SaneHostsHelper" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				"com.mrsane.SaneHostsHelper.plist",
+			);
+			target = A100000500000000DEADBEEF /* SaneHostsHelper */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -58,6 +90,14 @@
 			path = SaneHostsUITests;
 			sourceTree = "<group>";
 		};
+		A100000200000000DEADBEEF /* SaneHostsHelper */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A100000D00000000DEADBEEF /* Exceptions for "SaneHostsHelper" folder in "SaneHostsHelper" target */,
+			);
+			path = SaneHostsHelper;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,6 +111,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8BC265712DEDD3F500F279A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A100000300000000DEADBEEF /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -92,6 +139,7 @@
 			children = (
 				8B90D1BC2DEE373300FBD189 /* Config */,
 				8BC2655E2DEDD3F400F279A4 /* SaneHosts */,
+				A100000200000000DEADBEEF /* SaneHostsHelper */,
 				8BC265772DEDD3F500F279A4 /* SaneHostsUITests */,
 				8B90D1462DEDD44A00FBD189 /* Frameworks */,
 				8BC2655D2DEDD3F400F279A4 /* Products */,
@@ -102,6 +150,7 @@
 			isa = PBXGroup;
 			children = (
 				8BC2655C2DEDD3F400F279A4 /* SaneHosts.app */,
+				A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */,
 				8BC265742DEDD3F500F279A4 /* SaneHosts.xctest */,
 			);
 			name = Products;
@@ -117,10 +166,13 @@
 				8BC265582DEDD3F400F279A4 /* Sources */,
 				8BC265592DEDD3F400F279A4 /* Frameworks */,
 				8BC2655A2DEDD3F400F279A4 /* Resources */,
+				A100000900000000DEADBEEF /* Embed Helper */,
+				A100000E00000000DEADBEEF /* Copy LaunchDaemon Plist */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				A100000B00000000DEADBEEF /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				8B90D1BC2DEE373300FBD189 /* Config */,
@@ -158,6 +210,27 @@
 			productReference = 8BC265742DEDD3F500F279A4 /* SaneHosts.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		A100000500000000DEADBEEF /* SaneHostsHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A100000800000000DEADBEEF /* Build configuration list for PBXNativeTarget "SaneHostsHelper" */;
+			buildPhases = (
+				A100000400000000DEADBEEF /* Sources */,
+				A100000300000000DEADBEEF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				A100000200000000DEADBEEF /* SaneHostsHelper */,
+			);
+			name = SaneHostsHelper;
+			packageProductDependencies = (
+			);
+			productName = "com.mrsane.SaneHostsHelper";
+			productReference = A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -175,6 +248,9 @@
 					8BC265732DEDD3F500F279A4 = {
 						CreatedOnToolsVersion = 16.3;
 						TestTargetID = 8BC2655B2DEDD3F400F279A4;
+					};
+					A100000500000000DEADBEEF = {
+						CreatedOnToolsVersion = 16.3;
 					};
 				};
 			};
@@ -196,6 +272,7 @@
 			projectRoot = "";
 			targets = (
 				8BC2655B2DEDD3F400F279A4 /* SaneHosts */,
+				A100000500000000DEADBEEF /* SaneHostsHelper */,
 				8BC265732DEDD3F500F279A4 /* SaneHostsUITests */,
 			);
 		};
@@ -218,6 +295,29 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		A100000E00000000DEADBEEF /* Copy LaunchDaemon Plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/SaneHostsHelper/com.mrsane.SaneHostsHelper.plist",
+			);
+			name = "Copy LaunchDaemon Plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(CONTENTS_FOLDER_PATH)/Library/LaunchDaemons/com.mrsane.SaneHostsHelper.plist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Library/LaunchDaemons\"\ncp \"${SRCROOT}/SaneHostsHelper/com.mrsane.SaneHostsHelper.plist\" \"${BUILT_PRODUCTS_DIR}/${CONTENTS_FOLDER_PATH}/Library/LaunchDaemons/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8BC265582DEDD3F400F279A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -233,6 +333,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A100000400000000DEADBEEF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -240,6 +347,11 @@
 			isa = PBXTargetDependency;
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
 			targetProxy = 8BC265752DEDD3F500F279A4 /* PBXContainerItemProxy */;
+		};
+		A100000B00000000DEADBEEF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A100000500000000DEADBEEF /* SaneHostsHelper */;
+			targetProxy = A100000C00000000DEADBEEF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -296,6 +408,24 @@
 			};
 			name = Release;
 		};
+		A100000600000000DEADBEEF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
+			baseConfigurationReferenceRelativePath = Helper.xcconfig;
+			buildSettings = {
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		A100000700000000DEADBEEF /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 8B90D1BC2DEE373300FBD189 /* Config */;
+			baseConfigurationReferenceRelativePath = Helper.xcconfig;
+			buildSettings = {
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -322,6 +452,15 @@
 			buildConfigurations = (
 				8BC265852DEDD3F500F279A4 /* Debug */,
 				8BC265862DEDD3F500F279A4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A100000800000000DEADBEEF /* Build configuration list for PBXNativeTarget "SaneHostsHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A100000600000000DEADBEEF /* Debug */,
+				A100000700000000DEADBEEF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

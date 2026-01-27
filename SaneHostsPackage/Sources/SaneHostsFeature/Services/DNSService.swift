@@ -17,7 +17,13 @@ public final class DNSService {
     /// Flush the DNS cache
     /// This ensures changes to /etc/hosts take effect immediately
     public func flushCache() async throws {
+        guard !isFlushing else {
+            logger.warning("DNS flush already in progress, skipping")
+            return
+        }
+
         isFlushing = true
+        defer { isFlushing = false }
 
         do {
             // Run process work on background thread to avoid blocking UI
@@ -37,16 +43,15 @@ public final class DNSService {
 
             if exitCode == 0 {
                 lastFlushDate = Date()
-                isFlushing = false
 
                 // Also send HUP to mDNSResponder for complete flush (also on background)
                 await killMDNSResponder()
             } else {
-                isFlushing = false
                 throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
             }
+        } catch let error as DNSServiceError {
+            throw error
         } catch {
-            isFlushing = false
             throw DNSServiceError.flushFailed(error.localizedDescription)
         }
     }

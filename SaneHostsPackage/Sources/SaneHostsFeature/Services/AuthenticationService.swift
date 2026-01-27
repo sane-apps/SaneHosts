@@ -97,10 +97,26 @@ public final class AuthenticationService {
             let errorDesc = lastError?.localizedDescription ?? "unknown"
             logger.info("LAError: \(errorDesc)")
 
-            // If biometrics failed, try password fallback
+            // Only fall back to password for specific cases where it makes sense
             if policy == .deviceOwnerAuthenticationWithBiometrics {
-                logger.info(" Falling back to password authentication")
-                return await authenticateWithPassword(reason: reason)
+                switch error.code {
+                case .biometryLockout:
+                    // Too many failed attempts — password is the only option
+                    logger.info("Biometry locked out, falling back to password")
+                    return await authenticateWithPassword(reason: reason)
+                case .userFallback:
+                    // User explicitly tapped "Enter Password"
+                    logger.info("User requested password fallback")
+                    return await authenticateWithPassword(reason: reason)
+                case .userCancel:
+                    // User cancelled — do NOT show another dialog
+                    logger.info("User cancelled authentication")
+                    return false
+                default:
+                    // All other errors (sensor failure, etc.) — do not chain to password
+                    logger.info("Biometric error, not falling back to password")
+                    return false
+                }
             }
 
             return false
