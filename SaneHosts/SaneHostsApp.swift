@@ -188,11 +188,44 @@ struct WindowActionCapture: ViewModifier {
 // MARK: - App Delegate for Dock Menu
 
 class AppDelegate: NSObject, NSApplicationDelegate {
+    private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "AppDelegate")
+
     func applicationDidFinishLaunching(_ notification: Notification) {
         // Initialize activation policy based on preference
         // Since LSUIElement=YES, default is accessory. If hideDockIcon is false, we must force regular.
         if !UserDefaults.standard.bool(forKey: "hideDockIcon") {
             NSApp.setActivationPolicy(.regular)
+        }
+
+        // Register the privileged helper daemon for XPC + Touch ID support.
+        // This installs the helper as a LaunchDaemon so it can write /etc/hosts as root.
+        // First call may prompt the user for authorization (supports Touch ID).
+        registerHelperDaemon()
+    }
+
+    private func registerHelperDaemon() {
+        let daemon = SMAppService.daemon(plistName: HostsHelperConstants.daemonPlistName)
+
+        switch daemon.status {
+        case .enabled:
+            // Daemon is already registered and launchd starts it on-demand — nothing to do
+            logger.info("Helper daemon already enabled")
+            return
+        case .requiresApproval:
+            // User must approve in System Settings > Login Items
+            logger.info("Helper daemon requires user approval in System Settings")
+            return
+        default:
+            // .notRegistered, .notFound, or unknown — try to register
+            break
+        }
+
+        do {
+            try daemon.register()
+            logger.info("Helper daemon registered successfully")
+        } catch {
+            // Non-fatal: app falls back to AppleScript for writes
+            logger.warning("Failed to register helper daemon: \(error.localizedDescription). Will use AppleScript fallback.")
         }
     }
 

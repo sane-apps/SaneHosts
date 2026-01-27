@@ -15,6 +15,8 @@ public struct MainView: View {
     @State private var showingRenameSheet = false
     @State private var isActivating = false
     @State private var activationError: String?
+    @State private var activationWarning: String?
+    @State private var showingActivationSuccess = false
     @State private var selectedPreset: ProfilePreset?
     @State private var isDownloadingPreset = false
 
@@ -65,6 +67,31 @@ public struct MainView: View {
             Button("OK") { activationError = nil }
         } message: {
             Text(activationError ?? "")
+        }
+        .alert("Warning", isPresented: .constant(activationWarning != nil)) {
+            Button("OK") { activationWarning = nil }
+        } message: {
+            Text(activationWarning ?? "")
+        }
+        // Success overlay
+        .overlay {
+            if showingActivationSuccess {
+                VStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.green)
+                    Text("Protection Active")
+                        .font(.headline)
+                }
+                .padding(24)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                .transition(.scale.combined(with: .opacity))
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        withAnimation { showingActivationSuccess = false }
+                    }
+                }
+            }
         }
         // Confirmation dialog for delete
         .confirmationDialog(
@@ -400,9 +427,21 @@ public struct MainView: View {
         isActivating = true
         Task {
             do {
-                try await HostsService.shared.activateProfile(profile, systemEntries: store.systemEntries)
+                let warning = try await HostsService.shared.activateProfile(profile, systemEntries: store.systemEntries)
+                // Mark as active only after successful hosts file write
                 try await store.markAsActive(profile: profile)
+
+                if let warning {
+                    activationWarning = warning
+                } else {
+                    withAnimation { showingActivationSuccess = true }
+                }
             } catch {
+                // If hosts write succeeded but markAsActive failed, the hosts file is
+                // already modified. Attempt to sync state so UI reflects reality.
+                if HostsService.shared.lastError == nil {
+                    try? await store.markAsActive(profile: profile)
+                }
                 activationError = error.localizedDescription
             }
             isActivating = false
@@ -413,8 +452,12 @@ public struct MainView: View {
         isActivating = true
         Task {
             do {
-                try await HostsService.shared.deactivateProfile()
+                let warning = try await HostsService.shared.deactivateProfile()
                 try await store.deactivate()
+
+                if let warning {
+                    activationWarning = warning
+                }
             } catch {
                 activationError = error.localizedDescription
             }

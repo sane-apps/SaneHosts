@@ -3,18 +3,14 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.mrsane.SaneHostsHelper</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleName</key>
 	<string>SaneHostsHelper</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.0</string>
+	<string>1</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0.0</string>
 	<key>LSMinimumSystemVersion</key>
-	<string>13.0</string>
-	<key>SMAuthorizedClients</key>
-	<array>
-		<string>identifier "com.mrsane.SaneHosts" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: *" or certificate leaf[subject.CN] = "Developer ID Application: *"</string>
-	</array>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
 </dict>
 </plist>

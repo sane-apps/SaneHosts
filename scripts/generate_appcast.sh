@@ -47,11 +47,29 @@ SHA256=$(shasum -a 256 "$DMG_PATH" | awk '{print $1}')
 PUB_DATE=$(date -u +"%a, %d %b %Y %H:%M:%S +0000")
 DOWNLOAD_URL="${DOWNLOAD_BASE_URL}/updates/${DMG_NAME}"
 
-# EdDSA signature (if keys exist)
+# EdDSA signature (REQUIRED for secure updates)
 EDDSA_SIGNATURE=""
 if [ -f "$KEYS_DIR/sparkle_private_key" ] && [ -n "$SPARKLE_BIN" ]; then
     echo ">>> Signing with EdDSA..."
     EDDSA_SIGNATURE=$("$SPARKLE_BIN" "$DMG_PATH" -f "$KEYS_DIR/sparkle_private_key" 2>/dev/null || echo "")
+fi
+
+# Also try Keychain-stored key if file-based key didn't work
+if [ -z "$EDDSA_SIGNATURE" ] && [ -n "$SPARKLE_BIN" ]; then
+    echo ">>> Trying Keychain-stored Sparkle key..."
+    EDDSA_SIGNATURE=$("$SPARKLE_BIN" "$DMG_PATH" 2>/dev/null || echo "")
+fi
+
+# FAIL if no signature — never ship unsigned updates
+if [ -z "$EDDSA_SIGNATURE" ]; then
+    echo ""
+    echo "ERROR: EdDSA signature is EMPTY!"
+    echo "Sparkle updates without a valid signature are insecure."
+    echo ""
+    echo "Fix: Ensure sparkle_private_key exists at $KEYS_DIR/sparkle_private_key"
+    echo "  OR the Sparkle signing key is in macOS Keychain."
+    echo "  AND sign_update tool is available (build Sparkle framework first)."
+    exit 1
 fi
 
 # Generate appcast
@@ -106,13 +124,13 @@ echo "Version: $VERSION"
 echo "Size: $FILE_SIZE bytes"
 echo "SHA256: $SHA256"
 echo "Download URL: $DOWNLOAD_URL"
-if [ -n "$EDDSA_SIGNATURE" ]; then
-    echo "EdDSA Signature: ${EDDSA_SIGNATURE:0:20}..."
-else
-    echo "EdDSA Signature: NOT SET (generate keys first)"
-fi
+echo "EdDSA Signature: ${EDDSA_SIGNATURE:0:20}..."
 echo ""
 echo "Next steps:"
-echo "1. Upload appcast.xml to sanehosts.com/appcast.xml"
-echo "2. Upload DMG to GitHub release v${VERSION}"
+echo "1. Upload DMG to Cloudflare R2:"
+echo "   npx wrangler r2 object put sanebar-downloads/${DMG_NAME} \\"
+echo "     --file=$RELEASES_DIR/$DMG_NAME --content-type=application/octet-stream --remote"
+echo "2. Deploy website + appcast to Cloudflare Pages:"
+echo "   CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \\"
+echo "     npx wrangler pages deploy ./docs --project-name=sanehosts-site"
 echo ""
