@@ -458,6 +458,26 @@ mcp__XcodeBuildMCP__session-set-defaults:
 
 ---
 
+## Toolbelt & Credentials (Available for Agents)
+
+The following tools and API keys are configured in the environment. **Use them.**
+
+| Tool | Capability | Keychain Location | Account / Key |
+|------|------------|-------------------|---------------|
+| **Resend** | Send transactional/outreach emails | Service: `resend` | `api_key` |
+| **LemonSqueezy** | Query sales, orders, license keys | Service: `lemonsqueezy` | `api_key` |
+| **Cloudflare** | Deploy sites, manage R2 storage | Service: `cloudflare` | *(Check specific item)* |
+| **GitHub** | PRs, Issues, Outreach (`gh` CLI) | Server: `github.com` | *(Auto-managed by gh)* |
+| **Notarytool** | Sign & notarize macOS apps | Profile: `notarytool` | *(Stored in system keychain)* |
+
+**How to Access in Scripts:**
+```bash
+# Example: Fetch Resend Key
+RESEND_KEY=$(security find-generic-password -s "resend" -a "api_key" -w)
+```
+
+---
+
 ## Troubleshooting
 
 | Problem | Fix |
