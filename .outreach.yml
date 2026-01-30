@@ -123,5 +123,11 @@ competitor_responses:
     responded: true
     date: "2026-01-27"
     type: "readme_pr"
+  - repo: "hagezi/dns-blocklists"
+    issue: 7278
+    url: "https://github.com/hagezi/dns-blocklists/issues/7278"
+    responded: true
+    date: "2026-01-29"
+    type: "alternative_suggestion"
 
 customer_conversations: []
