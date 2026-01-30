@@ -87,16 +87,16 @@ known_facts:
 
 launches: []
 
-pending_outreach:
-  - name: "Peter Lowe"
-    email: "pgl@yoyo.org"
-    website: "https://pgl.yoyo.org/adservers/"
-    context: "Maintains pgl.yoyo.org ad server blocklist (used in SaneHosts Essentials preset). No GitHub repo for the blocklist — website only. Links page (/as/links.php) currently broken (HTTP 500). Ask to be listed on his site as a macOS hosts manager that uses his list."
-    patreon: "https://patreon.com/blocklist"
-    type: "blocklist_maintainer_listing"
+pending_outreach: []
 
 influencer_outreach:
-  sent: []
+  sent:
+    - name: "Peter Lowe"
+      email: "pgl@yoyo.org"
+      date: "2026-01-29"
+      subject: "Huge fan + Updating the macOS hosts manager list on pgl.yoyo.org"
+      type: "blocklist_maintainer_listing"
+      status: "waiting_reply"
 
 competitor_responses:
   - repo: "2ndalpha/gasmask"
