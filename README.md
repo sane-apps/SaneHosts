@@ -23,7 +23,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 ### Core Features
 - **Profile Management** - Create and manage multiple hosts configurations with color tagging
-- **200+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, OISD, and 10+ categories
+- **200+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, OISD, and 10+ categories. SaneHosts actively contributes to the upstream StevenBlack/hosts repository to ensure list quality.
 - **Guided Setup** - Coach mark tutorial walks you through activation on first launch
 - **Remote Import** - Import hosts from any URL or paste custom blocklist URLs
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
