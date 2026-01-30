@@ -1047,6 +1047,22 @@
                 padding-top: 110px !important;
             }
         }
+            .sustainability { padding: 80px 0; border-top: 1px solid var(--border-subtle); }
+        .sustainability-card {
+            background: linear-gradient(160deg, var(--bg-card) 0%, var(--bg-secondary) 100%);
+            border: 1px solid var(--border-subtle); border-radius: 28px; padding: 60px;
+            max-width: 800px; margin: 0 auto; position: relative; text-align: center;
+        }
+        .sustainability-options { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+        .sustainability-option { 
+            text-align: left; border: 1px solid var(--border); padding: 24px; border-radius: 16px; 
+            text-decoration: none; color: inherit; transition: all 0.3s;
+        }
+        .sustainability-option:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .sustainability-option.featured { background: var(--accent-subtle); border-color: var(--accent); }
+        .sustainability-option h4 { font-size: 1rem; margin-bottom: 8px; color: var(--text-primary); }
+        .sustainability-option p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+        @media (max-width: 768px) { .sustainability-options { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -1063,6 +1079,7 @@
                 <a href="#protection">Protection</a>
                 <a href="#features">Features</a>
                 <a href="#comparison">Why SaneHosts</a>
+                <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="https://github.com/sponsors/stephanjoseph" class="nav-cta" target="_blank" rel="noopener" style="display: inline-flex; align-items: center;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="#ef4444" stroke="#ffffff" stroke-width="1.5" style="margin-right: 6px;"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
@@ -1081,6 +1098,7 @@
         <a href="#protection" onclick="toggleMobileNav()">Protection Levels</a>
         <a href="#features" onclick="toggleMobileNav()">Features</a>
         <a href="#comparison" onclick="toggleMobileNav()">Why SaneHosts</a>
+        <a href="guides.html" onclick="toggleMobileNav()">Guides</a>
         <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
         <a href="https://github.com/sponsors/stephanjoseph">Donate</a>
         <p class="mobile-nav-section">More SaneApps</p>
@@ -1098,8 +1116,9 @@
             <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Mac's Network</h1>
             <p class="subtitle animate-in delay-3">It's <em>insane</em> that your Mac is spying on you — hundreds of trackers running in the background. SaneHosts blocks them all. 200+ curated blocklists. One-click protection.</p>
 
-            <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 1.17rem; color: var(--text-secondary); margin-bottom: 32px;">
-                <a href="https://github.com/sane-apps/SaneHosts" style="color: inherit; text-decoration: none;"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: -2px; margin-right: 4px;"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>Provably private</a>
+            <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 1.17rem; color: var(--text-secondary); margin-bottom: 32px; flex-wrap: wrap;">
+                <a href="https://forums.basehub.com/sane-apps/SaneHosts/2" target="_blank" rel="noopener" style="color: inherit; text-decoration: none;">🛡️ Provably private (Audit)</a>
+                <span>🤝 Contributor to StevenBlack/hosts</span>
                 <span>💵 No subscription</span>
                 <span>🛠️ Actively maintained</span>
             </div>
@@ -1231,7 +1250,7 @@
                 <div class="feature-item">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
                     <h3>100% On-Device</h3>
-                    <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Network only when you choose to import.</p>
+                    <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Automatic backups protect your profiles from corruption.</p>
                 </div>
             </div>
 
@@ -1315,7 +1334,22 @@
         </div>
     </section>
 
-    <!-- Download section removed — hero CTA is the single download path (matches SaneBar pattern) -->
+    <!-- Open Source Section -->
+    <section class="open-source" id="opensource">
+        <div class="container">
+            <div class="open-source-card">
+                <h2>Open Source &amp; Trusted</h2>
+                <p class="tagline">We don't just use blocklists. We help build them.</p>
+                <p>SaneHosts is a proud contributor to the <a href="https://github.com/StevenBlack/hosts" style="color: var(--accent); text-decoration: none;">StevenBlack/hosts</a> repository, the gold standard for unified hosts files. We actively fix bugs and improve the lists that power the privacy community.</p>
+                <div style="margin-top: 32px;">
+                    <a href="https://github.com/sane-apps/SaneHosts" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                        View Source Code
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- More Apps -->
     <section class="more-apps">
@@ -1350,9 +1384,9 @@
         <div class="container">
             <p class="footer-privacy"><strong>No telemetry</strong>. <strong>No cloud</strong>. <strong>100% on your Mac</strong>.</p>
             <div class="footer-links">
+                <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="privacy.html">Privacy</a>
-                <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneHosts/issues">Help</a>
                 <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">MIT License</a>
                 <a href="https://github.com/sponsors/stephanjoseph"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
