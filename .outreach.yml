@@ -74,8 +74,8 @@ pain_points:
 competitor_apps: []
 
 credibility_claims:
-  - "SaneHosts actively contributes to the StevenBlack/hosts repository (e.g., PR #3064 fixed critical template bugs)."
-  - "Our fixes are used by millions of hosts file users worldwide."
+  - "SaneHosts is an officially listed tool in the StevenBlack/hosts repository."
+  - "The upstream maintainers have reviewed and approved our integration."
 
 policies:
   - "ALWAYS link to https://sanehosts.com, NEVER to GitHub repo"
