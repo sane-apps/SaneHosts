@@ -115,6 +115,7 @@ struct ProfileDetailView: View {
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.red)
+                        .accessibilityLabel("Deactivate profile")
                         .accessibilityHint("Double-tap to deactivate this profile")
                     } else {
                         Button {
@@ -132,6 +133,7 @@ struct ProfileDetailView: View {
                         .buttonStyle(.borderedProminent)
                         .tint(.saneAccent)  // Futuristic teal accent
                         .activateButtonAnchor()
+                        .accessibilityLabel("Activate profile")
                         .accessibilityHint("Double-tap to activate this profile")
                     }
                 }
@@ -273,6 +275,7 @@ struct ProfileDetailView: View {
             }
             .buttonStyle(.plain)
             .help("Add a custom hosts entry to this profile")
+            .accessibilityLabel("Add new host entry")
         }
     }
 
@@ -299,6 +302,7 @@ struct ProfileDetailView: View {
                 Text(selectedEntries.count == filteredEntries.count ? "Deselect All" : "Select All")
             }
             .buttonStyle(.bordered)
+            .accessibilityLabel(selectedEntries.count == filteredEntries.count ? "Deselect all entries" : "Select all entries")
 
             Divider()
                 .frame(height: 20)
@@ -312,6 +316,7 @@ struct ProfileDetailView: View {
             .buttonStyle(.bordered)
             .tint(.saneAccent)
             .disabled(selectedEntries.isEmpty)
+            .accessibilityLabel("Enable selected entries")
 
             // Bulk Disable
             Button {
@@ -321,6 +326,7 @@ struct ProfileDetailView: View {
             }
             .buttonStyle(.bordered)
             .disabled(selectedEntries.isEmpty)
+            .accessibilityLabel("Disable selected entries")
 
             // Bulk Delete
             Button(role: .destructive) {
@@ -330,6 +336,7 @@ struct ProfileDetailView: View {
             }
             .buttonStyle(.bordered)
             .disabled(selectedEntries.isEmpty)
+            .accessibilityLabel("Delete selected entries")
 
             Divider()
                 .frame(height: 20)
@@ -342,6 +349,7 @@ struct ProfileDetailView: View {
             .buttonStyle(.borderedProminent)
             .tint(.saneAccent)
             .help("Exit selection mode")
+            .accessibilityLabel("Done selecting")
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -386,6 +394,7 @@ struct ProfileDetailView: View {
                         .buttonStyle(.bordered)
                         .controlSize(.small)
                         .help("Select entries for bulk enable, disable, or delete")
+                        .accessibilityLabel("Enter selection mode")
                     }
                 }
                 .padding(.horizontal, 12)

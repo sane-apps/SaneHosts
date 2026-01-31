@@ -192,6 +192,7 @@ public struct MainView: View {
                     .padding(.vertical, 8)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel(showingMoreOptions ? "Hide more options" : "Show more options")
 
                 if showingMoreOptions {
                     QuickActionButton(
@@ -268,6 +269,8 @@ public struct MainView: View {
                                 selectedProfileIDs = []
                                 selectedPreset = preset
                             }
+                            .accessibilityLabel("\(preset.displayName) protection level")
+                            .accessibilityHint("Double-tap to view details and download")
                     }
                 } header: {
                     HStack(spacing: 6) {
@@ -592,6 +595,8 @@ struct QuickActionButton: View {
         }
         .buttonStyle(.plain)
         .padding(.vertical, 4)
+        .accessibilityLabel(title)
+        .accessibilityHint(subtitle)
     }
 }
 
@@ -745,6 +750,7 @@ struct MultiSelectDetailView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(.purple)
                 .controlSize(.large)
+                .accessibilityLabel("Merge into new profile")
 
                 HStack(spacing: 12) {
                     // Export
@@ -756,6 +762,7 @@ struct MultiSelectDetailView: View {
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.bordered)
+                    .accessibilityLabel("Export all selected profiles")
                 }
 
                 // Delete
@@ -768,6 +775,7 @@ struct MultiSelectDetailView: View {
                 }
                 .buttonStyle(.bordered)
                 .disabled(hasActiveProfile)
+                .accessibilityLabel("Delete selected profiles")
 
                 if hasActiveProfile {
                     Text("Cannot delete active profiles")
@@ -837,6 +845,8 @@ struct NewProfileSheet: View {
                                     }
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel("Select \(color.rawValue) color")
+                            .accessibilityAddTraits(selectedColor == color ? .isSelected : [])
                         }
                     }
                     .padding(.horizontal, 12)
@@ -923,6 +933,7 @@ struct TemplatePickerSheet: View {
             }
             .keyboardShortcut(.cancelAction)
             .buttonStyle(.bordered)
+            .accessibilityLabel("Cancel template selection")
         }
         .padding(24)
         .frame(width: 420)
@@ -974,6 +985,8 @@ struct TemplateRow: View {
             )
         }
         .buttonStyle(.plain)
+        .accessibilityLabel("Create from \(template.name) template")
+        .accessibilityHint("\(template.description), \(template.entries.count) entries")
     }
 
     private var iconForTemplate: String {
@@ -1244,6 +1257,8 @@ struct RemoteImportSheet: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("\(isExpanded ? "Collapse" : "Expand") \(category.rawValue)")
+            .accessibilityHint("\(sources.count) blocklists, \(selectedInCategory) selected")
 
             // Blocklist items (when expanded)
             if isExpanded {
@@ -1395,6 +1410,7 @@ struct RemoteImportSheet: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(showingCustomURL ? "Hide custom URL input" : "Show custom URL input")
 
             if showingCustomURL {
                 VStack(alignment: .leading, spacing: 6) {
@@ -1579,6 +1595,7 @@ struct RemoteImportSheet: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.white)
+                .accessibilityLabel("Cancel import")
             }
             .padding(24)
             .background(
@@ -1758,6 +1775,7 @@ struct FetchProgressOverlay: View {
                 }
                 .buttonStyle(.bordered)
                 .tint(.white)
+                .accessibilityLabel("Cancel fetch")
             }
             .padding(24)
             .background(
@@ -1843,6 +1861,8 @@ struct MergeProfilesSheet: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("\(selectedProfiles.contains(profile.id) ? "Deselect" : "Select") \(profile.name)")
+                        .accessibilityHint("\(profile.entries.count) entries")
                     }
                 }
             }
@@ -2126,6 +2146,7 @@ struct PresetDetailView: View {
                 .buttonStyle(.borderedProminent)
                 .tint(presetColor)
                 .disabled(isDownloading)
+                .accessibilityLabel(isDownloading ? "Downloading blocklists" : "Add \(preset.displayName)")
 
                 Spacer()
             }

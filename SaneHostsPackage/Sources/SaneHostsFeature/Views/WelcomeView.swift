@@ -57,6 +57,7 @@ public struct WelcomeView: View {
                     .buttonStyle(.plain)
                     .foregroundStyle(.secondary)
                     .font(.system(size: 15))
+                    .accessibilityLabel("Go to previous page")
                 }
 
                 Spacer()
@@ -68,12 +69,14 @@ public struct WelcomeView: View {
                         }
                     }
                     .buttonStyle(.borderedProminent)
+                    .accessibilityLabel("Go to next page")
                 } else {
                     Button("Get Started") {
                         onComplete()
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .accessibilityLabel("Get started")
                 }
             }
             .padding(.horizontal, 40)

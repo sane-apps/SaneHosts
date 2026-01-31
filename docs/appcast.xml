@@ -9,7 +9,7 @@
     <item>
       <title>Version 1.0.8</title>
       <pubDate>Tue, 27 Jan 2026 19:10:20 +0000</pubDate>
-      <sparkle:version>1.0.8</sparkle:version>
+      <sparkle:version>9</sparkle:version>
       <sparkle:shortVersionString>1.0.8</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
@@ -34,7 +34,7 @@
     <item>
       <title>Version 1.0.7</title>
       <pubDate>Tue, 27 Jan 2026 18:04:55 +0000</pubDate>
-      <sparkle:version>1.0.7</sparkle:version>
+      <sparkle:version>8</sparkle:version>
       <sparkle:shortVersionString>1.0.7</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
