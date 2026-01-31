@@ -441,8 +441,8 @@ mcp__XcodeBuildMCP__session-set-defaults:
 
 | Credential | Value/Location |
 |------------|----------------|
-| **Sparkle Public Key** | `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=` |
-| **Sparkle Private Key** | macOS Keychain (account: ed25519) |
+| **Sparkle Public Key** | `7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=` |
+| **Sparkle Private Key** | macOS Keychain (account: "EdDSA Private Key", service: "https://sparkle-project.org") |
 | **Notarytool Profile** | `notarytool` (in system keychain) |
 | **Team ID** | `M78L6FXD48` |
 

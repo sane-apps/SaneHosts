@@ -416,7 +416,7 @@ if [ -n "$SPARKLE_KEY" ]; then
     <item>
       <title>Version ${VERSION}</title>
       <pubDate>${PUB_DATE}</pubDate>
-      <sparkle:version>${VERSION}</sparkle:version>
+      <sparkle:version>${BUILD_NUMBER}</sparkle:version>
       <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
@@ -438,6 +438,16 @@ if [ -n "$SPARKLE_KEY" ]; then
 APPCAST
         log_info "Appcast written to docs/appcast.xml"
         log_info "IMPORTANT: Edit release notes in docs/appcast.xml before deploying!"
+
+        # Save metadata alongside DMG for verification after R2 upload
+        cat > "${BUILD_DIR}/${APP_NAME}-${VERSION}.meta" <<METAEOF
+VERSION=${VERSION}
+BUILD=${BUILD_NUMBER}
+SHA256=${SHA256}
+SIZE=${FILE_SIZE}
+SIGNATURE=${SIGNATURE}
+METAEOF
+        log_info "Saved release metadata to ${BUILD_DIR}/${APP_NAME}-${VERSION}.meta"
     else
         log_warn "Failed to generate Sparkle signature"
     fi

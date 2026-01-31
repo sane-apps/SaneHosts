@@ -94,14 +94,14 @@ Features users requested:
 ### 2.6 Distribution (COMPLETE)
 See `docs/DISTRIBUTION.md` for full release checklist.
 
-- [x] Generate Sparkle EdDSA keys (in keychain, public key: `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=`)
+- [x] Generate Sparkle EdDSA keys (in keychain, public key: `7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=`)
 - [x] Sparkle feed URL configured (`https://sanehosts.com/appcast.xml`)
 - [x] Build release script (`scripts/build_release.sh`)
 - [x] Appcast generator (`scripts/generate_appcast.sh`)
 - [x] Website template (`website/index.html`, `website/privacy.html`)
-- [ ] Purchase domain (sanehosts.com)
+- [x] Purchase domain (sanehosts.com)
 - [x] Create GitHub repo (github.com/sane-apps/SaneHosts)
-- [ ] First release (v1.0)
+- [x] First release (v1.0.6 shipped, Cloudflare R2 + Pages + Lemon Squeezy)
 
 ---
 

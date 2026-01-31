@@ -31,6 +31,7 @@ fi
 
 # Get version from xcconfig
 VERSION=$(grep "MARKETING_VERSION" "$PROJECT_DIR/Config/Shared.xcconfig" | cut -d'=' -f2 | tr -d ' ')
+BUILD_NUMBER=$(grep "CURRENT_PROJECT_VERSION" "$PROJECT_DIR/Config/Shared.xcconfig" | cut -d'=' -f2 | tr -d ' ')
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
 DMG_PATH="$RELEASES_DIR/$DMG_NAME"
 
@@ -88,7 +89,7 @@ cat > "$APPCAST_FILE" << EOF
     <item>
       <title>Version ${VERSION}</title>
       <pubDate>${PUB_DATE}</pubDate>
-      <sparkle:version>${VERSION}</sparkle:version>
+      <sparkle:version>${BUILD_NUMBER}</sparkle:version>
       <sparkle:shortVersionString>${VERSION}</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <description><![CDATA[
