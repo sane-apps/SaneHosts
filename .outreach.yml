@@ -121,7 +121,9 @@ competitor_responses:
     issue: 3064
     url: "https://github.com/StevenBlack/hosts/pull/3064"
     responded: true
+    merged: true
     date: "2026-01-27"
+    merged_date: "2026-01-29"
     type: "readme_pr"
   - repo: "hagezi/dns-blocklists"
     issue: 7278
