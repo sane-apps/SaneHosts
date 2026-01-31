@@ -172,6 +172,7 @@ struct CoachMarkTooltip: View {
                 .buttonStyle(.plain)
                 .foregroundStyle(.secondary)
                 .font(.system(size: 14))
+                .accessibilityLabel("Skip tutorial")
 
                 Spacer()
 
@@ -179,6 +180,7 @@ struct CoachMarkTooltip: View {
                     onNext()
                 }
                 .buttonStyle(.borderedProminent)
+                .accessibilityLabel(step == .essentialsReady ? "Next step" : "Finish tutorial")
             }
         }
         .padding(20)

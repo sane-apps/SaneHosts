@@ -129,6 +129,8 @@ struct CompactSection<Content: View>: View {
             )
             .padding(.horizontal, 2)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel(title)
     }
 }
 
@@ -167,6 +169,7 @@ struct CompactRow<Content: View>: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -208,6 +211,8 @@ struct CompactToggle: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(label), \(isOn ? "on" : "off")")
     }
 }
 
@@ -274,6 +279,8 @@ struct StatusBadge: View {
         .background(color.opacity(0.15))
         .foregroundStyle(color)
         .clipShape(Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(text) status")
     }
 }
 
