@@ -55,30 +55,21 @@ Real failures from past sessions. Don't repeat them.
 
 1. **Read Rule #0 first** (Section "The Rules") - It's about HOW to use all other rules
 2. **All files stay in project** - NEVER write files outside `~/SaneApps/apps/SaneHosts/` unless user explicitly requests it
-3. **Use XcodeBuildMCP for builds** - Set session defaults first, never raw `xcodebuild`
+3. **Use SaneMaster for builds/tests** - never raw `xcodebuild`
 4. **Self-rate after every task** - Rate yourself 1-10 on SOP adherence (see Self-Rating section)
 
-### XcodeBuildMCP Session Setup (DO THIS FIRST)
-
-```
-mcp__XcodeBuildMCP__session-set-defaults:
-  workspacePath: /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
-  scheme: SaneHosts
-  arch: arm64
-```
-
-Then use `build_macos`, `test_macos`, `build_run_macos` (macOS app, no simulator).
+### SaneMaster (DO THIS FIRST)
 
 **Key Commands:**
 ```bash
-# Build + Test (via XcodeBuildMCP after setting defaults)
-mcp__XcodeBuildMCP__test_macos
+# Build + Test
+./scripts/SaneMaster.rb verify
 
 # Build + Launch
-mcp__XcodeBuildMCP__build_run_macos
+./scripts/SaneMaster.rb test_mode
 
-# Open workspace
-open ~/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
+# Stream logs
+./scripts/SaneMaster.rb logs --follow
 ```
 
 ---
@@ -121,15 +112,15 @@ DON'T: Guess a third time without researching
 DO: Fix all test failures before claiming done
 DON'T: Ship with failing tests
 
-### #5: XCODEBUILDMCP OR DISASTER
+### #5: SANEMASTER OR DISASTER
 
-DO: Use XcodeBuildMCP tools for all build/test operations
+DO: Use `./scripts/SaneMaster.rb` for all build/test operations
 DON'T: Use raw xcodebuild commands
 
 ```
 # Right
-mcp__XcodeBuildMCP__build_macos
-mcp__XcodeBuildMCP__test_macos
+./scripts/SaneMaster.rb verify
+./scripts/SaneMaster.rb test_mode
 
 # Wrong
 xcodebuild -workspace SaneHosts.xcworkspace ...
@@ -144,8 +135,8 @@ DON'T: Skip steps or assume it works
 # Kill existing process
 killall -9 SaneHosts 2>/dev/null; sleep 1
 
-# Build + launch via XcodeBuildMCP
-mcp__XcodeBuildMCP__build_run_macos
+# Build + launch via SaneMaster
+./scripts/SaneMaster.rb test_mode
 ```
 
 ### #7: NO TEST? NO REST
@@ -177,7 +168,7 @@ DON'T: Create files and forget to add them to Package.swift if needed
 
 ### #11: TOOL BROKE? FIX THE YOKE
 
-DO: If XcodeBuildMCP fails, debug the issue
+DO: If SaneMaster fails, debug the issue
 DON'T: Work around broken tools
 
 ### #12: TALK WHILE I WALK
@@ -242,7 +233,7 @@ After research, present findings in this format:
 ...
 
 ### Verification
-- [ ] Tests pass (mcp__XcodeBuildMCP__test_macos)
+- [ ] Tests pass (`./scripts/SaneMaster.rb verify`)
 - [ ] Manual test: [specific check]
 ```
 
@@ -326,15 +317,14 @@ Approve?
 
 ### Steps
 
-[Rule #5: USE XCODEBUILDMCP] - Clean build if needed
+[Rule #5: USE SANEMASTER] - Clean build if needed
 
 [Rule #7: TESTS FOR FIXES] - Create tests:
   - SaneHostsPackage/Tests/SaneHostsFeatureTests/[TestFile].swift
 
 [Rule #6: FULL CYCLE] - Verify fixes:
-  - mcp__XcodeBuildMCP__test_macos
-  - killall -9 SaneHosts
-  - mcp__XcodeBuildMCP__build_run_macos
+  - ./scripts/SaneMaster.rb verify
+  - ./scripts/SaneMaster.rb test_mode
   - Manual: [specific check]
 
 [Rule #4: GREEN BEFORE DONE] - All tests pass before claiming complete
@@ -406,13 +396,12 @@ SaneHosts/
 
 ## MCP Tool Optimization (TOKEN SAVERS)
 
-### XcodeBuildMCP (Required)
-Set defaults ONCE at session start:
+### SaneMaster (Required)
+Use the unified SaneMaster workflow for build/test:
 ```
-mcp__XcodeBuildMCP__session-set-defaults:
-  workspacePath: /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
-  scheme: SaneHosts
-  arch: arm64
+./scripts/SaneMaster.rb verify
+./scripts/SaneMaster.rb test_mode
+./scripts/SaneMaster.rb logs --follow
 ```
 
 ### claude-mem 3-Layer Workflow (10x Token Savings)
@@ -450,7 +439,7 @@ mcp__XcodeBuildMCP__session-set-defaults:
 
 ```bash
 # Build, sign, notarize, create DMG
-./scripts/build_release.sh
+./scripts/SaneMaster.rb release
 
 # Generate Sparkle appcast.xml
 ./scripts/generate_appcast.sh
@@ -483,7 +472,7 @@ RESEND_KEY=$(security find-generic-password -s "resend" -a "api_key" -w)
 | Problem | Fix |
 |---------|-----|
 | Ghost beeps / no launch | Ensure workspace is open, rebuild |
-| Phantom build errors | Clean via XcodeBuildMCP, delete DerivedData |
+| Phantom build errors | `./scripts/SaneMaster.rb clean --nuclear`, delete DerivedData |
 | "File not found" after new file | Check SPM package includes the file |
 | Tests failing mysteriously | Clean build, check for stale derived data |
 | Password prompt not appearing | Check `NSAppleScript` entitlements |

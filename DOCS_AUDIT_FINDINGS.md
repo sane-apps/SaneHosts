@@ -228,7 +228,7 @@ App uses macOS system colors (.secondary, .primary) which look fine but don't en
 
 ### Clean References (all verified)
 - All 5 documented services exist with correct class names
-- Both release scripts (build_release.sh, generate_appcast.sh) exist
+- Release entrypoint (`./scripts/SaneMaster.rb release`) and appcast generator (`scripts/generate_appcast.sh`) exist
 - All MCP tools referenced are available
 - docs/DISTRIBUTION.md, SaneHosts.xcworkspace, test directory all exist
 - External paths (SaneUI, SaneProcess, NORTH_STAR.md) all exist

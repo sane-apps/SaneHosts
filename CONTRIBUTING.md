@@ -7,6 +7,7 @@ Thank you for your interest in contributing to SaneHosts! This document provides
 ### Prerequisites
 - macOS 14.0+ (Sonoma)
 - Xcode 16.0+
+- Ruby 3.0+ (for SaneMaster tooling)
 
 ### Getting Started
 
@@ -21,7 +22,15 @@ cd SaneHosts
 open SaneHosts.xcworkspace
 ```
 
-3. Build and run (Cmd+R)
+3. Build + test (preferred):
+```bash
+./scripts/SaneMaster.rb verify
+```
+
+4. Build + launch (full cycle):
+```bash
+./scripts/SaneMaster.rb test_mode
+```
 
 ### Project Structure
 ```
@@ -54,7 +63,7 @@ SaneHosts/
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/your-feature`
 3. Make your changes
-4. Run tests: Cmd+U in Xcode
+4. Run tests: `./scripts/SaneMaster.rb verify`
 5. Ensure no SwiftLint warnings
 6. Commit with a descriptive message
 7. Push and create a PR
@@ -69,7 +78,6 @@ SaneHosts/
 ### Testing
 - Write unit tests for new features
 - Ensure existing tests pass
-- Test on both Intel and Apple Silicon if possible
 - Test with both light and dark mode
 
 ## Architecture Notes
@@ -81,13 +89,13 @@ Most development happens in `SaneHostsPackage/Sources/SaneHostsFeature/`:
 - `Views/` - SwiftUI views
 
 ### Key Services
-- **HostsService** - Reads/writes /etc/hosts via AppleScript
+- **HostsService** - Writes /etc/hosts via privileged helper (Touch ID) with AppleScript fallback
 - **ProfileStore** - Profile CRUD and persistence
 - **DNSService** - Flushes DNS cache
 
 ### Security Considerations
 - Hosts file modifications require admin authentication
-- Use AppleScript `do shell script with administrator privileges`
+- Privileged helper is preferred (Touch ID). AppleScript is fallback.
 - Never store credentials
 
 ## Getting Help
@@ -98,4 +106,4 @@ Most development happens in `SaneHostsPackage/Sources/SaneHostsFeature/`:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under the MIT License.
+By contributing, you agree that your contributions will be licensed under GPL v3.
