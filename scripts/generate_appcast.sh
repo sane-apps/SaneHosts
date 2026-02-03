@@ -38,7 +38,7 @@ DMG_PATH="$RELEASES_DIR/$DMG_NAME"
 # Check DMG exists
 if [ ! -f "$DMG_PATH" ]; then
     echo "ERROR: DMG not found at $DMG_PATH"
-    echo "Run ./scripts/build_release.sh first"
+    echo "Run ./scripts/SaneMaster.rb release first"
     exit 1
 fi
 

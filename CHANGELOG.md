@@ -92,7 +92,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 #### Distribution
 - Sparkle auto-update framework integration
-- Build release script (`scripts/build_release.sh`)
+- Unified release command (`./scripts/SaneMaster.rb release`)
 - Appcast generator (`scripts/generate_appcast.sh`)
 - Landing page website
 - Privacy policy page

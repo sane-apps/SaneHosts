@@ -96,7 +96,7 @@ See `docs/DISTRIBUTION.md` for full release checklist.
 
 - [x] Generate Sparkle EdDSA keys (in keychain, public key: `7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=`)
 - [x] Sparkle feed URL configured (`https://sanehosts.com/appcast.xml`)
-- [x] Build release script (`scripts/build_release.sh`)
+- [x] Unified release command (`./scripts/SaneMaster.rb release`)
 - [x] Appcast generator (`scripts/generate_appcast.sh`)
 - [x] Website template (`website/index.html`, `website/privacy.html`)
 - [x] Purchase domain (sanehosts.com)

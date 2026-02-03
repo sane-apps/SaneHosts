@@ -40,6 +40,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 ## Installation
 
 Download from [sanehosts.com](https://sanehosts.com).
+DMGs are hosted on Cloudflare (not attached to GitHub releases).
 
 Or build from source (see [Contributing](#contributing)).
 

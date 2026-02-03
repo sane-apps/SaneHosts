@@ -1,0 +1,55 @@
+# SaneProcess compliance manifest
+name: SaneHosts
+type: macos_app
+scheme: SaneHosts
+project: SaneHosts.xcodeproj
+bundle_id: com.mrsane.SaneHosts
+
+build:
+  workspace: SaneHosts.xcworkspace
+
+tests:
+  unit_target: SaneHostsFeatureTests
+  ui_target: SaneHostsUITests
+  use_test_plan: true
+
+release:
+  dist_host: dist.sanehosts.com
+  site_host: sanehosts.com
+  r2_bucket: sanebar-downloads
+  use_sparkle: true
+  min_system_version: "14.0"
+  verify_staple: true
+  dmg:
+    file_icon: SaneHosts/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png
+    window_size: "600 428"
+    app_icon_pos: "150 190"
+    drop_pos: "450 190"
+    no_internet_enable: true
+  archive_extra_args:
+    - DEVELOPMENT_TEAM=M78L6FXD48
+    - "CODE_SIGN_IDENTITY=Developer ID Application"
+    - CODE_SIGN_STYLE=Manual
+
+commands:
+  verify: ./scripts/SaneMaster.rb verify
+  test_mode: ./scripts/SaneMaster.rb tm
+  lint: ./scripts/SaneMaster.rb lint
+  clean: ./scripts/SaneMaster.rb clean
+  launch: ./scripts/SaneMaster.rb launch
+  logs: ./scripts/SaneMaster.rb logs
+
+docs:
+  - CLAUDE.md
+  - README.md
+  - DEVELOPMENT.md
+  - ARCHITECTURE.md
+  - SESSION_HANDOFF.md
+
+mcps:
+  - apple-docs
+  - context7
+  - github
+  - XcodeBuildMCP
+
+website: false

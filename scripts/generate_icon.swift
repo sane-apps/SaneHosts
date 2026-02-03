@@ -1,6 +1,8 @@
 #!/usr/bin/swift
 
 import AppKit
+import CoreGraphics
+import UniformTypeIdentifiers
 
 // Brand colors
 let bgColorTop = NSColor(red: 0x1a/255.0, green: 0x27/255.0, blue: 0x44/255.0, alpha: 1.0)
@@ -95,7 +97,27 @@ func createIcon(px: Int) -> Data? {
     }
 
     NSGraphicsContext.restoreGraphicsState()
-    return rep.representation(using: .png, properties: [:])
+
+    // Flatten onto opaque CGContext (no alpha in final PNG)
+    let cs = CGColorSpaceCreateDeviceRGB()
+    guard let opaqueCtx = CGContext(
+        data: nil, width: px, height: px,
+        bitsPerComponent: 8, bytesPerRow: 0, space: cs,
+        bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+    ) else { return nil }
+
+    // Fill with background base color, then composite rendered icon on top
+    opaqueCtx.setFillColor(CGColor(red: 0x1a/255.0, green: 0x27/255.0, blue: 0x44/255.0, alpha: 1.0))
+    opaqueCtx.fill(CGRect(x: 0, y: 0, width: px, height: px))
+    if let cgImg = rep.cgImage {
+        // NSBitmapImageRep is flipped (y=0 at top), CGContext is not (y=0 at bottom)
+        opaqueCtx.translateBy(x: 0, y: CGFloat(px))
+        opaqueCtx.scaleBy(x: 1, y: -1)
+        opaqueCtx.draw(cgImg, in: CGRect(x: 0, y: 0, width: px, height: px))
+    }
+
+    guard let finalImage = opaqueCtx.makeImage() else { return nil }
+    return NSBitmapImageRep(cgImage: finalImage).representation(using: .png, properties: [:])
 }
 
 // Get script directory and construct output path

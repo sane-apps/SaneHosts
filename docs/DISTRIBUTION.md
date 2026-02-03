@@ -68,7 +68,7 @@ Edit `CHANGELOG.md` with release notes.
 ### Step 3: Build Release
 
 ```bash
-./scripts/build_release.sh
+./scripts/SaneMaster.rb release
 ```
 
 This will:
@@ -117,7 +117,7 @@ This deploys the marketing site and appcast.xml together to `sanehosts.com`.
 
 | File | Purpose |
 |------|---------|
-| `scripts/build_release.sh` | Build, sign, notarize DMG |
+| `scripts/SaneMaster.rb release` | Build, sign, notarize DMG |
 | `scripts/generate_appcast.sh` | Generate Sparkle feed |
 | `scripts/setup_sparkle_keys.sh` | One-time key generation |
 | `keys/sparkle_private_key` | **SECRET** - EdDSA private key |
@@ -131,7 +131,7 @@ This deploys the marketing site and appcast.xml together to `sanehosts.com`.
 ```
 [ ] Version bumped in Shared.xcconfig
 [ ] CHANGELOG.md updated
-[ ] ./scripts/build_release.sh completed
+[ ] ./scripts/SaneMaster.rb release completed
 [ ] ./scripts/generate_appcast.sh completed
 [ ] DMG uploaded to R2 (sanebar-downloads bucket)
 [ ] Website + appcast deployed to Cloudflare Pages

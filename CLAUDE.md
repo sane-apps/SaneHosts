@@ -250,17 +250,17 @@ Task tool with subagent_type: Explore
 
 ```bash
 # Build, sign, notarize, create DMG, generate appcast (all-in-one)
-./scripts/build_release.sh
+./scripts/SaneMaster.rb release
 
 # Test build without notarization
-./scripts/build_release.sh --skip-notarize
+./scripts/SaneMaster.rb release --skip-notarize
 ```
 
 ### Release Steps
 
 ```bash
 # 1. Build, sign, notarize DMG
-./scripts/build_release.sh
+./scripts/SaneMaster.rb release
 
 # 2. Upload DMG to Cloudflare R2
 npx wrangler r2 object put sanebar-downloads/SaneHosts-X.Y.Z.dmg \
