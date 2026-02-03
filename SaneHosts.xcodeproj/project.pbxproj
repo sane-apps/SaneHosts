@@ -61,6 +61,13 @@
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
 		};
+		A100001100000000DEADBEEF /* Exceptions for "SaneHosts" folder in "SaneHosts" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
+		};
 		A100000D00000000DEADBEEF /* Exceptions for "SaneHostsHelper" folder in "SaneHostsHelper" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -82,6 +89,9 @@
 		};
 		8BC2655E2DEDD3F400F279A4 /* SaneHosts */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				A100001100000000DEADBEEF /* Exceptions for "SaneHosts" folder in "SaneHosts" target */,
+			);
 			path = SaneHosts;
 			sourceTree = "<group>";
 		};

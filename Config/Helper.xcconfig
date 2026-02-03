@@ -12,6 +12,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.mrsane.SaneHostsHelper
 // Platform Configuration
 // ==========================================
 MACOSX_DEPLOYMENT_TARGET = 14.0
+ALWAYS_SEARCH_USER_PATHS = NO
 
 // ==========================================
 // Code Signing & Security

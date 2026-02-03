@@ -16,6 +16,7 @@ CURRENT_PROJECT_VERSION = 9
 // Platform Configuration
 // ==========================================
 MACOSX_DEPLOYMENT_TARGET = 14.0
+ALWAYS_SEARCH_USER_PATHS = NO
 
 // ==========================================
 // Info PLIST
