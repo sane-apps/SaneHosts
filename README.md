@@ -2,9 +2,12 @@
 
 > Modern hosts file manager for macOS
 
+[![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneHosts?style=flat-square)](https://github.com/sane-apps/SaneHosts/stargazers)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-brightgreen)](https://www.apple.com/macos)
 [![Swift 6.1](https://img.shields.io/badge/Swift-6.1-orange.svg)](https://swift.org)
+
+> **⭐ Star this repo if it's useful!** · **[💰 Buy for $5](https://sanehosts.com)** · Keeps development alive
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, just deactivate.
 
@@ -39,10 +42,10 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 ## Installation
 
-Download from [sanehosts.com](https://sanehosts.com).
+**[Download from sanehosts.com](https://sanehosts.com)** — $5 one-time purchase, free updates for life.
 DMGs are hosted on Cloudflare (not attached to GitHub releases).
 
-Or build from source (see [Contributing](#contributing)).
+**Building from source?** Consider [buying the DMG for $5](https://sanehosts.com) to support continued development. Open source doesn't mean free labor.
 
 ## Requirements
 
@@ -94,12 +97,19 @@ See [SECURITY.md](SECURITY.md) for details.
 
 ## Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before submitting a pull request.
+Before opening a PR:
+1. **[⭐ Star the repo](https://github.com/sane-apps/SaneHosts)** (if you haven't already)
+2. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+3. Open an issue first to discuss major changes
 
 ## Support
 
-- [Report a Bug](https://github.com/sane-apps/SaneHosts/issues/new?template=bug_report.md)
-- [Request a Feature](https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md)
+**[⭐ Star the repo](https://github.com/sane-apps/SaneHosts)** if SaneHosts helps you. Stars help others discover quality open source.
+
+**Cloning without starring?** Takes 1 click. Be better.
+
+- 🐛 [Report a Bug](https://github.com/sane-apps/SaneHosts/issues/new?template=bug_report.md)
+- 💡 [Request a Feature](https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md)
 
 ## License
 
