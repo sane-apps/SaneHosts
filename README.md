@@ -106,7 +106,7 @@ Before opening a PR:
 
 **[⭐ Star the repo](https://github.com/sane-apps/SaneHosts)** if SaneHosts helps you. Stars help others discover quality open source.
 
-**Cloning without starring?** Takes 1 click. Be better.
+**Cloning without starring?** For real bro? Gimme that star!
 
 - 🐛 [Report a Bug](https://github.com/sane-apps/SaneHosts/issues/new?template=bug_report.md)
 - 💡 [Request a Feature](https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md)
