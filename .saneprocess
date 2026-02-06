@@ -21,7 +21,8 @@ release:
   min_system_version: "14.0"
   verify_staple: true
   dmg:
-    file_icon: SaneHosts/Assets.xcassets/AppIcon.appiconset/icon_512x512@2x.png
+    volume_icon: Resources/DMGIcon.icns
+    file_icon: Resources/DMGIcon.icns
     window_size: "600 428"
     app_icon_pos: "150 190"
     drop_pos: "450 190"
@@ -50,6 +51,6 @@ mcps:
   - apple-docs
   - context7
   - github
-  - XcodeBuildMCP
+  - xcode
 
 website: false
