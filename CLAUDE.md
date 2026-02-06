@@ -44,7 +44,7 @@
 
 | Need | Check |
 |------|-------|
-| Build/test commands | XcodeBuildMCP (`build_macos`, `test_macos`, `build_run_macos`) |
+| Build/test commands | Xcode Tools (`xcode` MCP) |
 | Project structure | `SaneHosts.xcworkspace` (open this!) |
 | Past bugs/learnings | MCP memory (`claude-mem search`) |
 | Swift services | `SaneHostsPackage/Sources/SaneHostsFeature/Services/` |
@@ -95,29 +95,29 @@ SaneHosts is a macOS app for managing `/etc/hosts` file through profiles. It all
 ## Quick Commands
 
 ```bash
-# Build & Run (use XcodeBuildMCP)
-# First set session defaults, then use build_run_macos
+# Build & Run (Xcode Tools MCP)
+# Open the workspace in Xcode first
 
 # Open workspace
 open /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
 
 # Run tests in Xcode
-# Cmd+U in Xcode, or use XcodeBuildMCP test_macos
+# Cmd+U in Xcode, or use Xcode Tools RunAllTests
 ```
 
 ---
 
 ## MCP Tool Optimization (TOKEN SAVERS)
 
-### XcodeBuildMCP Session Setup
-At session start, set defaults ONCE to avoid repeating on every build:
+### Xcode Tools (Apple's Official MCP)
+Requires Xcode running with the workspace open. Get the `tabIdentifier` first:
 ```
-mcp__XcodeBuildMCP__session-set-defaults:
-  workspacePath: /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
-  scheme: SaneHosts
-  arch: arm64
+mcp__xcode__XcodeListWindows
+mcp__xcode__BuildProject
+mcp__xcode__RunAllTests
+mcp__xcode__RenderPreview
 ```
-Note: SaneHosts is a **macOS app** - no simulator needed. Use `build_macos`, `test_macos`, `build_run_macos`.
+Note: SaneHosts is a **macOS app**. Use `macos-automator` for real UI.
 
 ### claude-mem 3-Layer Workflow (10x Token Savings)
 ```
