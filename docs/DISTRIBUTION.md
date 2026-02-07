@@ -10,9 +10,10 @@ Complete guide for releasing SaneHosts to the public.
 - **Configured in**: `Config/Shared.xcconfig` → `INFOPLIST_KEY_SUPublicEDKey`
 
 **Apple Developer Credentials** (in system keychain):
-- **Keychain Profile**: `notarytool`
-- **Key ID**: `7LMFF3A258`
+- **Keychain Profile**: `notarytool` (Key: `S34998ZCRT`)
+- **Primary API Key**: `S34998ZCRT` (SaneApps — Admin), `.p8` at `~/.private_keys/`
 - **Team ID**: `M78L6FXD48`
+- **Issuer ID**: `c98b1e0a-8d10-4fce-a417-536b31c09bfb`
 
 **DO NOT regenerate keys** - use the existing ones above.
 
