@@ -7,7 +7,7 @@
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-brightgreen)](https://www.apple.com/macos)
 [![Swift 6.1](https://img.shields.io/badge/Swift-6.1-orange.svg)](https://swift.org)
 
-> **⭐ Star this repo if it's useful!** · **[💰 Buy for $5](https://sanehosts.com)** · Keeps development alive
+> **⭐ Star this repo if it's useful!** · **[💰 Buy for $6.99](https://sanehosts.com)** · Keeps development alive
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, just deactivate.
 
@@ -42,10 +42,11 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 ## Installation
 
-**[Download from sanehosts.com](https://sanehosts.com)** — $5 one-time purchase, free updates for life.
-DMGs are hosted on Cloudflare (not attached to GitHub releases).
+**[Download from sanehosts.com](https://sanehosts.com)** — Signed, notarized, ready to use.
 
-**Building from source?** Consider [buying the DMG for $5](https://sanehosts.com) to support continued development. Open source doesn't mean free labor.
+> *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
+
+**Building from source?** Consider [buying the DMG](https://sanehosts.com) to support continued development.
 
 ## Requirements
 
