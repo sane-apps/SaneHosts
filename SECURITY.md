@@ -22,7 +22,7 @@ Modifying `/etc/hosts` requires elevated privileges:
 - Each modification requires re-authentication
 
 ### Code Signing
-- Signed with Developer ID: Stephan Joseph (M78L6FXD48)
+- Signed with Developer ID: Mr. Sane (M78L6FXD48)
 - Notarized by Apple
 - Hardened runtime enabled
 
@@ -67,7 +67,7 @@ Security researchers who report valid vulnerabilities will be:
 2. **Verify code signature**
    ```bash
    codesign -dv --verbose=4 /Applications/SaneHosts.app
-   # Should show: Developer ID Application: Stephan Joseph (M78L6FXD48)
+   # Should show: Developer ID Application: Mr. Sane (M78L6FXD48)
    ```
 
 3. **Keep the app updated**
