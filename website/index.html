@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SaneHosts - Your Mac Is Talking Behind Your Back</title>
-    <meta name="description" content="Block ads, trackers, and data collectors at the system level. No Terminal. No commands. $5 once. Works in every app on your Mac.">
+    <meta name="description" content="Block ads, trackers, and data collectors at the system level. No Terminal. No commands. $6.99 once. Works in every app on your Mac.">
     <meta name="keywords" content="macOS, hosts file, ad blocker, privacy, tracker blocker, Mac app, hosts manager">
     <meta name="author" content="Mr. Sane">
     <meta name="robots" content="index, follow">
@@ -17,7 +17,7 @@
 
     <!-- Open Graph -->
     <meta property="og:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
-    <meta property="og:description" content="Block ads and trackers at the system level. No Terminal. No commands. $5 once.">
+    <meta property="og:description" content="Block ads and trackers at the system level. No Terminal. No commands. $6.99 once.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -29,7 +29,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
-    <meta name="twitter:description" content="Block ads and trackers at the system level. No Terminal. $5 once.">
+    <meta name="twitter:description" content="Block ads and trackers at the system level. No Terminal. $6.99 once.">
     <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
     <meta name="twitter:site" content="@saneapps">
     <meta name="twitter:url" content="https://sanehosts.com/">
@@ -49,7 +49,7 @@
       "applicationCategory": "UtilitiesApplication",
       "offers": {
         "@type": "Offer",
-        "price": "5",
+        "price": "6.99",
         "priceCurrency": "USD"
       },
       "description": "Block ads, trackers, and distractions at the system level using your Mac's built-in hosts file.",
@@ -67,7 +67,7 @@
         "Profile Management",
         "Automatic DNS Flush",
         "100% On-Device Privacy",
-        "Open Source (GPL v3)"
+        "Open Source"
       ]
     }
     </script>
@@ -96,8 +96,8 @@
             --accent-glow: rgba(79, 143, 250, 0.25);
             --accent-subtle: rgba(74, 173, 232, 0.08);
             --text-primary: #f5f5f8;
-            --text-secondary: #d8d8e8;
-            --text-muted: #c0c0d0;
+            --text-secondary: #e8e8f0;
+            --text-muted: #d0d0e0;
             --success: #34d399;
             --success-soft: rgba(52, 211, 153, 0.15);
             --warm: #f4a261;
@@ -214,22 +214,11 @@
             height: 32px;
             border-radius: 8px;
         }
+        .logo-group { display: flex; flex-direction: column; }
+        .logo-family { font-size: 0.7rem; color: var(--text-secondary); text-decoration: none; margin-left: 44px; margin-top: -2px; opacity: 0.8; transition: color 0.2s; }
+        .logo-family:hover { color: var(--text-primary); }
+        @media (max-width: 768px) { .logo-family { display: none; } }
 
-        .logo-family {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            font-weight: 400;
-            margin-left: 12px;
-            margin-right: auto;
-            padding-left: 12px;
-            border-left: 1px solid var(--border);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-
-        .logo-family:hover {
-            color: var(--accent);
-        }
 
         .nav-links {
             display: flex;
@@ -773,27 +762,37 @@
 
         .more-apps-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 24px;
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
         .app-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
+            background:
+                radial-gradient(ellipse at 90% 50%, rgba(79, 143, 250, 0.18) 0%, transparent 50%),
+                radial-gradient(ellipse at 85% 30%, rgba(79, 143, 250, 0.1) 0%, transparent 40%),
+                linear-gradient(135deg, #0a1628 0%, #0d1f3c 50%, #081020 100%);
+            border: 1px solid rgba(79, 143, 250, 0.25);
             border-radius: 16px;
             padding: 28px;
             text-decoration: none;
             color: inherit;
             transition: all 0.3s ease;
             display: block;
+            position: relative;
+            overflow: hidden;
+            box-shadow:
+                0 0 30px rgba(79, 143, 250, 0.08),
+                0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .app-card:hover {
             transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+            border-color: rgba(79, 143, 250, 0.45);
+            box-shadow:
+                0 0 50px rgba(79, 143, 250, 0.12),
+                0 20px 40px rgba(0, 0, 0, 0.4);
         }
 
         .app-card-header {
@@ -1048,7 +1047,6 @@
         @media (max-width: 768px) {
             .hamburger { display: block; }
             .nav-links { display: none; }
-            .logo-family { display: none; }
 
             .hero {
                 padding: 120px 0 60px;
@@ -1089,6 +1087,10 @@
                 padding-top: 110px !important;
             }
         }
+        .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.75rem; vertical-align: super; margin-left: 3px; cursor: default; }
+        .price-note::after { content: "I wanted to make it $5, but processing fees and taxes were… insane. — Mr. Sane"; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
+        .price-note:hover::after { opacity: 1; }
+        @media (max-width: 768px) { .price-note { display: none; } }
     </style>
 </head>
 <body>
@@ -1096,11 +1098,13 @@
 
     <nav>
         <div class="container">
-            <a href="#" class="logo">
-                <img src="favicon.png" alt="SaneHosts">
-                SaneHosts
-            </a>
-            <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
+            <div class="logo-group">
+                <a href="#" class="logo">
+                    <img src="favicon.png" alt="SaneHosts">
+                    SaneHosts
+                </a>
+                <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
+            </div>
             <div class="nav-links">
                 <a href="#protection">Protection</a>
                 <a href="#features">Features</a>
@@ -1130,8 +1134,9 @@
         <p class="mobile-nav-section">More SaneApps</p>
         <a href="https://sanebar.com">SaneBar &mdash; Menu Bar Manager</a>
         <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
+        <a href="https://sanesales.com">SaneSales &mdash; Sales Tracker</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="mobile-nav-cta">Download SaneHosts &mdash; $5</a>
+        <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="mobile-nav-cta">Download SaneHosts &mdash; $6.99</a>
     </div>
 
     <!-- ============================================ -->
@@ -1155,8 +1160,8 @@
                         <polyline points="7 10 12 15 17 10"/>
                         <line x1="12" y1="15" x2="12" y2="3"/>
                     </svg>
-                    Download — $5
-                </a>
+                    Download — $6.99
+                </a><span class="price-note">*</span>
             </div>
 
             <h2 class="section-title animate-in delay-5" style="margin-bottom: 8px;">Pick. Click. <em>Protected.</em></h2>
@@ -1235,7 +1240,7 @@
                                 <span class="level-name">Privacy Shield</span><br>
                                 <span class="level-tagline">Stop watching me</span>
                             </td>
-                            <td class="level-desc">Focus Mode + telemetry and advanced trackers</td>
+                            <td class="level-desc">Focus Mode + data collection and advanced trackers</td>
                             <td class="level-entries">~600K</td>
                         </tr>
                         <tr>
@@ -1276,7 +1281,7 @@
                 <div class="feature-item">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
                     <h3>100% On-Device</h3>
-                    <p>Your data stays on your Mac. No cloud. No accounts. No analytics. Automatic backups protect your profiles from corruption.</p>
+                    <p>Your data stays on your Mac. No cloud. No accounts. No tracking. Automatic backups protect your profiles from corruption.</p>
                 </div>
             </div>
 
@@ -1407,6 +1412,14 @@
                     <p class="app-card-tagline">Run scripts, convert files, and automate your Mac directly from the right-click menu. 50+ actions, 100% private.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
+                <a href="https://sanesales.com" class="app-card">
+                    <div class="app-card-header">
+                        <img src="images/sanesales-icon.png" alt="SaneSales" class="app-card-icon">
+                        <div class="app-card-name">SaneSales</div>
+                    </div>
+                    <p class="app-card-tagline">Track your indie sales from LemonSqueezy, Gumroad, and Stripe in one beautiful, native app. Revenue charts, CSV export, 100% on-device.</p>
+                    <span class="app-card-cta">Learn more &#8594;</span>
+                </a>
             </div>
             <div class="more-apps-hub">
                 <a href="https://saneapps.com">See all apps at saneapps.com &#8594;</a>
@@ -1443,17 +1456,18 @@
 
     <footer>
         <div class="container">
-            <p class="footer-privacy"><strong>No telemetry</strong>. <strong>No cloud</strong>. <strong>100% on your Mac</strong>.</p>
+            <p class="footer-privacy"><strong>No tracking</strong>. <strong>No cloud</strong>. <strong>100% on your Mac</strong>.</p>
             <div class="footer-links">
                 <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="privacy.html">Privacy</a>
                 <a href="https://github.com/sane-apps/SaneHosts/issues">Help</a>
                 <a href="mailto:hi@saneapps.com">Contact</a>
-                <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">GPL v3 License</a>
+                <a href="https://github.com/sane-apps/SaneHosts/blob/main/LICENSE">Open Source License</a>
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
+            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 0.7; margin-bottom: 12px;">*I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane</p>
             <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts &middot; Requires macOS 14.0 (Sonoma) or later</p>
             <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
             <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
