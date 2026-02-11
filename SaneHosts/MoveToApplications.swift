@@ -1,0 +1,1 @@
+../../../infra/SaneProcess/shared/MoveToApplications.swift

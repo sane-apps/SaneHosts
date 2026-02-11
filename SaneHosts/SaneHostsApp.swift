@@ -1,8 +1,8 @@
-import SwiftUI
+import os
 import SaneHostsFeature
 import ServiceManagement
 import Sparkle
-import os
+import SwiftUI
 
 // MARK: - Notifications
 
@@ -23,8 +23,8 @@ final class WindowActionStorage {
         // Find an existing main window (SwiftUI WindowGroup id: "main")
         let mainWindow = NSApp.windows.first(where: {
             $0.canBecomeMain &&
-            $0.contentView != nil &&
-            $0.identifier?.rawValue.contains("main") == true
+                $0.contentView != nil &&
+                $0.identifier?.rawValue.contains("main") == true
         })
 
         if let window = mainWindow {
@@ -50,6 +50,8 @@ struct SaneHostsApp: App {
 
     init() {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        // Store updater reference for dock menu access
+        AppDelegate.updater = updaterController.updater
         // Faster tooltip appearance (default ~700ms, set to 300ms)
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
@@ -199,8 +201,14 @@ struct WindowActionCapture: ViewModifier {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "AppDelegate")
+    weak static var updater: SPUUpdater?
 
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    func applicationDidFinishLaunching(_: Notification) {
+        // Move to /Applications if running from Downloads (Release only)
+        #if !DEBUG
+            SaneAppMover.moveToApplicationsFolderIfNeeded()
+        #endif
+
         // Initialize activation policy based on preference
         // Since LSUIElement=YES, default is accessory. If hideDockIcon is false, we must force regular.
         if !UserDefaults.standard.bool(forKey: "hideDockIcon") {
@@ -239,18 +247,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    func applicationDockMenu(_ sender: NSApplication) -> NSMenu? {
+    func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
-
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
-        settingsItem.target = self
-        menu.addItem(settingsItem)
-
-        menu.addItem(NSMenuItem.separator())
 
         let openItem = NSMenuItem(title: "Open SaneHosts", action: #selector(openMainWindow), keyEquivalent: "")
         openItem.target = self
         menu.addItem(openItem)
+
+        menu.addItem(NSMenuItem.separator())
+
+        let updatesItem = NSMenuItem(title: "Check for Updates...", action: #selector(checkForUpdates), keyEquivalent: "")
+        updatesItem.target = self
+        menu.addItem(updatesItem)
+
+        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
 
         return menu
     }
@@ -258,7 +270,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openSettings() {
         // Try notification first (handled by SettingsLauncher in SwiftUI views)
         NotificationCenter.default.post(name: .openSettings, object: nil)
-        
+
         // Fallback: Try standard selector chain
         NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -268,6 +280,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         Task { @MainActor in
             WindowActionStorage.shared.showMainWindow()
         }
+    }
+
+    @objc func checkForUpdates() {
+        AppDelegate.updater?.checkForUpdates()
     }
 }
 
@@ -795,7 +811,7 @@ struct CheckForUpdatesView: View {
     @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
 
     init(updater: SPUUpdater) {
-        self.checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
+        checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
     }
 
     var body: some View {
@@ -824,7 +840,7 @@ final class CheckForUpdatesViewModel: ObservableObject {
 // MARK: - Sparkle Updater Delegate
 
 final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
-    func feedURLString(for updater: SPUUpdater) -> String? {
-        return "https://sanehosts.com/appcast.xml"
+    func feedURLString(for _: SPUUpdater) -> String? {
+        "https://sanehosts.com/appcast.xml"
     }
 }
