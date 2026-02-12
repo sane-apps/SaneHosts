@@ -14,6 +14,8 @@ tests:
   use_test_plan: true
 
 release:
+  team_id: M78L6FXD48
+  signing_identity: "Developer ID Application"
   dist_host: dist.sanehosts.com
   site_host: sanehosts.com
   r2_bucket: sanebar-downloads
