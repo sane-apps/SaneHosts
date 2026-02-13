@@ -5,7 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneHosts?style=flat-square)](https://github.com/sane-apps/SaneHosts/stargazers)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-brightgreen)](https://www.apple.com/macos)
-[![Swift 6.1](https://img.shields.io/badge/Swift-6.1-orange.svg)](https://swift.org)
+[![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 
 > **⭐ Star this repo if it's useful!** · **[💰 Buy for $6.99](https://sanehosts.com)** · Keeps development alive
 
