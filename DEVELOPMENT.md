@@ -404,13 +404,13 @@ Use the unified SaneMaster workflow for build/test:
 ./scripts/SaneMaster.rb logs --follow
 ```
 
-### claude-mem 3-Layer Workflow (10x Token Savings)
+### Memory MCP 3-Layer Workflow (10x Token Savings)
 ```
-1. search(query, project: "SaneHosts") -> Get index with IDs
-2. timeline(anchor=ID)                  -> Get context around results
-3. get_observations([IDs])              -> Fetch ONLY filtered IDs
+1. search_nodes(query, project: "SaneHosts") -> Get index with node IDs
+2. Use node IDs to fetch specific context
+3. read_graph() -> Full graph only if needed
 ```
-**Always add `project: "SaneHosts"` to searches for isolation.**
+**Always filter by project for isolation.**
 
 ### apple-docs Optimization
 - `compact: true` works on `list_technologies`, `get_sample_code`, `wwdc` (NOT on `search_apple_docs`)

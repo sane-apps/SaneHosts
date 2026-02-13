@@ -44,9 +44,9 @@
 
 | Need | Check |
 |------|-------|
-| Build/test commands | Xcode Tools (`xcode` MCP) |
+| Build/test commands | `xcode` MCP (Apple's official via `xcrun mcpbridge`) |
 | Project structure | `SaneHosts.xcworkspace` (open this!) |
-| Past bugs/learnings | MCP memory (`claude-mem search`) |
+| Past bugs/learnings | Serena memories (`read_memory`) or official Memory MCP |
 | Swift services | `SaneHostsPackage/Sources/SaneHostsFeature/Services/` |
 | UI components | `SaneHostsPackage/Sources/SaneHostsFeature/Views/` |
 | Models & presets | `SaneHostsPackage/Sources/SaneHostsFeature/Models/` |
@@ -95,21 +95,21 @@ SaneHosts is a macOS app for managing `/etc/hosts` file through profiles. It all
 ## Quick Commands
 
 ```bash
-# Build & Run (Xcode Tools MCP)
+# Build & Run (xcode MCP)
 # Open the workspace in Xcode first
 
 # Open workspace
 open /Users/sj/SaneApps/apps/SaneHosts/SaneHosts.xcworkspace
 
 # Run tests in Xcode
-# Cmd+U in Xcode, or use Xcode Tools RunAllTests
+# Cmd+U in Xcode, or use xcode MCP RunAllTests
 ```
 
 ---
 
 ## MCP Tool Optimization (TOKEN SAVERS)
 
-### Xcode Tools (Apple's Official MCP)
+### xcode MCP (Apple's Official via xcrun mcpbridge)
 Requires Xcode running with the workspace open. Get the `tabIdentifier` first:
 ```
 mcp__xcode__XcodeListWindows
@@ -119,13 +119,13 @@ mcp__xcode__RenderPreview
 ```
 Note: SaneHosts is a **macOS app**. Use `macos-automator` for real UI.
 
-### claude-mem 3-Layer Workflow (10x Token Savings)
+### Serena Memories
+Use Serena for project-specific knowledge:
 ```
-1. search(query, project: "SaneHosts") → Get index with IDs (~50-100 tokens/result)
-2. timeline(anchor=ID)                 → Get context around results
-3. get_observations([IDs])             → Fetch ONLY filtered IDs
+read_memory  # Check past learnings
+write_memory # Save important findings
 ```
-**Always add `project: "SaneHosts"` to searches for isolation.**
+For cross-project knowledge graph, use official Memory MCP tools.
 
 ### apple-docs Optimization
 - `compact: true` works on `list_technologies`, `get_sample_code`, `wwdc` (NOT on `search_apple_docs`)
