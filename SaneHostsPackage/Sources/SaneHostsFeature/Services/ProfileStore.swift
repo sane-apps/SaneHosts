@@ -234,7 +234,7 @@ public final class ProfileStore {
 
     private func loadSystemHosts() async throws {
         let url = systemHostsURL
-        let parser = self.parser
+        let parser = parser
 
         // Only parse the system entries header, not the full 200K+ line hosts file.
         // System entries (localhost, broadcasthost) appear before the "# ---- Profile:" marker.
@@ -242,12 +242,11 @@ public final class ProfileStore {
             let content = try String(contentsOf: url, encoding: .utf8)
 
             // Extract only the header section before profile entries begin
-            let headerContent: String
-            if let markerRange = content.range(of: "# ---- Profile:") {
-                headerContent = String(content[content.startIndex..<markerRange.lowerBound])
+            let headerContent: String = if let markerRange = content.range(of: "# ---- Profile:") {
+                String(content[content.startIndex ..< markerRange.lowerBound])
             } else {
                 // No managed section - parse the whole file (small /etc/hosts)
-                headerContent = content
+                content
             }
 
             let lines = parser.parse(headerContent)
@@ -255,12 +254,12 @@ public final class ProfileStore {
             return parser.extractSystemEntries(from: allEntries)
         }.value
 
-        self.systemEntries = entries
+        systemEntries = entries
     }
 
     private func loadProfiles() async throws {
         let profilesDir = profilesDirectoryURL
-        
+
         // Phase 1: Read and decode valid profiles in background
         let result = try await Task.detached(priority: .userInitiated) {
             let fileManager = FileManager.default
@@ -328,8 +327,8 @@ public final class ProfileStore {
     /// Creates an "Existing Entries" profile if any non-system entries are found
     private func migrateExistingSystemHosts() async throws {
         let url = systemHostsURL
-        let parser = self.parser
-        
+        let parser = parser
+
         // Read on background thread
         let userEntries = try await Task.detached(priority: .userInitiated) {
             let content = try String(contentsOf: url, encoding: .utf8)
@@ -366,10 +365,22 @@ public final class ProfileStore {
         (profiles.map(\.sortOrder).max() ?? -1) + 1
     }
 
+    /// Sanitize and validate a profile name
+    private func sanitizedName(_ name: String) throws -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            throw ProfileStoreError.invalidName("Name cannot be empty")
+        }
+        // Limit length to prevent filesystem issues
+        let maxLength = 100
+        return String(trimmed.prefix(maxLength))
+    }
+
     /// Create a new profile
     public func create(name: String, from template: ProfileTemplate? = nil) async throws -> Profile {
+        let safeName = try sanitizedName(name)
         let profile = Profile(
-            name: name,
+            name: safeName,
             entries: template?.entries ?? [],
             isActive: false,
             colorTag: template?.colorTag ?? .gray,
@@ -384,12 +395,13 @@ public final class ProfileStore {
     }
 
     /// Create a profile from a remote source
-    public func createRemote(name: String, url: URL, entries: [HostEntry], maxEntries: Int = 500000) async throws -> Profile {
+    public func createRemote(name: String, url: URL, entries: [HostEntry], maxEntries: Int = 500_000) async throws -> Profile {
+        let safeName = try sanitizedName(name)
         // Limit entries to prevent crashes with extremely large files
         let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
 
         let profile = Profile(
-            name: name,
+            name: safeName,
             entries: limitedEntries,
             isActive: false,
             source: .remote(url: url, lastFetched: Date()),
@@ -415,12 +427,13 @@ public final class ProfileStore {
     }
 
     /// Create a profile from merged sources
-    public func createMerged(name: String, entries: [HostEntry], sourceCount: Int, maxEntries: Int = 500000) async throws -> Profile {
+    public func createMerged(name: String, entries: [HostEntry], sourceCount: Int, maxEntries: Int = 500_000) async throws -> Profile {
+        let safeName = try sanitizedName(name)
         // Limit entries to prevent crashes with extremely large files
         let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
 
         let profile = Profile(
-            name: name,
+            name: safeName,
             entries: limitedEntries,
             isActive: false,
             source: .merged(sourceCount: sourceCount),
@@ -546,6 +559,7 @@ public final class ProfileStore {
     /// Merge multiple profiles into a new combined profile
     /// Deduplicates entries by hostname (keeps first occurrence)
     public func merge(profiles profilesToMerge: [Profile], name: String) async throws -> Profile {
+        let safeName = try sanitizedName(name)
         // Collect all entries, deduplicating by hostname
         var seenHostnames: Set<String> = []
         var mergedEntries: [HostEntry] = []
@@ -563,7 +577,7 @@ public final class ProfileStore {
 
         let newProfile = Profile(
             id: UUID(),
-            name: name,
+            name: safeName,
             entries: mergedEntries,
             isActive: false,
             createdAt: Date(),
@@ -601,7 +615,7 @@ public final class ProfileStore {
     /// Activate a profile (writes to /etc/hosts via helper)
     /// Returns the hosts content that should be written
     public func prepareActivation(profile: Profile) -> String {
-        return parser.merge(profile: profile, systemEntries: systemEntries)
+        parser.merge(profile: profile, systemEntries: systemEntries)
     }
 
     /// Mark a profile as active (after successful write)
@@ -648,7 +662,7 @@ public final class ProfileStore {
 
     /// Add multiple entries to a profile (batch operation)
     /// Limits to maxEntries to prevent memory issues with extremely large hosts files
-    public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = 500000) async throws {
+    public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = 500_000) async throws {
         guard let current = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
@@ -744,7 +758,7 @@ public final class ProfileStore {
 
     /// Export a profile as hosts file content
     public func exportProfile(_ profile: Profile) -> String {
-        return parser.merge(profile: profile, systemEntries: systemEntries)
+        parser.merge(profile: profile, systemEntries: systemEntries)
     }
 }
 
@@ -762,13 +776,15 @@ public enum ProfileStoreError: LocalizedError {
     case saveFailed(String)
     case cannotDeleteActive
     case profileNotFound
+    case invalidName(String)
 
     public var errorDescription: String? {
         switch self {
-        case .loadFailed(let reason): return "Failed to load profiles: \(reason)"
-        case .saveFailed(let reason): return "Failed to save profile: \(reason)"
-        case .cannotDeleteActive: return "Cannot delete the active profile. Deactivate it first."
-        case .profileNotFound: return "Profile not found"
+        case let .loadFailed(reason): "Failed to load profiles: \(reason)"
+        case let .saveFailed(reason): "Failed to save profile: \(reason)"
+        case .cannotDeleteActive: "Cannot delete the active profile. Deactivate it first."
+        case .profileNotFound: "Profile not found"
+        case let .invalidName(reason): "Invalid profile name: \(reason)"
         }
     }
 }
