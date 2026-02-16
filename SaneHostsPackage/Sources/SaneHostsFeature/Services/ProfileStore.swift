@@ -409,6 +409,9 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
+        // Ensure profiles directory exists before writing
+        try createProfilesDirectoryIfNeeded()
+
         // Save on background thread for large profiles
         let profileToSave = profile
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profileToSave.id.uuidString).json")
@@ -440,6 +443,9 @@ public final class ProfileStore {
             colorTag: .purple,
             sortOrder: nextSortOrder
         )
+
+        // Ensure profiles directory exists before writing
+        try createProfilesDirectoryIfNeeded()
 
         // Save on background thread for large profiles
         let profileToSave = profile
