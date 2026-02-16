@@ -49,6 +49,11 @@ public final class RemoteSyncService {
 
     /// Fetch a hosts file from a remote URL with progress tracking
     public func fetch(from url: URL) async throws -> RemoteHostsFile {
+        // Enforce HTTPS for security — blocklists over HTTP can be tampered with
+        if url.scheme?.lowercased() == "http" {
+            throw RemoteSyncError.insecureURL
+        }
+
         // Cancel any existing task
         currentTask?.cancel()
 
@@ -120,7 +125,7 @@ public final class RemoteSyncService {
             throw RemoteSyncError.invalidResponse
         }
 
-        guard (200...299).contains(httpResponse.statusCode) else {
+        guard (200 ... 299).contains(httpResponse.statusCode) else {
             logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
             throw RemoteSyncError.httpError(httpResponse.statusCode)
         }
@@ -137,7 +142,7 @@ public final class RemoteSyncService {
     // MARK: - Private Parsing
 
     /// Maximum entries to import (no practical limit - UI handles display)
-    private static let maxEntries = 100000
+    private static let maxEntries = 100_000
 
     private func parseHostsFile(at localURL: URL, sourceURL: URL) async throws -> RemoteHostsFile {
         // First, get file size for progress estimation
@@ -152,7 +157,7 @@ public final class RemoteSyncService {
         let entries = try await Task.detached(priority: .userInitiated) { [weak self] in
             var entries: [HostEntry] = []
             entries.reserveCapacity(min(estimatedLines, maxEntries))
-            let parser = HostsParser()  // Hoist outside loop for performance
+            let parser = HostsParser() // Hoist outside loop for performance
 
             var lineNumber = 0
 
@@ -186,7 +191,7 @@ public final class RemoteSyncService {
                     // Domain-only format: just a hostname
                     let domain = String(components[0])
                     // Must look like a domain (contains a dot)
-                    guard domain.contains(".") && parser.isValidHostname(domain) else { continue }
+                    guard domain.contains("."), parser.isValidHostname(domain) else { continue }
                     ipString = "0.0.0.0"
                     hostnames = [domain]
                 } else {
@@ -211,9 +216,9 @@ public final class RemoteSyncService {
                 // Skip localhost variations in domain-only format too
                 hostnames = hostnames.filter { host in
                     host != "localhost" &&
-                    host != "localhost.localdomain" &&
-                    host != "local" &&
-                    host != "broadcasthost"
+                        host != "localhost.localdomain" &&
+                        host != "local" &&
+                        host != "broadcasthost"
                 }
 
                 guard !hostnames.isEmpty else { continue }
@@ -293,10 +298,10 @@ public final class RemoteSyncService {
         var request = URLRequest(url: url)
         request.httpMethod = "HEAD"
 
-        if let etag = etag {
+        if let etag {
             request.setValue(etag, forHTTPHeaderField: "If-None-Match")
         }
-        if let lastModified = lastModified {
+        if let lastModified {
             request.setValue(lastModified, forHTTPHeaderField: "If-Modified-Since")
         }
 
@@ -337,6 +342,7 @@ public enum SyncStatus: Equatable, Sendable {
 
 public enum RemoteSyncError: LocalizedError {
     case invalidURL
+    case insecureURL
     case networkError(String)
     case httpError(Int)
     case invalidResponse
@@ -348,34 +354,38 @@ public enum RemoteSyncError: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return "Invalid URL"
-        case .networkError(let message):
-            return "Network error: \(message)"
-        case .httpError(let code):
-            return "HTTP error \(code)"
+            "Invalid URL"
+        case .insecureURL:
+            "HTTPS required — blocklists over HTTP can be tampered with"
+        case let .networkError(message):
+            "Network error: \(message)"
+        case let .httpError(code):
+            "HTTP error \(code)"
         case .invalidResponse:
-            return "Invalid server response"
+            "Invalid server response"
         case .invalidEncoding:
-            return "Could not decode file content"
+            "Could not decode file content"
         case .noValidEntries:
-            return "No valid hosts entries found"
+            "No valid hosts entries found"
         case .timeout:
-            return "Request timed out"
+            "Request timed out"
         case .cancelled:
-            return "Import was cancelled"
+            "Import was cancelled"
         }
     }
 
     public var recoverySuggestion: String? {
         switch self {
         case .networkError, .timeout:
-            return "Check your internet connection and try again"
+            "Check your internet connection and try again"
+        case .insecureURL:
+            "Change the URL to use https:// instead of http://"
         case .invalidURL, .invalidResponse, .invalidEncoding, .noValidEntries:
-            return "Make sure the URL points to a valid hosts file"
+            "Make sure the URL points to a valid hosts file"
         case .cancelled:
-            return nil
+            nil
         case .httpError:
-            return "The server returned an error. Try again later."
+            "The server returned an error. Try again later."
         }
     }
 }
@@ -392,52 +402,52 @@ public enum PopularHostsSource: CaseIterable, Sendable {
 
     public var name: String {
         switch self {
-        case .stevenBlackUnified: return "Steven Black - Unified"
-        case .stevenBlackFakenews: return "Steven Black - Fakenews"
-        case .stevenBlackGambling: return "Steven Black - Gambling"
-        case .someoneWhoCares: return "SomeoneWhoCares"
-        case .mvpsHosts: return "MVPS Hosts"
+        case .stevenBlackUnified: "Steven Black - Unified"
+        case .stevenBlackFakenews: "Steven Black - Fakenews"
+        case .stevenBlackGambling: "Steven Black - Gambling"
+        case .someoneWhoCares: "SomeoneWhoCares"
+        case .mvpsHosts: "MVPS Hosts"
         }
     }
 
     public var description: String {
         switch self {
         case .stevenBlackUnified:
-            return "Ad & malware blocking (unified hosts)"
+            "Ad & malware blocking (unified hosts)"
         case .stevenBlackFakenews:
-            return "Fakenews site blocking"
+            "Fakenews site blocking"
         case .stevenBlackGambling:
-            return "Gambling site blocking"
+            "Gambling site blocking"
         case .someoneWhoCares:
-            return "Ad, tracking, and malware blocking"
+            "Ad, tracking, and malware blocking"
         case .mvpsHosts:
-            return "MVPS ad and tracking blocking"
+            "MVPS ad and tracking blocking"
         }
     }
 
     public var url: URL {
         switch self {
         case .stevenBlackUnified:
-            return URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts")!
+            URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts")!
         case .stevenBlackFakenews:
-            return URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts")!
+            URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts")!
         case .stevenBlackGambling:
-            return URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts")!
+            URL(string: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts")!
         case .someoneWhoCares:
-            return URL(string: "https://someonewhocares.org/hosts/hosts")!
+            URL(string: "https://someonewhocares.org/hosts/hosts")!
         case .mvpsHosts:
-            return URL(string: "https://winhelp2002.mvps.org/hosts.txt")!
+            URL(string: "https://winhelp2002.mvps.org/hosts.txt")!
         }
     }
 
     public var icon: String {
         switch self {
         case .stevenBlackUnified, .stevenBlackFakenews, .stevenBlackGambling:
-            return "shield.fill"
+            "shield.fill"
         case .someoneWhoCares:
-            return "heart.fill"
+            "heart.fill"
         case .mvpsHosts:
-            return "checkmark.shield.fill"
+            "checkmark.shield.fill"
         }
     }
 }
