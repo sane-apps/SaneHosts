@@ -1,7 +1,9 @@
 import os
 import SaneHostsFeature
 import ServiceManagement
-import Sparkle
+#if !APP_STORE
+    import Sparkle
+#endif
 import SwiftUI
 
 // MARK: - Notifications
@@ -42,17 +44,19 @@ final class WindowActionStorage {
 @main
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    private let updaterController: SPUStandardUpdaterController
-    private let updaterDelegate = SaneHostsUpdaterDelegate()
+    #if !APP_STORE
+        private let updaterController: SPUStandardUpdaterController
+        private let updaterDelegate = SaneHostsUpdaterDelegate()
+    #endif
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
 
     init() {
-        updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
-        // Store updater reference for dock menu access
-        AppDelegate.updater = updaterController.updater
-        // Faster tooltip appearance (default ~700ms, set to 300ms)
+        #if !APP_STORE
+            updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+            AppDelegate.updater = updaterController.updater
+        #endif
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
@@ -77,9 +81,11 @@ struct SaneHostsApp: App {
                 .keyboardShortcut("i", modifiers: .command)
             }
 
-            CommandGroup(after: .appInfo) {
-                CheckForUpdatesView(updater: updaterController.updater)
-            }
+            #if !APP_STORE
+                CommandGroup(after: .appInfo) {
+                    CheckForUpdatesView(updater: updaterController.updater)
+                }
+            #endif
 
             CommandGroup(replacing: .help) {
                 Button("Show Tutorial") {
@@ -111,7 +117,11 @@ struct SaneHostsApp: App {
         }
 
         Settings {
-            SaneHostsSettingsView(updater: updaterController.updater)
+            #if !APP_STORE
+                SaneHostsSettingsView(updater: updaterController.updater)
+            #else
+                SaneHostsSettingsView()
+            #endif
         }
 
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
@@ -201,7 +211,9 @@ struct WindowActionCapture: ViewModifier {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "AppDelegate")
-    weak static var updater: SPUUpdater?
+    #if !APP_STORE
+        weak static var updater: SPUUpdater?
+    #endif
 
     func applicationDidFinishLaunching(_: Notification) {
         // Move to /Applications if running from Downloads (Release only)
@@ -215,37 +227,33 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             NSApp.setActivationPolicy(.regular)
         }
 
-        // Register the privileged helper daemon for XPC + Touch ID support.
-        // This installs the helper as a LaunchDaemon so it can write /etc/hosts as root.
-        // First call may prompt the user for authorization (supports Touch ID).
-        registerHelperDaemon()
+        #if !APP_STORE
+            // Register the privileged helper daemon for XPC + Touch ID support.
+            registerHelperDaemon()
+        #endif
     }
 
-    private func registerHelperDaemon() {
-        let daemon = SMAppService.daemon(plistName: HostsHelperConstants.daemonPlistName)
-
-        switch daemon.status {
-        case .enabled:
-            // Daemon is already registered and launchd starts it on-demand — nothing to do
-            logger.info("Helper daemon already enabled")
-            return
-        case .requiresApproval:
-            // User must approve in System Settings > Login Items
-            logger.info("Helper daemon requires user approval in System Settings")
-            return
-        default:
-            // .notRegistered, .notFound, or unknown — try to register
-            break
+    #if !APP_STORE
+        private func registerHelperDaemon() {
+            let daemon = SMAppService.daemon(plistName: HostsHelperConstants.daemonPlistName)
+            switch daemon.status {
+            case .enabled:
+                logger.info("Helper daemon already enabled")
+                return
+            case .requiresApproval:
+                logger.info("Helper daemon requires user approval in System Settings")
+                return
+            default:
+                break
+            }
+            do {
+                try daemon.register()
+                logger.info("Helper daemon registered successfully")
+            } catch {
+                logger.warning("Failed to register helper daemon: \(error.localizedDescription). Will use AppleScript fallback.")
+            }
         }
-
-        do {
-            try daemon.register()
-            logger.info("Helper daemon registered successfully")
-        } catch {
-            // Non-fatal: app falls back to AppleScript for writes
-            logger.warning("Failed to register helper daemon: \(error.localizedDescription). Will use AppleScript fallback.")
-        }
-    }
+    #endif
 
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
@@ -256,9 +264,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         menu.addItem(NSMenuItem.separator())
 
-        let updatesItem = NSMenuItem(title: "Check for Updates...", action: #selector(checkForUpdates), keyEquivalent: "")
-        updatesItem.target = self
-        menu.addItem(updatesItem)
+        #if !APP_STORE
+            let updatesItem = NSMenuItem(title: "Check for Updates...", action: #selector(checkForUpdates), keyEquivalent: "")
+            updatesItem.target = self
+            menu.addItem(updatesItem)
+        #endif
 
         let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
         settingsItem.target = self
@@ -282,9 +292,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    @objc func checkForUpdates() {
-        AppDelegate.updater?.checkForUpdates()
-    }
+    #if !APP_STORE
+        @objc func checkForUpdates() {
+            AppDelegate.updater?.checkForUpdates()
+        }
+    #endif
 }
 
 // MARK: - Menu Bar Profile Store
@@ -488,21 +500,29 @@ struct MenuBarView: View {
 
 struct SaneHostsSettingsView: View {
     @State private var selectedTab = 0
-    let updater: SPUUpdater
+    #if !APP_STORE
+        let updater: SPUUpdater
+    #endif
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            GeneralSettingsTab(updater: updater)
-                .tabItem {
-                    Label("General", systemImage: "gear")
-                }
-                .tag(0)
+            #if !APP_STORE
+                GeneralSettingsTab(updater: updater)
+                    .tabItem { Label("General", systemImage: "gear") }
+                    .tag(0)
 
-            AboutTab(updater: updater)
-                .tabItem {
-                    Label("About", systemImage: "info.circle")
-                }
-                .tag(1)
+                AboutTab(updater: updater)
+                    .tabItem { Label("About", systemImage: "info.circle") }
+                    .tag(1)
+            #else
+                GeneralSettingsTab()
+                    .tabItem { Label("General", systemImage: "gear") }
+                    .tag(0)
+
+                AboutTab()
+                    .tabItem { Label("About", systemImage: "info.circle") }
+                    .tag(1)
+            #endif
         }
         .frame(width: 560, height: 500)
     }
@@ -511,7 +531,9 @@ struct SaneHostsSettingsView: View {
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("launchAtLogin") private var launchAtLogin = false
-    let updater: SPUUpdater
+    #if !APP_STORE
+        let updater: SPUUpdater
+    #endif
 
     var body: some View {
         Form {
@@ -539,16 +561,18 @@ struct GeneralSettingsTab: View {
                 }
             }
 
-            Section("Software Updates") {
-                Toggle("Check for updates automatically", isOn: Binding(
-                    get: { updater.automaticallyChecksForUpdates },
-                    set: { updater.automaticallyChecksForUpdates = $0 }
-                ))
+            #if !APP_STORE
+                Section("Software Updates") {
+                    Toggle("Check for updates automatically", isOn: Binding(
+                        get: { updater.automaticallyChecksForUpdates },
+                        set: { updater.automaticallyChecksForUpdates = $0 }
+                    ))
 
-                Button("Check Now") {
-                    updater.checkForUpdates()
+                    Button("Check Now") {
+                        updater.checkForUpdates()
+                    }
                 }
-            }
+            #endif
         }
         .formStyle(.grouped)
         .padding()
@@ -556,7 +580,9 @@ struct GeneralSettingsTab: View {
 }
 
 struct AboutTab: View {
-    let updater: SPUUpdater
+    #if !APP_STORE
+        let updater: SPUUpdater
+    #endif
     @State private var showingLicenses = false
     @State private var showingSupport = false
 
@@ -633,13 +659,15 @@ struct AboutTab: View {
             }
             .padding(.top, 12)
 
-            Button {
-                updater.checkForUpdates()
-            } label: {
-                Label("Check for Updates", systemImage: "arrow.triangle.2.circlepath")
-            }
-            .buttonStyle(.bordered)
-            .controlSize(.regular)
+            #if !APP_STORE
+                Button {
+                    updater.checkForUpdates()
+                } label: {
+                    Label("Check for Updates", systemImage: "arrow.triangle.2.circlepath")
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.regular)
+            #endif
 
             Spacer()
         }
@@ -667,26 +695,28 @@ struct LicensesSheet: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    LicenseEntry(
-                        name: "Sparkle",
-                        copyright: "Copyright (c) 2006-2013 Andy Matuschak.\nCopyright (c) 2009-2013 Elgato Systems GmbH.",
-                        license: """
-                        Permission is hereby granted, free of charge, to any person obtaining a copy of this software \
-                        and associated documentation files (the "Software"), to deal in the Software without restriction, \
-                        including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, \
-                        and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, \
-                        subject to the following conditions:
+                    #if !APP_STORE
+                        LicenseEntry(
+                            name: "Sparkle",
+                            copyright: "Copyright (c) 2006-2013 Andy Matuschak.\nCopyright (c) 2009-2013 Elgato Systems GmbH.",
+                            license: """
+                            Permission is hereby granted, free of charge, to any person obtaining a copy of this software \
+                            and associated documentation files (the "Software"), to deal in the Software without restriction, \
+                            including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, \
+                            and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, \
+                            subject to the following conditions:
 
-                        The above copyright notice and this permission notice shall be included in all copies or substantial \
-                        portions of the Software.
+                            The above copyright notice and this permission notice shall be included in all copies or substantial \
+                            portions of the Software.
 
-                        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT \
-                        LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO \
-                        EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER \
-                        IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE \
-                        USE OR OTHER DEALINGS IN THE SOFTWARE.
-                        """
-                    )
+                            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT \
+                            LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO \
+                            EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER \
+                            IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE \
+                            USE OR OTHER DEALINGS IN THE SOFTWARE.
+                            """
+                        )
+                    #endif
                 }
                 .padding()
             }
@@ -805,42 +835,45 @@ struct CryptoAddressRow: View {
     }
 }
 
-// MARK: - Sparkle Check for Updates
+#if !APP_STORE
 
-struct CheckForUpdatesView: View {
-    @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
+    // MARK: - Sparkle Check for Updates
 
-    init(updater: SPUUpdater) {
-        checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
-    }
+    struct CheckForUpdatesView: View {
+        @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
 
-    var body: some View {
-        Button("Check for Updates...") {
-            checkForUpdatesViewModel.checkForUpdates()
+        init(updater: SPUUpdater) {
+            checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
         }
-        .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
-    }
-}
 
-final class CheckForUpdatesViewModel: ObservableObject {
-    @Published var canCheckForUpdates = false
-    private let updater: SPUUpdater
-
-    init(updater: SPUUpdater) {
-        self.updater = updater
-        updater.publisher(for: \.canCheckForUpdates)
-            .assign(to: &$canCheckForUpdates)
+        var body: some View {
+            Button("Check for Updates...") {
+                checkForUpdatesViewModel.checkForUpdates()
+            }
+            .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+        }
     }
 
-    func checkForUpdates() {
-        updater.checkForUpdates()
-    }
-}
+    final class CheckForUpdatesViewModel: ObservableObject {
+        @Published var canCheckForUpdates = false
+        private let updater: SPUUpdater
 
-// MARK: - Sparkle Updater Delegate
+        init(updater: SPUUpdater) {
+            self.updater = updater
+            updater.publisher(for: \.canCheckForUpdates)
+                .assign(to: &$canCheckForUpdates)
+        }
 
-final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
-    func feedURLString(for _: SPUUpdater) -> String? {
-        "https://sanehosts.com/appcast.xml"
+        func checkForUpdates() {
+            updater.checkForUpdates()
+        }
     }
-}
+
+    // MARK: - Sparkle Updater Delegate
+
+    final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
+        func feedURLString(for _: SPUUpdater) -> String? {
+            "https://sanehosts.com/appcast.xml"
+        }
+    }
+#endif

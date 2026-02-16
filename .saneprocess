@@ -55,4 +55,22 @@ mcps:
   - github
   - xcode
 
+appstore:
+  enabled: true
+  app_id: ""
+  platforms: [macos]
+  build_flags:
+    - 'OTHER_SWIFT_FLAGS=$(inherited) -D APP_STORE'
+    - CODE_SIGN_ENTITLEMENTS=Config/SaneHosts-AppStore.entitlements
+    - CODE_SIGN_STYLE=automatic
+    - 'INFOPLIST_KEY_SUFeedURL='
+    - 'INFOPLIST_KEY_SUEnableAutomaticChecks='
+    - 'INFOPLIST_KEY_SUPublicEDKey='
+  strip_frameworks:
+    - Sparkle.framework
+  contact:
+    name: "Stephan Joseph"
+    phone: "+17277589785"
+    email: "hi@saneapps.com"
+
 website: false
