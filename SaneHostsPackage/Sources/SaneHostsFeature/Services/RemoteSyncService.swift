@@ -50,7 +50,9 @@ public final class RemoteSyncService {
     /// Fetch a hosts file from a remote URL with progress tracking
     public func fetch(from url: URL) async throws -> RemoteHostsFile {
         // Enforce HTTPS for security — blocklists over HTTP can be tampered with
-        if url.scheme?.lowercased() == "http" {
+        // Allow localhost/loopback for local testing
+        let isLoopback = url.host == "127.0.0.1" || url.host == "localhost" || url.host == "::1"
+        if url.scheme?.lowercased() == "http", !isLoopback {
             throw RemoteSyncError.insecureURL
         }
 
