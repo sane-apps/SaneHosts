@@ -57,8 +57,16 @@ mcps:
 
 appstore:
   enabled: true
-  app_id: ""
+  app_id: "6759330900"
+  configuration: Release
   platforms: [macos]
+  category: public.app-category.utilities
+  age_rating: "4+"
+  privacy_policy_url: "https://sanehosts.com/privacy"
+  support_url: "https://sanehosts.com/support"
+  review_notes: "SaneHosts updates /etc/hosts for block profiles. The preferred path uses the bundled privileged helper. If helper registration is unavailable, the app falls back to AppleScript with administrator privileges to write hosts content and flush DNS. This fallback can trigger Automation/Apple Events permission prompts."
+  screenshots:
+    macos: website/screenshot.png
   build_flags:
     - 'OTHER_SWIFT_FLAGS=$(inherited) -D APP_STORE'
     - CODE_SIGN_ENTITLEMENTS=Config/SaneHosts-AppStore.entitlements

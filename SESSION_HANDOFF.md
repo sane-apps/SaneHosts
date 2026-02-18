@@ -2,16 +2,15 @@
 
 **Last updated:** 2026-02-03
 
-## ACTION REQUIRED: Xcode 26.3 MCP Migration (Feb 3)
+## ✅ COMPLETED: Xcode 26.3 MCP Migration (Feb 13)
 
 Apple released **Xcode 26.3 RC** with `xcrun mcpbridge` — official MCP replacing community XcodeBuildMCP.
 
-**Already done globally:** `~/.claude.json` has `xcode` server, `~/.claude/settings.json` has `mcp__xcode__*` permission. XcodeBuildMCP removed from global config.
-
-**TODO in this project:**
-1. **`CLAUDE.md`** — Replace XcodeBuildMCP references (lines ~47, 98, 105, 112-115)
-2. **`.mcp.json`** — Remove XcodeBuildMCP entry (Cursor config)
-3. **`.saneprocess`** — Check/update if references XcodeBuildMCP
+**Migration complete:**
+- ✅ Global config: `~/.claude.json` has `xcode` server, `~/.claude/settings.json` has `mcp__xcode__*` permission
+- ✅ `CLAUDE.md` — All XcodeBuildMCP references replaced with `xcode` MCP
+- ✅ `.mcp.json` — No XcodeBuildMCP entry (was already clean)
+- ✅ Project uses official `xcode` MCP via `xcrun mcpbridge`
 
 **xcode quick ref:** 20 tools via `xcrun mcpbridge`. Needs Xcode running + project open. All tools need `tabIdentifier` (get from `XcodeListWindows`). Key tools: `BuildProject`, `RunAllTests`, `RunSomeTests`, `RenderPreview`, `DocumentationSearch`, `GetBuildLog`.
 
