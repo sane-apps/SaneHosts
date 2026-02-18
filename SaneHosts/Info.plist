@@ -8,5 +8,7 @@
 	<string>7Pl/8cwfb2vm4Dm65AByslkMCScLJ9tbGlwGGx81qYU=</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
+	<key>NSAppleEventsUsageDescription</key>
+	<string>SaneHosts may use AppleScript fallback automation to update hosts entries and flush DNS when helper access is unavailable.</string>
 </dict>
 </plist>
