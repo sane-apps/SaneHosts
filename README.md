@@ -3,7 +3,7 @@
 > Modern hosts file manager for macOS
 
 [![GitHub stars](https://img.shields.io/github/stars/sane-apps/SaneHosts?style=flat-square)](https://github.com/sane-apps/SaneHosts/stargazers)
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](LICENSE)
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-brightgreen)](https://www.apple.com/macos)
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 
@@ -114,7 +114,7 @@ Before opening a PR:
 
 ## License
 
-GPL v3 — see [LICENSE](LICENSE) for details.
+[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) — free for any use except building a competing product. See [LICENSE](LICENSE) for details.
 
 ---
 
