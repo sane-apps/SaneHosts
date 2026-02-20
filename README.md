@@ -46,7 +46,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 > *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
 
-**Building from source?** Consider [buying the DMG](https://sanehosts.com) to support continued development.
+**Building from source?** Consider [buying the app](https://sanehosts.com) to support continued development.
 
 ## Requirements
 
