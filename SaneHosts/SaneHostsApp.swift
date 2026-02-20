@@ -769,7 +769,7 @@ struct SupportSheet: View {
                 .font(.caption)
                 .foregroundStyle(.tertiary)
 
-            Text("SaneHosts is open source and sustained by your support. No VC funding, no ads, no data harvesting — just software that works because someone is paid to maintain it.")
+            Text("SaneHosts is 100% Transparent Code and sustained by your support. No VC funding, no ads, no data harvesting — just software that works because someone is paid to maintain it.")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
