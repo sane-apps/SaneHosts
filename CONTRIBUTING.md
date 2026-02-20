@@ -106,7 +106,7 @@ Most development happens in `SaneHostsPackage/Sources/SaneHostsFeature/`:
 
 ## License
 
-By contributing, you agree that your contributions will be licensed under GPL v3.
+By contributing, you agree that your contributions will be licensed under the [PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) license.
 
 <!-- SANEAPPS_AI_CONTRIB_START -->
 ## Become a Contributor (Even if You Don't Code)
