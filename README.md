@@ -19,11 +19,11 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 | Level | What It Blocks |
 |-------|---------------|
-| **Essentials** | Ads, trackers, malware - the basics everyone needs |
-| **Balanced** | Essentials + phishing, fraud, aggressive tracking |
-| **Strict** | Balanced + social media trackers, native telemetry |
-| **Aggressive** | Strict + gambling, piracy, adult content |
-| **Kitchen Sink** | Everything available - maximum blocking |
+| **Essentials** | Ads, trackers, and malware. Safe for everyone. |
+| **Family Safe** | Essentials + adult content and gambling sites |
+| **Focus Mode** | Family Safe + social media distractions |
+| **Privacy Shield** | Focus Mode + telemetry and advanced trackers |
+| **Kitchen Sink** | Maximum protection. Blocks everything we can. |
 
 ### Core Features
 - **Profile Management** - Create and manage multiple hosts configurations with color tagging
