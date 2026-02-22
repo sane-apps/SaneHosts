@@ -22,6 +22,10 @@ release:
   use_sparkle: true
   min_system_version: "14.0"
   verify_staple: true
+  version_bump_cmd: "sed -i '' \"s/^MARKETING_VERSION = .*/MARKETING_VERSION = ${version}/\" Config/Shared.xcconfig && sed -i '' \"s/^CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = ${project_version}/\" Config/Shared.xcconfig"
+  version_bump_restore_cmd: "git -C ${PROJECT_ROOT} restore --staged --worktree Config/Shared.xcconfig 2>/dev/null || git -C ${PROJECT_ROOT} checkout -- Config/Shared.xcconfig 2>/dev/null || true"
+  version_bump_files:
+    - Config/Shared.xcconfig
   dmg:
     volume_icon: Resources/DMGIcon.icns
     file_icon: Resources/DMGIcon.icns
