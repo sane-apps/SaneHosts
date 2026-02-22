@@ -57,12 +57,14 @@ struct SaneHostsApp: App {
             updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
             AppDelegate.updater = updaterController.updater
         #endif
+        NSApp.appearance = NSAppearance(named: .darkAqua)
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
     var body: some Scene {
         WindowGroup(id: "main") {
             ContentView(hasSeenWelcome: $hasSeenWelcome)
+                .preferredColorScheme(.dark)
                 .modifier(SettingsLauncher())
                 .modifier(WindowActionCapture())
         }
@@ -119,8 +121,10 @@ struct SaneHostsApp: App {
         Settings {
             #if !APP_STORE
                 SaneHostsSettingsView(updater: updaterController.updater)
+                    .preferredColorScheme(.dark)
             #else
                 SaneHostsSettingsView()
+                    .preferredColorScheme(.dark)
             #endif
         }
 
@@ -216,6 +220,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     #endif
 
     func applicationDidFinishLaunching(_: Notification) {
+        NSApp.appearance = NSAppearance(named: .darkAqua)
         // Move to /Applications if running from Downloads (Release only)
         #if !DEBUG
             SaneAppMover.moveToApplicationsFolderIfNeeded()
