@@ -121,6 +121,10 @@ Before opening a PR:
 
 Made with care by [Mr. Sane](https://github.com/sane-apps)
 
+## Third-Party Notices
+
+Third-party open-source attributions are documented in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 <!-- SANEAPPS_AI_CONTRIB_START -->
 ### Become a Contributor (Even if You Don't Code)
 
