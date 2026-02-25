@@ -75,6 +75,7 @@ appstore:
     - 'OTHER_SWIFT_FLAGS=$(inherited) -D APP_STORE'
     - CODE_SIGN_ENTITLEMENTS=Config/SaneHosts-AppStore.entitlements
     - CODE_SIGN_STYLE=automatic
+    - INFOPLIST_KEY_LSApplicationCategoryType=public.app-category.utilities
     - 'INFOPLIST_KEY_SUFeedURL='
     - 'INFOPLIST_KEY_SUEnableAutomaticChecks='
     - 'INFOPLIST_KEY_SUPublicEDKey='

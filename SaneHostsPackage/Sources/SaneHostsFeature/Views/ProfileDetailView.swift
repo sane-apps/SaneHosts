@@ -6,6 +6,7 @@ struct ProfileDetailView: View {
     let store: ProfileStore
     let onActivate: () -> Void
     let onDeactivate: () -> Void
+    var licenseService: LicenseService
 
     @State private var showingAddEntry = false
     @State private var editingEntry: HostEntry?
@@ -16,6 +17,7 @@ struct ProfileDetailView: View {
     // Bulk selection state
     @State private var isSelectionMode = false
     @State private var selectedEntries: Set<UUID> = []
+    @State private var proUpsellFeature: ProFeature?
 
     @Environment(\.colorScheme) private var colorScheme
 
@@ -67,6 +69,9 @@ struct ProfileDetailView: View {
         .sheet(item: $editingEntry) { entry in
             EditEntrySheet(store: store, profile: profile, entry: entry)
         }
+        .sheet(item: $proUpsellFeature) { feature in
+            ProUpsellView(feature: feature, licenseService: licenseService)
+        }
     }
 
     // MARK: - Computed
@@ -79,8 +84,8 @@ struct ProfileDetailView: View {
         let query = debouncedSearchText.lowercased()
         return profile.entries.filter { entry in
             entry.ipAddress.lowercased().contains(query) ||
-            entry.hostnames.contains { $0.lowercased().contains(query) } ||
-            (entry.comment?.lowercased().contains(query) ?? false)
+                entry.hostnames.contains { $0.lowercased().contains(query) } ||
+                (entry.comment?.lowercased().contains(query) ?? false)
         }
     }
 
@@ -131,7 +136,7 @@ struct ProfileDetailView: View {
                             }
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(.saneAccent)  // Futuristic teal accent
+                        .tint(.saneAccent) // Futuristic teal accent
                         .activateButtonAnchor()
                         .accessibilityLabel("Activate profile")
                         .accessibilityHint("Double-tap to activate this profile")
@@ -157,7 +162,7 @@ struct ProfileDetailView: View {
                 }
 
                 // Remote source freshness indicator
-                if case .remote(let url, let lastFetched) = profile.source {
+                if case let .remote(url, lastFetched) = profile.source {
                     CompactDivider()
                     CompactRow("Source URL", icon: "link", iconColor: .blue) {
                         Text(url.host ?? url.absoluteString)
@@ -169,11 +174,11 @@ struct ProfileDetailView: View {
                     CompactDivider()
                     CompactRow("Last Fetched", icon: freshnessIcon(for: lastFetched), iconColor: freshnessColor(for: lastFetched)) {
                         HStack(spacing: 6) {
-                            if let lastFetched = lastFetched {
+                            if let lastFetched {
                                 Text(lastFetched, style: .relative)
                                     .font(.body)
-                                    .foregroundStyle(.primary)  // Readable text
-                                FreshnessIndicator(date: lastFetched)  // Colored badge shows status
+                                    .foregroundStyle(.primary) // Readable text
+                                FreshnessIndicator(date: lastFetched) // Colored badge shows status
                             } else {
                                 Text("Never")
                                     .font(.body)
@@ -190,7 +195,7 @@ struct ProfileDetailView: View {
     // MARK: - Freshness Helpers
 
     private func freshnessIcon(for date: Date?) -> String {
-        guard let date = date else { return "exclamationmark.circle" }
+        guard let date else { return "exclamationmark.circle" }
         let hours = Date().timeIntervalSince(date) / 3600
         if hours < 24 { return "checkmark.circle" }
         if hours < 168 { return "clock" } // 7 days
@@ -198,19 +203,19 @@ struct ProfileDetailView: View {
     }
 
     private func freshnessColor(for date: Date?) -> Color {
-        guard let date = date else { return .orange }
+        guard let date else { return .orange }
         let hours = Date().timeIntervalSince(date) / 3600
-        if hours < 24 { return .blue }  // Fresh - use blue to differentiate from Active green
+        if hours < 24 { return .blue } // Fresh - use blue to differentiate from Active green
         if hours < 168 { return .secondary } // 7 days
         return .orange
     }
 
     private var sourceIcon: String {
         switch profile.source {
-        case .local: return SaneIcons.profileLocal
-        case .remote: return SaneIcons.profileRemote
-        case .merged: return "arrow.triangle.merge"
-        case .system: return SaneIcons.profileSystem
+        case .local: SaneIcons.profileLocal
+        case .remote: SaneIcons.profileRemote
+        case .merged: "arrow.triangle.merge"
+        case .system: SaneIcons.profileSystem
         }
     }
 
@@ -226,7 +231,7 @@ struct ProfileDetailView: View {
     }
 
     private var statsRow: some View {
-        let counts = cachedEntryCounts  // Compute once for this render
+        let counts = cachedEntryCounts // Compute once for this render
         return HStack(spacing: 16) {
             StatCard(
                 title: "Total",
@@ -256,7 +261,7 @@ struct ProfileDetailView: View {
                 VStack(spacing: 8) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title)
-                        .foregroundStyle(.orange)  // Orange for action - distinct from blue/teal
+                        .foregroundStyle(.orange) // Orange for action - distinct from blue/teal
                     Text("Add Entry")
                         .font(.subheadline)
                         .fontWeight(.medium)
@@ -384,17 +389,28 @@ struct ProfileDetailView: View {
                     }
                     Spacer()
 
-                    // Selection mode toggle
-                    if !profile.entries.isEmpty && !isSelectionMode {
+                    // Selection mode toggle (bulk operations = Pro)
+                    if !profile.entries.isEmpty, !isSelectionMode {
                         Button {
-                            isSelectionMode = true
+                            if licenseService.isPro {
+                                isSelectionMode = true
+                            } else {
+                                proUpsellFeature = .bulkOperations
+                            }
                         } label: {
-                            Label("Select", systemImage: "checkmark.circle")
+                            HStack(spacing: 4) {
+                                Label("Select", systemImage: "checkmark.circle")
+                                if !licenseService.isPro {
+                                    Image(systemName: "lock.fill")
+                                        .font(.system(size: 10))
+                                        .foregroundStyle(.teal)
+                                }
+                            }
                         }
                         .buttonStyle(.bordered)
                         .controlSize(.small)
-                        .help("Select entries for bulk enable, disable, or delete")
-                        .accessibilityLabel("Enter selection mode")
+                        .help(licenseService.isPro ? "Select entries for bulk enable, disable, or delete" : "Bulk operations require SaneHosts Pro")
+                        .accessibilityLabel(licenseService.isPro ? "Enter selection mode" : "Bulk operations — Pro feature")
                     }
                 }
                 .padding(.horizontal, 12)
@@ -544,6 +560,10 @@ struct ProfileDetailView: View {
     }
 
     private func bulkEnableSelected() {
+        guard licenseService.isPro else {
+            proUpsellFeature = .bulkOperations
+            return
+        }
         Task {
             try? await store.bulkUpdateEntries(ids: selectedEntries, in: profile) { entry in
                 entry.isEnabled = true
@@ -554,6 +574,10 @@ struct ProfileDetailView: View {
     }
 
     private func bulkDisableSelected() {
+        guard licenseService.isPro else {
+            proUpsellFeature = .bulkOperations
+            return
+        }
         Task {
             try? await store.bulkUpdateEntries(ids: selectedEntries, in: profile) { entry in
                 entry.isEnabled = false
@@ -564,6 +588,10 @@ struct ProfileDetailView: View {
     }
 
     private func bulkDeleteSelected() {
+        guard licenseService.isPro else {
+            proUpsellFeature = .bulkOperations
+            return
+        }
         Task {
             try? await store.bulkRemoveEntries(ids: selectedEntries, from: profile)
             selectedEntries.removeAll()
@@ -729,7 +757,7 @@ struct AddEntrySheet: View {
                 }
             }
 
-            if !isValid && !hostname.isEmpty {
+            if !isValid, !hostname.isEmpty {
                 HStack(spacing: 4) {
                     Image(systemName: SaneIcons.warning)
                     Text("Invalid IP address or hostname")
@@ -924,7 +952,7 @@ struct FreshnessIndicator: View {
 
     private var freshnessColor: Color {
         let hours = Date().timeIntervalSince(date) / 3600
-        if hours < 24 { return .blue }  // Fresh - blue to differentiate from Active green
+        if hours < 24 { return .blue } // Fresh - blue to differentiate from Active green
         if hours < 168 { return .orange } // 7 days
         return .red
     }
