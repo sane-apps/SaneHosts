@@ -50,23 +50,67 @@ struct SaneHostsApp: App {
     #endif
     @AppStorage("hideDockIcon") private var hideDockIcon = false
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
+    @AppStorage("hasSeenWelcomeGate") private var hasSeenWelcomeGate = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
+    @State private var licenseService = LicenseService(
+        appName: "SaneHosts",
+        checkoutURL: URL(string: "https://go.saneapps.com/buy/sanehosts")!
+    )
 
     init() {
         #if !APP_STORE
             updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
             AppDelegate.updater = updaterController.updater
         #endif
-        NSApp.appearance = NSAppearance(named: .darkAqua)
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
     var body: some Scene {
         WindowGroup(id: "main") {
-            ContentView(hasSeenWelcome: $hasSeenWelcome)
-                .preferredColorScheme(.dark)
+            ContentView(hasSeenWelcome: $hasSeenWelcome, licenseService: licenseService)
                 .modifier(SettingsLauncher())
                 .modifier(WindowActionCapture())
+                .preferredColorScheme(.dark)
+                .sheet(isPresented: Binding(
+                    get: { !hasSeenWelcomeGate },
+                    set: { if !$0 { hasSeenWelcomeGate = true } }
+                )) {
+                    WelcomeGateView(
+                        appName: "SaneHosts",
+                        appIcon: "network.badge.shield.half.filled",
+                        freeFeatures: [
+                            ("shield.fill", "1 Essentials profile"),
+                            ("plus.circle", "Add/edit/delete host entries"),
+                            ("arrow.triangle.2.circlepath", "Toggle entries on/off"),
+                            ("network", "DNS cache flush")
+                        ],
+                        proFeatures: [
+                            ("checkmark", "Everything in Free, plus:"),
+                            ("doc.on.doc", "Unlimited profiles"),
+                            ("arrow.down.circle", "Downloadable presets"),
+                            ("arrow.triangle.merge", "Merge profiles"),
+                            ("checklist", "Bulk enable/disable"),
+                            ("square.and.arrow.down", "Import from file/URL"),
+                            ("plus.square.on.square", "Duplicate profiles")
+                        ],
+                        licenseService: licenseService
+                    )
+                }
+                .onAppear {
+                    licenseService.checkCachedLicense()
+                    let isPro = licenseService.isPro
+                    let isFirstLaunch = !hasSeenWelcome
+                    Task.detached {
+                        if isPro {
+                            await EventTracker.log("app_launch_pro", app: "sanehosts")
+                        } else {
+                            await EventTracker.log("app_launch_free", app: "sanehosts")
+                        }
+                        if isFirstLaunch, !isPro {
+                            await EventTracker.log("new_free_user", app: "sanehosts")
+                        }
+                    }
+                }
         }
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
@@ -120,10 +164,10 @@ struct SaneHostsApp: App {
 
         Settings {
             #if !APP_STORE
-                SaneHostsSettingsView(updater: updaterController.updater)
+                SaneHostsSettingsView(updater: updaterController.updater, licenseService: licenseService)
                     .preferredColorScheme(.dark)
             #else
-                SaneHostsSettingsView()
+                SaneHostsSettingsView(licenseService: licenseService)
                     .preferredColorScheme(.dark)
             #endif
         }
@@ -508,6 +552,7 @@ struct SaneHostsSettingsView: View {
     #if !APP_STORE
         let updater: SPUUpdater
     #endif
+    var licenseService: LicenseService
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -515,18 +560,28 @@ struct SaneHostsSettingsView: View {
                 GeneralSettingsTab(updater: updater)
                     .tabItem { Label("General", systemImage: "gear") }
                     .tag(0)
-
-                AboutTab(updater: updater)
-                    .tabItem { Label("About", systemImage: "info.circle") }
-                    .tag(1)
             #else
                 GeneralSettingsTab()
                     .tabItem { Label("General", systemImage: "gear") }
                     .tag(0)
+            #endif
 
+            Form {
+                LicenseSettingsView(licenseService: licenseService)
+            }
+            .formStyle(.grouped)
+            .padding()
+            .tabItem { Label("License", systemImage: "key") }
+            .tag(1)
+
+            #if !APP_STORE
+                AboutTab(updater: updater)
+                    .tabItem { Label("About", systemImage: "info.circle") }
+                    .tag(2)
+            #else
                 AboutTab()
                     .tabItem { Label("About", systemImage: "info.circle") }
-                    .tag(1)
+                    .tag(2)
             #endif
         }
         .frame(width: 560, height: 500)

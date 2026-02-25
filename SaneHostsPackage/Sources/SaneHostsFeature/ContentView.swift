@@ -2,6 +2,7 @@ import SwiftUI
 
 public struct ContentView: View {
     @Binding var hasSeenWelcome: Bool
+    var licenseService: LicenseService
     @State private var tutorial = TutorialState.shared
     @State private var windowFrame: CGRect = .zero
 
@@ -9,7 +10,7 @@ public struct ContentView: View {
         if hasSeenWelcome {
             GeometryReader { geometry in
                 ZStack {
-                    MainView()
+                    MainView(licenseService: licenseService)
 
                     // Tutorial overlay
                     if tutorial.isActive {
@@ -38,14 +39,19 @@ public struct ContentView: View {
         }
     }
 
-    public init(hasSeenWelcome: Binding<Bool>) {
-        self._hasSeenWelcome = hasSeenWelcome
+    public init(hasSeenWelcome: Binding<Bool>, licenseService: LicenseService) {
+        _hasSeenWelcome = hasSeenWelcome
+        self.licenseService = licenseService
     }
 }
 
 // Convenience initializer for previews
-extension ContentView {
-    public init() {
-        self._hasSeenWelcome = .constant(true)
+public extension ContentView {
+    init() {
+        _hasSeenWelcome = .constant(true)
+        licenseService = LicenseService(
+            appName: "SaneHosts",
+            checkoutURL: URL(string: "https://go.saneapps.com/buy/sanehosts")!
+        )
     }
 }
