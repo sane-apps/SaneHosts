@@ -42,8 +42,11 @@ public final class RemoteSyncService {
 
     private let parser = HostsParser()
     private var currentTask: Task<RemoteHostsFile, Error>?
+    private let session: URLSession
 
-    public init() {}
+    public init(session: URLSession = .shared) {
+        self.session = session
+    }
 
     // MARK: - Public API
 
@@ -120,16 +123,29 @@ public final class RemoteSyncService {
         phase = .downloading
         statusMessage = "Downloading..."
 
-        let (localURL, response) = try await URLSession.shared.download(from: url)
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            logger.error(" Response is not HTTPURLResponse")
-            throw RemoteSyncError.invalidResponse
+        if url.isFileURL {
+            let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".hosts")
+            if FileManager.default.fileExists(atPath: tempURL.path) {
+                try? FileManager.default.removeItem(at: tempURL)
+            }
+            try FileManager.default.copyItem(at: url, to: tempURL)
+            downloadProgress = 1.0
+            statusMessage = "Download complete"
+            return tempURL
         }
 
-        guard (200 ... 299).contains(httpResponse.statusCode) else {
-            logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
-            throw RemoteSyncError.httpError(httpResponse.statusCode)
+        let (localURL, response) = try await session.download(from: url)
+
+        if !url.isFileURL {
+            guard let httpResponse = response as? HTTPURLResponse else {
+                logger.error(" Response is not HTTPURLResponse")
+                throw RemoteSyncError.invalidResponse
+            }
+
+            guard (200 ... 299).contains(httpResponse.statusCode) else {
+                logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
+                throw RemoteSyncError.httpError(httpResponse.statusCode)
+            }
         }
 
         // Move to persistent temp location
