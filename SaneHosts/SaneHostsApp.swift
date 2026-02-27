@@ -67,13 +67,18 @@ struct SaneHostsApp: App {
 
     var body: some Scene {
         WindowGroup(id: "main") {
-            ContentView(hasSeenWelcome: $hasSeenWelcome, licenseService: licenseService)
+            ContentView(licenseService: licenseService)
                 .modifier(SettingsLauncher())
                 .modifier(WindowActionCapture())
                 .preferredColorScheme(.dark)
                 .sheet(isPresented: Binding(
                     get: { !hasSeenWelcomeGate },
-                    set: { if !$0 { hasSeenWelcomeGate = true } }
+                    set: {
+                        if !$0 {
+                            hasSeenWelcomeGate = true
+                            hasSeenWelcome = true
+                        }
+                    }
                 )) {
                     WelcomeGateView(
                         appName: "SaneHosts",
@@ -136,7 +141,7 @@ struct SaneHostsApp: App {
             CommandGroup(replacing: .help) {
                 Button("Show Tutorial") {
                     TutorialState.shared.resetTutorial()
-                    hasSeenWelcome = false
+                    TutorialState.shared.startTutorial()
                 }
             }
 
