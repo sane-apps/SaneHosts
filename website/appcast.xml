@@ -6,7 +6,26 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-    <item>
+            <item>
+            <title>1.1.2</title>
+            <pubDate>Wed, 04 Mar 2026 18:19:56 -0500</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Fix Essentials startup lockout in free mode; improve startup selection reliability; harden update/release channel integrity checks.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.2.zip"
+                       sparkle:version="1102"
+                       sparkle:shortVersionString="1.1.2"
+                       length="3914348"
+                       type="application/octet-stream"
+                       sparkle:edSignature="GhxO10yfwagBnUtQxATXf8AoUgy9j22htUZo0s1sxuWIv89azZiFwtQQOl1EqvqXTgWY74ybB7J506uQSq20BQ=="/>
+        </item>
+<item>
           <title>Version 1.1.0</title>
           <pubDate>Sat, 28 Feb 2026 07:06:00 +0000</pubDate>
           <sparkle:version>110</sparkle:version>
