@@ -517,3 +517,29 @@ extension Color {
     static let profileActive = Color.green
     static let profileInactive = Color.secondary
 }
+
+// MARK: - Profile Color Semantics
+
+public extension ProfileColor {
+    /// Canonical UI palette for SaneHosts profile tags.
+    var uiColor: Color {
+        switch self {
+        case .gray:
+            return .gray
+        case .red:
+            return .saneError
+        case .orange:
+            return .saneWarning
+        case .yellow:
+            return .yellow
+        case .green:
+            return .saneSuccess
+        case .blue:
+            return .saneAccent
+        case .purple:
+            return .indigo
+        case .pink:
+            return .mint
+        }
+    }
+}
