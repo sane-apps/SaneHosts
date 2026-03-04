@@ -2,6 +2,38 @@ import AppKit
 import SwiftUI
 import UniformTypeIdentifiers
 
+enum MainViewGatePolicy {
+    static func canOpenRemoteImport(isPro: Bool) -> Bool {
+        isPro
+    }
+}
+
+enum MainViewSelectionPolicy {
+    /// Choose selection on load without overriding a valid existing user selection.
+    static func initialSelection(profiles: [Profile], isPro: Bool, currentSelection: Set<UUID>) -> Set<UUID> {
+        let validProfileIDs = Set(profiles.map(\.id))
+        let retainedSelection = currentSelection.intersection(validProfileIDs)
+        if !retainedSelection.isEmpty {
+            return retainedSelection
+        }
+
+        if let active = profiles.first(where: \.isActive) {
+            return [active.id]
+        }
+
+        if !isPro,
+           let essentials = profiles.first(where: { $0.name.caseInsensitiveCompare("Essentials") == .orderedSame }) {
+            return [essentials.id]
+        }
+
+        if let first = profiles.first {
+            return [first.id]
+        }
+
+        return []
+    }
+}
+
 /// Main view with sidebar navigation - SaneClip design language
 public struct MainView: View {
     private var store: ProfileStore { ProfileStore.shared }
@@ -11,7 +43,6 @@ public struct MainView: View {
     @State private var showingTemplates = false
     @State private var showingRemoteImport = false
     @State private var showingMergeProfiles = false
-    @State private var showingMoreOptions = false
     @State private var showingDeleteConfirmation = false
     @State private var showingRenameSheet = false
     @State private var isActivating = false
@@ -66,10 +97,13 @@ public struct MainView: View {
         }
         .task {
             await store.load()
-            if let active = store.activeProfile {
-                selectedProfileIDs = [active.id]
-            } else if let first = store.profiles.first {
-                selectedProfileIDs = [first.id]
+            selectedProfileIDs = MainViewSelectionPolicy.initialSelection(
+                profiles: store.profiles,
+                isPro: licenseService.isPro,
+                currentSelection: selectedProfileIDs
+            )
+            if !selectedProfileIDs.isEmpty {
+                selectedPreset = nil
             }
         }
         .alert("Activation Failed", isPresented: .constant(activationError != nil)) {
@@ -124,19 +158,37 @@ public struct MainView: View {
             ToolbarItemGroup(placement: .keyboard) {
                 Button("Select All", action: selectAllProfiles)
                     .keyboardShortcut("a", modifiers: .command)
-                Button("Duplicate") {
+                Button {
                     if licenseService.isPro {
                         duplicateSelectedProfiles()
                     } else {
                         proUpsellFeature = .duplicateProfile
                     }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Duplicate")
+                        if !licenseService.isPro {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.teal)
+                        }
+                    }
                 }
                 .keyboardShortcut("d", modifiers: .command)
-                Button("Merge") {
+                Button {
                     if licenseService.isPro {
                         showingMergeProfiles = true
                     } else {
                         proUpsellFeature = .profileMerge
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Merge")
+                        if !licenseService.isPro {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 10, weight: .bold))
+                                .foregroundStyle(.teal)
+                        }
                     }
                 }
                 .keyboardShortcut("m", modifiers: .command)
@@ -194,9 +246,48 @@ public struct MainView: View {
     @ViewBuilder
     private var sidebar: some View {
         List(selection: $selectedProfileIDs) {
-            // Quick Actions - Clean UI, power features tucked away
+            // Golden-ratio oriented sidebar: immediate free path first.
             Section {
-                // Primary: Import Blocklist (Pro feature)
+                // Primary free path: one-click protection with Essentials selected by default.
+                if let primaryProfile = selectedProfile ?? store.profiles.first {
+                    QuickActionButton(
+                        title: primaryProfile.isActive ? "Disable Protection" : "Enable Protection",
+                        subtitle: primaryProfile.isActive ? "Restore original hosts file" : "Apply \(primaryProfile.name) in one click",
+                        icon: primaryProfile.isActive ? "shield.slash.fill" : "shield.checkered",
+                        color: primaryProfile.isActive ? .orange : .green
+                    ) {
+                        if primaryProfile.isActive {
+                            deactivateProfile()
+                        } else {
+                            activateProfile(primaryProfile)
+                        }
+                    }
+                }
+
+                QuickActionButton(
+                    title: "Open Essentials",
+                    subtitle: "Review and edit your free profile",
+                    icon: "list.bullet.rectangle",
+                    color: .blue
+                ) {
+                    if let essentials = store.profiles.first(where: { $0.name.caseInsensitiveCompare("Essentials") == .orderedSame })
+                        ?? store.profiles.first {
+                        selectedProfileIDs = [essentials.id]
+                        selectedPreset = nil
+                    }
+                }
+            } header: {
+                HStack(spacing: 6) {
+                    Image(systemName: "bolt.fill")
+                        .font(.system(size: 13, weight: .semibold))
+                    Text("QUICK ACTIONS")
+                        .font(.system(size: 12, weight: .bold))
+                }
+                .foregroundStyle(.primary)
+            }
+
+            Section {
+                // Pro action: import curated blocklists.
                 ProGatedQuickActionButton(
                     title: "Import Blocklist",
                     subtitle: "Block ads, trackers & more",
@@ -211,79 +302,60 @@ public struct MainView: View {
                     }
                 }
 
-                // More Options - clean expandable section
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        showingMoreOptions.toggle()
+                // Create custom profile (always visible, Pro gated).
+                ProGatedQuickActionButton(
+                    title: "New Empty Profile",
+                    subtitle: "Create a custom profile",
+                    icon: "plus.circle.fill",
+                    color: .orange,
+                    isPro: licenseService.isPro
+                ) {
+                    if licenseService.isPro {
+                        showingNewProfile = true
+                    } else {
+                        proUpsellFeature = .multipleProfiles
                     }
-                } label: {
-                    HStack(spacing: 6) {
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 11, weight: .semibold))
-                            .rotationEffect(.degrees(showingMoreOptions ? 90 : 0))
-                        Text("More Options")
-                            .font(.system(size: 13, weight: .medium))
-                    }
-                    .foregroundStyle(.blue.opacity(0.8))
-                    .padding(.vertical, 8)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(showingMoreOptions ? "Hide more options" : "Show more options")
 
-                if showingMoreOptions {
-                    // New Empty Profile — gated after 1 profile
-                    let canAddFreeProfile = store.profiles.isEmpty
-                    ProGatedQuickActionButton(
-                        title: "New Empty Profile",
-                        subtitle: canAddFreeProfile ? "Start from scratch" : "Unlimited profiles with Pro",
-                        icon: "plus.circle.fill",
-                        color: .orange,
-                        isPro: licenseService.isPro || canAddFreeProfile
-                    ) {
-                        if licenseService.isPro || canAddFreeProfile {
-                            showingNewProfile = true
-                        } else {
-                            proUpsellFeature = .multipleProfiles
-                        }
+                // Start from a built-in template (always visible, Pro gated).
+                ProGatedQuickActionButton(
+                    title: "From Template",
+                    subtitle: "Ad blocking, privacy, and more",
+                    icon: "doc.badge.plus",
+                    color: .purple,
+                    isPro: licenseService.isPro
+                ) {
+                    if licenseService.isPro {
+                        showingTemplates = true
+                    } else {
+                        proUpsellFeature = .downloadablePresets
                     }
+                }
 
-                    // From Template — Pro feature (creates additional profiles)
-                    ProGatedQuickActionButton(
-                        title: "From Template",
-                        subtitle: "Ad blocking, privacy, etc.",
-                        icon: "doc.badge.plus",
-                        color: .purple,
-                        isPro: licenseService.isPro
-                    ) {
-                        if licenseService.isPro {
-                            showingTemplates = true
-                        } else {
-                            proUpsellFeature = .downloadablePresets
-                        }
+                // Merge is always visible; execution requires 2+ profiles.
+                let canMerge = store.profiles.count >= 2
+                ProGatedQuickActionButton(
+                    title: "Merge Profiles",
+                    subtitle: canMerge ? "Combine \(store.profiles.count) profiles" : "Need 2+ profiles to merge",
+                    icon: "arrow.triangle.merge",
+                    color: .pink,
+                    isPro: licenseService.isPro
+                ) {
+                    if !licenseService.isPro {
+                        proUpsellFeature = .profileMerge
+                        return
                     }
-
-                    if store.profiles.count >= 2 {
-                        // Merge Profiles — Pro feature
-                        ProGatedQuickActionButton(
-                            title: "Merge Profiles",
-                            subtitle: "Combine \(store.profiles.count) profiles",
-                            icon: "arrow.triangle.merge",
-                            color: .pink,
-                            isPro: licenseService.isPro
-                        ) {
-                            if licenseService.isPro {
-                                showingMergeProfiles = true
-                            } else {
-                                proUpsellFeature = .profileMerge
-                            }
-                        }
+                    guard canMerge else {
+                        activationWarning = "Create or import a second profile before merging."
+                        return
                     }
+                    showingMergeProfiles = true
                 }
             } header: {
                 HStack(spacing: 6) {
-                    Image(systemName: "bolt.fill")
+                    Image(systemName: "lock.fill")
                         .font(.system(size: 13, weight: .semibold))
-                    Text("QUICK ACTIONS")
+                    Text("PRO FEATURES")
                         .font(.system(size: 12, weight: .bold))
                 }
                 .foregroundStyle(.primary)
@@ -318,14 +390,21 @@ public struct MainView: View {
             if !availablePresets.isEmpty {
                 Section {
                     ForEach(availablePresets) { preset in
-                        PresetRowView(preset: preset, isSelected: selectedPreset == preset)
+                        PresetRowView(
+                            preset: preset,
+                            isSelected: selectedPreset == preset,
+                            showLock: !licenseService.isPro,
+                            onLockedTap: {
+                                showPresetUpsell(for: preset)
+                            }
+                        )
                             .contentShape(Rectangle())
                             .onTapGesture {
                                 if licenseService.isPro {
                                     selectedProfileIDs = []
                                     selectedPreset = preset
                                 } else {
-                                    proUpsellFeature = .downloadablePresets
+                                    showPresetUpsell(for: preset)
                                 }
                             }
                             .accessibilityLabel("\(preset.displayName) protection level")
@@ -337,10 +416,6 @@ public struct MainView: View {
                             .font(.system(size: 13, weight: .semibold))
                         Text("PROTECTION LEVELS")
                             .font(.system(size: 12, weight: .bold))
-                        Spacer()
-                        if !licenseService.isPro {
-                            ProLockBadge()
-                        }
                     }
                     .foregroundStyle(.primary)
                 }
@@ -413,7 +488,11 @@ public struct MainView: View {
                 description: "Select a profile or choose a protection level to get started.",
                 actionTitle: "Import Blocklist"
             ) {
-                showingRemoteImport = true
+                if MainViewGatePolicy.canOpenRemoteImport(isPro: licenseService.isPro) {
+                    showingRemoteImport = true
+                } else {
+                    proUpsellFeature = .importProfiles
+                }
             }
             .accessibilityLabel("No profile selected. Select a profile or choose a protection level to get started.")
         }
@@ -444,6 +523,11 @@ public struct MainView: View {
         }
     }
 
+    private func showPresetUpsell(for preset: ProfilePreset) {
+        activationWarning = "\(preset.displayName): \(preset.tagline)"
+        proUpsellFeature = .downloadablePresets
+    }
+
     // MARK: - Context Menu
 
     @ViewBuilder
@@ -464,9 +548,9 @@ public struct MainView: View {
 
         Divider()
 
-        Button {
-            if licenseService.isPro {
-                Task {
+                Button {
+                    if licenseService.isPro {
+                        Task {
                     if let newProfile = try? await store.duplicate(profile: profile) {
                         selectedProfileIDs = [newProfile.id]
                     }
@@ -474,9 +558,12 @@ public struct MainView: View {
             } else {
                 proUpsellFeature = .duplicateProfile
             }
-        } label: {
-            Label(licenseService.isPro ? "Duplicate" : "Duplicate (Pro)", systemImage: SaneIcons.duplicate)
-        }
+                } label: {
+                    Label(
+                        licenseService.isPro ? "Duplicate" : "Duplicate (Locked)",
+                        systemImage: licenseService.isPro ? SaneIcons.duplicate : "lock.fill"
+                    )
+                }
 
         Button {
             exportProfile(profile)
@@ -749,7 +836,7 @@ struct ProfileRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            // Semantic color based on source type (remote=blue, merged=purple, local=gray)
+            // Semantic color based on source type (remote=accent, merged=indigo, local=gray)
             ProfileColorDot(color: profile.source.semanticColor)
 
             VStack(alignment: .leading, spacing: 3) {
@@ -763,11 +850,11 @@ struct ProfileRowView: View {
                     if profile.source.isRemote {
                         Image(systemName: SaneIcons.profileRemote)
                             .font(.subheadline)
-                            .foregroundStyle(.blue)
+                            .foregroundStyle(Color.saneAccent)
                     } else if profile.source.isMerged {
                         Image(systemName: "arrow.triangle.merge")
                             .font(.subheadline)
-                            .foregroundStyle(.purple)
+                            .foregroundStyle(.indigo)
                     }
                 }
 
@@ -890,7 +977,7 @@ struct MultiSelectDetailView: View {
                     .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.purple)
+                .tint(.indigo)
                 .controlSize(.large)
                 .accessibilityLabel("Merge into new profile")
 
@@ -1024,16 +1111,7 @@ struct NewProfileSheet: View {
     }
 
     private func colorForTag(_ tag: ProfileColor) -> Color {
-        switch tag {
-        case .gray: .gray
-        case .red: .red
-        case .orange: .orange
-        case .yellow: .yellow
-        case .green: .green
-        case .blue: .blue
-        case .purple: .purple
-        case .pink: .pink
-        }
+        tag.uiColor
     }
 }
 
@@ -1141,12 +1219,7 @@ struct TemplateRow: View {
     }
 
     private var colorForTemplate: Color {
-        switch template {
-        case .adBlocking: .red
-        case .development: .blue
-        case .social: .purple
-        case .privacy: .mint
-        }
+        template.colorTag.uiColor
     }
 }
 
@@ -1623,11 +1696,11 @@ struct RemoteImportSheet: View {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.triangle.merge")
                             .font(.subheadline)
-                            .foregroundStyle(.purple)
+                            .foregroundStyle(.indigo)
                         Text("\(selectedSources.count) blocklists will be merged")
                             .font(.subheadline)
                             .fontWeight(.medium)
-                            .foregroundStyle(.purple)
+                            .foregroundStyle(.indigo)
                     }
                 } else if !customURL.isEmpty {
                     Text("Custom URL ready to import")
@@ -1657,7 +1730,7 @@ struct RemoteImportSheet: View {
                 }
                 .keyboardShortcut(.defaultAction)
                 .buttonStyle(.borderedProminent)
-                .tint(selectedSources.count > 1 ? .purple : .saneAccent)
+                .tint(selectedSources.count > 1 ? .indigo : .saneAccent)
                 .disabled(selectedSources.isEmpty && customURL.isEmpty)
             }
         }
@@ -1751,16 +1824,16 @@ struct RemoteImportSheet: View {
 
     private func categoryColor(_ category: BlocklistCategory) -> Color {
         switch category {
-        case .recommended: .orange
-        case .adsTrackers: .blue
-        case .malwareSecurity: .red
-        case .privacy: .mint
-        case .socialMedia: .purple
+        case .recommended: .saneWarning
+        case .adsTrackers: .saneAccent
+        case .malwareSecurity: .saneError
+        case .privacy: .indigo
+        case .socialMedia: .blue
         case .gambling: .yellow
-        case .fakeNews: .pink
+        case .fakeNews: .brown
         case .adult: .gray
-        case .annoyances: .cyan
-        case .regional: .indigo
+        case .annoyances: .mint
+        case .regional: .cyan
         }
     }
 
@@ -2131,16 +2204,11 @@ struct MergeProfilesSheet: View {
 struct PresetRowView: View {
     let preset: ProfilePreset
     let isSelected: Bool
+    let showLock: Bool
+    let onLockedTap: (() -> Void)?
 
     private var presetColor: Color {
-        switch preset.colorTag {
-        case .blue: .blue
-        case .green: .green
-        case .purple: .purple
-        case .orange: .orange
-        case .red: .red
-        default: .gray
-        }
+        preset.colorTag.uiColor
     }
 
     var body: some View {
@@ -2162,9 +2230,19 @@ struct PresetRowView: View {
 
             Spacer()
 
-            Image(systemName: "icloud.and.arrow.down")
-                .font(.system(size: 14))
-                .foregroundStyle(.secondary)
+            if showLock {
+                Button {
+                    onLockedTap?()
+                } label: {
+                    ProLockBadge()
+                }
+                .buttonStyle(.plain)
+                .help("Locked feature: \(preset.tagline)")
+            } else {
+                Image(systemName: "icloud.and.arrow.down")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.secondary)
+            }
         }
         .padding(.vertical, 5)
         .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
@@ -2182,14 +2260,7 @@ struct PresetDetailView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var presetColor: Color {
-        switch preset.colorTag {
-        case .blue: .blue
-        case .green: .green
-        case .purple: .purple
-        case .orange: .orange
-        case .red: .red
-        default: .gray
-        }
+        preset.colorTag.uiColor
     }
 
     var body: some View {
