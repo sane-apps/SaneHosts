@@ -21,8 +21,8 @@ public struct ContentView: View {
                     tutorial.startTutorial()
                 }
             }
-            .onChange(of: geometry.size) { _, _ in
-                windowFrame = geometry.frame(in: .global)
+            .onChange(of: geometry.frame(in: .global)) { _, newFrame in
+                windowFrame = newFrame
             }
         }
     }
