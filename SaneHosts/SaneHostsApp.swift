@@ -628,14 +628,22 @@ struct GeneralSettingsTab: View {
 
             #if !APP_STORE
                 Section("Software Updates") {
-                    Toggle("Check for updates automatically", isOn: Binding(
-                        get: { updater.automaticallyChecksForUpdates },
-                        set: { updater.automaticallyChecksForUpdates = $0 }
-                    ))
-
-                    Button("Check Now") {
-                        updater.checkForUpdates()
-                    }
+                    SaneSparkleRow(
+                        automaticallyChecks: Binding(
+                            get: { updater.automaticallyChecksForUpdates },
+                            set: { updater.automaticallyChecksForUpdates = $0 }
+                        ),
+                        checkFrequency: Binding(
+                            get: { SaneSparkleCheckFrequency.resolve(updateCheckInterval: updater.updateCheckInterval) },
+                            set: { updater.updateCheckInterval = $0.interval }
+                        ),
+                        onCheckNow: {
+                            updater.checkForUpdates()
+                        }
+                    )
+                }
+                .onAppear {
+                    updater.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
                 }
             #endif
         }
