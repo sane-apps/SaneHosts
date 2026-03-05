@@ -94,12 +94,22 @@ public struct CoachMarkOverlay: View {
     private var currentHighlightFrame: CGRect {
         switch tutorial.currentStep {
         case .essentialsReady:
-            return tutorial.essentialsProfileFrame
+            return Self.localFrame(tutorial.essentialsProfileFrame, in: windowFrame)
         case .activateProfile:
-            return tutorial.activateButtonFrame
+            return Self.localFrame(tutorial.activateButtonFrame, in: windowFrame)
         default:
             return .zero
         }
+    }
+
+    static func localFrame(_ globalFrame: CGRect, in windowFrame: CGRect) -> CGRect {
+        guard globalFrame != .zero else { return .zero }
+        return CGRect(
+            x: globalFrame.origin.x - windowFrame.origin.x,
+            y: globalFrame.origin.y - windowFrame.origin.y,
+            width: globalFrame.width,
+            height: globalFrame.height
+        )
     }
 
     private func handleNext() {
@@ -121,7 +131,7 @@ struct SpotlightBackground: View {
     let cornerRadius: CGFloat
 
     var body: some View {
-        GeometryReader { geometry in
+        GeometryReader { _ in
             Canvas { context, size in
                 // Fill entire area with semi-transparent black
                 context.fill(
