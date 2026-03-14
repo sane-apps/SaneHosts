@@ -11,6 +11,7 @@ public final class DNSService {
 
     public private(set) var isFlushing = false
     public private(set) var lastFlushDate: Date?
+    private let helperConnection = HostsHelperConnection()
 
     public init() {}
 
@@ -25,7 +26,7 @@ public final class DNSService {
         isFlushing = true
         defer { isFlushing = false }
 
-        #if !APP_STORE
+        if !SaneHostsBuildMode.isAppStore {
             do {
                 let exitCode = try await Task.detached(priority: .userInitiated) {
                     let process = Process()
@@ -50,47 +51,30 @@ public final class DNSService {
             } catch {
                 throw DNSServiceError.flushFailed(error.localizedDescription)
             }
-        #else
-            // App Store sandbox: use AppleScript for DNS flush
-            let result = await flushViaAppleScript()
-            if result {
+        } else {
+            do {
+                try await helperConnection.flushDNSCache()
                 lastFlushDate = Date()
-            } else {
-                throw DNSServiceError.flushFailed("DNS flush via AppleScript failed or was cancelled")
+            } catch {
+                throw DNSServiceError.flushFailed("SaneHosts couldn't reach its helper service.")
             }
-        #endif
+        }
     }
 
-    #if !APP_STORE
-        /// Send HUP signal to mDNSResponder to force cache clear
-        private func killMDNSResponder() async {
-            await Task.detached(priority: .utility) {
-                let process = Process()
-                process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
-                process.arguments = ["-HUP", "mDNSResponder"]
-                do {
-                    try process.run()
-                    process.waitUntilExit()
-                } catch {
-                    logger.error("mDNSResponder HUP failed: \(error)")
-                }
-            }.value
-        }
-    #else
-        /// Flush DNS via AppleScript (App Store sandbox path)
-        private func flushViaAppleScript() async -> Bool {
-            await withCheckedContinuation { continuation in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    var error: NSDictionary?
-                    let script = NSAppleScript(source: """
-                    do shell script "dscacheutil -flushcache; killall -HUP mDNSResponder" with administrator privileges
-                    """)
-                    script?.executeAndReturnError(&error)
-                    continuation.resume(returning: error == nil)
-                }
+    /// Send HUP signal to mDNSResponder to force cache clear
+    private func killMDNSResponder() async {
+        await Task.detached(priority: .utility) {
+            let process = Process()
+            process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
+            process.arguments = ["-HUP", "mDNSResponder"]
+            do {
+                try process.run()
+                process.waitUntilExit()
+            } catch {
+                logger.error("mDNSResponder HUP failed: \(error)")
             }
-        }
-    #endif
+        }.value
+    }
 
     /// Check if DNS cache was recently flushed
     public var wasRecentlyFlushed: Bool {

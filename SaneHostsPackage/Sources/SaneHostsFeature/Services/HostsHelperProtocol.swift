@@ -3,6 +3,30 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsHelper")
 
+enum SaneHostsBuildMode {
+    static var isAppStore: Bool {
+        LicenseService.isRuntimeAppStoreBuild()
+    }
+}
+
+@MainActor
+public protocol HostsPrivilegedWriteFallback {
+    func writeHostsFile(content: String) async throws
+}
+
+@MainActor
+public enum HostsPrivilegedWriteFallbackRegistry {
+    private static var currentFallback: (any HostsPrivilegedWriteFallback)?
+
+    public static func install(_ fallback: (any HostsPrivilegedWriteFallback)?) {
+        currentFallback = fallback
+    }
+
+    static func current() -> (any HostsPrivilegedWriteFallback)? {
+        currentFallback
+    }
+}
+
 // MARK: - XPC Protocol
 
 /// Protocol defining the interface for the privileged helper tool.
@@ -72,151 +96,139 @@ private final class ContinuationGuard: @unchecked Sendable {
 
 // MARK: - XPC Connection Manager
 
-#if !APP_STORE
-    /// Manages the XPC connection to the privileged helper daemon.
-    public final class HostsHelperConnection: @unchecked Sendable {
-        private var connection: NSXPCConnection?
-        private let lock = NSLock()
+/// Manages the XPC connection to the privileged helper daemon.
+public final class HostsHelperConnection: @unchecked Sendable {
+    private var connection: NSXPCConnection?
+    private let lock = NSLock()
 
-        public init() {}
+    public init() {}
 
-        private func getOrCreateConnection() -> NSXPCConnection {
+    private func getOrCreateConnection() throws -> NSXPCConnection {
+        lock.lock()
+        defer { lock.unlock() }
+        if let existing = connection { return existing }
+
+        let conn = NSXPCConnection(
+            machServiceName: HostsHelperConstants.machServiceName,
+            options: .privileged
+        )
+        conn.remoteObjectInterface = NSXPCInterface(with: HostsHelperProtocol.self)
+        conn.invalidationHandler = { [weak self] in
+            logger.info("XPC connection invalidated")
+            guard let self else { return }
             lock.lock()
-            defer { lock.unlock() }
-            if let existing = connection { return existing }
-
-            let conn = NSXPCConnection(
-                machServiceName: HostsHelperConstants.machServiceName,
-                options: .privileged
-            )
-            conn.remoteObjectInterface = NSXPCInterface(with: HostsHelperProtocol.self)
-            conn.invalidationHandler = { [weak self] in
-                logger.info("XPC connection invalidated")
-                guard let self else { return }
-                lock.lock()
-                connection = nil
-                lock.unlock()
-            }
-            conn.interruptionHandler = { [weak self] in
-                logger.warning("XPC connection interrupted")
-                guard let self else { return }
-                lock.lock()
-                connection = nil
-                lock.unlock()
-            }
-            conn.resume()
-            connection = conn
-            return conn
-        }
-
-        public func invalidate() {
-            lock.lock()
-            let conn = connection
             connection = nil
             lock.unlock()
-            conn?.invalidate()
         }
+        conn.interruptionHandler = { [weak self] in
+            logger.warning("XPC connection interrupted")
+            guard let self else { return }
+            lock.lock()
+            connection = nil
+            lock.unlock()
+        }
+        conn.resume()
+        connection = conn
+        return conn
+    }
 
-        private static let xpcTimeout: TimeInterval = 5
+    public func invalidate() {
+        lock.lock()
+        let conn = connection
+        connection = nil
+        lock.unlock()
+        conn?.invalidate()
+    }
 
-        public func writeHostsFile(content: String) async throws {
-            let conn = getOrCreateConnection()
-            let (success, errorMessage): (Bool, String?) = try await withCheckedThrowingContinuation { continuation in
+    private static let xpcTimeout: TimeInterval = 5
+
+    public func writeHostsFile(content: String) async throws {
+        let conn = try getOrCreateConnection()
+        let (success, errorMessage): (Bool, String?) = try await withCheckedThrowingContinuation { continuation in
+            let guard_ = ContinuationGuard()
+            DispatchQueue.global().asyncAfter(deadline: .now() + Self.xpcTimeout) { [weak self] in
+                guard guard_.claimResume() else { return }
+                self?.invalidate()
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+            }
+            let proxy = conn.remoteObjectProxyWithErrorHandler { _ in
+                guard guard_.claimResume() else { return }
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+            }
+            guard let helper = proxy as? HostsHelperProtocol else {
+                guard guard_.claimResume() else { return }
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+                return
+            }
+            helper.writeHostsFile(content: content) { success, error in
+                guard guard_.claimResume() else { return }
+                continuation.resume(returning: (success, error))
+            }
+        }
+        guard success else {
+            throw HostsHelperError.writeFailed(errorMessage ?? "Unknown error")
+        }
+    }
+
+    public func flushDNSCache() async throws {
+        let conn = try getOrCreateConnection()
+        let (success, errorMessage): (Bool, String?) = try await withCheckedThrowingContinuation { continuation in
+            let guard_ = ContinuationGuard()
+            DispatchQueue.global().asyncAfter(deadline: .now() + Self.xpcTimeout) { [weak self] in
+                guard guard_.claimResume() else { return }
+                self?.invalidate()
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+            }
+            let proxy = conn.remoteObjectProxyWithErrorHandler { _ in
+                guard guard_.claimResume() else { return }
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+            }
+            guard let helper = proxy as? HostsHelperProtocol else {
+                guard guard_.claimResume() else { return }
+                continuation.resume(throwing: HostsHelperError.connectionFailed)
+                return
+            }
+            helper.flushDNSCache { success, error in
+                guard guard_.claimResume() else { return }
+                continuation.resume(returning: (success, error))
+            }
+        }
+        guard success else {
+            throw HostsHelperError.writeFailed(errorMessage ?? "DNS flush failed")
+        }
+    }
+
+    public func isHelperRunning() async -> Bool {
+        do {
+            let conn = try getOrCreateConnection()
+            let _: String = try await withCheckedThrowingContinuation { continuation in
                 let guard_ = ContinuationGuard()
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.xpcTimeout) { [weak self] in
+                DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
                     guard guard_.claimResume() else { return }
                     self?.invalidate()
                     continuation.resume(throwing: HostsHelperError.connectionFailed)
                 }
-                let proxy = conn.remoteObjectProxyWithErrorHandler { _ in
+                let proxy = conn.remoteObjectProxyWithErrorHandler { error in
                     guard guard_.claimResume() else { return }
-                    continuation.resume(throwing: HostsHelperError.connectionFailed)
+                    continuation.resume(throwing: error)
                 }
                 guard let helper = proxy as? HostsHelperProtocol else {
                     guard guard_.claimResume() else { return }
                     continuation.resume(throwing: HostsHelperError.connectionFailed)
                     return
                 }
-                helper.writeHostsFile(content: content) { success, error in
+                helper.getVersion { version in
                     guard guard_.claimResume() else { return }
-                    continuation.resume(returning: (success, error))
+                    continuation.resume(returning: version)
                 }
             }
-            guard success else {
-                throw HostsHelperError.writeFailed(errorMessage ?? "Unknown error")
-            }
-        }
-
-        public func flushDNSCache() async throws {
-            let conn = getOrCreateConnection()
-            let (success, errorMessage): (Bool, String?) = try await withCheckedThrowingContinuation { continuation in
-                let guard_ = ContinuationGuard()
-                DispatchQueue.global().asyncAfter(deadline: .now() + Self.xpcTimeout) { [weak self] in
-                    guard guard_.claimResume() else { return }
-                    self?.invalidate()
-                    continuation.resume(throwing: HostsHelperError.connectionFailed)
-                }
-                let proxy = conn.remoteObjectProxyWithErrorHandler { _ in
-                    guard guard_.claimResume() else { return }
-                    continuation.resume(throwing: HostsHelperError.connectionFailed)
-                }
-                guard let helper = proxy as? HostsHelperProtocol else {
-                    guard guard_.claimResume() else { return }
-                    continuation.resume(throwing: HostsHelperError.connectionFailed)
-                    return
-                }
-                helper.flushDNSCache { success, error in
-                    guard guard_.claimResume() else { return }
-                    continuation.resume(returning: (success, error))
-                }
-            }
-            guard success else {
-                throw HostsHelperError.writeFailed(errorMessage ?? "DNS flush failed")
-            }
-        }
-
-        public func isHelperRunning() async -> Bool {
-            let conn = getOrCreateConnection()
-            do {
-                let _: String = try await withCheckedThrowingContinuation { continuation in
-                    let guard_ = ContinuationGuard()
-                    DispatchQueue.global().asyncAfter(deadline: .now() + 2) { [weak self] in
-                        guard guard_.claimResume() else { return }
-                        self?.invalidate()
-                        continuation.resume(throwing: HostsHelperError.connectionFailed)
-                    }
-                    let proxy = conn.remoteObjectProxyWithErrorHandler { error in
-                        guard guard_.claimResume() else { return }
-                        continuation.resume(throwing: error)
-                    }
-                    guard let helper = proxy as? HostsHelperProtocol else {
-                        guard guard_.claimResume() else { return }
-                        continuation.resume(throwing: HostsHelperError.connectionFailed)
-                        return
-                    }
-                    helper.getVersion { version in
-                        guard guard_.claimResume() else { return }
-                        continuation.resume(returning: version)
-                    }
-                }
-                return true
-            } catch {
-                invalidate()
-                return false
-            }
+            return true
+        } catch {
+            invalidate()
+            return false
         }
     }
-#else
-    /// No-op stub — privileged XPC not available in App Store sandbox.
-    /// HostsService automatically falls through to AppleScript path.
-    public final class HostsHelperConnection: @unchecked Sendable {
-        public init() {}
-        public func invalidate() {}
-        public func writeHostsFile(content _: String) async throws { throw HostsHelperError.connectionFailed }
-        public func flushDNSCache() async throws { throw HostsHelperError.connectionFailed }
-        public func isHelperRunning() async -> Bool { false }
-    }
-#endif
+}
 
 // MARK: - Errors
 

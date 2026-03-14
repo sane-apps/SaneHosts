@@ -71,11 +71,26 @@ public struct MainView: View {
         return ProfilePreset.allCases.filter { !existingNames.contains($0.displayName) }
     }
 
-    public init(licenseService: LicenseService = LicenseService(
-        appName: "SaneHosts",
-        checkoutURL: URL(string: "https://go.saneapps.com/buy/sanehosts")!
-    )) {
+    public init(licenseService: LicenseService) {
         self.licenseService = licenseService
+    }
+
+    public init() {
+        self.init(licenseService: Self.defaultLicenseService())
+    }
+
+    private static func defaultLicenseService() -> LicenseService {
+        if SaneHostsBuildMode.isAppStore {
+            LicenseService(
+                appName: "SaneHosts",
+                purchaseBackend: .appStore(productID: "com.sanehosts.app.pro.unlock")
+            )
+        } else {
+            LicenseService(
+                appName: "SaneHosts",
+                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+            )
+        }
     }
 
     public var body: some View {
@@ -2368,8 +2383,5 @@ struct PresetDetailView: View {
 }
 
 #Preview {
-    MainView(licenseService: LicenseService(
-        appName: "SaneHosts",
-        checkoutURL: URL(string: "https://go.saneapps.com/buy/sanehosts")!
-    ))
+    MainView()
 }
