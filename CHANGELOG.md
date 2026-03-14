@@ -5,6 +5,19 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.5] - 2026-03-14
+
+### Added
+- Shared SaneUI settings layout with cleaner General, License, and About sections
+- Diagnostics-backed bug reporting from the app
+
+### Fixed
+- Activation reliability and validation error messaging for direct licenses
+- Release build failure caused by duplicate app icon resources
+- Old App Store-only licensing and review guardrail leftovers in the direct build
+
+---
+
 ## [1.1.3] - 2026-03-04
 
 Improved onboarding interaction reliability in Basic.

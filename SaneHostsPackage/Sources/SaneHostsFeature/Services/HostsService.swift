@@ -89,11 +89,6 @@ public final class HostsService {
             // Only fall through to the app-owned fallback if the helper was
             // unreachable BEFORE any auth dialog was shown (connectionFailed).
             if case HostsHelperError.connectionFailed = error {
-                if SaneHostsBuildMode.isAppStore {
-                    let serviceError = HostsServiceError.helperUnavailable
-                    lastError = serviceError
-                    throw serviceError
-                }
                 guard let fallbackWriter = HostsPrivilegedWriteFallbackRegistry.current() else {
                     let serviceError = HostsServiceError.helperUnavailable
                     lastError = serviceError
