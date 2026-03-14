@@ -1,5 +1,6 @@
 import os
 import SaneHostsFeature
+import SaneUI
 import ServiceManagement
 #if !APP_STORE
     import Sparkle
@@ -16,6 +17,7 @@ extension Notification.Name {
 // MARK: - Window Action Storage
 
 /// Stores the openWindow action so it can be called from MenuBarExtra
+@MainActor
 final class WindowActionStorage {
     static let shared = WindowActionStorage()
     var openWindow: OpenWindowAction?
@@ -41,6 +43,62 @@ final class WindowActionStorage {
     }
 }
 
+#if !APP_STORE
+    @MainActor
+    private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
+        func writeHostsFile(content: String) async throws {
+            let tempURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("sanehosts-pending.hosts")
+
+            try? FileManager.default.removeItem(at: tempURL)
+
+            do {
+                try content.write(to: tempURL, atomically: true, encoding: .utf8)
+            } catch {
+                throw HostsServiceError.tempFileWriteFailed(error.localizedDescription)
+            }
+
+            let tempPath = tempURL.path
+            guard tempPath.allSatisfy({ $0.isASCII && !$0.isNewline }) else {
+                try? FileManager.default.removeItem(at: tempURL)
+                throw HostsServiceError.tempFileWriteFailed("Temp path contains unsafe characters")
+            }
+
+            let escapedPath = tempPath
+                .replacingOccurrences(of: "\\", with: "\\\\")
+                .replacingOccurrences(of: "\"", with: "\\\"")
+
+            let script = """
+            do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts" with administrator privileges
+            """
+
+            let result = await runAppleScript(script)
+            try? FileManager.default.removeItem(at: tempURL)
+
+            if !result.success {
+                throw HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
+            }
+        }
+
+        private func runAppleScript(_ script: String) async -> (success: Bool, error: String?) {
+            await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    var error: NSDictionary?
+                    let appleScript = NSAppleScript(source: script)
+                    appleScript?.executeAndReturnError(&error)
+
+                    if let error {
+                        let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
+                        continuation.resume(returning: (false, errorMessage))
+                    } else {
+                        continuation.resume(returning: (true, nil))
+                    }
+                }
+            }
+        }
+    }
+#endif
+
 @main
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
@@ -48,14 +106,21 @@ struct SaneHostsApp: App {
         private let updaterController: SPUStandardUpdaterController
         private let updaterDelegate = SaneHostsUpdaterDelegate()
     #endif
-    @AppStorage("hideDockIcon") private var hideDockIcon = false
+    @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("hasSeenWelcomeGate") private var hasSeenWelcomeGate = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
-    @State private var licenseService = LicenseService(
-        appName: "SaneHosts",
-        checkoutURL: URL(string: "https://go.saneapps.com/buy/sanehosts")!
-    )
+    #if APP_STORE
+        @State private var licenseService = LicenseService(
+            appName: "SaneHosts",
+            purchaseBackend: .appStore(productID: "com.sanehosts.app.pro.unlock")
+        )
+    #else
+        @State private var licenseService = LicenseService(
+            appName: "SaneHosts",
+            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+        )
+    #endif
 
     init() {
         #if !APP_STORE
@@ -105,6 +170,9 @@ struct SaneHostsApp: App {
                     licenseService.checkCachedLicense()
                     let isPro = licenseService.isPro
                     let isFirstLaunch = !hasSeenWelcome
+                    if SaneBackgroundAppDefaults.launchAtLogin {
+                        _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
+                    }
                     Task.detached {
                         if isPro {
                             await EventTracker.log("app_launch_pro", app: "sanehosts")
@@ -158,13 +226,7 @@ struct SaneHostsApp: App {
             }
         }
         .onChange(of: hideDockIcon) { _, newValue in
-            if newValue {
-                NSApp.setActivationPolicy(.accessory)
-            } else {
-                NSApp.setActivationPolicy(.regular)
-                // Bring to front when switching to regular
-                NSApp.activate(ignoringOtherApps: true)
-            }
+            SaneActivationPolicy.applyPolicy(showDockIcon: !newValue)
         }
 
         Settings {
@@ -271,43 +333,39 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_: Notification) {
         NSApp.appearance = NSAppearance(named: .darkAqua)
         // Move to /Applications if running from Downloads (Release only)
-        #if !DEBUG
+        #if !DEBUG && !APP_STORE
             SaneAppMover.moveToApplicationsFolderIfNeeded()
         #endif
-
-        // Initialize activation policy based on preference
-        // Since LSUIElement=YES, default is accessory. If hideDockIcon is false, we must force regular.
-        if !UserDefaults.standard.bool(forKey: "hideDockIcon") {
-            NSApp.setActivationPolicy(.regular)
-        }
-
         #if !APP_STORE
-            // Register the privileged helper daemon for XPC + Touch ID support.
-            registerHelperDaemon()
+            HostsPrivilegedWriteFallbackRegistry.install(AppleScriptHostsWriteFallback())
         #endif
+
+        let hideDockIcon = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool ?? !SaneBackgroundAppDefaults.showDockIcon
+        SaneActivationPolicy.applyInitialPolicy(showDockIcon: !hideDockIcon)
+
+        // Register the privileged helper daemon for XPC + Touch ID support.
+        registerHelperDaemon()
     }
 
-    #if !APP_STORE
-        private func registerHelperDaemon() {
-            let daemon = SMAppService.daemon(plistName: HostsHelperConstants.daemonPlistName)
-            switch daemon.status {
-            case .enabled:
-                logger.info("Helper daemon already enabled")
-                return
-            case .requiresApproval:
-                logger.info("Helper daemon requires user approval in System Settings")
-                return
-            default:
-                break
-            }
-            do {
-                try daemon.register()
-                logger.info("Helper daemon registered successfully")
-            } catch {
-                logger.warning("Failed to register helper daemon: \(error.localizedDescription). Will use AppleScript fallback.")
-            }
+    private func registerHelperDaemon() {
+        let daemon = SMAppService.daemon(plistName: HostsHelperConstants.daemonPlistName)
+        switch daemon.status {
+        case .enabled:
+            logger.info("Helper daemon already enabled")
+            return
+        case .requiresApproval:
+            logger.info("Helper daemon requires user approval in System Settings")
+            return
+        default:
+            break
         }
-    #endif
+        do {
+            try daemon.register()
+            logger.info("Helper daemon registered successfully")
+        } catch {
+            logger.warning("Failed to register helper daemon: \(error.localizedDescription)")
+        }
+    }
 
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
@@ -594,8 +652,8 @@ struct SaneHostsSettingsView: View {
 }
 
 struct GeneralSettingsTab: View {
-    @AppStorage("hideDockIcon") private var hideDockIcon = false
-    @AppStorage("launchAtLogin") private var launchAtLogin = false
+    @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
+    @State private var launchAtLogin = false
     #if !APP_STORE
         let updater: SPUUpdater
     #endif
@@ -606,12 +664,12 @@ struct GeneralSettingsTab: View {
                 Toggle("Launch at login", isOn: $launchAtLogin)
                     .onChange(of: launchAtLogin) { _, newValue in
                         do {
-                            if newValue {
-                                try SMAppService.mainApp.register()
-                            } else {
-                                try SMAppService.mainApp.unregister()
+                            let didApply = try SaneLoginItemPolicy.setEnabled(newValue)
+                            if !didApply {
+                                launchAtLogin = SaneLoginItemPolicy.toggleValue()
                             }
                         } catch {
+                            launchAtLogin = SaneLoginItemPolicy.toggleValue()
                             Logger(subsystem: Bundle.main.bundleIdentifier ?? "SaneHosts", category: "Settings")
                                 .error("Failed to \(newValue ? "register" : "unregister") login item: \(error)")
                         }
@@ -649,6 +707,9 @@ struct GeneralSettingsTab: View {
         }
         .formStyle(.grouped)
         .padding()
+        .onAppear {
+            launchAtLogin = SaneLoginItemPolicy.toggleValue()
+        }
     }
 }
 

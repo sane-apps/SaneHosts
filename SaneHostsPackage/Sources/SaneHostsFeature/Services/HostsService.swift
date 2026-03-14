@@ -1,5 +1,4 @@
 import Foundation
-import AppKit
 import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsService")
@@ -9,8 +8,8 @@ private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsS
 /// **Write Strategy (in order of preference):**
 /// 1. **XPC Helper + Touch ID** — Privileged helper daemon writes as root.
 ///    User authenticates via Touch ID (LAContext). Best UX.
-/// 2. **AppleScript fallback** — `do shell script with administrator privileges`.
-///    Shows a password dialog (no Touch ID). Used when helper is not installed.
+/// 2. **Direct-build privileged fallback** — Optional fallback owned by the app target.
+///    The App Store build does not use a fallback path.
 @MainActor
 @Observable
 public final class HostsService {
@@ -19,7 +18,7 @@ public final class HostsService {
     public private(set) var isWriting = false
     public private(set) var lastError: HostsServiceError?
 
-    /// Tracks whether the last successful write used the XPC helper (true) or AppleScript (false).
+    /// Tracks whether the last successful write used the XPC helper.
     /// Used to route DNS flush through the helper (root) when available.
     private var lastWriteUsedHelper = false
 
@@ -54,8 +53,8 @@ public final class HostsService {
 
     /// Write content to /etc/hosts.
     ///
-    /// Tries the XPC helper (Touch ID) first. If the helper is not available,
-    /// falls back to AppleScript (password dialog).
+    /// Tries the XPC helper (Touch ID) first. Direct builds may install an
+    /// app-owned privileged fallback if the helper is unavailable.
     public func writeHostsFile(content: String) async throws {
         guard !isWriting else {
             logger.warning("Write already in progress, skipping concurrent write")
@@ -87,10 +86,23 @@ public final class HostsService {
             lastError = error
             throw error
         } catch {
-            // Only fall through to AppleScript if the helper was unreachable
-            // BEFORE any auth dialog was shown (connectionFailed).
+            // Only fall through to the app-owned fallback if the helper was
+            // unreachable BEFORE any auth dialog was shown (connectionFailed).
             if case HostsHelperError.connectionFailed = error {
-                logger.info("XPC helper unavailable, falling back to AppleScript")
+                if SaneHostsBuildMode.isAppStore {
+                    let serviceError = HostsServiceError.helperUnavailable
+                    lastError = serviceError
+                    throw serviceError
+                }
+                guard let fallbackWriter = HostsPrivilegedWriteFallbackRegistry.current() else {
+                    let serviceError = HostsServiceError.helperUnavailable
+                    lastError = serviceError
+                    throw serviceError
+                }
+                logger.info("XPC helper unavailable, using direct-build privileged fallback")
+                lastWriteUsedHelper = false
+                try await fallbackWriter.writeHostsFile(content: content)
+                return
             } else {
                 // Post-auth helper failure (writeFailed, etc.) —
                 // user already authenticated, do NOT show another dialog
@@ -100,9 +112,6 @@ public final class HostsService {
             }
         }
 
-        // Strategy 2: AppleScript with password dialog
-        lastWriteUsedHelper = false
-        try await writeViaAppleScript(content: content)
     }
 
     // MARK: - XPC Helper Path (Touch ID)
@@ -136,61 +145,6 @@ public final class HostsService {
         // Send write command to privileged helper via XPC
         try await helperConnection.writeHostsFile(content: content)
         logger.info("Hosts file written via XPC helper")
-    }
-
-    // MARK: - AppleScript Path (Fallback)
-
-    /// Write using AppleScript with administrator privileges.
-    /// Shows a system password dialog (no Touch ID support).
-    private func writeViaAppleScript(content: String) async throws {
-        // Use a fixed temp filename to avoid any path injection risk.
-        // Concurrent writes are already guarded by the isWriting flag.
-        let tempURL = FileManager.default.temporaryDirectory
-            .appendingPathComponent("sanehosts-pending.hosts")
-
-        // Remove any stale temp file from a previous failed attempt
-        try? FileManager.default.removeItem(at: tempURL)
-
-        do {
-            try content.write(to: tempURL, atomically: true, encoding: .utf8)
-        } catch {
-            let serviceError = HostsServiceError.tempFileWriteFailed(error.localizedDescription)
-            lastError = serviceError
-            throw serviceError
-        }
-
-        // Validate the temp path is safe for shell interpolation (defense-in-depth).
-        // Our fixed path should always pass, but guard against unexpected changes.
-        let tempPath = tempURL.path
-        guard tempPath.allSatisfy({ $0.isASCII && !$0.isNewline }) else {
-            try? FileManager.default.removeItem(at: tempURL)
-            let serviceError = HostsServiceError.tempFileWriteFailed("Temp path contains unsafe characters")
-            lastError = serviceError
-            throw serviceError
-        }
-
-        // Build AppleScript command safely:
-        // - The temp path is fully controlled (fixed filename in system temp dir)
-        // - 'quoted form of' handles shell escaping for the cp command
-        // - Escape \ and " for the AppleScript string literal
-        let escapedPath = tempPath
-            .replacingOccurrences(of: "\\", with: "\\\\")
-            .replacingOccurrences(of: "\"", with: "\\\"")
-
-        let script = """
-        do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts" with administrator privileges
-        """
-
-        let result = await runAppleScript(script)
-
-        // Always clean up temp file
-        try? FileManager.default.removeItem(at: tempURL)
-
-        if !result.success {
-            let serviceError = HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
-            lastError = serviceError
-            throw serviceError
-        }
     }
 
     // MARK: - Profile Operations
@@ -250,7 +204,7 @@ public final class HostsService {
 
     /// Flush DNS cache using the appropriate method based on how the write was performed.
     /// - XPC path: Uses helperConnection.flushDNSCache() (runs as root, can signal mDNSResponder)
-    /// - AppleScript path: Uses DNSService.shared.flushCache() (existing behavior)
+    /// - Fallback path: Uses DNSService.shared.flushCache() (existing behavior)
     private func flushDNSCache() async throws {
         if lastWriteUsedHelper {
             logger.info("Flushing DNS via XPC helper (root)")
@@ -261,24 +215,6 @@ public final class HostsService {
         }
     }
 
-    // MARK: - AppleScript Execution
-
-    private func runAppleScript(_ script: String) async -> (success: Bool, error: String?) {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                var error: NSDictionary?
-                let appleScript = NSAppleScript(source: script)
-                appleScript?.executeAndReturnError(&error)
-
-                if let error = error {
-                    let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
-                    continuation.resume(returning: (false, errorMessage))
-                } else {
-                    continuation.resume(returning: (true, nil))
-                }
-            }
-        }
-    }
 }
 
 // MARK: - Errors
@@ -288,6 +224,7 @@ public enum HostsServiceError: LocalizedError {
     case writePermissionDenied(String)
     case readFailed(String)
     case invalidContent
+    case helperUnavailable
     case authenticationFailed(String)
     case userCancelled
     case writeInProgress
@@ -302,6 +239,8 @@ public enum HostsServiceError: LocalizedError {
             return "Failed to read hosts file: \(reason)"
         case .invalidContent:
             return "Invalid hosts file content"
+        case .helperUnavailable:
+            return "SaneHosts couldn't reach its helper service. Reopen the app and try again."
         case .authenticationFailed(let reason):
             return "Authentication failed: \(reason)"
         case .userCancelled:

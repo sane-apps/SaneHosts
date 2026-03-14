@@ -62,19 +62,36 @@ mcps:
 appstore:
   enabled: true
   app_id: "6759330900"
+  product_id: "com.sanehosts.app.pro.unlock"
   configuration: Release
   platforms: [macos]
   category: public.app-category.utilities
   age_rating: "4+"
   privacy_policy_url: "https://sanehosts.com/privacy"
   support_url: "https://sanehosts.com/support"
-  review_notes: "SaneHosts updates /etc/hosts for block profiles. The preferred path uses the bundled privileged helper. If helper registration is unavailable, the app falls back to AppleScript with administrator privileges to write hosts content and flush DNS. This fallback can trigger Automation/Apple Events permission prompts."
+  marketing_url: "https://sanehosts.com"
+  metadata:
+    macos:
+      subtitle: "Block Ads System-Wide"
+      promotional_text: "Activate a cleaner hosts file in one click. Block ads, trackers, malware, and distractions with simple profiles and local control."
+      description: >-
+        SaneHosts helps you block ads, trackers, malware, and distracting sites across your Mac by managing your hosts file with clear local-first profiles.
+        Start with the built-in Essentials profile, activate protection in one click, and inspect or customize entries when you want more control.
+        Advanced tools let you import blocklists, merge sources, and build custom profiles while keeping everything on-device.
+      keywords: "hosts file,ad blocker,tracker blocker,malware,website blocker,privacy,focus,mac utility"
+      whats_new: "Improved onboarding, clearer feature gating, and stronger activation reliability."
+      marketing_url: "https://sanehosts.com"
+  review_notes: "SaneHosts is a freemium App Store app. Basic is free in the App Store build. The free download includes the built-in Essentials profile, manual host entry management, entry toggling, and DNS flushing. SaneHosts Pro is an optional one-time non-consumable StoreKit in-app purchase that adds unlimited profiles, downloadable presets, profile merging, bulk enable/disable, import from file or URL, and profile duplication. The App Store build uses the bundled privileged helper to update /etc/hosts and flush DNS. There is no external checkout and no license key flow in the App Store build. This build does not use Apple Events or AppleScript."
+  review_notes_by_platform:
+    macos: "SaneHosts for macOS is a freemium App Store app. Basic is free in the App Store build. The free download includes the built-in Essentials profile, manual host entry management, entry toggling, and DNS flushing. SaneHosts Pro is an optional one-time non-consumable StoreKit in-app purchase that adds unlimited profiles, downloadable presets, profile merging, bulk enable/disable, import from file or URL, and profile duplication. The App Store build uses the bundled privileged helper to update /etc/hosts and flush DNS. There is no external checkout and no license key flow in the App Store build. This build does not use Apple Events or AppleScript."
   screenshots:
-    macos: website/screenshot.png
+    macos: marketing/appstore-images/*.png
   build_flags:
+    - APPSTORE_PRODUCT_ID=com.sanehosts.app.pro.unlock
     - 'OTHER_SWIFT_FLAGS=$(inherited) -D APP_STORE'
     - CODE_SIGN_ENTITLEMENTS=Config/SaneHosts-AppStore.entitlements
     - CODE_SIGN_STYLE=automatic
+    - INFOPLIST_FILE=SaneHosts/Info-AppStore.plist
     - INFOPLIST_KEY_LSApplicationCategoryType=public.app-category.utilities
     - 'INFOPLIST_KEY_SUFeedURL='
     - 'INFOPLIST_KEY_SUEnableAutomaticChecks='

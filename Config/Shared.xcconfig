@@ -10,7 +10,7 @@ PRODUCT_NAME = SaneHosts
 PRODUCT_DISPLAY_NAME = SaneHosts
 PRODUCT_BUNDLE_IDENTIFIER = com.mrsane.SaneHosts
 MARKETING_VERSION = 1.1.3
-CURRENT_PROJECT_VERSION = 1103
+CURRENT_PROJECT_VERSION = 1104
 
 // ==========================================
 // Platform Configuration
@@ -24,6 +24,7 @@ ALWAYS_SEARCH_USER_PATHS = NO
 GENERATE_INFOPLIST_FILE = YES
 INFOPLIST_FILE = SaneHosts/Info.plist
 INFOPLIST_KEY_LSUIElement = YES
+APPSTORE_PRODUCT_ID =
 
 // ==========================================
 // Code Signing & Security
