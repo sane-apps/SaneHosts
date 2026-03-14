@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.5] - 2026-03-14
 
+Shared settings layout now matches the rest of the app.
+Added in-app diagnostics-backed bug reporting.
+Improved direct license activation reliability and messaging.
+Fixed the release build failure caused by duplicate app icon resources.
+
+---
+
+## [1.1.5] - 2026-03-14
+
 ### Added
 - Shared SaneUI settings layout with cleaner General, License, and About sections
 - Diagnostics-backed bug reporting from the app
