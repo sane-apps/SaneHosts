@@ -11,7 +11,6 @@ public final class DNSService {
 
     public private(set) var isFlushing = false
     public private(set) var lastFlushDate: Date?
-    private let helperConnection = HostsHelperConnection()
 
     public init() {}
 
@@ -26,38 +25,29 @@ public final class DNSService {
         isFlushing = true
         defer { isFlushing = false }
 
-        if !SaneHostsBuildMode.isAppStore {
-            do {
-                let exitCode = try await Task.detached(priority: .userInitiated) {
-                    let process = Process()
-                    process.executableURL = URL(fileURLWithPath: "/usr/bin/dscacheutil")
-                    process.arguments = ["-flushcache"]
-                    let pipe = Pipe()
-                    process.standardOutput = pipe
-                    process.standardError = pipe
-                    try process.run()
-                    process.waitUntilExit()
-                    return process.terminationStatus
-                }.value
+        do {
+            let exitCode = try await Task.detached(priority: .userInitiated) {
+                let process = Process()
+                process.executableURL = URL(fileURLWithPath: "/usr/bin/dscacheutil")
+                process.arguments = ["-flushcache"]
+                let pipe = Pipe()
+                process.standardOutput = pipe
+                process.standardError = pipe
+                try process.run()
+                process.waitUntilExit()
+                return process.terminationStatus
+            }.value
 
-                if exitCode == 0 {
-                    lastFlushDate = Date()
-                    await killMDNSResponder()
-                } else {
-                    throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
-                }
-            } catch let error as DNSServiceError {
-                throw error
-            } catch {
-                throw DNSServiceError.flushFailed(error.localizedDescription)
-            }
-        } else {
-            do {
-                try await helperConnection.flushDNSCache()
+            if exitCode == 0 {
                 lastFlushDate = Date()
-            } catch {
-                throw DNSServiceError.flushFailed("SaneHosts couldn't reach its helper service.")
+                await killMDNSResponder()
+            } else {
+                throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
             }
+        } catch let error as DNSServiceError {
+            throw error
+        } catch {
+            throw DNSServiceError.flushFailed(error.localizedDescription)
         }
     }
 

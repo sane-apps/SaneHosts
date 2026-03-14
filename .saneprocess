@@ -60,7 +60,10 @@ mcps:
   - xcode
 
 appstore:
-  enabled: true
+  enabled: false
+  # Current strategy: direct-download only.
+  # Do not route the current SaneHosts architecture through App Store release automation.
+  # The app's privileged helper / launchd daemon model is not Mac-App-Store-safe.
   app_id: "6759330900"
   product_id: "com.sanehosts.app.pro.unlock"
   configuration: Release

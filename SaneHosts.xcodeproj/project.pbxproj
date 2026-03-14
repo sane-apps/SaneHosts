@@ -64,6 +64,7 @@
 		A100001100000000DEADBEEF /* Exceptions for "SaneHosts" folder in "SaneHosts" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				AppIcon.icns,
 				Info.plist,
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;

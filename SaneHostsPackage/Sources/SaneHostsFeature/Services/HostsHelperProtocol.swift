@@ -3,12 +3,6 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsHelper")
 
-enum SaneHostsBuildMode {
-    static var isAppStore: Bool {
-        LicenseService.isRuntimeAppStoreBuild()
-    }
-}
-
 @MainActor
 public protocol HostsPrivilegedWriteFallback {
     func writeHostsFile(content: String) async throws

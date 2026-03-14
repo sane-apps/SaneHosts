@@ -80,17 +80,10 @@ public struct MainView: View {
     }
 
     private static func defaultLicenseService() -> LicenseService {
-        if SaneHostsBuildMode.isAppStore {
-            LicenseService(
-                appName: "SaneHosts",
-                purchaseBackend: .appStore(productID: "com.sanehosts.app.pro.unlock")
-            )
-        } else {
-            LicenseService(
-                appName: "SaneHosts",
-                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
-            )
-        }
+        LicenseService(
+            appName: "SaneHosts",
+            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+        )
     }
 
     public var body: some View {

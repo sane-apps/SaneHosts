@@ -35,16 +35,9 @@ public struct ContentView: View {
 // Convenience initializer for previews
 public extension ContentView {
     init() {
-        if SaneHostsBuildMode.isAppStore {
-            licenseService = LicenseService(
-                appName: "SaneHosts",
-                purchaseBackend: .appStore(productID: "com.sanehosts.app.pro.unlock")
-            )
-        } else {
-            licenseService = LicenseService(
-                appName: "SaneHosts",
-                checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
-            )
-        }
+        licenseService = LicenseService(
+            appName: "SaneHosts",
+            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+        )
     }
 }
