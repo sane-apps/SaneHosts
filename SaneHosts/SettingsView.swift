@@ -176,13 +176,25 @@ private struct LicenseSettingsTabContent: View {
 
 struct AboutTab: View {
     var body: some View {
-        SaneAboutView(
-            appName: "SaneHosts",
-            githubRepo: "SaneHosts",
-            diagnosticsService: .shared,
-            licenses: saneHostsLicenses,
-            feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
-        )
+        #if APP_STORE
+            SaneAboutView(
+                appName: "SaneHosts",
+                githubRepo: "SaneHosts",
+                diagnosticsService: .shared,
+                licenses: saneHostsLicenses,
+                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")],
+                showsSupportSection: false
+            )
+        #else
+            SaneAboutView(
+                appName: "SaneHosts",
+                githubRepo: "SaneHosts",
+                diagnosticsService: .shared,
+                licenses: saneHostsLicenses,
+                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")],
+                showsSupportSection: true
+            )
+        #endif
     }
 }
 
