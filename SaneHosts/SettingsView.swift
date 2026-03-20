@@ -85,6 +85,16 @@ struct GeneralSettingsTab: View {
                                 get: { SaneSparkleCheckFrequency.resolve(updateCheckInterval: updater.updateCheckInterval) },
                                 set: { updater.updateCheckInterval = $0.interval }
                             ),
+                            labels: .init(
+                                automaticCheckLabel: "Check for updates automatically",
+                                automaticCheckHelp: "Periodically check for new versions",
+                                checkFrequencyLabel: "Check frequency",
+                                checkFrequencyHelp: "Choose how often automatic update checks run",
+                                actionsLabel: "Actions",
+                                checkingLabel: "Checking…",
+                                checkNowLabel: "Check Now",
+                                checkNowHelp: "Check for updates right now"
+                            ),
                             onCheckNow: { updater.checkForUpdates() }
                         )
                     }
@@ -182,8 +192,7 @@ struct AboutTab: View {
                 githubRepo: "SaneHosts",
                 diagnosticsService: .shared,
                 licenses: saneHostsLicenses,
-                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")],
-                showsSupportSection: false
+                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
             )
         #else
             SaneAboutView(
@@ -191,8 +200,7 @@ struct AboutTab: View {
                 githubRepo: "SaneHosts",
                 diagnosticsService: .shared,
                 licenses: saneHostsLicenses,
-                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")],
-                showsSupportSection: true
+                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
             )
         #endif
     }
