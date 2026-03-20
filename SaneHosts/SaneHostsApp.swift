@@ -327,7 +327,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.appearance = NSAppearance(named: .darkAqua)
         // Move to /Applications if running from Downloads (Release only)
         #if !DEBUG && !APP_STORE
-            SaneAppMover.moveToApplicationsFolderIfNeeded()
+            SaneAppMover.moveToApplicationsFolderIfNeeded(prompt: .init(
+                messageText: "Move to Applications?",
+                informativeText: "{appName} works best from your Applications folder. Move it there now? You may be asked for your password.",
+                moveButtonTitle: "Move to Applications",
+                cancelButtonTitle: "Not Now"
+            ))
         #endif
         #if !APP_STORE
             HostsPrivilegedWriteFallbackRegistry.install(AppleScriptHostsWriteFallback())
