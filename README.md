@@ -35,7 +35,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 - **Menu Bar Access** - Quick profile switching from the menu bar
 - **Crash Resilient** - Automatic backups (3 per profile), corrupted profiles recovered automatically
 - **Native macOS** - Built with SwiftUI, follows system conventions
-- **Privacy-First** - All data stored locally, no analytics, no cloud
+- **Privacy-First** - Your hosts data stays on your Mac, with only a few simple app counts and optional network features
 - **Export Profiles** - Save profiles as standard `.hosts` format files
 - **Drag to Reorder** - Organize profiles by dragging in the sidebar
 - **Search & Filter** - Find entries across large profiles (handles 100K+ entries)
@@ -84,8 +84,9 @@ See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
 
 SaneHosts is designed with privacy in mind:
 - All data stored locally in `~/Library/Application Support/SaneHosts/`
-- No analytics, telemetry, or crash reporting
-- Network access only when YOU import from a remote URL
+- No personal content uploaded to SaneApps servers
+- The app may send a few simple anonymous counts, like whether it opened in Basic or Pro
+- Network access is limited to remote imports you choose, update checks, and those simple app counts
 
 See [PRIVACY.md](PRIVACY.md) for details.
 
@@ -96,6 +97,18 @@ See [PRIVACY.md](PRIVACY.md) for details.
 - Hardened runtime enabled
 
 See [SECURITY.md](SECURITY.md) for details.
+
+## Documentation
+
+| Document | Purpose |
+|----------|---------|
+| [README.md](README.md) | Product overview and doc map |
+| [ARCHITECTURE.md](ARCHITECTURE.md) | App structure and state flow |
+| [DEVELOPMENT.md](DEVELOPMENT.md) | Build, test, and workflow SOP |
+| [PRIVACY.md](PRIVACY.md) | Privacy practices and limited network behavior |
+| [SECURITY.md](SECURITY.md) | Security policy and reporting |
+| [`website/`](website/) | Public website and guide pages |
+| [`docs/`](docs/) | Internal product and release reference docs |
 
 ## Contributing
 
