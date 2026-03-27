@@ -1,95 +1,76 @@
 # Privacy Policy
 
-**Last updated: January 24, 2026**
+> [README](README.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DEVELOPMENT](DEVELOPMENT.md) · [PRIVACY](PRIVACY.md) · [SECURITY](SECURITY.md)
 
-SaneHosts is designed with privacy as a core principle. This document explains how the app handles your data.
+**Last updated: March 26, 2026**
 
-## Our Philosophy
+SaneHosts is built to keep your hosts data on your Mac. Here is the plain-English version: your profiles and hosts entries stay local, and the app only talks to the network in a few specific cases.
 
-**Your data stays on your device.** Period.
+## Summary
 
-## Data Collection
+**Your hosts entries and profiles stay on your Mac.** SaneHosts does not upload that data to SaneApps servers.
 
-### What We DON'T Collect
-- No analytics or telemetry
-- No crash reports sent externally
-- No usage statistics
-- No personal information
-- No network requests except when YOU initiate remote import
+The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro, so we can understand product usage at a high level. Those counts do not include your hosts entries, profile contents, or personal files.
 
-### What Stays Local
-- **Profiles** - Stored in `~/Library/Application Support/SaneHosts/`
-- **Preferences** - Stored in macOS defaults system
-- **Hosts modifications** - Written directly to `/etc/hosts`
+## What We Do Not Collect
 
-## Permissions Used
+SaneHosts does not collect:
 
-### File System Access
-- **Application Support** - To store your profiles
-- **/etc/hosts** - To apply hosts file changes (requires admin authentication)
+- Your hosts entries or profile contents on SaneApps servers
+- Personal files from your Mac
+- Crash reports
+- Your administrator password
 
-### Network Access
-- **Optional** - Only when you import hosts from a remote URL
-- You control when this happens
-- No automatic/background network requests
+## What Stays On Your Mac
 
-### System Services
-- **ServiceManagement** - For launch at login feature (optional)
-- **DNS Flushing** - Runs `dscacheutil -flushcache` locally
+SaneHosts stores the following locally on your Mac:
+
+- **Profiles** in `~/Library/Application Support/SaneHosts/Profiles/`
+- **Backups** in `~/Library/Application Support/SaneHosts/Backups/`
+- **Blocklist cache** in `~/Library/Application Support/SaneHosts/BlocklistCache/`
+- **Preferences** in standard macOS defaults
+- **Hosts changes** written directly to `/etc/hosts`
+
+In normal use, this stays on your Mac unless you choose a feature that fetches something from the internet, like importing a remote blocklist.
+
+## When SaneHosts Uses The Network
+
+SaneHosts uses the network only when:
+
+- You choose to import a blocklist from a URL
+- It checks for app updates, if update checks are enabled
+- It sends a few simple anonymous app counts, such as Basic vs Pro launches
+
+Your hosts entries and profile contents are not sent to SaneApps.
 
 ## Third-Party Services
 
-SaneHosts uses no third-party services, SDKs, or analytics.
+SaneHosts uses a small number of outside services:
 
-## Auto-Updates
+- **Sparkle** to check for app updates
+- **SaneApps distribution service** to receive simple anonymous app counts
+- **Cloudflare Web Analytics** on public website pages
+- **Google Fonts** on some public website pages
 
-When enabled, SaneHosts checks for updates via Sparkle framework:
-- Connects to `sanehosts.com/appcast.xml`
-- Only checks for version information
-- No personal data transmitted
+Those website services apply to `sanehosts.com` pages, not to your hosts entries or profile contents inside the app.
 
-## Remote Hosts Import
+## Remote Imports
 
-When you choose to import hosts from a URL:
-- The app fetches the URL you specify
-- Content is parsed locally
-- No data is sent anywhere
-- The source URL is not logged or tracked
+If you import a hosts file from a URL:
 
-## Data Retention
+- SaneHosts fetches the URL you chose
+- The content is processed on your Mac
+- The resulting entries stay local unless you export or share them yourself
 
-All data is stored locally and persists until you:
-- Delete profiles through the app
-- Uninstall the app
-- Manually delete Application Support files
+## Your Control
 
-## Your Rights
+You can:
 
-You have full control:
-- View all stored data in Application Support folder
-- Delete any or all profiles
-- Disable all optional features
-- Uninstall completely with no traces (see below)
-
-## Complete Uninstall
-
-To remove all SaneHosts data:
-```bash
-# Remove application
-rm -rf /Applications/SaneHosts.app
-
-# Remove preferences
-defaults delete com.mrsane.SaneHosts
-
-# Remove application data
-rm -rf ~/Library/Application\ Support/SaneHosts
-rm -rf ~/Library/Caches/com.mrsane.SaneHosts
-```
+- View your local SaneHosts data in Application Support
+- Delete profiles and backups
+- Turn off update checks
+- Uninstall the app and remove its local data
 
 ## Contact
 
 Questions about privacy? Open an issue on [GitHub](https://github.com/sane-apps/SaneHosts/issues).
-
-## Changes
-
-Any changes to this policy will be documented in the CHANGELOG and noted in release notes.

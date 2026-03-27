@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - SaneHosts</title>
-    <meta name="description" content="SaneHosts keeps your hosts data on your Mac. The app may send anonymous aggregate product events, such as whether it launched in Basic or Pro mode.">
+    <meta name="description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -12,7 +12,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Privacy Policy - SaneHosts">
-    <meta property="og:description" content="SaneHosts keeps your hosts data on your Mac. The app may send anonymous aggregate product events, such as whether it launched in Basic or Pro mode.">
+    <meta property="og:description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Privacy Policy - SaneHosts">
-    <meta name="twitter:description" content="SaneHosts keeps your hosts data on your Mac. The app may send anonymous aggregate product events, such as whether it launched in Basic or Pro mode.">
+    <meta name="twitter:description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
     <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
     <style>
         :root {
@@ -104,7 +104,7 @@
         <p class="updated">Last updated: January 2026</p>
 
         <h2>Summary</h2>
-        <p><strong>SaneHosts does not collect, transmit, or store your hosts entries or profiles on SaneApps servers.</strong> Your hosts file configurations and profiles remain entirely on your Mac. The app may send anonymous aggregate product events, such as whether it launched in Basic or Pro mode or whether a first free launch occurred.</p>
+        <p><strong>Your hosts entries and profiles stay on your Mac.</strong> SaneHosts does not upload that data to SaneApps servers. The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro, so we can understand product usage at a high level.</p>
 
         <h2>Data Collection</h2>
         <p>The SaneHosts app does not collect:</p>
@@ -120,28 +120,30 @@
         <ul>
             <li><strong>Profiles:</strong> ~/Library/Application Support/SaneHosts/Profiles/</li>
             <li><strong>Backups:</strong> ~/Library/Application Support/SaneHosts/Backups/</li>
+            <li><strong>Blocklist cache:</strong> ~/Library/Application Support/SaneHosts/BlocklistCache/</li>
             <li><strong>Preferences:</strong> Standard macOS UserDefaults</li>
         </ul>
-        <p>This data never leaves your computer.</p>
+        <p>This stays on your Mac during normal use.</p>
 
         <h2>Network Access</h2>
         <p>SaneHosts accesses the network only when:</p>
         <ul>
             <li>You explicitly import a blocklist from a remote URL</li>
             <li>Checking for app updates via Sparkle (can be disabled in Settings)</li>
-            <li>Sending anonymous aggregate product events such as Basic vs Pro launch state or first free launch counts</li>
+            <li>Sending a few simple anonymous app counts, such as Basic vs Pro launches</li>
         </ul>
-        <p>No data about your hosts entries or profile contents is transmitted to SaneApps.</p>
+        <p>Your hosts entries and profile contents are not sent to SaneApps.</p>
 
         <h2>System Access</h2>
-        <p>SaneHosts requires administrator privileges to modify /etc/hosts. This is handled through macOS's standard authentication dialog. SaneHosts does not store or have access to your admin password.</p>
+        <p>SaneHosts needs administrator permission to modify /etc/hosts. macOS handles that through its normal password prompt. SaneHosts does not store your password.</p>
 
         <h2>Third-Party Services</h2>
         <p>SaneHosts uses:</p>
         <ul>
             <li><strong>Sparkle:</strong> For checking app updates. Only checks for updates from sanehosts.com. No personal content is transmitted.</li>
-            <li><strong>SaneApps distribution service:</strong> Receives anonymous aggregate product events such as Basic vs Pro launch state and first free launch counts. These events do not include your hosts entries or profile contents.</li>
-            <li><strong>Cloudflare Web Analytics (website only):</strong> The sanehosts.com website uses privacy-respecting, anonymous aggregate analytics to measure website traffic. This applies to the website only, not the app.</li>
+            <li><strong>SaneApps distribution service:</strong> Receives a few simple anonymous app counts. These do not include your hosts entries or profile contents.</li>
+            <li><strong>Cloudflare Web Analytics (website only):</strong> The public website uses simple aggregate traffic stats. This applies to the website only, not the app.</li>
+            <li><strong>Google Fonts (website only):</strong> Some public website pages load fonts from Google. This applies to the website only, not the app.</li>
         </ul>
 
         <h2>100% Transparent Code</h2>
