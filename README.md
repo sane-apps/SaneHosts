@@ -47,7 +47,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 > *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
 
-**Building from source?** Consider [buying the app](https://sanehosts.com) to support continued development.
+**Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
 
 ## Requirements
 
@@ -128,7 +128,7 @@ Before opening a PR:
 
 ## License
 
-[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) — free for any use except building a competing product. See [LICENSE](LICENSE) for details.
+[PolyForm Shield 1.0.0](https://polyformproject.org/licenses/shield/1.0.0) — free for personal use and experimentation. See [LICENSE](LICENSE) for details.
 
 ---
 

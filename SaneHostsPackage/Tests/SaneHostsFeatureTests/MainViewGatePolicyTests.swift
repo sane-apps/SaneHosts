@@ -56,3 +56,21 @@ struct MainViewGatePolicyTests {
         #expect(selection == [active.id])
     }
 }
+
+@Suite("Profile Store Bootstrap Policy Tests")
+struct ProfileStoreBootstrapPolicyTests {
+    @Test("Menu bar bootstrap loads when the shared store is still empty")
+    func loadsWhenStoreIsEmpty() {
+        #expect(ProfileStoreBootstrapPolicy.shouldLoad(profileCount: 0, isLoading: false))
+    }
+
+    @Test("Menu bar bootstrap does not double-load while a load is already running")
+    func skipsWhileLoadIsRunning() {
+        #expect(ProfileStoreBootstrapPolicy.shouldLoad(profileCount: 0, isLoading: true) == false)
+    }
+
+    @Test("Menu bar bootstrap does not reload once profiles are already available")
+    func skipsWhenProfilesAlreadyLoaded() {
+        #expect(ProfileStoreBootstrapPolicy.shouldLoad(profileCount: 1, isLoading: false) == false)
+    }
+}

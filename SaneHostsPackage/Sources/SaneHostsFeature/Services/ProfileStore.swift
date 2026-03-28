@@ -9,6 +9,12 @@ public extension Notification.Name {
     static let profileStoreDidChange = Notification.Name("profileStoreDidChange")
 }
 
+public enum ProfileStoreBootstrapPolicy {
+    public static func shouldLoad(profileCount: Int, isLoading: Bool) -> Bool {
+        profileCount == 0 && !isLoading
+    }
+}
+
 /// Manages profile storage and persistence
 @MainActor
 @Observable

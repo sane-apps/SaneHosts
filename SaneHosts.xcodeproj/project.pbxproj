@@ -8,8 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		8B90D1482DEDD44A00FBD189 /* SaneHostsFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 8B90D1472DEDD44A00FBD189 /* SaneHostsFeature */; };
-		SPARKLE0001000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = SPARKLE0002000000000001 /* Sparkle */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A100000A00000000DEADBEEF /* com.mrsane.SaneHostsHelper in Embed Helper */ = {isa = PBXBuildFile; fileRef = A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		SPARKLE0001000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = SPARKLE0002000000000001 /* Sparkle */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,7 +46,7 @@
 /* Begin PBXFileReference section */
 		8BC2655C2DEDD3F400F279A4 /* SaneHosts.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SaneHosts.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8BC265742DEDD3F500F279A4 /* SaneHosts.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SaneHosts.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "com.mrsane.SaneHostsHelper"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = com.mrsane.SaneHostsHelper; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -61,6 +61,14 @@
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
 		};
+		A100000D00000000DEADBEEF /* Exceptions for "SaneHostsHelper" folder in "SaneHostsHelper" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+				com.mrsane.SaneHostsHelper.plist,
+			);
+			target = A100000500000000DEADBEEF /* SaneHostsHelper */;
+		};
 		A100001100000000DEADBEEF /* Exceptions for "SaneHosts" folder in "SaneHosts" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -68,14 +76,6 @@
 				Info.plist,
 			);
 			target = 8BC2655B2DEDD3F400F279A4 /* SaneHosts */;
-		};
-		A100000D00000000DEADBEEF /* Exceptions for "SaneHostsHelper" folder in "SaneHostsHelper" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-				"com.mrsane.SaneHostsHelper.plist",
-			);
-			target = A100000500000000DEADBEEF /* SaneHostsHelper */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -98,6 +98,8 @@
 		};
 		8BC265772DEDD3F500F279A4 /* SaneHostsUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = SaneHostsUITests;
 			sourceTree = "<group>";
 		};
@@ -215,8 +217,6 @@
 				8BC265772DEDD3F500F279A4 /* SaneHostsUITests */,
 			);
 			name = SaneHostsUITests;
-			packageProductDependencies = (
-			);
 			productName = SaneHostsUITests;
 			productReference = 8BC265742DEDD3F500F279A4 /* SaneHosts.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -236,9 +236,7 @@
 				A100000200000000DEADBEEF /* SaneHostsHelper */,
 			);
 			name = SaneHostsHelper;
-			packageProductDependencies = (
-			);
-			productName = "com.mrsane.SaneHostsHelper";
+			productName = com.mrsane.SaneHostsHelper;
 			productReference = A100000100000000DEADBEEF /* com.mrsane.SaneHostsHelper */;
 			productType = "com.apple.product-type.tool";
 		};
@@ -274,11 +272,11 @@
 			);
 			mainGroup = 8BC265532DEDD3F400F279A4;
 			minimizedProjectReferenceProxies = 1;
-			preferredProjectObjectVersion = 77;
 			packageReferences = (
 				8B90D1492DEDD44A00FBD189 /* XCLocalSwiftPackageReference "SaneHostsPackage" */,
 				SPARKLE0003000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
+			preferredProjectObjectVersion = 77;
 			productRefGroup = 8BC2655D2DEDD3F400F279A4 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -479,6 +477,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		8B90D1492DEDD44A00FBD189 /* XCLocalSwiftPackageReference "SaneHostsPackage" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = SaneHostsPackage;
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		SPARKLE0003000000000001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -489,13 +494,6 @@
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCLocalSwiftPackageReference section */
-		8B90D1492DEDD44A00FBD189 /* XCLocalSwiftPackageReference "SaneHostsPackage" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = SaneHostsPackage;
-		};
-/* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		8B90D1472DEDD44A00FBD189 /* SaneHostsFeature */ = {

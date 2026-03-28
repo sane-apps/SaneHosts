@@ -32,6 +32,8 @@ open SaneHosts.xcworkspace
 ./scripts/SaneMaster.rb test_mode
 ```
 
+If you cloned `SaneHosts` by itself, the local package manifest will fetch `SaneUI` from GitHub automatically. `./scripts/SaneMaster.rb` also falls back to a standalone mode outside the monorepo.
+
 ### Project Structure
 ```
 SaneHosts/
