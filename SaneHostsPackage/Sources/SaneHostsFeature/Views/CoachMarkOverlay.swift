@@ -1,4 +1,5 @@
 import SwiftUI
+import SaneUI
 
 // MARK: - Tutorial State
 
@@ -171,7 +172,7 @@ struct CoachMarkTooltip: View {
             // Description
             Text(descriptionForStep)
                 .font(.system(size: 15))
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
 
             // Buttons
@@ -180,8 +181,8 @@ struct CoachMarkTooltip: View {
                     onSkip()
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.secondary)
-                .font(.system(size: 14))
+                .foregroundStyle(.white)
+                .font(.system(size: 13, weight: .medium))
                 .accessibilityLabel("Skip tutorial")
 
                 Spacer()
@@ -189,7 +190,7 @@ struct CoachMarkTooltip: View {
                 Button(step == .essentialsReady ? "Next" : "Got it!") {
                     onNext()
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
                 .accessibilityLabel(step == .essentialsReady ? "Next step" : "Finish tutorial")
             }
         }

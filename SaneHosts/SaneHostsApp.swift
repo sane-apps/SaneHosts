@@ -1,6 +1,5 @@
 import os
 import SaneHostsFeature
-import SaneUI
 import ServiceManagement
 #if !APP_STORE
     import Sparkle
@@ -23,7 +22,7 @@ final class WindowActionStorage {
     var openWindow: OpenWindowAction?
 
     /// Bring existing main window to front, or create one if none exists
-    @MainActor func showMainWindow() {
+    @MainActor func showMainWindow(using overrideAction: OpenWindowAction? = nil) {
         // Find an existing main window (SwiftUI WindowGroup id: "main")
         let mainWindow = NSApp.windows.first(where: {
             $0.canBecomeMain &&
@@ -37,7 +36,7 @@ final class WindowActionStorage {
             }
             window.makeKeyAndOrderFront(nil)
         } else {
-            openWindow?(id: "main")
+            (overrideAction ?? openWindow)?(id: "main")
         }
         NSApp.activate(ignoringOtherApps: true)
     }
@@ -181,42 +180,11 @@ struct SaneHostsApp: App {
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
         .commands {
-            CommandGroup(replacing: .newItem) {
-                Button("New Profile") {
-                    NotificationCenter.default.post(name: .showNewProfileSheet, object: nil)
-                }
-                .keyboardShortcut("n", modifiers: .command)
-
-                Button("Import Blocklist...") {
-                    NotificationCenter.default.post(name: .showImportSheet, object: nil)
-                }
-                .keyboardShortcut("i", modifiers: .command)
-            }
-
             #if !APP_STORE
-                CommandGroup(after: .appInfo) {
-                    CheckForUpdatesView(updater: updaterController.updater)
-                }
+                SaneHostsAppCommands(updater: updaterController.updater)
+            #else
+                SaneHostsAppCommands()
             #endif
-
-            CommandGroup(replacing: .help) {
-                Button("Show Tutorial") {
-                    TutorialState.shared.resetTutorial()
-                    TutorialState.shared.startTutorial()
-                }
-            }
-
-            // Keyboard shortcuts
-            CommandGroup(after: .sidebar) {
-                Divider()
-                Button("Deactivate All") {
-                    Task { @MainActor in
-                        try? await HostsService.shared.deactivateProfile()
-                        try? await ProfileStore.shared.deactivate()
-                    }
-                }
-                .keyboardShortcut("d", modifiers: [.command, .shift])
-            }
         }
         .onChange(of: hideDockIcon) { _, newValue in
             SaneActivationPolicy.applyPolicy(showDockIcon: !newValue)
@@ -231,60 +199,74 @@ struct SaneHostsApp: App {
                     .preferredColorScheme(.dark)
             #endif
         }
+        .defaultSize(
+            width: 640,
+            height: 420
+        )
+        .windowResizability(.contentSize)
 
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
-            // Status section
-            if let active = menuBarStore.activeProfile {
-                Button("🟢 Active: \(active.name)") {
-                    WindowActionStorage.shared.showMainWindow()
-                }
-                Button("Deactivate") {
-                    Task { await menuBarStore.deactivateProfile() }
-                }
-            } else {
-                Button("🔴 No Active Profile") {
-                    WindowActionStorage.shared.showMainWindow()
-                }
-            }
-
-            Divider()
-
-            // Profiles section
-            Section("Profiles") {
-                ForEach(menuBarStore.profiles) { profile in
-                    Button {
-                        Task { await menuBarStore.activateProfile(profile) }
-                    } label: {
-                        HStack {
-                            if menuBarStore.activeProfile?.id == profile.id {
-                                Image(systemName: "checkmark")
-                            }
-                            Text(profile.name)
-                        }
-                    }
-                }
-            }
-
-            Divider()
-
-            Button("Open SaneHosts") {
-                WindowActionStorage.shared.showMainWindow()
-            }
-            .keyboardShortcut("o")
-
-            SettingsLink {
-                Text("Settings...")
-            }
-            .keyboardShortcut(",")
-
-            Divider()
-
-            Button("Quit SaneHosts") {
-                NSApp.terminate(nil)
-            }
-            .keyboardShortcut("q")
+            MenuBarMenuContent(store: menuBarStore)
         }
         .menuBarExtraStyle(.menu)
+    }
+}
+
+struct SaneHostsAppCommands: Commands {
+    @Environment(\.openWindow) private var openWindow
+    #if !APP_STORE
+        let updater: SPUUpdater
+    #endif
+
+    var body: some Commands {
+        CommandGroup(replacing: .newItem) {
+            Button("New Profile") {
+                openMainWindowThen {
+                    NotificationCenter.default.post(name: .showNewProfileSheet, object: nil)
+                }
+            }
+            .keyboardShortcut("n", modifiers: .command)
+
+            Button("Import Blocklist...") {
+                openMainWindowThen {
+                    NotificationCenter.default.post(name: .showImportSheet, object: nil)
+                }
+            }
+            .keyboardShortcut("i", modifiers: .command)
+        }
+
+        #if !APP_STORE
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(updater: updater)
+            }
+        #endif
+
+        CommandGroup(replacing: .help) {
+            Button("Show Tutorial") {
+                openMainWindowThen {
+                    TutorialState.shared.resetTutorial()
+                    TutorialState.shared.startTutorial()
+                }
+            }
+        }
+
+        CommandGroup(after: .sidebar) {
+            Divider()
+            Button("Deactivate All") {
+                Task { @MainActor in
+                    try? await HostsService.shared.deactivateProfile()
+                    try? await ProfileStore.shared.deactivate()
+                }
+            }
+            .keyboardShortcut("d", modifiers: [.command, .shift])
+        }
+    }
+
+    private func openMainWindowThen(_ action: @escaping @MainActor () -> Void) {
+        WindowActionStorage.shared.showMainWindow(using: openWindow)
+        DispatchQueue.main.async {
+            action()
+        }
     }
 }
 
@@ -444,9 +426,17 @@ class MenuBarProfileStore: ObservableObject {
             profiles = shared.profiles
             activeProfile = shared.activeProfile
         }
+        lastError = shared.error?.localizedDescription
     }
 
     func refresh() async {
+        let shared = ProfileStore.shared
+        if ProfileStoreBootstrapPolicy.shouldLoad(
+            profileCount: shared.profiles.count,
+            isLoading: shared.isLoading
+        ) {
+            await shared.load()
+        }
         syncFromSharedStore()
     }
 
@@ -474,135 +464,64 @@ class MenuBarProfileStore: ObservableObject {
     }
 }
 
-// MARK: - Menu Item Button Style
-
-struct MenuItemButtonStyle: ButtonStyle {
-    @State private var isHovered = false
-
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(
-                RoundedRectangle(cornerRadius: 4)
-                    .fill(isHovered || configuration.isPressed ? Color.accentColor.opacity(0.8) : Color.clear)
-            )
-            .foregroundStyle(isHovered || configuration.isPressed ? .white : .primary)
-            .onHover { hovering in
-                isHovered = hovering
-            }
-    }
-}
-
-// MARK: - Menu Bar View
-
-struct MenuBarView: View {
+struct MenuBarMenuContent: View {
     @ObservedObject var store: MenuBarProfileStore
     @Environment(\.openWindow) private var openWindow
-    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            // Error display
-            if let error = store.lastError {
-                HStack {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .foregroundStyle(.red)
-                    Text(error)
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 4)
-                Divider()
-            }
-
-            // Active profile status
+        Group {
             if let active = store.activeProfile {
-                HStack {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundStyle(.green)
-                    Text(active.name)
-                        .fontWeight(.medium)
-                    Spacer()
-                    Button("Deactivate") {
-                        Task { await store.deactivateProfile() }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.red)
-                    .controlSize(.small)
+                Button("🟢 Active: \(active.name)") {
+                    WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
+                Button("Deactivate") {
+                    Task { await store.deactivateProfile() }
+                }
             } else {
-                HStack {
-                    Image(systemName: "circle")
-                        .foregroundStyle(.secondary)
-                    Text("No active profile")
-                        .foregroundStyle(.secondary)
+                Button("🔴 No Active Profile") {
+                    WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
             }
 
             Divider()
-                .padding(.vertical, 4)
 
-            // Profile list
-            Text("Profiles")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .padding(.horizontal, 12)
-                .padding(.bottom, 2)
-
-            ForEach(store.profiles) { profile in
-                Button {
-                    Task { await store.activateProfile(profile) }
-                } label: {
-                    HStack {
-                        Image(systemName: store.activeProfile?.id == profile.id ? "checkmark.circle.fill" : "circle")
-                            .foregroundStyle(store.activeProfile?.id == profile.id ? .green : .secondary)
-                        Text(profile.name)
-                        Spacer()
-                        Text("\(profile.entries.count)")
-                            .font(.caption)
-                            .opacity(0.7)
+            Section("Profiles") {
+                ForEach(store.profiles) { profile in
+                    Button {
+                        Task { await store.activateProfile(profile) }
+                    } label: {
+                        HStack {
+                            if store.activeProfile?.id == profile.id {
+                                Image(systemName: "checkmark")
+                            }
+                            Text(profile.name)
+                        }
                     }
                 }
-                .buttonStyle(MenuItemButtonStyle())
             }
 
             Divider()
-                .padding(.vertical, 4)
 
-            Button {
-                NSApp.activate(ignoringOtherApps: true)
-            } label: {
-                Text("Open SaneHosts")
+            Button("Open SaneHosts") {
+                WindowActionStorage.shared.showMainWindow(using: openWindow)
             }
-            .buttonStyle(MenuItemButtonStyle())
+            .keyboardShortcut("o")
 
-            Button {
-                try? openSettings()
-                NSApp.activate(ignoringOtherApps: true)
-            } label: {
+            SettingsLink {
                 Text("Settings...")
             }
-            .buttonStyle(MenuItemButtonStyle())
+            .keyboardShortcut(",")
 
             Divider()
-                .padding(.vertical, 4)
 
-            Button {
+            Button("Quit SaneHosts") {
                 NSApp.terminate(nil)
-            } label: {
-                Text("Quit SaneHosts")
             }
-            .buttonStyle(MenuItemButtonStyle())
+            .keyboardShortcut("q")
         }
-        .padding(.vertical, 6)
-        .frame(width: 260)
+        .onAppear {
+            WindowActionStorage.shared.openWindow = openWindow
+        }
     }
 }
 

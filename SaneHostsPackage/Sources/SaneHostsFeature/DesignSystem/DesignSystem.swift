@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import SaneUI
 
 // MARK: - Notifications
 
@@ -92,12 +93,12 @@ struct CompactSection<Content: View>: View {
             HStack(spacing: 6) {
                 if let icon = icon {
                     Image(systemName: icon)
-                        .font(.subheadline)
+                        .font(.system(size: 13, weight: .semibold))
                         .foregroundStyle(iconColor)
                 }
                 Text(title)
                     .font(.headline)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white)
             }
             .padding(.leading, 4)
 
@@ -163,6 +164,8 @@ struct CompactRow<Content: View>: View {
                     .frame(width: 20)
             }
             Text(label)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
             Spacer()
             content
         }
@@ -202,6 +205,8 @@ struct CompactToggle: View {
                     .frame(width: 20)
             }
             Text(label)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
             Spacer()
             Toggle("", isOn: $isOn)
                 .labelsHidden()
@@ -234,7 +239,7 @@ struct GlassGroupBoxStyle: GroupBoxStyle {
         VStack(alignment: .leading, spacing: 12) {
             configuration.label
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.primary)
+                .foregroundStyle(.white)
 
             configuration.content
         }
@@ -268,16 +273,15 @@ struct StatusBadge: View {
         HStack(spacing: 4) {
             if let icon = icon {
                 Image(systemName: icon)
-                    .font(.caption2)
+                    .font(.system(size: 13, weight: .semibold))
             }
             Text(text)
-                .font(.caption)
-                .fontWeight(.medium)
+                .font(.system(size: 13, weight: .semibold))
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
-        .background(color.opacity(0.15))
-        .foregroundStyle(color)
+        .background(color.opacity(0.28))
+        .foregroundStyle(.white)
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(text) status")
@@ -326,9 +330,7 @@ struct ActionButton: View {
             }
             .fontWeight(.medium)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(color)
-        .controlSize(.regular)
+        .buttonStyle(SaneActionButtonStyle(prominent: true))
     }
 }
 
@@ -340,7 +342,7 @@ struct EntryStatusIcon: View {
     var body: some View {
         Image(systemName: isEnabled ? "checkmark.circle.fill" : "circle")
             .font(.body)
-            .foregroundStyle(isEnabled ? .green : .secondary)
+            .foregroundStyle(isEnabled ? .green : .white.opacity(0.78))
     }
 }
 
@@ -353,7 +355,7 @@ struct IPAddressText: View {
     var body: some View {
         Text(address)
             .font(.system(.body, design: .monospaced))
-            .foregroundStyle(isEnabled ? .primary : .secondary)
+            .foregroundStyle(.white)
     }
 }
 
@@ -367,7 +369,7 @@ struct HostnameText: View {
     var body: some View {
         Text(hostname)
             .fontWeight(isPrimary ? .medium : .regular)
-            .foregroundStyle(isEnabled ? (isPrimary ? .primary : .secondary) : .tertiary)
+            .foregroundStyle(.white)
     }
 }
 
@@ -398,23 +400,23 @@ struct SaneEmptyState: View {
         VStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.system(size: 48))
-                .foregroundStyle(.tertiary)
+                .foregroundStyle(.white.opacity(0.78))
 
             VStack(spacing: 8) {
                 Text(title)
                     .font(.title3)
                     .fontWeight(.semibold)
+                    .foregroundStyle(.white)
 
                 Text(description)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
             }
 
             if let actionTitle = actionTitle, let action = action {
                 Button(actionTitle, action: action)
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
+                    .buttonStyle(SaneActionButtonStyle(prominent: true))
             }
         }
         .padding(40)
@@ -436,8 +438,8 @@ struct LoadingOverlay: View {
                     .scaleEffect(1.2)
 
                 Text(message)
-                    .font(.headline)
-                    .foregroundStyle(.primary)
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.white)
             }
             .padding(32)
             .background(.regularMaterial)
