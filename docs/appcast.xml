@@ -6,7 +6,28 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                            <item>
+                                    <item>
+            <title>1.1.6</title>
+            <pubDate>Sat, 28 Mar 2026 20:11:42 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Fixed menu bar and Dock navigation so SaneHosts opens reliably from a cold start.</li>
+                <li>Standardized Settings, About, and License screens for a cleaner and more readable layout.</li>
+                <li>Improved bug reporting, update controls, and overall polish across the app.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.6.zip"
+                       sparkle:version="1106"
+                       sparkle:shortVersionString="1.1.6"
+                       length="4091761"
+                       type="application/octet-stream"
+                       sparkle:edSignature="VwZtrOWfVaCTJaciDET8MBA2ft/ggypbzGrFzkRSa1dJdxMbBXQpgjUarWCJlK1oTowRAGdlsowayk+AsXHADA=="/>
+        </item>
+<item>
             <title>1.1.5</title>
             <pubDate>Sat, 14 Mar 2026 10:45:45 -0400</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
