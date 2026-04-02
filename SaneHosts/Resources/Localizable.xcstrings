@@ -1,0 +1,150 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "sanehosts.settings.about.feedback_attachment" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Profilstatus, Helferstatus und Startoptionen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Profile state, helper status, and startup settings" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Estado del perfil, estado del ayudante y ajustes de inicio" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "État du profil, état de l’assistant et réglages de démarrage" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Stato del profilo, stato dell'assistente e impostazioni di avvio" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "プロフィールの状態、ヘルパーの状態、起動設定" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "프로필 상태, 도우미 상태, 시작 설정" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Profielstatus, helperstatus en opstartinstellingen" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Status do perfil, status do auxiliar e ajustes de inicialização" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "配置文件状态、辅助程序状态和启动设置" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "設定檔狀態、輔助程式狀態和啟動設定" } }
+      }
+    },
+    "sanehosts.settings.startup.dock_icon_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wenn du das Dock-Symbol ausblendest, bleibt SaneHosts weiterhin über die Menüleiste verfügbar." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "If you hide the Dock icon, SaneHosts stays available from the menu bar." } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Si ocultas el ícono del Dock, SaneHosts seguirá disponible desde la barra de menús." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Si vous masquez l’icône du Dock, SaneHosts reste disponible depuis la barre des menus." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Se nascondi l'icona nel Dock, SaneHosts resta disponibile dalla barra dei menu." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Dockアイコンを非表示にしても、SaneHostsはメニューバーから使えます。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Dock 아이콘을 숨겨도 SaneHosts는 메뉴 막대에서 계속 사용할 수 있습니다." } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Als je het Dock-pictogram verbergt, blijft SaneHosts beschikbaar via de menubalk." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Se você ocultar o ícone do Dock, o SaneHosts continua disponível na barra de menus." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "如果隐藏 Dock 图标，SaneHosts 仍可从菜单栏打开。" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "如果隱藏 Dock 圖示，仍可從選單列使用 SaneHosts。" } }
+      }
+    },
+    "sanehosts.settings.updates.automatically_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Regelmäßig nach neuen Versionen suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Periodically check for new versions" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Buscar periódicamente nuevas versiones" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérifier périodiquement les nouvelles versions" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Controlla periodicamente se ci sono nuove versioni" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "定期的に新しいバージョンを確認します" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "정기적으로 새 버전을 확인합니다" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Controleer regelmatig op nieuwe versies" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Verifica periodicamente se há novas versões" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "定期检查新版本" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "定期檢查新版本" } }
+      }
+    },
+    "sanehosts.settings.updates.automatically_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Nach Updates automatisch suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for updates automatically" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Buscar actualizaciones automáticamente" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher automatiquement les mises à jour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Controlla automaticamente gli aggiornamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "自動でアップデートを確認" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업데이트를 자동으로 확인" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Controleer automatisch op updates" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Verificar atualizações automaticamente" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "自动检查更新" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "自動檢查更新" } }
+      }
+    },
+    "sanehosts.settings.updates.check_now_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jetzt prüfen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check Now" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Buscar ahora" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher maintenant" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Controlla ora" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今すぐ確認" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "지금 확인" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Nu controleren" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Verificar agora" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "立即检查" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "立即檢查" } }
+      }
+    },
+    "sanehosts.settings.updates.check_now_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Jetzt nach Updates suchen" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check for updates right now" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Buscar actualizaciones ahora mismo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rechercher les mises à jour maintenant" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Controlla subito gli aggiornamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今すぐアップデートを確認します" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "지금 업데이트를 확인합니다" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Controleer nu op updates" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Verificar atualizações agora" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "立即检查更新" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "立即檢查更新" } }
+      }
+    },
+    "sanehosts.settings.updates.checking_button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wird geprüft..." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Checking..." } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Buscando..." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vérification..." } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Controllo in corso..." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認中..." } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "확인 중..." } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Controleren..." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Verificando..." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "正在检查..." } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "正在檢查..." } }
+      }
+    },
+    "sanehosts.settings.updates.frequency_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Wähle, wie oft automatische Update-Prüfungen ausgeführt werden." } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose how often automatic update checks run" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Elige con qué frecuencia se ejecutan las búsquedas automáticas de actualizaciones" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Choisissez la fréquence des vérifications automatiques des mises à jour" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Scegli la frequenza dei controlli automatici degli aggiornamenti" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "自動アップデート確認の頻度を選びます" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "자동 업데이트 확인 빈도를 선택합니다" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Kies hoe vaak automatische updatecontroles worden uitgevoerd" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Escolha com que frequência as verificações automáticas de atualização são executadas" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "选择自动检查更新的频率" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "選擇自動檢查更新的頻率" } }
+      }
+    },
+    "sanehosts.settings.updates.frequency_label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : { "stringUnit" : { "state" : "translated", "value" : "Prüffrequenz" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check frequency" } },
+        "es-419" : { "stringUnit" : { "state" : "translated", "value" : "Frecuencia de búsqueda" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fréquence de vérification" } },
+        "it" : { "stringUnit" : { "state" : "translated", "value" : "Frequenza dei controlli" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "確認頻度" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "확인 빈도" } },
+        "nl" : { "stringUnit" : { "state" : "translated", "value" : "Controlfrequentie" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Frequência de verificação" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "检查频率" } },
+        "zh-Hant" : { "stringUnit" : { "state" : "translated", "value" : "檢查頻率" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

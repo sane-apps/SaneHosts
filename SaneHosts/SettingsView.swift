@@ -9,6 +9,14 @@ private enum SaneHostsSettingsTab: String, SaneSettingsTab {
     case license = "License"
     case about = "About"
 
+    var title: String {
+        switch self {
+        case .general: SaneSettingsStrings.generalTabTitle
+        case .license: SaneSettingsStrings.licenseTabTitle
+        case .about: SaneSettingsStrings.aboutTabTitle
+        }
+    }
+
     var icon: String {
         switch self {
         case .general: "gearshape"
@@ -60,12 +68,12 @@ struct GeneralSettingsTab: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                CompactSection("Startup", icon: "power", iconColor: .orange) {
+                CompactSection(SaneSettingsStrings.startupSectionTitle, icon: "power", iconColor: .orange) {
                     SaneLoginItemToggle()
                     CompactDivider()
                     SaneDockIconToggle(showDockIcon: showDockIconBinding)
                     CompactDivider()
-                    Text("If you hide the Dock icon, SaneHosts stays available from the menu bar.")
+                    Text(SaneHostsSettingsCopy.startupDockIconHint)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -73,20 +81,22 @@ struct GeneralSettingsTab: View {
                         .padding(.vertical, 10)
                 }
 
+                SaneLanguageSettingsRow()
+
                 #if !APP_STORE
-                    CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
+                    CompactSection(SaneSettingsStrings.softwareUpdatesSectionTitle, icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
                         CompactToggle(
-                            label: "Check for updates automatically",
+                            label: SaneHostsSettingsCopy.updateAutomaticallyLabel,
                             isOn: Binding(
                                 get: { updater.automaticallyChecksForUpdates },
                                 set: { updater.automaticallyChecksForUpdates = $0 }
                             )
                         )
-                        .help("Periodically check for new versions")
+                        .help(SaneHostsSettingsCopy.updateAutomaticallyHint)
 
                         CompactDivider()
 
-                        CompactRow("Check frequency") {
+                        CompactRow(SaneHostsSettingsCopy.updateFrequencyLabel) {
                             Picker(
                                 "",
                                 selection: Binding(
@@ -102,12 +112,12 @@ struct GeneralSettingsTab: View {
                             .frame(width: 170)
                             .disabled(!updater.automaticallyChecksForUpdates)
                         }
-                        .help("Choose how often automatic update checks run")
+                        .help(SaneHostsSettingsCopy.updateFrequencyHint)
 
                         CompactDivider()
 
-                        CompactRow("Actions") {
-                            Button(isCheckingForUpdates ? "Checking..." : "Check Now") {
+                        CompactRow(SaneSettingsStrings.actionsLabel) {
+                            Button(isCheckingForUpdates ? SaneHostsSettingsCopy.checkingButtonTitle : SaneHostsSettingsCopy.checkNowButtonTitle) {
                                 guard !isCheckingForUpdates else { return }
                                 isCheckingForUpdates = true
                                 updater.checkForUpdates()
@@ -119,7 +129,7 @@ struct GeneralSettingsTab: View {
                             }
                             .buttonStyle(SaneActionButtonStyle())
                             .disabled(isCheckingForUpdates)
-                            .help("Check for updates right now")
+                            .help(SaneHostsSettingsCopy.checkNowHint)
                         }
                     }
                 #endif
@@ -168,7 +178,7 @@ struct AboutTab: View {
             githubRepo: "SaneHosts",
             diagnosticsService: .shared,
             licenses: saneHostsLicenses,
-            feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
+            feedbackExtraAttachments: [("shield.lefthalf.filled", SaneHostsSettingsCopy.feedbackAttachmentLabel)]
         )
     }
 }
