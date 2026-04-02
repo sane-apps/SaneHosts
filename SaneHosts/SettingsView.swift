@@ -1,5 +1,4 @@
 import SaneHostsFeature
-import SaneUI
 import SwiftUI
 #if !APP_STORE
     import Sparkle
@@ -9,6 +8,14 @@ private enum SaneHostsSettingsTab: String, SaneSettingsTab {
     case general = "General"
     case license = "License"
     case about = "About"
+
+    var title: String {
+        switch self {
+        case .general: SaneSettingsStrings.generalTabTitle
+        case .license: SaneSettingsStrings.licenseTabTitle
+        case .about: SaneSettingsStrings.aboutTabTitle
+        }
+    }
 
     var icon: String {
         switch self {
@@ -53,7 +60,7 @@ struct SaneHostsSettingsView: View {
 
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
-    @State private var showFeedback = false
+    @State private var isCheckingForUpdates = false
     #if !APP_STORE
         let updater: SPUUpdater
     #endif
@@ -61,95 +68,81 @@ struct GeneralSettingsTab: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                CompactSection("Startup", icon: "power", iconColor: .orange) {
+                CompactSection(SaneSettingsStrings.startupSectionTitle, icon: "power", iconColor: .orange) {
                     SaneLoginItemToggle()
                     CompactDivider()
                     SaneDockIconToggle(showDockIcon: showDockIconBinding)
                     CompactDivider()
-                    Text("If you hide the Dock icon, SaneHosts stays available from the menu bar.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    Text(SaneHostsSettingsCopy.startupDockIconHint)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                 }
 
+                SaneLanguageSettingsRow()
+
                 #if !APP_STORE
-                    CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
-                        SaneSparkleRow(
-                            automaticallyChecks: Binding(
+                    CompactSection(SaneSettingsStrings.softwareUpdatesSectionTitle, icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
+                        CompactToggle(
+                            label: SaneHostsSettingsCopy.updateAutomaticallyLabel,
+                            isOn: Binding(
                                 get: { updater.automaticallyChecksForUpdates },
                                 set: { updater.automaticallyChecksForUpdates = $0 }
-                            ),
-                            checkFrequency: Binding(
-                                get: { SaneSparkleCheckFrequency.resolve(updateCheckInterval: updater.updateCheckInterval) },
-                                set: { updater.updateCheckInterval = $0.interval }
-                            ),
-                            labels: .init(
-                                automaticCheckLabel: "Check for updates automatically",
-                                automaticCheckHelp: "Periodically check for new versions",
-                                checkFrequencyLabel: "Check frequency",
-                                checkFrequencyHelp: "Choose how often automatic update checks run",
-                                actionsLabel: "Actions",
-                                checkingLabel: "Checking…",
-                                checkNowLabel: "Check Now",
-                                checkNowHelp: "Check for updates right now"
-                            ),
-                            onCheckNow: { updater.checkForUpdates() }
+                            )
                         )
+                        .help(SaneHostsSettingsCopy.updateAutomaticallyHint)
+
+                        CompactDivider()
+
+                        CompactRow(SaneHostsSettingsCopy.updateFrequencyLabel) {
+                            Picker(
+                                "",
+                                selection: Binding(
+                                    get: { SaneSparkleCheckFrequency.resolve(updateCheckInterval: updater.updateCheckInterval) },
+                                    set: { updater.updateCheckInterval = $0.interval }
+                                )
+                            ) {
+                                ForEach(SaneSparkleCheckFrequency.allCases) { frequency in
+                                    Text(frequency.title).tag(frequency)
+                                }
+                            }
+                            .pickerStyle(.segmented)
+                            .frame(width: 170)
+                            .disabled(!updater.automaticallyChecksForUpdates)
+                        }
+                        .help(SaneHostsSettingsCopy.updateFrequencyHint)
+
+                        CompactDivider()
+
+                        CompactRow(SaneSettingsStrings.actionsLabel) {
+                            Button(isCheckingForUpdates ? SaneHostsSettingsCopy.checkingButtonTitle : SaneHostsSettingsCopy.checkNowButtonTitle) {
+                                guard !isCheckingForUpdates else { return }
+                                isCheckingForUpdates = true
+                                updater.checkForUpdates()
+
+                                Task { @MainActor in
+                                    try? await Task.sleep(for: .seconds(5))
+                                    isCheckingForUpdates = false
+                                }
+                            }
+                            .buttonStyle(SaneActionButtonStyle())
+                            .disabled(isCheckingForUpdates)
+                            .help(SaneHostsSettingsCopy.checkNowHint)
+                        }
                     }
                 #endif
 
-                CompactSection("Support", icon: "lifepreserver", iconColor: .pink) {
-                    HStack(spacing: 8) {
-                        Button {
-                            showFeedback = true
-                        } label: {
-                            Label("Report a Bug", systemImage: "ladybug")
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-
-                        Link(destination: featureRequestURL) {
-                            Label("Request a Feature", systemImage: "lightbulb")
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-
-                    CompactDivider()
-
-                    HStack(spacing: 8) {
-                        Link(destination: issuesURL) {
-                            Label("View Issues", systemImage: "arrow.up.right.square")
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-
-                        Link(destination: URL(string: "mailto:hi@saneapps.com")!) {
-                            Label("Contact Support", systemImage: "envelope")
-                        }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
-                    }
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 10)
-                }
             }
-            .padding(24)
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.bottom, 24)
             .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .sheet(isPresented: $showFeedback) {
-            SaneFeedbackView(
-                diagnosticsService: .shared,
-                extraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
-            )
         }
         .onAppear {
             #if !APP_STORE
-                updater.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
+                updater.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
             #endif
         }
     }
@@ -159,14 +152,6 @@ struct GeneralSettingsTab: View {
             get: { !hideDockIcon },
             set: { hideDockIcon = !$0 }
         )
-    }
-
-    private var issuesURL: URL {
-        URL(string: "https://github.com/sane-apps/SaneHosts/issues")!
-    }
-
-    private var featureRequestURL: URL {
-        URL(string: "https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md")!
     }
 }
 
@@ -178,31 +163,23 @@ private struct LicenseSettingsTabContent: View {
             VStack(alignment: .leading, spacing: 20) {
                 LicenseSettingsView(licenseService: licenseService, style: .panel)
             }
-            .padding(24)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 24)
+            .padding(.top, 16)
+            .padding(.bottom, 24)
+            .frame(maxWidth: 460, alignment: .leading)
         }
     }
 }
 
 struct AboutTab: View {
     var body: some View {
-        #if APP_STORE
-            SaneAboutView(
-                appName: "SaneHosts",
-                githubRepo: "SaneHosts",
-                diagnosticsService: .shared,
-                licenses: saneHostsLicenses,
-                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
-            )
-        #else
-            SaneAboutView(
-                appName: "SaneHosts",
-                githubRepo: "SaneHosts",
-                diagnosticsService: .shared,
-                licenses: saneHostsLicenses,
-                feedbackExtraAttachments: [("shield.lefthalf.filled", "Profile state, helper status, and startup settings")]
-            )
-        #endif
+        SaneAboutView(
+            appName: "SaneHosts",
+            githubRepo: "SaneHosts",
+            diagnosticsService: .shared,
+            licenses: saneHostsLicenses,
+            feedbackExtraAttachments: [("shield.lefthalf.filled", SaneHostsSettingsCopy.feedbackAttachmentLabel)]
+        )
     }
 }
 

@@ -1,4 +1,5 @@
 import SwiftUI
+import SaneUI
 
 /// Detail view for editing a profile - SaneClip design language
 struct ProfileDetailView: View {
@@ -118,8 +119,7 @@ struct ProfileDetailView: View {
                                 Text("Deactivate")
                             }
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.red)
+                        .buttonStyle(SaneActionButtonStyle(destructive: true))
                         .accessibilityLabel("Deactivate profile")
                         .accessibilityHint("Double-tap to deactivate this profile")
                     } else {
@@ -135,8 +135,7 @@ struct ProfileDetailView: View {
                                 Text("Activate")
                             }
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.saneAccent) // Futuristic teal accent
+                        .buttonStyle(SaneActionButtonStyle(prominent: true))
                         .activateButtonAnchor()
                         .accessibilityLabel("Activate profile")
                         .accessibilityHint("Double-tap to activate this profile")
@@ -150,7 +149,7 @@ struct ProfileDetailView: View {
                 // Source info
                 CompactRow("Source", icon: sourceIcon, iconColor: .saneAccent) {
                     Text(profile.source.displayName)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.white)
                 }
 
                 CompactDivider()
@@ -158,7 +157,7 @@ struct ProfileDetailView: View {
                 // Modified date
                 CompactRow("Modified", icon: "clock", iconColor: .saneAccent) {
                     Text(profile.modifiedAt, style: .relative)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.white)
                 }
 
                 // Remote source freshness indicator
@@ -167,7 +166,7 @@ struct ProfileDetailView: View {
                     CompactRow("Source URL", icon: "link", iconColor: .blue) {
                         Text(url.host ?? url.absoluteString)
                             .font(.body)
-                            .foregroundStyle(.primary)
+                            .foregroundStyle(.white)
                             .lineLimit(1)
                     }
 
@@ -177,7 +176,7 @@ struct ProfileDetailView: View {
                             if let lastFetched {
                                 Text(lastFetched, style: .relative)
                                     .font(.body)
-                                    .foregroundStyle(.primary) // Readable text
+                                    .foregroundStyle(.white)
                                 FreshnessIndicator(date: lastFetched) // Colored badge shows status
                             } else {
                                 Text("Never")
@@ -263,9 +262,9 @@ struct ProfileDetailView: View {
                         .font(.title)
                         .foregroundStyle(.orange) // Orange for action - distinct from blue/teal
                     Text("Add Entry")
-                        .font(.subheadline)
+                        .font(.system(size: 13, weight: .semibold))
                         .fontWeight(.medium)
-                        .foregroundStyle(.primary)
+                        .foregroundStyle(.white)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -290,9 +289,9 @@ struct ProfileDetailView: View {
         HStack(spacing: 12) {
             // Selection count
             Text("\(selectedEntries.count) selected")
-                .font(.callout)
+                .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white)
 
             Spacer()
 
@@ -306,7 +305,7 @@ struct ProfileDetailView: View {
             } label: {
                 Text(selectedEntries.count == filteredEntries.count ? "Deselect All" : "Select All")
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(SaneActionButtonStyle(compact: true))
             .accessibilityLabel(selectedEntries.count == filteredEntries.count ? "Deselect all entries" : "Select all entries")
 
             Divider()
@@ -318,8 +317,7 @@ struct ProfileDetailView: View {
             } label: {
                 Label("Enable", systemImage: SaneIcons.entryEnabled)
             }
-            .buttonStyle(.bordered)
-            .tint(.saneAccent)
+            .buttonStyle(SaneActionButtonStyle(compact: true))
             .disabled(selectedEntries.isEmpty)
             .accessibilityLabel("Enable selected entries")
 
@@ -329,7 +327,7 @@ struct ProfileDetailView: View {
             } label: {
                 Label("Disable", systemImage: SaneIcons.entryDisabled)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(SaneActionButtonStyle(compact: true))
             .disabled(selectedEntries.isEmpty)
             .accessibilityLabel("Disable selected entries")
 
@@ -339,7 +337,7 @@ struct ProfileDetailView: View {
             } label: {
                 Label("Delete", systemImage: SaneIcons.remove)
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(SaneActionButtonStyle(destructive: true, compact: true))
             .disabled(selectedEntries.isEmpty)
             .accessibilityLabel("Delete selected entries")
 
@@ -351,8 +349,7 @@ struct ProfileDetailView: View {
                 isSelectionMode = false
                 selectedEntries.removeAll()
             }
-            .buttonStyle(.borderedProminent)
-            .tint(.saneAccent)
+            .buttonStyle(SaneActionButtonStyle(prominent: true, compact: true))
             .help("Exit selection mode")
             .accessibilityLabel("Done selecting")
         }
@@ -380,12 +377,12 @@ struct ProfileDetailView: View {
                 HStack {
                     if filteredEntries.count > Self.maxVisibleEntries {
                         Text("Showing \(compactNumber(min(filteredEntries.count, Self.maxVisibleEntries))) of \(compactNumber(filteredEntries.count)) entries")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white)
                     } else {
                         Text("\(compactNumber(filteredEntries.count)) entries")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white)
                     }
                     Spacer()
 
@@ -402,13 +399,12 @@ struct ProfileDetailView: View {
                                 Label("Select", systemImage: "checkmark.circle")
                                 if !licenseService.isPro {
                                     Image(systemName: "lock.fill")
-                                        .font(.system(size: 10))
+                                        .font(.system(size: 13, weight: .semibold))
                                         .foregroundStyle(.teal)
                                 }
                             }
                         }
-                        .buttonStyle(.bordered)
-                        .controlSize(.small)
+                        .buttonStyle(SaneActionButtonStyle(compact: true))
                         .help(licenseService.isPro ? "Select entries for bulk enable, disable, or delete" : "Bulk operations require SaneHosts Pro")
                         .accessibilityLabel(licenseService.isPro ? "Enter selection mode" : "Bulk operations — Pro feature")
                     }
@@ -429,7 +425,7 @@ struct ProfileDetailView: View {
                             } label: {
                                 Image(systemName: selectedEntries.contains(entry.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title2)
-                                    .foregroundStyle(selectedEntries.contains(entry.id) ? .blue : .secondary)
+                                    .foregroundStyle(selectedEntries.contains(entry.id) ? .blue : .white.opacity(0.78))
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel(selectedEntries.contains(entry.id) ? "Deselect \(entry.hostnames.first ?? "entry")" : "Select \(entry.hostnames.first ?? "entry")")
@@ -471,8 +467,8 @@ struct ProfileDetailView: View {
                     HStack {
                         Spacer()
                         Text("Use search to find specific entries")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.white)
                             .padding(.vertical, 12)
                         Spacer()
                     }
@@ -619,13 +615,13 @@ struct StatCard: View {
                 Text(value)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundStyle(.primary)
+                    .foregroundStyle(.white)
             }
 
             Text(title)
-                .font(.subheadline)
+                .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.white)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
@@ -673,8 +669,8 @@ struct EntryRow: View {
 
                 if entry.hostnames.count > 1 {
                     Text(entry.hostnames.dropFirst().joined(separator: ", "))
-                        .font(.caption)
-                        .foregroundStyle(.tertiary)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundStyle(.white)
                         .lineLimit(1)
                 }
             }
@@ -684,8 +680,8 @@ struct EntryRow: View {
             // Comment
             if let comment = entry.comment {
                 Text(comment)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white)
                     .lineLimit(1)
                     .frame(maxWidth: 150, alignment: .trailing)
             }
@@ -762,8 +758,8 @@ struct AddEntrySheet: View {
                     Image(systemName: SaneIcons.warning)
                     Text("Invalid IP address or hostname")
                 }
-                .font(.caption)
-                .foregroundStyle(.red)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
             }
 
             // Actions
@@ -772,14 +768,13 @@ struct AddEntrySheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
-                .buttonStyle(.bordered)
+                .buttonStyle(SaneActionButtonStyle())
 
                 Button("Add Entry") {
                     addEntry()
                 }
                 .keyboardShortcut(.defaultAction)
-                .buttonStyle(.borderedProminent)
-                .tint(.saneAccent)
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
                 .disabled(!isValid)
             }
         }
@@ -878,8 +873,8 @@ struct EditEntrySheet: View {
                     Image(systemName: SaneIcons.warning)
                     Text("Invalid IP address or hostname")
                 }
-                .font(.caption)
-                .foregroundStyle(.red)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
             }
 
             // Actions
@@ -888,14 +883,13 @@ struct EditEntrySheet: View {
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
-                .buttonStyle(.bordered)
+                .buttonStyle(SaneActionButtonStyle())
 
                 Button("Save") {
                     saveEntry()
                 }
                 .keyboardShortcut(.defaultAction)
-                .buttonStyle(.borderedProminent)
-                .tint(.saneAccent)
+                .buttonStyle(SaneActionButtonStyle(prominent: true))
                 .disabled(!isValid)
             }
         }
@@ -939,9 +933,9 @@ struct FreshnessIndicator: View {
                 .fill(freshnessColor)
                 .frame(width: 8, height: 8)
             Text(freshnessLabel)
-                .font(.caption)
+                .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.semibold)
-                .foregroundStyle(freshnessColor)
+                .foregroundStyle(.white)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)

@@ -1,6 +1,5 @@
 import Foundation
 import SaneHostsFeature
-import SaneUI
 
 extension SaneDiagnosticsService {
     static let shared = SaneDiagnosticsService(
