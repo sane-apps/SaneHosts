@@ -42,6 +42,29 @@ final class WindowActionStorage {
     }
 }
 
+@MainActor
+final class SettingsActionStorage {
+    static let shared = SettingsActionStorage()
+    var openSettings: (() -> Void)?
+
+    func capture(_ action: OpenSettingsAction) {
+        openSettings = {
+            action()
+        }
+    }
+
+    func showSettings() {
+        if let openSettings {
+            openSettings()
+        } else {
+            NotificationCenter.default.post(name: .openSettings, object: nil)
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        }
+
+        NSApp.activate(ignoringOtherApps: true)
+    }
+}
+
 #if !APP_STORE
     @MainActor
     private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
@@ -126,6 +149,7 @@ struct SaneHostsApp: App {
         WindowGroup(id: "main") {
             ContentView(licenseService: licenseService)
                 .modifier(SettingsLauncher())
+                .modifier(SettingsActionCapture())
                 .modifier(WindowActionCapture())
                 .preferredColorScheme(.dark)
                 .sheet(isPresented: Binding(
@@ -278,8 +302,19 @@ struct SettingsLauncher: ViewModifier {
     func body(content: Content) -> some View {
         content
             .onReceive(NotificationCenter.default.publisher(for: .openSettings)) { _ in
-                try? openSettings()
+                openSettings()
                 NSApp.activate(ignoringOtherApps: true)
+            }
+    }
+}
+
+struct SettingsActionCapture: ViewModifier {
+    @Environment(\.openSettings) private var openSettings
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                SettingsActionStorage.shared.capture(openSettings)
             }
     }
 }
@@ -369,13 +404,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         return menu
     }
 
-    @objc func openSettings() {
-        // Try notification first (handled by SettingsLauncher in SwiftUI views)
-        NotificationCenter.default.post(name: .openSettings, object: nil)
-
-        // Fallback: Try standard selector chain
-        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        NSApp.activate(ignoringOtherApps: true)
+    @MainActor @objc func openSettings() {
+        SettingsActionStorage.shared.showSettings()
     }
 
     @objc func openMainWindow() {
@@ -467,6 +497,7 @@ class MenuBarProfileStore: ObservableObject {
 struct MenuBarMenuContent: View {
     @ObservedObject var store: MenuBarProfileStore
     @Environment(\.openWindow) private var openWindow
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         Group {
@@ -507,8 +538,8 @@ struct MenuBarMenuContent: View {
             }
             .keyboardShortcut("o")
 
-            SettingsLink {
-                Text("Settings...")
+            Button("Settings...") {
+                SettingsActionStorage.shared.showSettings()
             }
             .keyboardShortcut(",")
 
@@ -521,6 +552,7 @@ struct MenuBarMenuContent: View {
         }
         .onAppear {
             WindowActionStorage.shared.openWindow = openWindow
+            SettingsActionStorage.shared.capture(openSettings)
         }
     }
 }
