@@ -1,6 +1,14 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-03-14
+**Last updated:** 2026-04-09
+
+## Current State
+
+- Current direct-download release is `1.1.6` (build `1106`).
+- SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
+- Use `CHANGELOG.md` for current release history. The notes below are archival context.
+
+## Archived Notes
 
 ## Current Product Strategy
 
