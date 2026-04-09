@@ -14,6 +14,14 @@ Fixed the release build failure caused by duplicate app icon resources.
 
 ---
 
+## [1.1.6] - 2026-03-28
+
+Fixed menu bar and Dock navigation so SaneHosts opens reliably from a cold start.
+Standardized Settings, About, and License screens for a cleaner and more readable layout.
+Improved bug reporting, update controls, and overall polish across the app.
+
+---
+
 ## [1.1.3] - 2026-03-04
 
 Improved onboarding interaction reliability in Basic.
