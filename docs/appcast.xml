@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                    <item>
+                                            <item>
+            <title>1.1.7</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Thu, 09 Apr 2026 18:34:11 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Fixes Settings routing from the menu bar and Dock so the settings window reopens reliably.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.7.zip"
+                       sparkle:version="1107"
+                       sparkle:shortVersionString="1.1.7"
+                       length="4199409"
+                       type="application/octet-stream"
+                       sparkle:edSignature="zQqtPkRI4hU2M/4T8ZvDmdUek5r6u3A/lRm7fa4xPZMLRXNFD3/t7BqUBtNmO/7E70dT6w7sfjo7fL8NQWXKDw=="/>
+        </item>
+<item>
             <title>1.1.6</title>
             <pubDate>Sat, 28 Mar 2026 20:11:42 -0400</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
