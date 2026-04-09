@@ -5,7 +5,7 @@
 ## Current Product Strategy
 
 - SaneHosts is now **direct-download only**.
-- The macOS App Store lane is intentionally disabled in [`.saneprocess`](/Users/sj/SaneApps/apps/SaneHosts/.saneprocess).
+- The macOS App Store lane is intentionally disabled in [`.saneprocess`](.saneprocess).
 - Reason: the current SaneHosts architecture depends on a privileged helper / `SMAppService.daemon` / `launchd` flow to modify `/etc/hosts`, which is not Mac-App-Store-safe.
 - Do not spend more App Review cycles on the current architecture unless the product is redesigned around an App-Store-safe model.
 

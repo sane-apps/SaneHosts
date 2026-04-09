@@ -45,6 +45,8 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 **[Download from sanehosts.com](https://sanehosts.com)** — Signed, notarized, ready to use.
 
+Current direct release: **1.1.6**.
+
 > *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
 
 **Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
