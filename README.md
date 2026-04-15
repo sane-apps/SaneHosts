@@ -8,7 +8,7 @@
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 [![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **⭐ Star this repo if it's useful!** · **[💰 Buy for $6.99](https://sanehosts.com)** · Keeps development alive
+> **⭐ Star this repo if it's useful!** · **[Download Basic](https://sanehosts.com)** · **[Unlock Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, just deactivate.
 
@@ -45,9 +45,9 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 **[Download from sanehosts.com](https://sanehosts.com)** — Signed, notarized, ready to use.
 
-Current direct release: **1.1.6**.
+**Basic is free to start. Pro is $14.99 once.** No subscription.
 
-> *I wanted to make it $5, but processing fees and taxes were... insane. — Mr. Sane*
+Current direct release: **1.1.6**.
 
 **Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
 

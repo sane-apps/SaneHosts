@@ -6,6 +6,9 @@
 
 - Current direct-download release is `1.1.6` (build `1106`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
+- Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
+- Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
+- Track pricing impact with `ruby ~/SaneApps/infra/SaneProcess/scripts/SaneMaster.rb sales --products`, `downloads --app SaneHosts --days 30`, and `events --app SaneHosts --days 30` before and after rollout windows.
 - Use `CHANGELOG.md` for current release history. The notes below are archival context.
 
 ## Archived Notes
