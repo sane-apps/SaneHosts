@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.8] - 2026-04-15
+
+Updates Pro pricing screens so onboarding and upgrade prompts consistently show the current $14.99 one-time unlock, and refreshes release metadata for the direct-download channel.
+
+---
+
 ## [1.1.7] - 2026-04-09
 
 Fixes Settings routing from the menu bar and Dock so the settings window reopens reliably.

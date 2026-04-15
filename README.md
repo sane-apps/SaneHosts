@@ -47,7 +47,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 **Basic is free to start. Pro is $14.99 once.** No subscription.
 
-Current direct release: **1.1.6**.
+Current direct release: **1.1.8**.
 
 **Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
 
