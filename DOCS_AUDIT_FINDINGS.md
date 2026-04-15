@@ -48,7 +48,7 @@
 ### 4. App Store Entitlements Are Non-Viable
 **Flagged by:** QA, Ops, Consistency
 **Impact:** Current entitlements (sandbox + apple-events) CANNOT write /etc/hosts. This is architecturally impossible.
-**Fix:** Either (a) implement NEDNSSettingsManager for App Store version, or (b) remove App Store claims and focus on direct download
+**Fix:** Keep App Store claims removed and focus the current product on direct download unless the architecture is redesigned around an App-Store-safe approach.
 
 ### 5. CX Parity Gaps (Score: 4/10)
 **Flagged by:** CX, User, QA
