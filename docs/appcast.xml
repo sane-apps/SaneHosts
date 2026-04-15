@@ -6,7 +6,28 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                            <item>
+                                                    <item>
+            <title>1.1.8</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Wed, 15 Apr 2026 12:16:01 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Updated Pro pricing screens so Basic-to-Pro upgrade prompts stay consistent across the app.</li>
+                <li>Polished release packaging and update metadata for this build.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.8.zip"
+                       sparkle:version="1108"
+                       sparkle:shortVersionString="1.1.8"
+                       length="4202496"
+                       type="application/octet-stream"
+                       sparkle:edSignature="l8LBzXFCYrNCUm29BYeRCkbp1a24PWuH/BkCvOpJmWnOW5P6Z47mhwGe8XSWB8EiCx07+JFwnnJ9ql+1xgdbBg=="/>
+        </item>
+<item>
             <title>1.1.7</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Thu, 09 Apr 2026 18:34:11 -0400</pubDate>
