@@ -477,9 +477,19 @@ class MenuBarProfileStore: ObservableObject {
             try await HostsService.shared.activateProfile(profile, systemEntries: systemEntries)
             try await ProfileStore.shared.markAsActive(profile: profile)
             syncFromSharedStore()
+            if markFirstValueActionIfNeeded() {
+                await EventTracker.log("first_value_action", app: "sanehosts")
+            }
         } catch {
             lastError = "Failed to activate: \(error.localizedDescription)"
         }
+    }
+
+    private func markFirstValueActionIfNeeded() -> Bool {
+        let key = "SaneApps.EventTracker.logged.sanehosts.first_value_action"
+        guard !UserDefaults.standard.bool(forKey: key) else { return false }
+        UserDefaults.standard.set(true, forKey: key)
+        return true
     }
 
     func deactivateProfile() async {
