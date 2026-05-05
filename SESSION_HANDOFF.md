@@ -1,15 +1,26 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-04-09
+**Last updated:** 2026-05-05
 
 ## Current State
 
-- Current direct-download release is `1.1.6` (build `1106`).
+- Current direct-download release is `1.1.8` (build `1108`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
 - Track pricing impact with `ruby ~/SaneApps/infra/SaneProcess/scripts/SaneMaster.rb sales --products`, `downloads --app SaneHosts --days 30`, and `events --app SaneHosts --days 30` before and after rollout windows.
 - Use `CHANGELOG.md` for current release history. The notes below are archival context.
+
+## Completed May 5, 2026
+
+- Shipped `0e26544` (`Harden SaneHosts import and hosts write paths`) after reviewing the external `pluja/awesome-privacy#668` changes-requested feedback.
+- Hardening included: library validation enabled, helper-side hosts-content validation, generated hosts comment/profile-name sanitization, remote import and built-in blocklist size caps, private BlocklistCache permissions, stricter edit-entry hostname validation, and updated privacy/security disclosures.
+- Verification on the Mac Mini:
+  - `swift test --package-path SaneHostsPackage` passed: 73 Swift Testing tests plus 2 XCTest integration tests.
+  - `./scripts/SaneMaster.rb verify` passed through the pre-push hook: 77 tests.
+  - Focused Mini-side Xcode build of `SaneHosts` passed and compiled `SaneHostsHelper`.
+  - `./scripts/SaneMaster.rb release_preflight` passed with warnings only: working tree before commit, UserDefaults/migration guard existing `SaneHostsApp.swift`, and non-action inbox count.
+- Follow-up still needed before posting publicly: user approval for the exact `pluja/awesome-privacy#668` reply draft explaining the fixes and the remaining direct-download/no-sandbox architecture.
 
 ## Archived Notes
 
