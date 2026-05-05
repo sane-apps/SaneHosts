@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                    <item>
+                                                            <item>
+            <title>1.1.9</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Tue, 05 May 2026 11:19:47 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Security and privacy hardening for remote imports, hosts write validation, local profile storage, Basic and Pro UI readability, and clearer privacy disclosures.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.9.zip"
+                       sparkle:version="1109"
+                       sparkle:shortVersionString="1.1.9"
+                       length="4315022"
+                       type="application/octet-stream"
+                       sparkle:edSignature="UXDbt97EgRBmk/5vCTQLLsYLda9DFqJUk1mzCpzmoZVfG0M4xSlQ/m1SZwTt6Qq4+bd/pRk8k6t8a/BNDUCcAA=="/>
+        </item>
+<item>
             <title>1.1.8</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Wed, 15 Apr 2026 12:16:01 -0400</pubDate>
