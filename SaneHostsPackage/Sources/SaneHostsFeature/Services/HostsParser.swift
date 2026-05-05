@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 
 /// Parses and generates hosts file content
 public struct HostsParser: Sendable {
@@ -144,37 +145,13 @@ public struct HostsParser: Sendable {
     }
 
     private func isValidIPv4(_ string: String) -> Bool {
-        let parts = string.split(separator: ".")
-        guard parts.count == 4 else { return false }
-
-        for part in parts {
-            guard let num = Int(part), num >= 0, num <= 255 else { return false }
-        }
-        return true
+        var address = in_addr()
+        return string.withCString { inet_pton(AF_INET, $0, &address) == 1 }
     }
 
     private func isValidIPv6(_ string: String) -> Bool {
-        // Basic IPv6 validation
-        // Supports full form and :: shorthand
-        var address = string.lowercased()
-
-        // Handle ::
-        if address.contains("::") {
-            let parts = address.components(separatedBy: "::")
-            guard parts.count <= 2 else { return false }
-        }
-
-        // Remove leading/trailing colons for validation
-        address = address.trimmingCharacters(in: CharacterSet(charactersIn: ":"))
-
-        let groups = address.split(separator: ":", omittingEmptySubsequences: false)
-
-        for group in groups where !group.isEmpty {
-            guard group.count <= 4 else { return false }
-            guard group.allSatisfy({ $0.isHexDigit }) else { return false }
-        }
-
-        return true
+        var address = in6_addr()
+        return string.withCString { inet_pton(AF_INET6, $0, &address) == 1 }
     }
 
     /// Validate hostname format

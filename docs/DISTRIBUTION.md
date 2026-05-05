@@ -1,177 +1,58 @@
 # SaneHosts Distribution Guide
 
-Complete guide for releasing SaneHosts to the public.
+Current release flow for SaneHosts direct downloads, Sparkle updates, and website deployment.
 
-## CRITICAL: Existing Keys & Credentials
+## Source Of Truth
 
-**Sparkle EdDSA Key** (ALREADY EXISTS in sj's keychain):
-- **Public Key**: `QwXgCpqQfcdZJ6BIzLRrBmn2D7cwkNbaniuIkm/DJyQ=`
-- **Location**: macOS Keychain → "Private key for signing Sparkle updates"
-- **Configured in**: `Config/Shared.xcconfig` → `INFOPLIST_KEY_SUPublicEDKey`
+- Use the shared SaneApps release pipeline. Do not generate Sparkle keys, build DMGs manually, upload release files manually, or deploy Pages manually for normal releases.
+- Public downloads live in the shared Cloudflare R2 bucket and are served through the SaneApps distribution service.
+- Sparkle uses the shared SaneApps EdDSA public key configured in `Config/Shared.xcconfig`.
+- App Store/TestFlight work uses the primary SaneApps Apple API key `S34998ZCRT`.
 
-**Apple Developer Credentials** (in system keychain):
-- **Keychain Profile**: `notarytool` (Key: `S34998ZCRT`)
-- **Primary API Key**: `S34998ZCRT` (SaneApps — Admin), `.p8` at `~/.private_keys/`
-- **Team ID**: `M78L6FXD48`
-- **Issuer ID**: `c98b1e0a-8d10-4fce-a417-536b31c09bfb`
+## Required Commands
 
-**DO NOT regenerate keys** - use the existing ones above.
-
----
-
-## Prerequisites
-
-- [ ] Xcode 16+ installed
-- [ ] Apple Developer Program membership
-- [ ] Developer ID Application certificate
-- [ ] Notarization credentials in keychain (`notarytool` profile)
-- [ ] Domain purchased (sanehosts.com)
-
-## First-Time Setup
-
-### 1. Generate Sparkle Signing Keys
+Run release work from the project root on the Mac Mini.
 
 ```bash
-./scripts/setup_sparkle_keys.sh
+./scripts/SaneMaster.rb release_preflight
+./scripts/SaneMaster.rb appstore_preflight
+
+bash ~/SaneApps/infra/SaneProcess/scripts/release.sh \
+  --project "$(pwd)" --full --version X.Y.Z --notes "..." --deploy
 ```
 
-This will:
-- Generate EdDSA key pair in `keys/` directory
-- Update `Config/Shared.xcconfig` with public key
-- Add `keys/` to `.gitignore`
-
-**IMPORTANT:** Back up `keys/sparkle_private_key` securely. If lost, you cannot sign updates.
-
-### 2. Verify Code Signing
+Website-only deploys also go through the shared release script:
 
 ```bash
-# Check Developer ID certificate
-security find-identity -v -p codesigning | grep "Developer ID"
-
-# Verify notarization credentials
-xcrun notarytool history --keychain-profile "notarytool"
+bash ~/SaneApps/infra/SaneProcess/scripts/release.sh \
+  --project "$(pwd)" --website-only
 ```
 
-## Release Process
+## Release Checklist
 
-### Step 1: Update Version
+- [ ] Version bumped before release.
+- [ ] `CHANGELOG.md` updated with customer-facing notes.
+- [ ] `./scripts/SaneMaster.rb release_preflight` passes.
+- [ ] `./scripts/SaneMaster.rb appstore_preflight` passes when App Store lanes are involved.
+- [ ] Shared `release.sh --full --deploy` completes signing, notarization, upload, appcast, and website deploy.
+- [ ] Public `https://sanehosts.com/appcast.xml` advertises the new version.
+- [ ] Public privacy page includes current third-party disclosures.
+- [ ] Download link fetches the latest direct build.
+- [ ] Sparkle update path is tested from the previous public version.
 
-Edit `Config/Shared.xcconfig`:
-```
-MARKETING_VERSION = 1.0.1
-CURRENT_PROJECT_VERSION = 2
-```
+## Do Not Do
 
-### Step 2: Update Changelog
+- Do not run Sparkle key-generation scripts.
+- Do not commit private keys or release artifacts.
+- Do not host app releases on GitHub Releases.
+- Do not run ad hoc `wrangler r2 object put` or `wrangler pages deploy` for normal releases.
+- Do not call unreleased `main` changes "shipped" in public replies.
 
-Edit `CHANGELOG.md` with release notes.
+## Credentials
 
-### Step 3: Build Release
+- Apple notarization/TestFlight key: `S34998ZCRT`
+- Team ID: `M78L6FXD48`
+- Issuer ID: `c98b1e0a-8d10-4fce-a417-536b31c09bfb`
+- Notary profile: `notarytool`
 
-```bash
-./scripts/SaneMaster.rb release
-```
-
-This will:
-1. Clean and archive the project
-2. Export with Developer ID signing
-3. Create DMG
-4. Notarize with Apple
-5. Staple notarization ticket
-6. Output to `releases/SaneHosts-X.X.dmg`
-
-### Step 4: Generate Appcast
-
-```bash
-./scripts/generate_appcast.sh
-```
-
-This creates `docs/appcast.xml` for Sparkle updates.
-
-### Step 5: Upload DMG to Cloudflare R2
-
-```bash
-VERSION=$(grep "MARKETING_VERSION" Config/Shared.xcconfig | cut -d'=' -f2 | tr -d ' ')
-DMG="releases/SaneHosts-${VERSION}.dmg"
-
-npx wrangler r2 object put sanebar-downloads/${DMG##*/} \
-  --file="$DMG" --content-type="application/octet-stream" --remote
-```
-
-**NEVER use GitHub Releases for DMG hosting.** Use Cloudflare R2 via `dist.sanehosts.com`.
-
-### Step 6: Deploy Website + Appcast
-
-```bash
-# Copy appcast into website directory
-cp docs/appcast.xml website/appcast.xml
-
-# Deploy to Cloudflare Pages
-CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \
-  npx wrangler pages deploy ./website --project-name=sanehosts-site \
-  --commit-dirty=true --commit-message="Release v${VERSION}"
-```
-
-This deploys the marketing site and appcast.xml together to `sanehosts.com`.
-
-## File Locations
-
-| File | Purpose |
-|------|---------|
-| `scripts/SaneMaster.rb release` | Build, sign, notarize DMG |
-| `scripts/generate_appcast.sh` | Generate Sparkle feed |
-| `scripts/setup_sparkle_keys.sh` | One-time key generation |
-| `keys/sparkle_private_key` | **SECRET** - EdDSA private key |
-| `keys/sparkle_public_key` | EdDSA public key |
-| `releases/` | Built DMGs and checksums |
-| `docs/appcast.xml` | Sparkle update feed |
-| `website/` | Website HTML files |
-
-## Checklist for Each Release
-
-```
-[ ] Version bumped in Shared.xcconfig
-[ ] CHANGELOG.md updated
-[ ] ./scripts/SaneMaster.rb release completed
-[ ] ./scripts/generate_appcast.sh completed
-[ ] DMG uploaded to R2 (sanebar-downloads bucket)
-[ ] Website + appcast deployed to Cloudflare Pages
-[ ] Tested download and update flow
-```
-
-## Troubleshooting
-
-### Notarization Failed
-```bash
-# Check submission status
-xcrun notarytool log <submission-id> --keychain-profile "notarytool"
-```
-
-Common issues:
-- Missing hardened runtime
-- Unsigned nested code
-- Invalid entitlements
-
-### Sparkle Update Not Working
-1. Verify `SUPublicEDKey` in Info.plist matches your public key
-2. Verify appcast.xml is accessible at the feed URL
-3. Check Console.app for Sparkle errors
-
-### Code Signing Issues
-```bash
-# Verify signature
-codesign -dvvv /path/to/SaneHosts.app
-spctl --assess --type execute -vvv /path/to/SaneHosts.app
-```
-
-## Security Notes
-
-1. **Never commit** `keys/sparkle_private_key`
-2. **Never share** your Developer ID private key
-3. **Always notarize** before distribution
-4. **Keep backups** of signing keys
-
-## Support
-
-- GitHub Issues: https://github.com/sane-apps/SaneHosts/issues
-- Email: hi@saneapps.com
+Secrets stay in Keychain or the shared SaneApps environment files. Do not add credential material to this repo.

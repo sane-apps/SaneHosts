@@ -156,7 +156,7 @@ public final class HostsService {
         do {
             try await flushDNSCache()
         } catch {
-            let warning = "Profile activated, but DNS cache flush failed: \(error.localizedDescription). You may need to restart your browser or run 'sudo dscacheutil -flushcache' manually."
+            let warning = "Profile activated, but DNS cache refresh did not complete: \(error.localizedDescription). Restart your browser or restart your Mac if changes are not visible yet."
             logger.warning("\(warning)")
             return warning
         }
@@ -188,7 +188,7 @@ public final class HostsService {
         do {
             try await flushDNSCache()
         } catch {
-            let warning = "Profile deactivated, but DNS cache flush failed: \(error.localizedDescription). You may need to restart your browser or run 'sudo dscacheutil -flushcache' manually."
+            let warning = "Profile deactivated, but DNS cache refresh did not complete: \(error.localizedDescription). Restart your browser or restart your Mac if changes are not visible yet."
             logger.warning("\(warning)")
             return warning
         }

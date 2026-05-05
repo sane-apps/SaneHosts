@@ -35,7 +35,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 - **Menu Bar Access** - Quick profile switching from the menu bar
 - **Crash Resilient** - Automatic backups (3 per profile), corrupted profiles recovered automatically
 - **Native macOS** - Built with SwiftUI, follows system conventions
-- **Privacy-First** - Your hosts data stays on your Mac, with only a few simple app counts and optional network features
+- **Privacy-First** - Your hosts data stays on your Mac, with limited anonymous product events and optional network features
 - **Export Profiles** - Save profiles as standard `.hosts` format files
 - **Drag to Reorder** - Organize profiles by dragging in the sidebar
 - **Search & Filter** - Find entries across large profiles (handles 100K+ entries)
@@ -87,8 +87,8 @@ See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
 SaneHosts is designed with privacy in mind:
 - All data stored locally in `~/Library/Application Support/SaneHosts/`
 - No personal content uploaded to SaneApps servers
-- The app may send a few simple anonymous counts, like whether it opened in Basic or Pro
-- Network access is limited to remote imports you choose, update checks, and those simple app counts
+- The app may send limited anonymous product events, like launch, license, version, OS, and Basic vs Pro status
+- Network access is limited to remote imports or protection levels you choose, update checks, those simple anonymous product events, checkout/license delivery when you choose Pro, and privacy-first aggregate website analytics on public pages
 
 See [PRIVACY.md](PRIVACY.md) for details.
 

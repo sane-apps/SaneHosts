@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaneHosts - Your Mac Is Talking Behind Your Back</title>
+    <title>SaneHosts - Privacy-First Hosts Protection for Mac</title>
     <meta name="description" content="Block ads, trackers, and data collectors at the system level. No Terminal. No commands. Free to start — Pro upgrade $14.99 once. Works in every app on your Mac.">
     <meta name="keywords" content="macOS, hosts file, ad blocker, privacy, tracker blocker, Mac app, hosts manager">
     <meta name="author" content="Mr. Sane">
@@ -17,7 +17,7 @@
     <link rel="canonical" href="https://sanehosts.com/" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta property="og:title" content="SaneHosts - Privacy-First Hosts Protection for Mac">
     <meta property="og:description" content="Block ads and trackers at the system level. No Terminal. No commands. Free to start — Pro upgrade $14.99 once.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -29,7 +29,7 @@
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="SaneHosts - Your Mac Is Talking Behind Your Back">
+    <meta name="twitter:title" content="SaneHosts - Privacy-First Hosts Protection for Mac">
     <meta name="twitter:description" content="Block ads and trackers at the system level. No Terminal. Free to start — Pro upgrade $14.99 once.">
     <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
     <meta name="twitter:site" content="@saneapps">
@@ -76,7 +76,7 @@
         "200+ Curated Blocklists",
         "Profile Management",
         "Automatic DNS Flush",
-        "100% On-Device Privacy",
+        "Hosts Data Stays Local",
         "100% Transparent Code"
       ]
     }
@@ -106,8 +106,8 @@
             --accent-glow: rgba(79, 143, 250, 0.25);
             --accent-subtle: rgba(74, 173, 232, 0.08);
             --text-primary: #f5f5f8;
-            --text-secondary: #e8e8f0;
-            --text-muted: #d0d0e0;
+            --text-secondary: #ffffff;
+            --text-muted: #ffffff;
             --success: #34d399;
             --success-soft: rgba(52, 211, 153, 0.15);
             --warm: #f4a261;
@@ -225,7 +225,7 @@
             border-radius: 8px;
         }
         .logo-group { display: flex; flex-direction: column; }
-        .logo-family { font-size: 0.7rem; color: var(--text-secondary); text-decoration: none; margin-left: 44px; margin-top: -2px; opacity: 0.8; transition: color 0.2s; }
+        .logo-family { font-size: 0.7rem; color: var(--text-secondary); text-decoration: none; margin-left: 44px; margin-top: -2px; opacity: 1; transition: color 0.2s; }
         .logo-family:hover { color: var(--text-primary); }
         @media (max-width: 768px) { .logo-family { display: none; } }
 
@@ -528,7 +528,7 @@
         }
 
         .cross {
-            color: #6b7280;
+            color: #ffffff;
             font-size: 1.1rem;
         }
 
@@ -1301,7 +1301,7 @@
     <section class="hero">
         <div class="container">
             <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Mac's Network</h1>
-            <p class="subtitle animate-in delay-3">It's <em>insane</em> that your Mac is spying on you — hundreds of trackers running in the background. SaneHosts blocks them all. 200+ curated blocklists. One-click protection.</p>
+            <p class="subtitle animate-in delay-3">Block known ads, trackers, telemetry, and distractions through your Mac's hosts file. SaneHosts keeps hosts data local, uses curated blocklists, and applies protection in one click.</p>
 
             <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 1.17rem; color: var(--text-secondary); margin-bottom: 32px; flex-wrap: wrap;">
                 <span>&#128187; 860+ Downloads/Month</span>
@@ -1318,8 +1318,8 @@
                             <li>1 Essentials hosts profile</li>
                             <li>Add, edit, and toggle host entries</li>
                             <li>DNS cache flush</li>
-                            <li>Touch ID protection</li>
-                            <li>100% on-device privacy</li>
+                            <li>macOS authentication for hosts changes</li>
+                            <li>hosts data stays on your Mac</li>
                         </ul>
                         <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.8.zip" class="pricing-cta pricing-cta-free">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
@@ -1356,8 +1356,8 @@
             </div>
 
             <div style="margin-top: 48px; text-align: center;">
-                <h2 class="section-title" style="margin-bottom: 8px;">Locked with Touch ID</h2>
-                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem;">Your protections are locked behind your fingerprint. Nobody can disable them without you.</p>
+                <h2 class="section-title" style="margin-bottom: 8px;">Protected by macOS Authentication</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem;">macOS asks for Touch ID or your password before SaneHosts updates your hosts file.</p>
                 <div class="hero-image">
                     <img src="images/sanehosts-touchid.png" alt="SaneHosts Touch ID - biometric protection for your network settings">
                 </div>
@@ -1423,7 +1423,7 @@
                         <tr>
                             <td>
                                 <span class="level-name">Privacy Shield</span><br>
-                                <span class="level-tagline">Stop watching me</span>
+                                <span class="level-tagline">Reduce telemetry</span>
                             </td>
                             <td class="level-desc">Focus Mode + data collection and advanced trackers</td>
                             <td class="level-entries">~600K</td>
@@ -1465,7 +1465,7 @@
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-                    <h3>100% On-Device</h3>
+                    <h3>Hosts Data Stays Local</h3>
                     <p>Your hosts data stays on your Mac. No cloud account. No personal-content upload. Automatic backups protect your profiles from corruption.</p>
                 </div>
             </div>
@@ -1483,8 +1483,8 @@
                 </div>
                 <div class="feature-item">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v4"/><path d="M7.5 7a5 5 0 0 1 9 0"/><path d="M4.5 9.5a8 8 0 0 1 3-3.5"/><path d="M16.5 6a8 8 0 0 1 3 3.5"/><path d="M4.5 14.5a8 8 0 0 0 2 3.5"/><path d="M17.5 18a8 8 0 0 0 2-3.5"/><path d="M9.5 5a5 5 0 0 0-2.5 4v3a5 5 0 0 0 1 3"/><path d="M14.5 5a5 5 0 0 1 2.5 4v3a5 5 0 0 1-3 4.5"/><path d="M12 18v-4"/></svg></div>
-                    <h3>Touch ID Protected</h3>
-                    <p>Settings are locked behind your fingerprint. Nobody — not your kids, not your coworker — can disable your protections without Touch ID.</p>
+                    <h3>macOS Auth Protected</h3>
+                    <p>macOS asks for Touch ID or your password when SaneHosts updates the system hosts file.</p>
                 </div>
             </div>
         </div>
@@ -1515,7 +1515,7 @@
                             <td><span class="check">&#10003;</span></td>
                         </tr>
                         <tr>
-                            <td class="feature-name">100% on-device</td>
+                            <td class="feature-name">Hosts data stays local</td>
                             <td class="highlight-col"><span class="check">&#10003;</span></td>
                             <td><span class="cross">&#10007;</span></td>
                             <td><span class="cross">&#10007;</span></td>
@@ -1533,7 +1533,7 @@
                             <td><span class="cross">&#10007;</span></td>
                         </tr>
                         <tr>
-                            <td class="feature-name">Touch ID protected</td>
+                            <td class="feature-name">macOS auth protected</td>
                             <td class="highlight-col"><span class="check">&#10003;</span></td>
                             <td><span class="cross">&#10007;</span></td>
                             <td><span class="cross">&#10007;</span></td>
@@ -1602,7 +1602,7 @@
                         <img src="images/sanesales-icon.png" alt="SaneSales" class="app-card-icon">
                         <div class="app-card-name">SaneSales</div>
                     </div>
-                    <p class="app-card-tagline">Track your indie sales from LemonSqueezy, Gumroad, and Stripe in one beautiful, native app. Revenue charts, CSV export, 100% on-device.</p>
+                    <p class="app-card-tagline">Track your indie sales from LemonSqueezy, Gumroad, and Stripe in one beautiful, native app. Revenue charts, CSV export, local-first data.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
             </div>
@@ -1647,7 +1647,7 @@
         <div style="overflow: hidden; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
             <div style="display: flex; gap: 20px; animation: testimonialScroll 20s linear infinite; width: max-content;" onmouseenter="this.style.animationPlayState='paused'" onmouseleave="this.style.animationPlayState='running'">
                 <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this, cool, will check it."</p>
+                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local is the only way to do this, cool, will check it."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@manuotel (X)</div>
                 </div>
                 <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
@@ -1664,7 +1664,7 @@
                 </div>
                 <!-- Duplicated for seamless loop -->
                 <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
-                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local and no telemetry is the only way to do this, cool, will check it."</p>
+                    <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local is the only way to do this, cool, will check it."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@manuotel (X)</div>
                 </div>
                 <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
@@ -1686,7 +1686,7 @@
 
     <footer>
         <div class="container">
-            <p class="footer-privacy"><strong>No personal-content upload</strong>. <strong>No cloud account</strong>. <strong>100% on your Mac</strong>.</p>
+            <p class="footer-privacy"><strong>No personal-content upload</strong>. <strong>No cloud account</strong>. <strong>Your hosts data stays on your Mac</strong>.</p>
             <div class="footer-links">
                 <a href="guides.html">Guides</a>
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
@@ -1697,7 +1697,7 @@
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
-            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 0.7; margin-bottom: 12px;">One-time unlock. No subscription.</p>
+            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 1; margin-bottom: 12px;">One-time unlock. No subscription.</p>
             <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts &middot; Requires macOS 14.0 (Sonoma) or later</p>
             <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
             <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>

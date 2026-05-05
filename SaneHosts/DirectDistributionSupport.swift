@@ -14,6 +14,14 @@ enum SaneAppMover {
         URL(fileURLWithPath: "/usr/bin/osascript")
     }
 
+    private static func appleScriptStringLiteral(_ value: String) -> String {
+        "\"" + value
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+            .replacingOccurrences(of: "\n", with: "")
+            .replacingOccurrences(of: "\r", with: "") + "\""
+    }
+
     @MainActor
     @discardableResult
     static func moveToApplicationsFolderIfNeeded(prompt: Prompt) -> Bool {
@@ -51,9 +59,14 @@ enum SaneAppMover {
         }
 
         if !moved {
-            let escapedSourcePath = appPath.replacingOccurrences(of: "'", with: "'\\''")
-            let escapedDestinationPath = destinationPath.replacingOccurrences(of: "'", with: "'\\''")
-            let script = "do shell script \"rm -rf '\(escapedDestinationPath)' && mv '\(escapedSourcePath)' '\(escapedDestinationPath)'\" with administrator privileges"
+            let script = """
+            set sourcePath to POSIX file \(appleScriptStringLiteral(appPath))
+            set destinationPath to POSIX file \(appleScriptStringLiteral(destinationPath))
+            tell application "Finder"
+                if exists destinationPath then delete destinationPath
+                move sourcePath to POSIX file "/Applications"
+            end tell
+            """ + "\n"
 
             let osa = Process()
             osa.executableURL = osascriptExecutableURL

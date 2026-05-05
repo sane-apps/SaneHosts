@@ -1,4 +1,5 @@
 import Foundation
+import Darwin
 import os
 
 /// SaneHostsHelper - Privileged helper daemon for SaneHosts
@@ -84,7 +85,7 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
 class HostsHelperService: NSObject, HostsHelperProtocol {
 
     private let hostsPath = "/etc/hosts"
-    private let maxHostsFileBytes = 2 * 1024 * 1024
+    private let maxHostsFileBytes = 25 * 1024 * 1024
 
     func writeHostsFile(content: String, reply: @escaping (Bool, String?) -> Void) {
         logger.info("writeHostsFile called, content length: \(content.count)")
@@ -149,25 +150,13 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
     }
 
     private func isValidIPv4(_ string: String) -> Bool {
-        let parts = string.split(separator: ".")
-        guard parts.count == 4 else { return false }
-        return parts.allSatisfy { part in
-            guard let number = Int(part), number >= 0, number <= 255 else { return false }
-            return true
-        }
+        var address = in_addr()
+        return string.withCString { inet_pton(AF_INET, $0, &address) == 1 }
     }
 
     private func isValidIPv6(_ string: String) -> Bool {
-        var address = string.lowercased()
-        if address.contains("::") {
-            guard address.components(separatedBy: "::").count <= 2 else { return false }
-        }
-        address = address.trimmingCharacters(in: CharacterSet(charactersIn: ":"))
-        let groups = address.split(separator: ":", omittingEmptySubsequences: false)
-        guard !groups.isEmpty else { return false }
-        return groups.allSatisfy { group in
-            group.isEmpty || (group.count <= 4 && group.allSatisfy(\.isHexDigit))
-        }
+        var address = in6_addr()
+        return string.withCString { inet_pton(AF_INET6, $0, &address) == 1 }
     }
 
     private func isValidHostname(_ string: String) -> Bool {

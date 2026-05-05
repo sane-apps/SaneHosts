@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Privacy Policy - SaneHosts</title>
-    <meta name="description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta name="description" content="SaneHosts keeps your hosts data on your Mac and uses limited anonymous product events for product health.">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -12,7 +12,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="Privacy Policy - SaneHosts">
-    <meta property="og:description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta property="og:description" content="SaneHosts keeps your hosts data on your Mac and uses limited anonymous product events for product health.">
     <meta property="og:image" content="https://sanehosts.com/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
@@ -22,7 +22,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Privacy Policy - SaneHosts">
-    <meta name="twitter:description" content="SaneHosts keeps your hosts data on your Mac. The app may send a few simple anonymous counts, like whether it opened in Basic or Pro.">
+    <meta name="twitter:description" content="SaneHosts keeps your hosts data on your Mac and uses limited anonymous product events for product health.">
     <meta name="twitter:image" content="https://sanehosts.com/og-image.png">
     <style>
         :root {
@@ -30,7 +30,7 @@
             --bg-card: #1a2744;
             --accent: #5fa8d3;
             --text: #e8eef4;
-            --text-muted: #8899aa;
+            --text-muted: #ffffff;
         }
 
         body {
@@ -104,7 +104,7 @@
         <p class="updated">Last updated: May 5, 2026</p>
 
         <h2>Summary</h2>
-        <p><strong>Your hosts entries and profiles stay on your Mac.</strong> SaneHosts does not upload that data to SaneApps servers. The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro, so we can understand product usage at a high level.</p>
+        <p><strong>Your hosts entries and profiles stay on your Mac.</strong> SaneHosts does not upload that data to SaneApps servers. The app may send limited anonymous product events, such as app version, OS version, distribution channel, and Basic vs Pro status, so product health can be understood at a high level.</p>
 
         <h2>Data Collection</h2>
         <p>The SaneHosts app does not collect:</p>
@@ -129,11 +129,12 @@
         <p>SaneHosts accesses the network only when:</p>
         <ul>
             <li>You explicitly import a blocklist from a remote URL</li>
+            <li>You choose a protection level or blocklist that has not already been cached or bundled locally</li>
             <li>Checking for app updates via Sparkle (can be disabled in Settings)</li>
-            <li>Sending a few simple anonymous app counts, such as Basic vs Pro launches</li>
+            <li>Sending a few simple anonymous product events, such as Basic vs Pro launches and license activation</li>
             <li>Opening checkout or license delivery through Lemon Squeezy when you choose to buy Pro</li>
         </ul>
-        <p>Your hosts entries and profile contents are not sent to SaneApps.</p>
+        <p>Anonymous product events can include the event name, app version, build, OS version, platform, distribution channel, and Basic vs Pro status. Your hosts entries and profile contents are not sent to SaneApps.</p>
 
         <h2>System Access</h2>
         <p>SaneHosts needs administrator permission to modify /etc/hosts. macOS handles that through its normal password prompt. SaneHosts does not store your password.</p>
@@ -142,9 +143,9 @@
         <p>SaneHosts uses:</p>
         <ul>
             <li><strong>Sparkle:</strong> For checking app updates. Only checks for updates from sanehosts.com. No personal content is transmitted.</li>
-            <li><strong>SaneApps distribution service:</strong> Receives a few simple anonymous app counts. These do not include your hosts entries or profile contents.</li>
+            <li><strong>SaneApps distribution service:</strong> Receives a few simple anonymous product events. These do not include your hosts entries, profile contents, personal files, device identifiers, or account identifiers.</li>
             <li><strong>Lemon Squeezy:</strong> Processes Pro purchases and license delivery. This applies to checkout, not to hosts entries or profile contents.</li>
-            <li><strong>Cloudflare Web Analytics (website only):</strong> The public website uses simple aggregate traffic stats. This applies to the website only, not the app.</li>
+            <li><strong>Cloudflare Web Analytics (website only):</strong> The public website uses privacy-first aggregate traffic stats without analytics cookies or analytics fingerprinting. This applies to the website only, not the app.</li>
             <li><strong>Google Fonts (website only):</strong> Some public website pages load fonts from Google. This applies to the website only, not the app.</li>
         </ul>
 
@@ -155,7 +156,7 @@
         <p>SaneHosts publishes its source code for full transparency. You can review the code at <a href="https://github.com/sane-apps/SaneHosts">github.com/sane-apps/SaneHosts</a>. Licensed under PolyForm Shield 1.0.0 — free for personal use and experimentation.</p>
 
         <h2>Contact</h2>
-        <p>Questions about privacy? Open an issue on <a href="https://github.com/sane-apps/SaneHosts/issues">GitHub</a>.</p>
+        <p>Questions about privacy? Email <a href="mailto:hi@saneapps.com">hi@saneapps.com</a> for private questions, or open an issue on <a href="https://github.com/sane-apps/SaneHosts/issues">GitHub</a> for public docs or code discussion.</p>
     </div>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

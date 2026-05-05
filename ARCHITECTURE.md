@@ -2,7 +2,7 @@
 
 > [README](README.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DEVELOPMENT](DEVELOPMENT.md) · [PRIVACY](PRIVACY.md) · [SECURITY](SECURITY.md)
 
-Last updated: 2026-02-02
+Last updated: 2026-05-05
 
 ## Purpose
 
@@ -11,7 +11,8 @@ SaneHosts is a native macOS app for managing `/etc/hosts` through curated profil
 ## Non-goals
 
 - No background network sync unless a user adds remote blocklist URLs.
-- No cloud accounts or analytics.
+- No cloud accounts, no hosts/profile sync, and no upload of hosts entries or profile content.
+- Privacy-preserving product/website metrics are limited to anonymous product events and aggregate website analytics.
 - No direct editing of `/etc/hosts` without explicit user action.
 
 ## System Context
@@ -120,7 +121,7 @@ stateDiagram-v2
 
 - Helper path uses Touch ID and privileged XPC (LaunchDaemon).
 - AppleScript fallback prompts for admin password.
-- Network access only when fetching user-specified blocklist URLs.
+- Network access only for update checks, anonymous product events, checkout/license delivery, website analytics, and user-chosen blocklist/protection-level fetches.
 
 ## Build and Release Truth
 

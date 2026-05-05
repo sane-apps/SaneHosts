@@ -69,13 +69,20 @@ final class SettingsActionStorage {
     @MainActor
     private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
         func writeHostsFile(content: String) async throws {
+            do {
+                try HostsContentValidator.validate(content)
+            } catch {
+                throw HostsServiceError.invalidContent
+            }
+
             let tempURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("sanehosts-pending.hosts")
+                .appendingPathComponent("sanehosts-\(UUID().uuidString).hosts")
 
             try? FileManager.default.removeItem(at: tempURL)
 
             do {
                 try content.write(to: tempURL, atomically: true, encoding: .utf8)
+                try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: tempURL.path)
             } catch {
                 throw HostsServiceError.tempFileWriteFailed(error.localizedDescription)
             }
@@ -171,7 +178,7 @@ struct SaneHostsApp: App {
                             ("network", "DNS cache flush")
                         ],
                         proFeatures: [
-                            ("checkmark", "Everything in Free, plus:"),
+                            ("checkmark", "Everything in Basic, plus:"),
                             ("doc.on.doc", "Unlimited profiles"),
                             ("arrow.down.circle", "Downloadable presets"),
                             ("arrow.triangle.merge", "Merge profiles"),

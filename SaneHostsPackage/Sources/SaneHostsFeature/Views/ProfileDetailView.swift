@@ -425,7 +425,7 @@ struct ProfileDetailView: View {
                             } label: {
                                 Image(systemName: selectedEntries.contains(entry.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title2)
-                                    .foregroundStyle(selectedEntries.contains(entry.id) ? .blue : .white.opacity(0.78))
+                                    .foregroundStyle(selectedEntries.contains(entry.id) ? .blue : .white)
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel(selectedEntries.contains(entry.id) ? "Deselect \(entry.hostnames.first ?? "entry")" : "Select \(entry.hostnames.first ?? "entry")")
@@ -696,7 +696,6 @@ struct EntryRow: View {
         .contentShape(Rectangle())
         .background(isHovering ? Color.primary.opacity(0.03) : Color.clear)
         .onHover { isHovering = $0 }
-        .opacity(entry.isEnabled ? 1 : 0.6)
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(entry.ipAddress) \(entry.hostnames.joined(separator: ", ")), \(entry.isEnabled ? "enabled" : "disabled")")
     }
