@@ -10,7 +10,7 @@ SaneHosts is built to keep your hosts data on your Mac. Here is the plain-Englis
 
 **Your hosts entries and profiles stay on your Mac.** SaneHosts does not upload that data to SaneApps servers.
 
-The app may send a few simple anonymous counts, such as whether it opened in Basic or Pro, so we can understand product usage at a high level. Those counts do not include your hosts entries, profile contents, or personal files.
+The app may send a few simple anonymous product events, such as app launches, onboarding progress, checkout/license events, Basic vs Pro status, app version, build, OS version, platform, and distribution channel. Those events do not include your hosts entries, profile contents, personal files, device identifiers, or account identifiers.
 
 ## What We Do Not Collect
 
@@ -38,8 +38,9 @@ In normal use, this stays on your Mac unless you choose a feature that fetches s
 SaneHosts uses the network only when:
 
 - You choose to import a blocklist from a URL
+- You choose a protection level or blocklist that has not already been cached or bundled locally
 - It checks for app updates, if update checks are enabled
-- It sends a few simple anonymous app counts, such as Basic vs Pro launches
+- It sends a few simple anonymous product events, such as Basic vs Pro launches and license activation
 
 Your hosts entries and profile contents are not sent to SaneApps.
 
@@ -48,12 +49,12 @@ Your hosts entries and profile contents are not sent to SaneApps.
 SaneHosts uses a small number of outside services:
 
 - **Sparkle** to check for app updates
-- **SaneApps distribution service** to receive simple anonymous app counts
+- **SaneApps distribution service** to receive simple anonymous product events
 - **Lemon Squeezy** to process Pro purchases and license delivery
-- **Cloudflare Web Analytics** on public website pages
+- **Cloudflare Web Analytics** on public website pages for privacy-preserving aggregate traffic counts
 - **Google Fonts** on some public website pages
 
-Checkout and website services apply to purchases or `sanehosts.com` pages, not to your hosts entries or profile contents inside the app.
+Checkout and website services apply to purchases or `sanehosts.com` pages, not to your hosts entries or profile contents inside the app. Cloudflare Web Analytics is used as a privacy-first website analytics tool; it does not use cookies or browser fingerprinting for analytics.
 
 ## Remote Imports
 
@@ -75,4 +76,4 @@ You can:
 
 ## Contact
 
-Questions about privacy? Open an issue on [GitHub](https://github.com/sane-apps/SaneHosts/issues).
+Questions about privacy? Email `hi@saneapps.com` for private questions, or open an issue on [GitHub](https://github.com/sane-apps/SaneHosts/issues) for public docs or code discussion.

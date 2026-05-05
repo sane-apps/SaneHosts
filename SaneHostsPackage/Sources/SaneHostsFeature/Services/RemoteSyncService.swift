@@ -78,10 +78,18 @@ public final class RemoteSyncService {
             statusMessage = ""
         }
 
+        var downloadedURL: URL?
+        defer {
+            if let downloadedURL {
+                try? FileManager.default.removeItem(at: downloadedURL)
+            }
+        }
+
         do {
             // Phase 1: Download using URLSessionDownloadTask
             phase = .connecting
             let localURL = try await downloadFile(from: url)
+            downloadedURL = localURL
 
             // Phase 2: Parse using stream (URL.lines)
             phase = .parsing
@@ -91,9 +99,6 @@ public final class RemoteSyncService {
 
             phase = .complete
             statusMessage = "Found \(result.entries.count.formatted()) entries"
-
-            // Clean up temp file
-            try? FileManager.default.removeItem(at: localURL)
 
             return result
 
@@ -133,6 +138,7 @@ public final class RemoteSyncService {
                 try? FileManager.default.removeItem(at: tempURL)
             }
             try FileManager.default.copyItem(at: url, to: tempURL)
+            try protectTemporaryFile(tempURL)
             downloadProgress = 1.0
             statusMessage = "Download complete"
             return tempURL
@@ -146,8 +152,13 @@ public final class RemoteSyncService {
                 throw RemoteSyncError.invalidResponse
             }
 
+            guard Self.isAllowedFinalURL(httpResponse.url, originalURL: url) else {
+                logger.error(" Remote import redirected to an insecure or unexpected transport")
+                throw RemoteSyncError.insecureURL
+            }
+
             guard (200 ... 299).contains(httpResponse.statusCode) else {
-                logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
+                logger.error(" Remote import HTTP status \(httpResponse.statusCode)")
                 throw RemoteSyncError.httpError(httpResponse.statusCode)
             }
 
@@ -158,12 +169,36 @@ public final class RemoteSyncService {
 
         // Move to persistent temp location
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".hosts")
-        try FileManager.default.moveItem(at: localURL, to: tempURL)
-        try validateDownloadedFileSize(at: tempURL)
+        do {
+            try FileManager.default.moveItem(at: localURL, to: tempURL)
+            try protectTemporaryFile(tempURL)
+            try validateDownloadedFileSize(at: tempURL)
+        } catch {
+            try? FileManager.default.removeItem(at: tempURL)
+            throw error
+        }
 
         downloadProgress = 1.0
         statusMessage = "Download complete"
         return tempURL
+    }
+
+    private func protectTemporaryFile(_ url: URL) throws {
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
+    }
+
+    private static func isAllowedFinalURL(_ finalURL: URL?, originalURL: URL) -> Bool {
+        guard let finalURL else { return false }
+        if finalURL.isFileURL {
+            return originalURL.isFileURL
+        }
+
+        let scheme = finalURL.scheme?.lowercased()
+        if scheme == "https" { return true }
+
+        guard scheme == "http" else { return false }
+        let host = finalURL.host?.lowercased()
+        return host == "127.0.0.1" || host == "localhost" || host == "::1"
     }
 
     private func validateDownloadedFileSize(at url: URL) throws {
@@ -243,7 +278,8 @@ public final class RemoteSyncService {
                               host != "localhost.localdomain",
                               host != "local",
                               host != "broadcasthost",
-                              !host.hasPrefix("#") else { return nil }
+                              !host.hasPrefix("#"),
+                              parser.isValidHostname(host) else { return nil }
                         return host
                     }
                 }

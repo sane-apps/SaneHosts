@@ -155,12 +155,13 @@ public actor PresetManager {
 
     private init() {}
 
-    /// Load entries for a preset, using cached data if available, otherwise bundled
-    public func loadEntries(for preset: ProfilePreset) async throws -> [HostEntry] {
+    /// Load entries for a preset, using cached data if available, otherwise bundled.
+    /// Network fetches are opt-in so first launch stays local-first.
+    public func loadEntries(for preset: ProfilePreset, allowNetworkFetch: Bool = true) async throws -> [HostEntry] {
         var allEntries: [HostEntry] = []
 
         for source in preset.blocklistSources {
-            if let entries = try? await loadBlocklist(source: source) {
+            if let entries = try? await loadBlocklist(source: source, allowNetworkFetch: allowNetworkFetch) {
                 allEntries.append(contentsOf: entries)
             }
         }
@@ -170,13 +171,13 @@ public actor PresetManager {
     }
 
     /// Load a single blocklist from cache or fetch from network
-    private func loadBlocklist(source: BlocklistSource) async throws -> [HostEntry] {
+    private func loadBlocklist(source: BlocklistSource, allowNetworkFetch: Bool) async throws -> [HostEntry] {
         let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
         let parser = HostsParser()
 
         // Try cache first
         if FileManager.default.fileExists(atPath: cacheFile.path) {
-            let content = try String(contentsOf: cacheFile, encoding: .utf8)
+            let content = try loadLocalBlocklist(at: cacheFile)
             let lines = parser.parse(content)
             return parser.extractEntries(from: lines)
         }
@@ -184,19 +185,17 @@ public actor PresetManager {
         // Try bundled data
         if let bundledFile = bundledDataURL?.appendingPathComponent("\(source.id).txt"),
            FileManager.default.fileExists(atPath: bundledFile.path) {
-            let content = try String(contentsOf: bundledFile, encoding: .utf8)
+            let content = try loadLocalBlocklist(at: bundledFile)
             let lines = parser.parse(content)
             return parser.extractEntries(from: lines)
         }
 
+        guard allowNetworkFetch else {
+            throw PresetError.networkUnavailable
+        }
+
         // Fetch from network (with timeout)
-        let (data, _) = try await session.data(from: source.url)
-        guard data.count <= Self.maxBlocklistBytes else {
-            throw PresetError.fileTooLarge
-        }
-        guard let content = String(data: data, encoding: .utf8) else {
-            throw PresetError.invalidData
-        }
+        let content = try await fetchBlocklistContent(from: source.url)
 
         // Cache for future use
         try? createPrivateCacheDirectoryIfNeeded()
@@ -227,21 +226,55 @@ public actor PresetManager {
     public func updateCachedBlocklists() async {
         for source in BlocklistCatalog.all {
             do {
-                let (data, _) = try await session.data(from: source.url)
-                guard data.count <= Self.maxBlocklistBytes else {
-                    continue
-                }
-                if let content = String(data: data, encoding: .utf8) {
-                    let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
-                    try? createPrivateCacheDirectoryIfNeeded()
-                    try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
-                    try? protectCacheFile(cacheFile)
-                }
+                let content = try await fetchBlocklistContent(from: source.url)
+                let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
+                try? createPrivateCacheDirectoryIfNeeded()
+                try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
+                try? protectCacheFile(cacheFile)
             } catch {
                 // Silently fail - we'll use cached/bundled data
                 continue
             }
         }
+    }
+
+    private func fetchBlocklistContent(from url: URL) async throws -> String {
+        let (localURL, response) = try await session.download(from: url)
+        defer { try? FileManager.default.removeItem(at: localURL) }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw PresetError.invalidData
+        }
+        guard Self.isAllowedFinalURL(httpResponse.url) else {
+            throw PresetError.networkUnavailable
+        }
+        guard (200 ... 299).contains(httpResponse.statusCode) else {
+            throw PresetError.networkUnavailable
+        }
+        if httpResponse.expectedContentLength > Self.maxBlocklistBytes {
+            throw PresetError.fileTooLarge
+        }
+
+        let attributes = try FileManager.default.attributesOfItem(atPath: localURL.path)
+        let size = attributes[.size] as? Int64 ?? 0
+        guard size <= Self.maxBlocklistBytes else {
+            throw PresetError.fileTooLarge
+        }
+
+        return try String(contentsOf: localURL, encoding: .utf8)
+    }
+
+    private func loadLocalBlocklist(at url: URL) throws -> String {
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        let size = attributes[.size] as? Int64 ?? 0
+        guard size <= Self.maxBlocklistBytes else {
+            throw PresetError.fileTooLarge
+        }
+        return try String(contentsOf: url, encoding: .utf8)
+    }
+
+    private static func isAllowedFinalURL(_ finalURL: URL?) -> Bool {
+        finalURL?.scheme?.lowercased() == "https"
     }
 
     private func createPrivateCacheDirectoryIfNeeded() throws {

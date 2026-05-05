@@ -61,6 +61,7 @@ public final class ProfileStore {
 
     /// Maximum number of backups to keep per profile
     private let maxBackupsPerProfile = 3
+    private let maxSystemHostsBytes: Int64 = 25 * 1024 * 1024
 
     // MARK: - Initialization
 
@@ -114,13 +115,17 @@ public final class ProfileStore {
     }
 
     private func createProfilesDirectoryIfNeeded() throws {
-        if !fileManager.fileExists(atPath: profilesDirectoryURL.path) {
-            try fileManager.createDirectory(at: profilesDirectoryURL, withIntermediateDirectories: true)
-        }
-        // Also create backups directory
-        if !fileManager.fileExists(atPath: backupsDirectoryURL.path) {
-            try fileManager.createDirectory(at: backupsDirectoryURL, withIntermediateDirectories: true)
-        }
+        try fileManager.createDirectory(
+            at: profilesDirectoryURL,
+            withIntermediateDirectories: true,
+            attributes: [.posixPermissions: 0o700]
+        )
+        try fileManager.createDirectory(
+            at: backupsDirectoryURL,
+            withIntermediateDirectories: true,
+            attributes: [.posixPermissions: 0o700]
+        )
+        try protectStoragePermissions()
     }
 
     // MARK: - Preset Profiles
@@ -130,8 +135,8 @@ public final class ProfileStore {
         logger.debug("Creating Essentials preset profile...")
 
         do {
-            // Load entries from PresetManager (will fetch from network if needed)
-            let entries = try await PresetManager.shared.loadEntries(for: .essentials)
+            // First launch is local-first: use cached or bundled entries only.
+            let entries = try await PresetManager.shared.loadEntries(for: .essentials, allowNetworkFetch: false)
             logger.debug("Loaded \(entries.count) entries for Essentials")
 
             let essentialsProfile = ProfilePreset.essentials.createProfile(with: entries)
@@ -182,6 +187,7 @@ public final class ProfileStore {
 
         do {
             try fileManager.copyItem(at: sourceURL, to: backupURL)
+            try protectPrivateFile(backupURL)
             cleanupOldBackups(for: profile.id)
             logger.debug(" Backup created: \(backupName)")
         } catch {
@@ -241,6 +247,7 @@ public final class ProfileStore {
     private func loadSystemHosts() async throws {
         let url = systemHostsURL
         let parser = parser
+        try validateSystemHostsSize()
 
         // Only parse the system entries header, not the full 200K+ line hosts file.
         // System entries (localhost, broadcasthost) appear before the "# ---- Profile:" marker.
@@ -321,6 +328,7 @@ public final class ProfileStore {
                 let quarantineName = "CORRUPTED_\(file.lastPathComponent)"
                 let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
                 try? fileManager.moveItem(at: file, to: quarantineURL)
+                try? protectPrivateFile(quarantineURL)
                 logger.debug(" Quarantined corrupted file: \(quarantineName)")
             }
         }
@@ -334,6 +342,7 @@ public final class ProfileStore {
     private func migrateExistingSystemHosts() async throws {
         let url = systemHostsURL
         let parser = parser
+        try validateSystemHostsSize()
 
         // Read on background thread
         let userEntries = try await Task.detached(priority: .userInitiated) {
@@ -430,6 +439,7 @@ public final class ProfileStore {
             toEncode.modifiedAt = Date()
             let data = try JSONEncoder().encode(toEncode)
             try data.write(to: fileURL, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
 
         profiles.append(profile)
@@ -465,6 +475,7 @@ public final class ProfileStore {
             toEncode.modifiedAt = Date()
             let data = try JSONEncoder().encode(toEncode)
             try data.write(to: fileURL, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
 
         profiles.append(profile)
@@ -485,6 +496,7 @@ public final class ProfileStore {
         try await Task.detached(priority: .userInitiated) {
             let data = try JSONEncoder().encode(profileToSave)
             try data.write(to: fileURL, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
 
         // Update in-memory list
@@ -697,6 +709,7 @@ public final class ProfileStore {
             toEncode.modifiedAt = Date()
             let data = try JSONEncoder().encode(toEncode)
             try data.write(to: fileURL, options: .atomic)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
 
         // Update in-memory list on main actor
@@ -774,6 +787,30 @@ public final class ProfileStore {
     /// Export a profile as hosts file content
     public func exportProfile(_ profile: Profile) -> String {
         parser.merge(profile: profile, systemEntries: systemEntries)
+    }
+
+    private func validateSystemHostsSize() throws {
+        let attributes = try fileManager.attributesOfItem(atPath: systemHostsURL.path)
+        let size = attributes[.size] as? Int64 ?? 0
+        guard size <= maxSystemHostsBytes else {
+            throw ProfileStoreError.loadFailed("/etc/hosts is too large to import automatically")
+        }
+    }
+
+    private func protectStoragePermissions() throws {
+        try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: profilesDirectoryURL.path)
+        try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: backupsDirectoryURL.path)
+
+        for directory in [profilesDirectoryURL, backupsDirectoryURL] {
+            let files = try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
+            for file in files where file.pathExtension == "json" {
+                try? protectPrivateFile(file)
+            }
+        }
+    }
+
+    private func protectPrivateFile(_ url: URL) throws {
+        try fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
     }
 }
 

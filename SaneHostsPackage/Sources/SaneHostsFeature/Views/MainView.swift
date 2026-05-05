@@ -299,7 +299,7 @@ public struct MainView: View {
                 // Pro action: import curated blocklists.
                 ProGatedQuickActionButton(
                     title: "Import Blocklist",
-                    subtitle: "Block ads, trackers & more",
+                    subtitle: "Block ads and trackers",
                     icon: "arrow.down.circle.fill",
                     color: .blue,
                     isPro: licenseService.isPro
@@ -329,7 +329,7 @@ public struct MainView: View {
                 // Start from a built-in template (always visible, Pro gated).
                 ProGatedQuickActionButton(
                     title: "From Template",
-                    subtitle: "Ad blocking, privacy, and more",
+                    subtitle: "Start with a preset",
                     icon: "doc.badge.plus",
                     color: .purple,
                     isPro: licenseService.isPro
@@ -345,7 +345,7 @@ public struct MainView: View {
                 let canMerge = store.profiles.count >= 2
                 ProGatedQuickActionButton(
                     title: "Merge Profiles",
-                    subtitle: canMerge ? "Combine \(store.profiles.count) profiles" : "Need 2+ profiles to merge",
+                    subtitle: canMerge ? "Combine profiles" : "Need 2+ profiles",
                     icon: "arrow.triangle.merge",
                     color: .pink,
                     isPro: licenseService.isPro
@@ -495,12 +495,12 @@ public struct MainView: View {
                 icon: SaneIcons.hosts,
                 title: "No Profile Selected",
                 description: "Select a profile or choose a protection level to get started.",
-                actionTitle: "Import Blocklist"
+                actionTitle: "Open Essentials"
             ) {
-                if MainViewGatePolicy.canOpenRemoteImport(isPro: licenseService.isPro) {
-                    showingRemoteImport = true
-                } else {
-                    proUpsellFeature = .importProfiles
+                if let essentials = store.profiles.first(where: { $0.name.caseInsensitiveCompare("Essentials") == .orderedSame })
+                    ?? store.profiles.first {
+                    selectedProfileIDs = [essentials.id]
+                    selectedPreset = nil
                 }
             }
             .accessibilityLabel("No profile selected. Select a profile or choose a protection level to get started.")
@@ -765,6 +765,8 @@ struct QuickActionButton: View {
                     Text(subtitle)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer()
@@ -795,7 +797,7 @@ struct ProGatedQuickActionButton: View {
             HStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundStyle(isPro ? color : color.opacity(0.6))
+                    .foregroundStyle(isPro ? color : .white)
                     .frame(width: 28)
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -806,6 +808,8 @@ struct ProGatedQuickActionButton: View {
                     Text(subtitle)
                         .font(.system(size: 13, weight: .medium))
                         .foregroundStyle(.white)
+                        .lineLimit(2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
 
                 Spacer()
@@ -1254,6 +1258,7 @@ struct RemoteImportSheet: View {
     @State private var importProgress: Double = 0
     @State private var currentImportName = ""
     @State private var error: String?
+    @State private var importTask: Task<Void, Never>?
 
     // Custom URL
     @State private var showingCustomURL = false
@@ -1648,13 +1653,13 @@ struct RemoteImportSheet: View {
                             .cornerRadius(6)
                     }
 
-                    // HTTP warning
+                    // HTTPS requirement
                     if customURL.lowercased().hasPrefix("http://") {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .font(.system(size: 13, weight: .semibold))
                                 .foregroundStyle(.orange)
-                            Text("HTTP is not secure. Consider using HTTPS.")
+                            Text("Only HTTPS URLs are supported.")
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundStyle(.white)
                         }
@@ -1731,6 +1736,7 @@ struct RemoteImportSheet: View {
 
                 // Buttons
                 Button("Cancel") {
+                    cancelImport()
                     dismiss()
                 }
                 .keyboardShortcut(.cancelAction)
@@ -1816,7 +1822,7 @@ struct RemoteImportSheet: View {
                 }
 
                 Button("Cancel") {
-                    // Cancel would need task tracking
+                    cancelImport()
                 }
                 .buttonStyle(SaneActionButtonStyle())
                 .accessibilityLabel("Cancel import")
@@ -1850,11 +1856,17 @@ struct RemoteImportSheet: View {
 
     private func startImport() {
         let finalName = profileName.isEmpty ? suggestedName : profileName
+        importTask?.cancel()
         isImporting = true
         importProgress = 0
         error = nil
 
-        Task { @MainActor in
+        importTask = Task { @MainActor in
+            defer {
+                isImporting = false
+                importTask = nil
+            }
+
             do {
                 // Handle custom URL
                 if !customURL.isEmpty, let url = URL(string: customURL) {
@@ -1912,9 +1924,15 @@ struct RemoteImportSheet: View {
 
             } catch {
                 self.error = error.localizedDescription
-                isImporting = false
             }
         }
+    }
+
+    private func cancelImport() {
+        importTask?.cancel()
+        RemoteSyncService.shared.cancel()
+        isImporting = false
+        currentImportName = ""
     }
 }
 
@@ -2061,7 +2079,7 @@ struct MergeProfilesSheet: View {
                             HStack(spacing: 12) {
                                 Image(systemName: selectedProfiles.contains(profile.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title3)
-                                    .foregroundStyle(selectedProfiles.contains(profile.id) ? .purple : .white.opacity(0.78))
+                                    .foregroundStyle(selectedProfiles.contains(profile.id) ? .purple : .white)
 
                                 ProfileColorDot(color: profile.colorTag)
 
@@ -2249,7 +2267,7 @@ struct PresetRowView: View {
             } else {
                 Image(systemName: "icloud.and.arrow.down")
                     .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.78))
+                    .foregroundStyle(.white)
             }
         }
         .padding(.vertical, 5)

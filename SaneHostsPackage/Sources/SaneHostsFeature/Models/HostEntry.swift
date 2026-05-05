@@ -10,6 +10,59 @@ public enum HostsSanitizer {
     }
 }
 
+public enum HostsContentValidator {
+    private static let maxHostsFileBytes = 25 * 1024 * 1024
+
+    public static func validate(_ content: String) throws {
+        guard content.utf8.count <= maxHostsFileBytes else {
+            throw ValidationError.tooLarge
+        }
+        guard !content.contains("\0") else {
+            throw ValidationError.nulByte
+        }
+
+        let parser = HostsParser()
+        for line in content.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty, !trimmed.hasPrefix("#") else { continue }
+
+            let contentBeforeComment = trimmed
+                .split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false)
+                .first
+                .map(String.init)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let parts = contentBeforeComment.split { $0.isWhitespace }.map(String.init)
+
+            guard parts.count >= 2, parser.isValidIPAddress(parts[0]) else {
+                throw ValidationError.invalidLine
+            }
+            guard parts.dropFirst().allSatisfy({ parser.isValidHostname($0) }) else {
+                throw ValidationError.invalidHostname
+            }
+        }
+    }
+
+    public enum ValidationError: LocalizedError, Equatable {
+        case tooLarge
+        case nulByte
+        case invalidLine
+        case invalidHostname
+
+        public var errorDescription: String? {
+            switch self {
+            case .tooLarge:
+                "hosts content is too large"
+            case .nulByte:
+                "hosts content contains NUL bytes"
+            case .invalidLine:
+                "hosts content contains an invalid line"
+            case .invalidHostname:
+                "hosts content contains an invalid hostname"
+            }
+        }
+    }
+}
+
 /// Represents a single entry in a hosts file
 public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID

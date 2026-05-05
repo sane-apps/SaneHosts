@@ -147,6 +147,10 @@ struct HostsParserTests {
     @Test("Invalid IPv6 addresses")
     func invalidIPv6() {
         #expect(parser.isValidIPAddress("gggg::1") == false)
+        #expect(parser.isValidIPAddress(":") == false)
+        #expect(parser.isValidIPAddress(":::") == false)
+        #expect(parser.isValidIPAddress("2001:::1") == false)
+        #expect(parser.isValidIPAddress("1.2.3.999") == false)
     }
 
     // MARK: - Hostname Validation
@@ -241,6 +245,78 @@ struct HostsParserTests {
         let content = parser.merge(profile: profile, systemEntries: [])
         #expect(!content.contains("# Profile: Work\n0.0.0.0 bank.example"))
         #expect(content.contains("# Profile: Work 0.0.0.0 bank.example"))
+    }
+
+    @Test("Hosts content validator rejects active injected lines")
+    func hostsContentValidatorRejectsInjectedLines() {
+        do {
+            try HostsContentValidator.validate("""
+            # Profile: Work
+            0.0.0.0 bank.example
+            injected-without-ip
+            """)
+            Issue.record("Expected invalid hosts content to throw")
+        } catch let error as HostsContentValidator.ValidationError {
+            #expect(error == .invalidLine)
+        } catch {
+            Issue.record("Expected HostsContentValidator.ValidationError, got \(error)")
+        }
+    }
+
+    @Test("Hosts content validator accepts generated content")
+    func hostsContentValidatorAcceptsGeneratedContent() throws {
+        let profile = Profile(
+            name: "Work",
+            entries: [
+                HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.example.com"], comment: "blocked")
+            ]
+        )
+
+        let content = parser.merge(profile: profile, systemEntries: [
+            HostEntry(ipAddress: "127.0.0.1", hostnames: ["localhost"])
+        ])
+
+        try HostsContentValidator.validate(content)
+    }
+
+    @Test("Remote import drops invalid hostnames from multi-host lines")
+    @MainActor
+    func remoteImportDropsInvalidHostnamesFromMultiHostLines() async throws {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("hosts")
+        try """
+        0.0.0.0 valid.example bad_host also-valid.example
+        """.write(to: tempURL, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+
+        let remoteFile = try await RemoteSyncService().fetch(from: tempURL)
+        #expect(remoteFile.entries.count == 1)
+        #expect(remoteFile.entries[0].hostnames == ["valid.example", "also-valid.example"])
+    }
+
+    @Test("Remote import rejects files above size cap")
+    @MainActor
+    func remoteImportRejectsOversizedFile() async throws {
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent(UUID().uuidString)
+            .appendingPathExtension("hosts")
+        let oversized = String(repeating: "# filler\n", count: 3_300_000)
+        try oversized.write(to: tempURL, atomically: true, encoding: .utf8)
+        defer { try? FileManager.default.removeItem(at: tempURL) }
+
+        do {
+            _ = try await RemoteSyncService().fetch(from: tempURL)
+            Issue.record("Expected oversized remote import to throw")
+        } catch let error as RemoteSyncError {
+            if case .fileTooLarge = error {
+                // Expected
+            } else {
+                Issue.record("Expected RemoteSyncError.fileTooLarge, got \(error)")
+            }
+        } catch {
+            Issue.record("Expected RemoteSyncError.fileTooLarge, got \(error)")
+        }
     }
 
     // MARK: - Extraction

@@ -342,7 +342,7 @@ struct EntryStatusIcon: View {
     var body: some View {
         Image(systemName: isEnabled ? "checkmark.circle.fill" : "circle")
             .font(.body)
-            .foregroundStyle(isEnabled ? .green : .white.opacity(0.78))
+            .foregroundStyle(isEnabled ? .green : .white)
     }
 }
 
@@ -400,7 +400,7 @@ struct SaneEmptyState: View {
         VStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.system(size: 48))
-                .foregroundStyle(.white.opacity(0.78))
+                .foregroundStyle(.white)
 
             VStack(spacing: 8) {
                 Text(title)
@@ -527,7 +527,7 @@ public extension ProfileColor {
     var uiColor: Color {
         switch self {
         case .gray:
-            return .gray
+            return .white
         case .red:
             return .saneError
         case .orange:

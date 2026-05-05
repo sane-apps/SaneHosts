@@ -86,6 +86,6 @@ public enum DNSServiceError: LocalizedError {
     }
 
     public var recoverySuggestion: String? {
-        "Your hosts file was updated successfully, but the DNS cache couldn't be refreshed automatically. Try restarting your browser, or run 'sudo dscacheutil -flushcache' in Terminal."
+        "Your hosts file was updated successfully, but the DNS cache couldn't be refreshed automatically. Try restarting your browser first. If changes are still not visible, restart your Mac."
     }
 }

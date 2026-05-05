@@ -101,7 +101,7 @@ DON'T: Assume an API exists from memory or web search
 
 **Critical APIs for SaneHosts:**
 - `NSAppleScript` - privilege elevation for /etc/hosts writes
-- `SMAppService` - if adding privileged helper (future)
+- `SMAppService` and XPC helper interfaces
 - `dscacheutil` - DNS cache flush
 
 ### #3: TWO STRIKES? INVESTIGATE
@@ -440,11 +440,13 @@ Use the unified SaneMaster workflow for build/test:
 ### Release Scripts
 
 ```bash
-# Build, sign, notarize, create DMG
-./scripts/SaneMaster.rb release
+# Preflight direct and App Store lanes
+./scripts/SaneMaster.rb release_preflight
+./scripts/SaneMaster.rb appstore_preflight
 
-# Generate Sparkle appcast.xml
-./scripts/generate_appcast.sh
+# Build, sign, notarize, upload, generate appcast, and deploy website
+bash ~/SaneApps/infra/SaneProcess/scripts/release.sh \
+  --project "$(pwd)" --full --version X.Y.Z --notes "..." --deploy
 ```
 
 ---

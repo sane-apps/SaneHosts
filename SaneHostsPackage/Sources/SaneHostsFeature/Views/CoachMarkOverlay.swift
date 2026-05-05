@@ -224,7 +224,7 @@ struct CoachMarkTooltip: View {
         case .essentialsReady:
             return "This profile blocks ads, trackers, and malware. Want more? Choose a different protection level below, or import your own blocklists."
         case .activateProfile:
-            return "Click Activate to apply your profile. You'll enter your password once, then you're protected."
+            return "Click Activate to apply your profile. macOS will ask for Touch ID or your password when SaneHosts updates your hosts file."
         default:
             return ""
         }

@@ -71,7 +71,7 @@ SaneHosts is a macOS app for managing `/etc/hosts` file through profiles. It all
 - Flush DNS cache automatically
 - First-run **coach mark tutorial** guides new users through activation
 
-**Key Architecture Note**: The app modifies `/etc/hosts` using AppleScript with administrator privileges (`do shell script with administrator privileges`). This triggers a system password prompt for the user.
+**Key Architecture Note**: The app writes `/etc/hosts` through the privileged XPC helper when available. Direct builds can fall back to a validated AppleScript admin prompt if the helper is unavailable.
 
 ---
 
@@ -158,10 +158,10 @@ For cross-project knowledge graph, use official Memory MCP tools.
 
 ## Security Considerations
 
-- **Admin Authentication**: Hosts file modifications require admin password
-- **AppleScript Elevation**: Uses `do shell script with administrator privileges`
-- **No Privileged Helper**: Uses AppleScript instead of XPC/SMAppService for simplicity
-- **Future**: May migrate to privileged helper (XPC, SMAppService) for better UX
+- **Admin Authentication**: Hosts file modifications require macOS authentication
+- **Privileged Helper**: Uses SMAppService/XPC helper for root hosts writes when available
+- **AppleScript Fallback**: Direct builds can use a validated admin prompt fallback
+- **Validation**: Hosts content is validated before helper or fallback writes
 
 ---
 
@@ -170,7 +170,7 @@ For cross-project knowledge graph, use official Memory MCP tools.
 ```bash
 # Always verify these exist before coding:
 # - NSAppleScript for privilege elevation
-# - SMAppService (if adding privileged helper)
+# - SMAppService and XPC helper interfaces
 # - dscacheutil (DNS flush)
 ```
 
@@ -258,20 +258,7 @@ Task tool with subagent_type: Explore
 
 ### Release Steps
 
-```bash
-# 1. Build, sign, notarize DMG
-./scripts/SaneMaster.rb release
-
-# 2. Upload DMG to Cloudflare R2
-npx wrangler r2 object put sanebar-downloads/SaneHosts-X.Y.Z.dmg \
-  --file=releases/SaneHosts-X.Y.Z.dmg --content-type="application/octet-stream" --remote
-
-# 3. Update appcast.xml then deploy website
-cp docs/appcast.xml website/appcast.xml
-CLOUDFLARE_ACCOUNT_ID=2c267ab06352ba2522114c3081a8c5fa \
-  npx wrangler pages deploy ./website --project-name=sanehosts-site \
-  --commit-dirty=true --commit-message="Release vX.Y.Z"
-```
+Use the shared SaneApps release pipeline in `docs/DISTRIBUTION.md`. Do not run manual R2 or Pages deploy commands for normal releases.
 
 ### Notes
 
