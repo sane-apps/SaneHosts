@@ -130,6 +130,7 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
 /// Manages preset profiles and bundled blocklist data
 public actor PresetManager {
     public static let shared = PresetManager()
+    private static let maxBlocklistBytes = 25 * 1024 * 1024
 
     /// Directory for bundled blocklist data
     private var bundledDataURL: URL? {
@@ -190,13 +191,17 @@ public actor PresetManager {
 
         // Fetch from network (with timeout)
         let (data, _) = try await session.data(from: source.url)
+        guard data.count <= Self.maxBlocklistBytes else {
+            throw PresetError.fileTooLarge
+        }
         guard let content = String(data: data, encoding: .utf8) else {
             throw PresetError.invalidData
         }
 
         // Cache for future use
-        try? FileManager.default.createDirectory(at: cachedDataURL, withIntermediateDirectories: true)
+        try? createPrivateCacheDirectoryIfNeeded()
         try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
+        try? protectCacheFile(cacheFile)
 
         let lines = parser.parse(content)
         return parser.extractEntries(from: lines)
@@ -223,16 +228,33 @@ public actor PresetManager {
         for source in BlocklistCatalog.all {
             do {
                 let (data, _) = try await session.data(from: source.url)
+                guard data.count <= Self.maxBlocklistBytes else {
+                    continue
+                }
                 if let content = String(data: data, encoding: .utf8) {
                     let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
-                    try? FileManager.default.createDirectory(at: cachedDataURL, withIntermediateDirectories: true)
+                    try? createPrivateCacheDirectoryIfNeeded()
                     try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
+                    try? protectCacheFile(cacheFile)
                 }
             } catch {
                 // Silently fail - we'll use cached/bundled data
                 continue
             }
         }
+    }
+
+    private func createPrivateCacheDirectoryIfNeeded() throws {
+        try FileManager.default.createDirectory(
+            at: cachedDataURL,
+            withIntermediateDirectories: true,
+            attributes: [.posixPermissions: 0o700]
+        )
+        try FileManager.default.setAttributes([.posixPermissions: 0o700], ofItemAtPath: cachedDataURL.path)
+    }
+
+    private func protectCacheFile(_ url: URL) throws {
+        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
     }
 }
 
@@ -242,12 +264,14 @@ public enum PresetError: Error, LocalizedError {
     case invalidData
     case networkUnavailable
     case presetNotFound
+    case fileTooLarge
 
     public var errorDescription: String? {
         switch self {
         case .invalidData: return "Invalid blocklist data"
         case .networkUnavailable: return "Network unavailable"
         case .presetNotFound: return "Preset not found"
+        case .fileTooLarge: return "Blocklist file is too large"
         }
     }
 }

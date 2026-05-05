@@ -192,6 +192,18 @@ struct HostsParserTests {
         #expect(entry.hostsFileLine == "127.0.0.1\texample.local # Dev server")
     }
 
+    @Test("Generated comments cannot inject extra hosts lines")
+    func generateEntrySanitizesComment() {
+        let entry = HostEntry(
+            ipAddress: "127.0.0.1",
+            hostnames: ["example.local"],
+            comment: "safe\n0.0.0.0 bank.example # injected"
+        )
+
+        #expect(!entry.hostsFileLine.contains("\n"))
+        #expect(entry.hostsFileLine == "127.0.0.1\texample.local # safe 0.0.0.0 bank.example  injected")
+    }
+
     @Test("Generate disabled entry")
     func generateDisabledEntry() {
         let entry = HostEntry(
@@ -217,6 +229,18 @@ struct HostsParserTests {
         #expect(lines.count == 2)
         #expect(lines[0].contains("127.0.0.1"))
         #expect(lines[1].contains("192.168.1.1"))
+    }
+
+    @Test("Merge sanitizes profile names in generated hosts comments")
+    func mergeSanitizesProfileName() {
+        let profile = Profile(
+            name: "Work\n0.0.0.0 bank.example",
+            entries: [HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.example.com"])]
+        )
+
+        let content = parser.merge(profile: profile, systemEntries: [])
+        #expect(!content.contains("# Profile: Work\n0.0.0.0 bank.example"))
+        #expect(content.contains("# Profile: Work 0.0.0.0 bank.example"))
     }
 
     // MARK: - Extraction
@@ -374,14 +398,14 @@ struct ProfileTemplateTests {
     @Test("Ad blocking template has entries")
     func adBlockingTemplate() {
         let template = ProfileTemplate.adBlocking
-        #expect(template.entries.count > 0)
+        #expect(!template.entries.isEmpty)
         #expect(template.name == "Ad Blocking")
     }
 
     @Test("Development template has local entries")
     func developmentTemplate() {
         let template = ProfileTemplate.development
-        #expect(template.entries.count > 0)
+        #expect(!template.entries.isEmpty)
         #expect(template.entries.contains { $0.hostnames.contains("local.dev") })
     }
 
@@ -446,6 +470,7 @@ struct RemoteSyncErrorTests {
         #expect(RemoteSyncError.invalidURL.errorDescription != nil)
         #expect(RemoteSyncError.httpError(404).errorDescription?.contains("404") == true)
         #expect(RemoteSyncError.noValidEntries.errorDescription != nil)
+        #expect(RemoteSyncError.fileTooLarge.errorDescription != nil)
         #expect(RemoteSyncError.timeout.errorDescription != nil)
     }
 }

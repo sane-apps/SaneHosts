@@ -51,4 +51,28 @@ final class CustomImportIntegrationTests: XCTestCase {
         // Cleanup profile
         try await store.delete(profile: profile)
     }
+
+    @MainActor
+    func testCustomURLImportRejectsOversizedFiles() async throws {
+        let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let fixtureURL = temporaryDirectory.appendingPathComponent("oversized-hosts-test")
+            .appendingPathExtension("txt")
+        let oversizedData = Data(count: (25 * 1024 * 1024) + 1)
+        try oversizedData.write(to: fixtureURL, options: .atomic)
+
+        defer {
+            try? FileManager.default.removeItem(at: fixtureURL)
+        }
+
+        let service = RemoteSyncService(session: .shared)
+
+        do {
+            _ = try await service.fetch(from: fixtureURL)
+            XCTFail("Oversized remote import should be rejected")
+        } catch RemoteSyncError.fileTooLarge {
+            // Expected.
+        } catch {
+            XCTFail("Expected fileTooLarge, got \(error)")
+        }
+    }
 }

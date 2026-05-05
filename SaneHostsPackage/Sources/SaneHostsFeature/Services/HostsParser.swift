@@ -53,7 +53,7 @@ public struct HostsParser: Sendable {
         }
 
         // Extract inline comment
-        var comment: String? = nil
+        var comment: String?
         if let commentIndex = workingLine.firstIndex(of: "#") {
             let afterHash = workingLine.index(after: commentIndex)
             if afterHash < workingLine.endIndex {
@@ -221,6 +221,7 @@ public struct HostsParser: Sendable {
         var lines: [String] = []
 
         // Header
+        let safeProfileName = HostsSanitizer.comment(profile.name)
         lines.append("##")
         lines.append("# Host Database")
         lines.append("#")
@@ -228,7 +229,7 @@ public struct HostsParser: Sendable {
         lines.append("# when the system is booting.  Do not change this entry.")
         lines.append("##")
         lines.append("# Managed by SaneHosts")
-        lines.append("# Profile: \(profile.name)")
+        lines.append("# Profile: \(safeProfileName)")
         lines.append("# Last modified: \(ISO8601DateFormatter().string(from: Date()))")
         lines.append("##")
         lines.append("")
@@ -240,7 +241,7 @@ public struct HostsParser: Sendable {
         lines.append("")
 
         // Profile entries
-        lines.append("# ---- Profile: \(profile.name) ----")
+        lines.append("# ---- Profile: \(safeProfileName) ----")
         for entry in profile.entries where !entry.isSystemEntry {
             lines.append(entry.hostsFileLine)
         }

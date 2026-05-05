@@ -11,15 +11,17 @@
 ## Security Model
 
 ### App Sandbox
-SaneHosts runs **without** App Sandbox because it must write directly to `/etc/hosts` (a system file outside any sandbox container). To compensate:
+SaneHosts runs **without** App Sandbox because it manages `/etc/hosts`, a system file outside any app sandbox container. Writes are routed through a signed privileged helper when available. To compensate:
 - Hardened runtime is enabled
 - Code is signed with Developer ID and notarized by Apple
-- No unnecessary entitlements beyond what is required
+- Library validation remains enabled
+- No unnecessary entitlements beyond what is required for hosts-file administration
 
 ### Privileged Operations
 Modifying `/etc/hosts` requires elevated privileges:
-- Admin authentication is requested via macOS system dialog
-- Uses `do shell script with administrator privileges` (AppleScript)
+- Admin authentication is requested through macOS
+- The privileged helper only accepts XPC connections from the signed SaneHosts app
+- The helper validates hosts-file content before writing it to `/etc/hosts`
 - Password is never stored or logged
 - Each modification requires re-authentication
 
@@ -30,7 +32,10 @@ Modifying `/etc/hosts` requires elevated privileges:
 
 ### Data Security
 - No sensitive data stored
-- Profiles contain only hosts mappings
+- Profiles contain hosts mappings and optional user-entered comments
+- Profile names and comments are sanitized before generated hosts-file output is written
+- Remote blocklist imports are size-limited and parsed locally
+- Cached blocklists are stored in a private app-support directory with private file permissions
 - No credentials, tokens, or personal data
 
 ## Reporting a Vulnerability
@@ -95,9 +100,9 @@ The hosts file can redirect any domain. A malicious hosts entry could:
 
 ### Remote Import Risks
 When importing from URLs:
-- The content is fetched without verification
-- HTTPS is recommended but not enforced
-- Content is parsed but not validated for malice
+- HTTPS is required for remote network imports, except localhost/loopback test URLs
+- Import size is capped before parsing
+- Content is parsed and invalid hosts entries are skipped, but SaneHosts cannot prove a third-party list is trustworthy
 
 **Mitigations**:
 - Only import from trusted URLs

@@ -373,13 +373,16 @@ public final class ProfileStore {
 
     /// Sanitize and validate a profile name
     private func sanitizedName(_ name: String) throws -> String {
-        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else {
+        let cleaned = HostsSanitizer.comment(name)
+            .replacingOccurrences(of: "/", with: "-")
+            .replacingOccurrences(of: "\\", with: "-")
+            .replacingOccurrences(of: ":", with: "-")
+        guard !cleaned.isEmpty else {
             throw ProfileStoreError.invalidName("Name cannot be empty")
         }
         // Limit length to prevent filesystem issues
         let maxLength = 100
-        return String(trimmed.prefix(maxLength))
+        return String(cleaned.prefix(maxLength))
     }
 
     /// Create a new profile
