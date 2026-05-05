@@ -2,7 +2,7 @@
 
 > [README](README.md) · [ARCHITECTURE](ARCHITECTURE.md) · [DEVELOPMENT](DEVELOPMENT.md) · [PRIVACY](PRIVACY.md) · [SECURITY](SECURITY.md)
 
-**Last updated: March 26, 2026**
+**Last updated: May 5, 2026**
 
 SaneHosts is built to keep your hosts data on your Mac. Here is the plain-English version: your profiles and hosts entries stay local, and the app only talks to the network in a few specific cases.
 
@@ -49,10 +49,11 @@ SaneHosts uses a small number of outside services:
 
 - **Sparkle** to check for app updates
 - **SaneApps distribution service** to receive simple anonymous app counts
+- **Lemon Squeezy** to process Pro purchases and license delivery
 - **Cloudflare Web Analytics** on public website pages
 - **Google Fonts** on some public website pages
 
-Those website services apply to `sanehosts.com` pages, not to your hosts entries or profile contents inside the app.
+Checkout and website services apply to purchases or `sanehosts.com` pages, not to your hosts entries or profile contents inside the app.
 
 ## Remote Imports
 
@@ -60,6 +61,7 @@ If you import a hosts file from a URL:
 
 - SaneHosts fetches the URL you chose
 - The content is processed on your Mac
+- Oversized imports are rejected before parsing
 - The resulting entries stay local unless you export or share them yourself
 
 ## Your Control

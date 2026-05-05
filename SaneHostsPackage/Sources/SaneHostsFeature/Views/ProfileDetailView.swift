@@ -786,7 +786,7 @@ struct AddEntrySheet: View {
     }
 
     private func validate() {
-        isValid = parser.isValidIPAddress(ipAddress) && parser.isValidHostname(hostname)
+        isValid = parser.isValidIPAddress(ipAddress) && hostnamesAreValid(hostname)
     }
 
     private func addEntry() {
@@ -805,6 +805,11 @@ struct AddEntrySheet: View {
             try? await store.addEntry(entry, to: profile)
             dismiss()
         }
+    }
+
+    private func hostnamesAreValid(_ value: String) -> Bool {
+        let hosts = value.split { $0.isWhitespace }.map(String.init)
+        return !hosts.isEmpty && hosts.allSatisfy { parser.isValidHostname($0) }
     }
 }
 
@@ -901,7 +906,7 @@ struct EditEntrySheet: View {
     }
 
     private func validate() {
-        isValid = parser.isValidIPAddress(ipAddress) && !hostname.isEmpty
+        isValid = parser.isValidIPAddress(ipAddress) && hostnamesAreValid(hostname)
     }
 
     private func saveEntry() {
@@ -919,6 +924,11 @@ struct EditEntrySheet: View {
             try? await store.updateEntry(updated, in: profile)
             dismiss()
         }
+    }
+
+    private func hostnamesAreValid(_ value: String) -> Bool {
+        let hosts = value.split { $0.isWhitespace }.map(String.init)
+        return !hosts.isEmpty && hosts.allSatisfy { parser.isValidHostname($0) }
     }
 }
 

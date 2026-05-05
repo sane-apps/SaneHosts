@@ -84,11 +84,14 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
 class HostsHelperService: NSObject, HostsHelperProtocol {
 
     private let hostsPath = "/etc/hosts"
+    private let maxHostsFileBytes = 2 * 1024 * 1024
 
     func writeHostsFile(content: String, reply: @escaping (Bool, String?) -> Void) {
         logger.info("writeHostsFile called, content length: \(content.count)")
 
         do {
+            try validateHostsContent(content)
+
             // Create backup ONLY if it doesn't exist (preserve original system state)
             let backupPath = "/etc/hosts.sanehosts.backup"
             if !FileManager.default.fileExists(atPath: backupPath) && FileManager.default.fileExists(atPath: hostsPath) {
@@ -111,6 +114,71 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
         } catch {
             logger.error("Failed to write hosts file: \(error)")
             reply(false, error.localizedDescription)
+        }
+    }
+
+    private func validateHostsContent(_ content: String) throws {
+        guard content.utf8.count <= maxHostsFileBytes else {
+            throw HostsHelperError.invalidContent("hosts content is too large")
+        }
+        guard !content.contains("\0") else {
+            throw HostsHelperError.invalidContent("hosts content contains NUL bytes")
+        }
+
+        for line in content.components(separatedBy: .newlines) {
+            let trimmed = line.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty, !trimmed.hasPrefix("#") else { continue }
+
+            let contentBeforeComment = trimmed
+                .split(separator: "#", maxSplits: 1, omittingEmptySubsequences: false)
+                .first
+                .map(String.init)?
+                .trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let parts = contentBeforeComment.split { $0.isWhitespace }.map(String.init)
+            guard parts.count >= 2, isValidIPAddress(parts[0]) else {
+                throw HostsHelperError.invalidContent("invalid hosts line")
+            }
+            guard parts.dropFirst().allSatisfy(isValidHostname) else {
+                throw HostsHelperError.invalidContent("invalid hostname")
+            }
+        }
+    }
+
+    private func isValidIPAddress(_ string: String) -> Bool {
+        isValidIPv4(string) || isValidIPv6(string)
+    }
+
+    private func isValidIPv4(_ string: String) -> Bool {
+        let parts = string.split(separator: ".")
+        guard parts.count == 4 else { return false }
+        return parts.allSatisfy { part in
+            guard let number = Int(part), number >= 0, number <= 255 else { return false }
+            return true
+        }
+    }
+
+    private func isValidIPv6(_ string: String) -> Bool {
+        var address = string.lowercased()
+        if address.contains("::") {
+            guard address.components(separatedBy: "::").count <= 2 else { return false }
+        }
+        address = address.trimmingCharacters(in: CharacterSet(charactersIn: ":"))
+        let groups = address.split(separator: ":", omittingEmptySubsequences: false)
+        guard !groups.isEmpty else { return false }
+        return groups.allSatisfy { group in
+            group.isEmpty || (group.count <= 4 && group.allSatisfy(\.isHexDigit))
+        }
+    }
+
+    private func isValidHostname(_ string: String) -> Bool {
+        guard !string.isEmpty, string.count <= 253 else { return false }
+        let labels = string.split(separator: ".")
+        guard !labels.isEmpty else { return false }
+        return labels.allSatisfy { label in
+            guard label.count <= 63,
+                  let first = label.first,
+                  first.isLetter || first.isNumber else { return false }
+            return label.allSatisfy { $0.isLetter || $0.isNumber || $0 == "-" }
         }
     }
 
@@ -170,6 +238,17 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
 enum HelperConstants {
     static let version = "1.0.0"
     static let machServiceName = "com.mrsane.SaneHostsHelper"
+}
+
+enum HostsHelperError: LocalizedError {
+    case invalidContent(String)
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidContent(let reason):
+            "Refusing to write invalid hosts content: \(reason)"
+        }
+    }
 }
 
 // MARK: - Protocol (duplicated for standalone compilation)

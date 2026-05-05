@@ -1,5 +1,15 @@
 import Foundation
 
+public enum HostsSanitizer {
+    public static func comment(_ text: String) -> String {
+        text.unicodeScalars
+            .map { CharacterSet.newlines.contains($0) || CharacterSet.controlCharacters.contains($0) ? " " : String($0) }
+            .joined()
+            .replacingOccurrences(of: "#", with: "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
 /// Represents a single entry in a hosts file
 public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID
@@ -41,8 +51,11 @@ public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
         line += ipAddress
         line += "\t"
         line += hostnames.joined(separator: " ")
-        if let comment = comment, !comment.isEmpty {
-            line += " # \(comment)"
+        if let comment = comment {
+            let safeComment = HostsSanitizer.comment(comment)
+            if !safeComment.isEmpty {
+                line += " # \(safeComment)"
+            }
         }
         return line
     }
@@ -72,7 +85,7 @@ public struct HostComment: Identifiable, Codable, Equatable, Hashable, Sendable 
     }
 
     public var hostsFileLine: String {
-        "# \(text)"
+        "# \(HostsSanitizer.comment(text))"
     }
 }
 

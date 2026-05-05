@@ -118,12 +118,16 @@ public final class RemoteSyncService {
 
     // MARK: - Private Download
 
+    /// Hard cap for remote imports to avoid unbounded disk/memory use.
+    private static let maxDownloadBytes: Int64 = 25 * 1024 * 1024
+
     private func downloadFile(from url: URL) async throws -> URL {
         // SIMPLE: Just download the file, update status manually
         phase = .downloading
         statusMessage = "Downloading..."
 
         if url.isFileURL {
+            try validateDownloadedFileSize(at: url)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".hosts")
             if FileManager.default.fileExists(atPath: tempURL.path) {
                 try? FileManager.default.removeItem(at: tempURL)
@@ -146,15 +150,28 @@ public final class RemoteSyncService {
                 logger.error(" HTTP status \(httpResponse.statusCode) for \(url)")
                 throw RemoteSyncError.httpError(httpResponse.statusCode)
             }
+
+            if httpResponse.expectedContentLength > Self.maxDownloadBytes {
+                throw RemoteSyncError.fileTooLarge
+            }
         }
 
         // Move to persistent temp location
         let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".hosts")
         try FileManager.default.moveItem(at: localURL, to: tempURL)
+        try validateDownloadedFileSize(at: tempURL)
 
         downloadProgress = 1.0
         statusMessage = "Download complete"
         return tempURL
+    }
+
+    private func validateDownloadedFileSize(at url: URL) throws {
+        let attributes = try FileManager.default.attributesOfItem(atPath: url.path)
+        let size = attributes[.size] as? Int64 ?? 0
+        guard size <= Self.maxDownloadBytes else {
+            throw RemoteSyncError.fileTooLarge
+        }
     }
 
     // MARK: - Private Parsing
@@ -366,6 +383,7 @@ public enum RemoteSyncError: LocalizedError {
     case invalidResponse
     case invalidEncoding
     case noValidEntries
+    case fileTooLarge
     case timeout
     case cancelled
 
@@ -385,6 +403,8 @@ public enum RemoteSyncError: LocalizedError {
             "Could not decode file content"
         case .noValidEntries:
             "No valid hosts entries found"
+        case .fileTooLarge:
+            "Remote hosts file is too large"
         case .timeout:
             "Request timed out"
         case .cancelled:
@@ -400,6 +420,8 @@ public enum RemoteSyncError: LocalizedError {
             "Change the URL to use https:// instead of http://"
         case .invalidURL, .invalidResponse, .invalidEncoding, .noValidEntries:
             "Make sure the URL points to a valid hosts file"
+        case .fileTooLarge:
+            "Use a smaller hosts file or split the import into smaller lists"
         case .cancelled:
             nil
         case .httpError:
