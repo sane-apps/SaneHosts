@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.9] - 2026-05-05
 
+Security and privacy hardening for remote imports, hosts write validation, local profile storage, Basic and Pro UI readability, and clearer privacy disclosures.
+
+---
+
+## [1.1.9] - 2026-05-05
+
 Hardens remote blocklist imports, hosts file validation, local profile storage permissions, and helper fallback paths. Clarifies privacy disclosures while keeping hosts data local, and refreshes Basic/Pro UI copy so release surfaces stay readable, privacy-first, and consistent.
 
 ---
