@@ -4,7 +4,7 @@
 
 ## Current State
 
-- Current direct-download release is `1.1.8` (build `1108`).
+- Current direct-download release is `1.1.9` (build `1109`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
@@ -13,14 +13,18 @@
 
 ## Completed May 5, 2026
 
-- Shipped `0e26544` (`Harden SaneHosts import and hosts write paths`) after reviewing the external `pluja/awesome-privacy#668` changes-requested feedback.
-- Hardening included: library validation enabled, helper-side hosts-content validation, generated hosts comment/profile-name sanitization, remote import and built-in blocklist size caps, private BlocklistCache permissions, stricter edit-entry hostname validation, and updated privacy/security disclosures.
+- Shipped direct-download `v1.1.9` after reviewing the external `pluja/awesome-privacy#668` / `Lissy93/awesome-privacy#411` security and privacy feedback.
+- Hardening included: library validation enabled, helper-side hosts-content validation, generated hosts comment/profile-name sanitization, remote import and built-in blocklist size caps, private profile/cache permissions, stricter edit-entry hostname validation, safer direct-distribution AppleScript paths, and updated privacy/security disclosures.
+- UI/copy cleanup included: Basic/Pro quick actions no longer truncate, Pro gating is visually clear, all SaneHosts app text foreground paths avoid gray/low-opacity text, website body text tokens were moved to white/off-white, and public copy now describes the direct-download privacy model without scare wording.
 - Verification on the Mac Mini:
-  - `swift test --package-path SaneHostsPackage` passed: 73 Swift Testing tests plus 2 XCTest integration tests.
-  - `./scripts/SaneMaster.rb verify` passed through the pre-push hook: 77 tests.
+  - `swift test --package-path SaneHostsPackage` passed: 77 Swift Testing tests plus 2 XCTest integration tests.
+  - `./scripts/SaneMaster.rb verify` passed repeatedly, including the pre-push hook and release script: 81 total tests.
   - Focused Mini-side Xcode build of `SaneHosts` passed and compiled `SaneHostsHelper`.
-  - `./scripts/SaneMaster.rb release_preflight` passed with warnings only: working tree before commit, UserDefaults/migration guard existing `SaneHostsApp.swift`, and non-action inbox count.
-- Follow-up still needed before posting publicly: user approval for the exact `pluja/awesome-privacy#668` reply draft explaining the fixes and the remaining direct-download/no-sandbox architecture.
+  - Mini runtime launch passed in both Basic and Pro modes using `sane_test.rb`; screenshots inspected at `/tmp/sanehosts-mini-basic-white-20260505.png` and `/tmp/sanehosts-mini-pro-white-20260505.png`.
+  - Mini Safari website checks inspected home and privacy pages at `/tmp/sanehosts-mini-safari-home-white2-20260505.png` and `/tmp/sanehosts-mini-safari-privacy-white-20260505.png`.
+  - Upgrade-path probe confirmed existing profiles still present, profile/backups directories at `700`, and profile JSON files at `600`.
+  - Direct release script completed: notarization accepted, ZIP uploaded, appcast deployed, Cloudflare Pages deployed, Homebrew cask updated, email webhook updated, and strict post-release checks passed.
+- Follow-up still needed: get user approval for exact public GitHub reply drafts before posting to `pluja/awesome-privacy#668` and optionally the closed `Lissy93/awesome-privacy#411`.
 
 ## Archived Notes
 
