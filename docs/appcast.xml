@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                    <item>
+                                                                            <item>
+            <title>1.1.11</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Sat, 09 May 2026 19:47:26 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Improves first-launch and settings navigation reliability, keeps direct-download install handling consistent, and verifies release signing before launch.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.11.zip"
+                       sparkle:version="1111"
+                       sparkle:shortVersionString="1.1.11"
+                       length="4401763"
+                       type="application/octet-stream"
+                       sparkle:edSignature="bVa/woLMUejWk97WYxUDnAUlsM4EY5LxdP4hONl/YCvPX9/rdqn4oht7L8hgXeAYvdbWTg97OLYNdi0OYWpSAA=="/>
+        </item>
+<item>
             <title>1.1.10</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Sat, 09 May 2026 03:17:52 -0400</pubDate>
