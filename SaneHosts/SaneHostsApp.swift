@@ -1,3 +1,4 @@
+import AppKit
 import os
 import SaneHostsFeature
 import ServiceManagement
@@ -11,6 +12,7 @@ import SwiftUI
 extension Notification.Name {
     static let openSettings = Notification.Name("openSettings")
     static let openMainWindow = Notification.Name("openMainWindow")
+    static let showSettingsTab = Notification.Name("showSettingsTab")
 }
 
 // MARK: - Window Action Storage
@@ -53,7 +55,7 @@ final class SettingsActionStorage {
         }
     }
 
-    func showSettings() {
+    func showSettings(tab: SaneHostsSettingsTab? = nil) {
         if let openSettings {
             openSettings()
         } else {
@@ -61,6 +63,11 @@ final class SettingsActionStorage {
             NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
         }
 
+        if let tab {
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: .showSettingsTab, object: tab)
+            }
+        }
         NSApp.activate(ignoringOtherApps: true)
     }
 }
@@ -132,8 +139,9 @@ final class SettingsActionStorage {
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     #if !APP_STORE
-        private let updaterController: SPUStandardUpdaterController
+        private let updaterController: SPUStandardUpdaterController?
         private let updaterDelegate = SaneHostsUpdaterDelegate()
+        private let updateEligibility: SaneUpdateEligibility
     #endif
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
@@ -146,8 +154,19 @@ struct SaneHostsApp: App {
 
     init() {
         #if !APP_STORE
-            updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
-            AppDelegate.updater = updaterController.updater
+            updateEligibility = SaneUpdateEligibility.resolve(
+                bundleIdentifier: Bundle.main.bundleIdentifier,
+                releaseBundleIdentifier: "com.mrsane.SaneHosts",
+                bundlePath: Bundle.main.bundlePath
+            )
+            if updateEligibility.canUseInAppUpdates {
+                updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+                AppDelegate.updater = updaterController?.updater
+            } else {
+                updaterController = nil
+                AppDelegate.updater = nil
+            }
+            AppDelegate.updateEligibility = updateEligibility
         #endif
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
@@ -212,7 +231,7 @@ struct SaneHostsApp: App {
         .windowStyle(.automatic)
         .commands {
             #if !APP_STORE
-                SaneHostsAppCommands(updater: updaterController.updater)
+                SaneHostsAppCommands(updater: updaterController?.updater, updateEligibility: updateEligibility)
             #else
                 SaneHostsAppCommands()
             #endif
@@ -223,7 +242,7 @@ struct SaneHostsApp: App {
 
         Settings {
             #if !APP_STORE
-                SaneHostsSettingsView(updater: updaterController.updater, licenseService: licenseService)
+                SaneHostsSettingsView(updater: updaterController?.updater, updateEligibility: updateEligibility, licenseService: licenseService)
                     .preferredColorScheme(.dark)
             #else
                 SaneHostsSettingsView(licenseService: licenseService)
@@ -246,7 +265,8 @@ struct SaneHostsApp: App {
 struct SaneHostsAppCommands: Commands {
     @Environment(\.openWindow) private var openWindow
     #if !APP_STORE
-        let updater: SPUUpdater
+        let updater: SPUUpdater?
+        let updateEligibility: SaneUpdateEligibility
     #endif
 
     var body: some Commands {
@@ -268,7 +288,7 @@ struct SaneHostsAppCommands: Commands {
 
         #if !APP_STORE
             CommandGroup(after: .appInfo) {
-                CheckForUpdatesView(updater: updater)
+                CheckForUpdatesView(updater: updater, updateEligibility: updateEligibility)
             }
         #endif
 
@@ -345,6 +365,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "AppDelegate")
     #if !APP_STORE
         weak static var updater: SPUUpdater?
+        static var updateEligibility: SaneUpdateEligibility = .notInstalledInApplications
     #endif
 
     func applicationDidFinishLaunching(_: Notification) {
@@ -392,27 +413,40 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDockMenu(_: NSApplication) -> NSMenu? {
         let menu = NSMenu()
 
-        let openItem = NSMenuItem(title: "Open SaneHosts", action: #selector(openMainWindow), keyEquivalent: "")
-        openItem.target = self
-        menu.addItem(openItem)
+        menu.addItem(SaneStandardMenu.openAppItem(
+            appName: "SaneHosts",
+            target: self,
+            action: #selector(openMainWindow)
+        ))
 
         menu.addItem(NSMenuItem.separator())
 
-        #if !APP_STORE
-            let updatesItem = NSMenuItem(title: "Check for Updates...", action: #selector(checkForUpdates), keyEquivalent: "")
-            updatesItem.target = self
-            menu.addItem(updatesItem)
-        #endif
-
-        let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
-        settingsItem.target = self
-        menu.addItem(settingsItem)
+        SaneStandardMenu.addCoreUtilityItems(
+            to: menu,
+            appName: "SaneHosts",
+            target: self,
+            settingsAction: #selector(openSettings),
+            licenseAction: #selector(openLicense),
+            checkForUpdatesAction: directUpdateAction,
+            configureCheckForUpdates: directUpdateConfigurator,
+            aboutAndBugReportAction: #selector(openAbout),
+            quitAction: #selector(quit),
+            settingsKeyEquivalent: ""
+        )
 
         return menu
     }
 
     @MainActor @objc func openSettings() {
         SettingsActionStorage.shared.showSettings()
+    }
+
+    @MainActor @objc func openLicense() {
+        SettingsActionStorage.shared.showSettings(tab: .license)
+    }
+
+    @MainActor @objc func openAbout() {
+        SettingsActionStorage.shared.showSettings(tab: .about)
     }
 
     @objc func openMainWindow() {
@@ -422,10 +456,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     #if !APP_STORE
-        @objc func checkForUpdates() {
-            AppDelegate.updater?.checkForUpdates()
+        private var directUpdateAction: Selector? {
+            #selector(checkForUpdates)
         }
+
+        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
+            { [weak self] item in
+                self?.configureUpdateItem(item)
+            }
+        }
+
+        private func configureUpdateItem(_ item: NSMenuItem) {
+            let canUpdate = Self.updateEligibility.canUseInAppUpdates && Self.updater != nil
+            item.isEnabled = canUpdate
+            item.toolTip = canUpdate ? nil : Self.updateEligibility.userFacingStatus
+        }
+
+        @objc func checkForUpdates() {
+            guard Self.updateEligibility.canUseInAppUpdates, let updater = AppDelegate.updater else {
+                NSSound.beep()
+                return
+            }
+            updater.checkForUpdates()
+        }
+    #else
+        private var directUpdateAction: Selector? { nil }
+        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? { nil }
     #endif
+
+    @objc func quit() {
+        NSApp.terminate(nil)
+    }
 }
 
 // MARK: - Menu Bar Profile Store
@@ -555,10 +616,29 @@ struct MenuBarMenuContent: View {
             }
             .keyboardShortcut("o")
 
-            Button("Settings...") {
+            Button(SaneStandardMenu.settingsTitle) {
                 SettingsActionStorage.shared.showSettings()
             }
             .keyboardShortcut(",")
+
+            Button(SaneStandardMenu.licenseTitle) {
+                SettingsActionStorage.shared.showSettings(tab: .license)
+            }
+
+            Button(SaneStandardMenu.aboutAndBugReportTitle) {
+                SettingsActionStorage.shared.showSettings(tab: .about)
+            }
+
+            #if !APP_STORE
+            Button(SaneStandardMenu.checkForUpdatesTitle) {
+                guard AppDelegate.updateEligibility.canUseInAppUpdates, let updater = AppDelegate.updater else {
+                    NSSound.beep()
+                    return
+                }
+                updater.checkForUpdates()
+            }
+            .disabled(!AppDelegate.updateEligibility.canUseInAppUpdates || AppDelegate.updater == nil)
+            #endif
 
             Divider()
 
@@ -581,29 +661,39 @@ struct MenuBarMenuContent: View {
     struct CheckForUpdatesView: View {
         @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
 
-        init(updater: SPUUpdater) {
-            checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater)
+        init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
+            checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater, updateEligibility: updateEligibility)
         }
 
         var body: some View {
-            Button("Check for Updates...") {
+            Button(SaneStandardMenu.checkForUpdatesTitle) {
                 checkForUpdatesViewModel.checkForUpdates()
             }
             .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+            .help(checkForUpdatesViewModel.statusText)
         }
     }
 
     final class CheckForUpdatesViewModel: ObservableObject {
         @Published var canCheckForUpdates = false
-        private let updater: SPUUpdater
+        @Published var statusText: String = ""
+        private let updater: SPUUpdater?
+        private let updateEligibility: SaneUpdateEligibility
 
-        init(updater: SPUUpdater) {
+        init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
             self.updater = updater
+            self.updateEligibility = updateEligibility
+            statusText = updateEligibility.canUseInAppUpdates ? "" : updateEligibility.userFacingStatus
+            guard updateEligibility.canUseInAppUpdates, let updater else { return }
             updater.publisher(for: \.canCheckForUpdates)
                 .assign(to: &$canCheckForUpdates)
         }
 
         func checkForUpdates() {
+            guard updateEligibility.canUseInAppUpdates, let updater else {
+                NSSound.beep()
+                return
+            }
             updater.checkForUpdates()
         }
     }
