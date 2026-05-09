@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.11] - 2026-05-09
+
+Improves first-launch and settings navigation reliability, keeps direct-download install handling consistent, and verifies release signing before launch.
+
+---
+
 ## [1.1.10] - 2026-05-09
 
 Adds the macOS utility app category to release metadata so system and distribution checks classify SaneHosts correctly.
