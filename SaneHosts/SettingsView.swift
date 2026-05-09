@@ -1,10 +1,11 @@
+import AppKit
 import SaneHostsFeature
 import SwiftUI
 #if !APP_STORE
     import Sparkle
 #endif
 
-private enum SaneHostsSettingsTab: String, SaneSettingsTab {
+enum SaneHostsSettingsTab: String, SaneSettingsTab {
     case general = "General"
     case license = "License"
     case about = "About"
@@ -28,16 +29,21 @@ private enum SaneHostsSettingsTab: String, SaneSettingsTab {
 
 struct SaneHostsSettingsView: View {
     #if !APP_STORE
-        let updater: SPUUpdater
+        let updater: SPUUpdater?
+        let updateEligibility: SaneUpdateEligibility
     #endif
     var licenseService: LicenseService
+    @State private var selectedTab: SaneHostsSettingsTab?
 
     var body: some View {
-        SaneSettingsContainer(defaultTab: SaneHostsSettingsTab.general) { tab in
+        SaneSettingsContainer(
+            defaultTab: SaneHostsSettingsTab.general,
+            selection: $selectedTab
+        ) { tab in
             switch tab {
             case .general:
                 #if !APP_STORE
-                    GeneralSettingsTab(updater: updater)
+                    GeneralSettingsTab(updater: updater, updateEligibility: updateEligibility)
                 #else
                     GeneralSettingsTab()
                 #endif
@@ -47,14 +53,21 @@ struct SaneHostsSettingsView: View {
                 AboutTab()
             }
         }
+        .onReceive(NotificationCenter.default.publisher(for: .showSettingsTab)) { notification in
+            if let tab = notification.object as? SaneHostsSettingsTab {
+                selectedTab = tab
+            }
+        }
     }
 }
 
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
-    @State private var isCheckingForUpdates = false
     #if !APP_STORE
-        let updater: SPUUpdater
+        let updater: SPUUpdater?
+        let updateEligibility: SaneUpdateEligibility
+        @State private var automaticallyChecksForUpdates = false
+        @State private var updateCheckFrequency = SaneSparkleCheckFrequency.daily
     #endif
 
     var body: some View {
@@ -75,52 +88,31 @@ struct GeneralSettingsTab: View {
 
                 #if !APP_STORE
                     CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
-                        CompactToggle(
-                            label: "Check for updates automatically",
-                            isOn: Binding(
-                                get: { updater.automaticallyChecksForUpdates },
-                                set: { updater.automaticallyChecksForUpdates = $0 }
-                            )
-                        )
-                        .help("Periodically check for new versions")
-
-                        CompactDivider()
-
-                        CompactRow("Check frequency") {
-                            Picker(
-                                "",
-                                selection: Binding(
-                                    get: { SaneSparkleCheckFrequency.resolve(updateCheckInterval: updater.updateCheckInterval) },
-                                    set: { updater.updateCheckInterval = $0.interval }
-                                )
-                            ) {
-                                ForEach(SaneSparkleCheckFrequency.allCases) { frequency in
-                                    Text(frequency.title).tag(frequency)
+                        SaneSparkleRow(
+                            automaticallyChecks: Binding(
+                                get: { automaticallyChecksForUpdates },
+                                set: { newValue in
+                                    automaticallyChecksForUpdates = newValue
+                                    updater?.automaticallyChecksForUpdates = newValue
                                 }
-                            }
-                            .pickerStyle(.segmented)
-                            .frame(width: 170)
-                            .disabled(!updater.automaticallyChecksForUpdates)
-                        }
-                        .help("Choose how often automatic update checks run")
-
-                        CompactDivider()
-
-                        CompactRow("Actions") {
-                            Button(isCheckingForUpdates ? "Checking..." : "Check Now") {
-                                guard !isCheckingForUpdates else { return }
-                                isCheckingForUpdates = true
+                            ),
+                            checkFrequency: Binding(
+                                get: { updateCheckFrequency },
+                                set: { newValue in
+                                    updateCheckFrequency = newValue
+                                    updater?.updateCheckInterval = newValue.interval
+                                }
+                            ),
+                            isAvailable: updateEligibility.canUseInAppUpdates && updater != nil,
+                            unavailableStatus: updateEligibility.userFacingStatus,
+                            onCheckNow: {
+                                guard updateEligibility.canUseInAppUpdates, let updater else {
+                                    NSSound.beep()
+                                    return
+                                }
                                 updater.checkForUpdates()
-
-                                Task { @MainActor in
-                                    try? await Task.sleep(for: .seconds(5))
-                                    isCheckingForUpdates = false
-                                }
                             }
-                            .buttonStyle(SaneActionButtonStyle())
-                            .disabled(isCheckingForUpdates)
-                            .help("Check for updates right now")
-                        }
+                        )
                     }
                 #endif
 
@@ -132,7 +124,10 @@ struct GeneralSettingsTab: View {
         }
         .onAppear {
             #if !APP_STORE
-                updater.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: updater.updateCheckInterval)
+                automaticallyChecksForUpdates = updater?.automaticallyChecksForUpdates ?? false
+                let interval = updater?.updateCheckInterval ?? SaneUI.SaneSparkleCheckFrequency.daily.interval
+                updateCheckFrequency = SaneUI.SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
+                updater?.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: interval)
             #endif
         }
     }

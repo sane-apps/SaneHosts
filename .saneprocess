@@ -22,6 +22,43 @@ release:
   r2_bucket: sanebar-downloads
   use_sparkle: true
   min_system_version: "14.0"
+  reviewed_auto_reconcile_stashes:
+    - stash_sha: "26c1cf88446f58c97f7bce0acea10fbd53154ea0"
+      subject: "On main: auto-reconcile-20260508-215529-stephans-macbook-air"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. DirectDistributionSupport, SettingsView, navigation tests, and app-entry refactor are represented in the current release candidate; the current SaneHostsApp.swift first-launch prompt is the intended worktree variant to keep."
+    - stash_sha: "6295dd31dac2fbc46f5c0655213ffb71aabb58af"
+      subject: "On main: auto-reconcile-20260501-215526-stephans-macbook-air"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. Analytics-only first_value_action collateral is not required for this direct release."
+    - stash_sha: "6262f1180895906b80bf7a2fda03a195b01cb724"
+      subject: "On main: auto-reconcile-20260429-215525-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Locked duplicate UI and current navigation behavior are already present in the current tree; older cleanup/test deltas are superseded."
+    - stash_sha: "e328725740f3704dcb84631b08a0286d590ed3eb"
+      subject: "On main: auto-reconcile-20260425-215529-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "58af548b0b778c8bdc8a81c68b675609f97237b2"
+      subject: "On main: auto-reconcile-20260424-153503-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "4bfa6e70c970a8c316b1a06a772040e7914171b0"
+      subject: "On main: auto-reconcile-20260418-055526-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Docs/site/admin drift only, not runtime release work."
+    - stash_sha: "468f4214353f9233cbe5757900cc2dd2e6f69f6e"
+      subject: "On main: auto-reconcile-20260413-215540-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Config/admin drift superseded by current SaneProcess policy."
+    - stash_sha: "ada3c5113eef2e922873ada9d82d506e26a9d731"
+      subject: "On main: auto-reconcile-20260411-055525-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Config/admin drift superseded by current SaneProcess policy."
+    - stash_sha: "cf2f9905ddaf9ffc0f6e330604b44668882a845f"
+      subject: "On main: auto-reconcile-20260410-215527-stephans-macbook-air"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Config/admin drift superseded by current SaneProcess policy."
   verify_staple: true
   version_bump_cmd: "sed -i '' \"s/^MARKETING_VERSION = .*/MARKETING_VERSION = ${version}/\" Config/Shared.xcconfig && sed -i '' \"s/^CURRENT_PROJECT_VERSION = .*/CURRENT_PROJECT_VERSION = ${project_version}/\" Config/Shared.xcconfig"
   version_bump_restore_cmd: "git -C ${PROJECT_ROOT} restore --staged --worktree Config/Shared.xcconfig 2>/dev/null || git -C ${PROJECT_ROOT} checkout -- Config/Shared.xcconfig 2>/dev/null || true"
