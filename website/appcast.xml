@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                            <item>
+                                                                    <item>
+            <title>1.1.10</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Sat, 09 May 2026 03:17:52 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Adds the macOS utility app category to release metadata so system and distribution checks classify SaneHosts correctly.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.10.zip"
+                       sparkle:version="1110"
+                       sparkle:shortVersionString="1.1.10"
+                       length="4407727"
+                       type="application/octet-stream"
+                       sparkle:edSignature="DOjHW/0ERuyi/Rn55L0ZSdJHw4A6BZOeRsDJTmUEVE8OAR1B5svorsog/zaa7/VOPRIlpC81/jGm9ZgpAsc4CQ=="/>
+        </item>
+<item>
             <title>1.1.9</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Tue, 05 May 2026 11:19:47 -0400</pubDate>
