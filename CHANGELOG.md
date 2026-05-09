@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.10] - 2026-05-09
+
+Adds the macOS utility app category to release metadata so system and distribution checks classify SaneHosts correctly.
+
+---
+
 ## [1.1.9] - 2026-05-05
 
 Security and privacy hardening for remote imports, hosts write validation, local profile storage, Basic and Pro UI readability, and clearer privacy disclosures.
