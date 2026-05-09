@@ -193,8 +193,8 @@ struct SaneHostsApp: App {
                     licenseService.checkCachedLicense()
                     let isPro = licenseService.isPro
                     let isFirstLaunch = !hasSeenWelcome
-                    if SaneBackgroundAppDefaults.launchAtLogin {
-                        _ = SaneLoginItemPolicy.enableByDefaultIfNeeded(isFirstLaunch: isFirstLaunch)
+                    if isFirstLaunch, SaneBackgroundAppDefaults.launchAtLogin {
+                        SaneLoginItemPolicy.scheduleDefaultLaunchAtLoginPrompt(appName: "SaneHosts")
                     }
                     Task.detached {
                         if isPro {
