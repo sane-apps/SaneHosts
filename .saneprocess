@@ -23,6 +23,38 @@ release:
   use_sparkle: true
   min_system_version: "14.0"
   reviewed_auto_reconcile_stashes:
+    - stash_sha: "d92b0baac8c8a7aac77cf19143745c00089bf0d3"
+      subject: "On main: auto-reconcile-20260509-055518-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The 1.1.10 version/category bump and first-launch prompt scheduling are already in HEAD, and live direct release/docs are at 1.1.11."
+    - stash_sha: "fbb3637203cbf78e3cf4cb9621524a21ac25b66a"
+      subject: "On main: auto-reconcile-20260508-215519-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. Settings/About/License/update routing, move-to-Applications support, and navigation work are already represented in HEAD; the remaining SaneHostsApp delta is an older pre-1.1.11 variant that lacks the current first-launch prompt path."
+    - stash_sha: "87db0dd486250a16263695cbb25c662abb050389"
+      subject: "On main: auto-reconcile-20260505-215526-stephans-mac-mini"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. .outreach.yml bookkeeping only (Gas Mask response history). Not release-facing code or customer docs."
+    - stash_sha: "8eeb7943c30509bd0cff5d5b8452531a2ecfcc6c"
+      subject: "On main: auto-reconcile-20260425-215520-stephans-mac-mini"
+      decision: superseded
+      reason: "Reviewed 2026-05-09. Privacy-policy and handoff wording were revised again for the May 5, 2026 release; current HEAD and live privacy docs are newer than this stash."
+    - stash_sha: "2a4cc1702b50eae09ef20beb9878d780621204d1"
+      subject: "On main: auto-reconcile-20260424-153452-stephans-mac-mini"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. CLAUDE.md overlay/tooling guidance only. No shipped app behavior, release metadata, or public docs depend on it."
+    - stash_sha: "1ab7b52b1d75e3ab6a71628a436bf52c705add61"
+      subject: "On main: auto-reconcile-20260416-055517-stephans-mac-mini"
+      decision: deferred
+      reason: "Reviewed 2026-05-09. .claude/research.md scratch research only. Not a release artifact."
+    - stash_sha: "c2ae767fe2e9c6771bfd47a5e872ee212c81e694"
+      subject: "On main: auto-reconcile-20260415-215519-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The 1.1.8 pricing/release-note content is already captured in CHANGELOG and later releases; README/live docs have moved on to 1.1.11."
+    - stash_sha: "62d9ab9472ff33b4f6a2f4629976b70e2c4e09df"
+      subject: "On main: auto-reconcile-20260415-055522-stephans-mac-mini"
+      decision: recovered
+      reason: "Reviewed 2026-05-09. The direct-download-only posture, $14.99 pricing, App Store disablement, and website copy all landed; live site now advertises 1.1.11 and $14.99, so this stash is an older release snapshot."
     - stash_sha: "26c1cf88446f58c97f7bce0acea10fbd53154ea0"
       subject: "On main: auto-reconcile-20260508-215529-stephans-macbook-air"
       decision: recovered

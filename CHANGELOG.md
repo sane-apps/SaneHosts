@@ -17,18 +17,6 @@ Adds the macOS utility app category to release metadata so system and distributi
 
 ---
 
-## [1.1.10] - 2026-05-09
-
-Adds the macOS utility app category to release metadata so system and distribution checks classify SaneHosts correctly.
-
----
-
-## [1.1.9] - 2026-05-05
-
-Security and privacy hardening for remote imports, hosts write validation, local profile storage, Basic and Pro UI readability, and clearer privacy disclosures.
-
----
-
 ## [1.1.9] - 2026-05-05
 
 Hardens remote blocklist imports, hosts file validation, local profile storage permissions, and helper fallback paths. Clarifies privacy disclosures while keeping hosts data local, and refreshes Basic/Pro UI copy so release surfaces stay readable, privacy-first, and consistent.
