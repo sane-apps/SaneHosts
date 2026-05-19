@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.12] - 2026-05-19
+
+Fixes license-key paste reliability in activation and settings.
+
+---
+
 ## [1.1.11] - 2026-05-09
 
 Improves first-launch and settings navigation reliability, keeps direct-download install handling consistent, and verifies release signing before launch.
