@@ -6,7 +6,7 @@
 [![License: PolyForm Shield](https://img.shields.io/badge/License-PolyForm%20Shield-blue.svg)](LICENSE)
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-brightgreen)](https://www.apple.com/macos)
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
-[![Listed on awesome-macos](https://img.shields.io/badge/Listed%20on-open--source--mac--os--apps%20(40k%E2%98%85)-black)](https://github.com/serhii-londar/open-source-mac-os-apps)
+[![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
 > **⭐ Star this repo if it's useful!** · **[Download Basic](https://sanehosts.com)** · **[Unlock Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
 
@@ -115,15 +115,13 @@ See [SECURITY.md](SECURITY.md) for details.
 ## Contributing
 
 Before opening a PR:
-1. **[⭐ Star the repo](https://github.com/sane-apps/SaneHosts)** (if you haven't already)
-2. Read [CONTRIBUTING.md](CONTRIBUTING.md)
-3. Open an issue first to discuss major changes
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Open an issue first to discuss major changes
+3. Keep privacy, local-first behavior, and hosts-file safety intact
 
 ## Support
 
 **[⭐ Star the repo](https://github.com/sane-apps/SaneHosts)** if SaneHosts helps you. Stars help others discover quality software.
-
-**Cloning without starring?** For real bro? Gimme that star!
 
 - 🐛 [Report a Bug](https://github.com/sane-apps/SaneHosts/issues/new?template=bug_report.md)
 - 💡 [Request a Feature](https://github.com/sane-apps/SaneHosts/issues/new?template=feature_request.md)

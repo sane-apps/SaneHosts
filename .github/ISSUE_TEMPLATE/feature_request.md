@@ -1,7 +1,7 @@
 ---
 name: Feature Request
 about: Suggest an idea for this project
-title: '[Feature] '
+title: "[Feature]: "
 labels: enhancement
 assignees: ''
 ---
@@ -25,4 +25,4 @@ Describe your use case and how this feature would help.
 
 ## Additional Context
 
-Add any other context, mockups, or screenshots about the feature request here.
+Add any other context, mockups, or screenshots about the feature request here. GitHub issues are public, so email hi@saneapps.com for sensitive examples.

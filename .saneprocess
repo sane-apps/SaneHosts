@@ -176,4 +176,5 @@ appstore:
     phone: "+17277589785"
     email: "hi@saneapps.com"
 
-website: false
+website: true
+website_domain: sanehosts.com
