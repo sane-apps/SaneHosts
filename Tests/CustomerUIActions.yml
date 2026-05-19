@@ -1,0 +1,598 @@
+---
+version: 1
+app: SaneHosts
+actions:
+- id: onboarding-and-tutorial-entry
+  title: First-run gate and tutorial expose the promised Basic and Pro paths
+  surfaces:
+  - Welcome gate
+  - Help menu tutorial command
+  - Coach mark overlay
+  - Main window Essentials selection
+  steps:
+  - Launch the release-like app on the Mini.
+  - Verify the welcome gate lists Basic and Pro capabilities.
+  - Use Show Tutorial from Help and advance through the safe tutorial surfaces.
+  - Confirm Basic users land on Essentials when no prior selection exists.
+  assertions:
+  - First-run copy names the actual Basic and Pro capabilities.
+  - Tutorial controls can start, advance, skip, and finish without moving the highlight
+    off-screen.
+  - The initial Basic selection chooses Essentials rather than an empty or locked
+    profile.
+  evidence:
+  - Source guard for WelcomeGateView and tutorial notifications
+  - Coach mark coordinate tests
+  - MainView selection policy tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - permission_recovery_dead_end
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Launch the release-like app on the Mini.
+  - Verify the welcome gate lists Basic and Pro capabilities.
+  - Use Show Tutorial from Help and advance through the safe tutorial surfaces.
+  expected_outputs:
+  - First-run copy names the actual Basic and Pro capabilities.
+  - Tutorial controls can start, advance, skip, and finish without moving the highlight
+    off-screen.
+  - The initial Basic selection chooses Essentials rather than an empty or locked
+    profile.
+- id: menu-bar-profile-actions
+  title: Menu bar profile actions expose active state, activation, deactivation, and
+    utility commands
+  surfaces:
+  - Menu bar extra
+  - Profiles submenu
+  - Open, Settings, License, About, Updates, and Quit items
+  steps:
+  - Open the SaneHosts menu bar extra on the Mini.
+  - Verify active and inactive states render.
+  - Verify each profile row can request activation.
+  - Verify Deactivate is present only when an active profile exists.
+  - Verify utility items open the shared customer surfaces or are safely cancelable.
+  assertions:
+  - Profile actions call the shared profile store and hosts service routes.
+  - Utility commands use the shared SettingsActionStorage and SaneUI menu components.
+  - Full hosts-file writes, admin prompts, update checks, and Quit are not claimed
+    complete unless isolated separately.
+  evidence:
+  - Source guard for MenuBarMenuContent
+  - Navigation source tests
+  - Safe-surface blocker notes for admin and external flows
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Open the SaneHosts menu bar extra on the Mini.
+  - Verify active and inactive states render.
+  - Verify each profile row can request activation.
+  expected_outputs:
+  - Profile actions call the shared profile store and hosts service routes.
+  - Utility commands use the shared SettingsActionStorage and SaneUI menu components.
+  - Full hosts-file writes, admin prompts, update checks, and Quit are not claimed
+    complete unless isolated separately.
+- id: dock-and-app-menu-commands
+  title: Dock and app menu commands route to the same customer surfaces
+  surfaces:
+  - Dock menu
+  - File menu
+  - Help menu
+  - Sidebar command group
+  steps:
+  - Open the Dock menu and app commands from the Mini.
+  - Exercise Open SaneHosts, New Profile, Import Blocklist, Show Tutorial, Settings,
+    License, About, Check for Updates, and Deactivate All where safe.
+  - Cancel or stop before destructive/external completion.
+  assertions:
+  - Dock and app menu items are present and wired to shared window/settings openers.
+  - Deactivate All calls the same hosts/profile deactivation paths as other surfaces.
+  - Check for Updates is disabled or cancelable when direct-update eligibility is
+    not available.
+  evidence:
+  - Source guard for SaneHostsAppCommands and applicationDockMenu
+  - Navigation source tests
+  - Safe-surface blocker notes for update/deactivation completion
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Open the Dock menu and app commands from the Mini.
+  - Exercise Open SaneHosts, New Profile, Import Blocklist, Show Tutorial, Settings,
+    License, About, Check for Updates, and Deactivate All where safe.
+  - Cancel or stop before destructive/external completion.
+  expected_outputs:
+  - Dock and app menu items are present and wired to shared window/settings openers.
+  - Deactivate All calls the same hosts/profile deactivation paths as other surfaces.
+  - Check for Updates is disabled or cancelable when direct-update eligibility is
+    not available.
+- id: quick-actions-and-basic-pro-gates
+  title: Sidebar quick actions and Pro gates match shipped Basic and Pro boundaries
+  surfaces:
+  - Quick Actions section
+  - Pro Features section
+  - Pro upsell sheet
+  - Protection Levels section
+  steps:
+  - Verify Enable Protection or Disable Protection appears for the selected profile.
+  - Verify Open Essentials works for Basic.
+  - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
+    protection levels in Basic and Pro modes.
+  - Verify locked Basic paths open the appropriate upsell instead of silently performing
+    Pro work.
+  assertions:
+  - Basic action surfaces remain usable without Pro.
+  - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
+  - Merge warns when fewer than two profiles are available.
+  evidence:
+  - Source guard for QuickActionButton and ProGatedQuickActionButton
+  - MainView gate policy tests
+  - App Store screenshot proof of primary surfaces
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  historical_failure_classes:
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - pro_basic_gate_drift
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Verify Enable Protection or Disable Protection appears for the selected profile.
+  - Verify Open Essentials works for Basic.
+  - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
+    protection levels in Basic and Pro modes.
+  expected_outputs:
+  - Basic action surfaces remain usable without Pro.
+  - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
+  - Merge warns when fewer than two profiles are available.
+- id: profile-lifecycle-actions
+  title: Profile create, duplicate, merge, export, delete, select, and reorder actions
+    are covered
+  surfaces:
+  - Profile list
+  - Profile context menu
+  - Keyboard toolbar
+  - Multi-select detail
+  - New Profile and Merge sheets
+  steps:
+  - Create a new profile from the sheet.
+  - Duplicate and merge representative profiles in an isolated store fixture.
+  - Select, reorder, export, and delete profiles where non-destructive.
+  - Confirm active profile deletion is blocked.
+  assertions:
+  - Profile lifecycle controls update the store and preserve a valid selection.
+  - Delete requires confirmation for multi-select and blocks active profiles.
+  - Export only reaches the save/folder chooser unless an isolated destination is
+    supplied.
+  evidence:
+  - Source guard for profile actions and sheets
+  - Profile model/store tests
+  - Safe-surface blocker note for filesystem export destination
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - context_menu_extension_missing
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - shortcut_focus_or_dispatch
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Create a new profile from the sheet.
+  - Duplicate and merge representative profiles in an isolated store fixture.
+  - Select, reorder, export, and delete profiles where non-destructive.
+  expected_outputs:
+  - Profile lifecycle controls update the store and preserve a valid selection.
+  - Delete requires confirmation for multi-select and blocks active profiles.
+  - Export only reaches the save/folder chooser unless an isolated destination is
+    supplied.
+- id: preset-template-import-actions
+  title: Preset, template, remote import, custom URL, and merge import surfaces are
+    covered
+  surfaces:
+  - Protection Levels list
+  - Preset detail
+  - Create from Template sheet
+  - Import Blocklists sheet
+  - Custom URL field
+  - Import progress overlay
+  steps:
+  - Select each preset and verify the Add/download surface.
+  - Open Create from Template and verify all template rows.
+  - Open Import Blocklists and verify categories, recommended selection, custom URL
+    validation, cancel, and progress surfaces.
+  - Exercise remote parsing through local fixtures instead of live network mutation.
+  assertions:
+  - Presets and templates are complete and uniquely named.
+  - Remote and custom URL import paths sanitize content, reject oversized files, and
+    can cancel safely.
+  - External network completion is not claimed without an isolated fixture.
+  evidence:
+  - Source guard for preset/template/import UI
+  - Profile preset, template, remote import, and custom URL integration tests
+  - Safe-surface blocker note for external network completion
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  historical_failure_classes:
+  - data_loss_or_unexpected_mutation
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Select each preset and verify the Add/download surface.
+  - Open Create from Template and verify all template rows.
+  - Open Import Blocklists and verify categories, recommended selection, custom URL
+    validation, cancel, and progress surfaces.
+  expected_outputs:
+  - Presets and templates are complete and uniquely named.
+  - Remote and custom URL import paths sanitize content, reject oversized files, and
+    can cancel safely.
+  - External network completion is not claimed without an isolated fixture.
+- id: activation-deactivation-hosts-write
+  title: Activation and deactivation routes prove the safe first surface without mutating
+    /etc/hosts
+  surfaces:
+  - Enable Protection quick action
+  - Activate and Deactivate profile buttons
+  - Profile context menu activation
+  - Menu bar activation and deactivation
+  - Deactivate All command
+  steps:
+  - Verify every activation/deactivation control reaches HostsService or MenuBarProfileStore.
+  - Validate generated hosts content through isolated tests.
+  - Stop before administrator authorization or real /etc/hosts replacement unless
+    the run is explicitly isolated.
+  assertions:
+  - UI surfaces are wired to activation/deactivation logic.
+  - Generated hosts content is validated and sanitized.
+  - Receipt records that full admin authorization and /etc/hosts mutation remain blocked
+    outside an isolated fixture.
+  evidence:
+  - Source guard for activation/deactivation routes
+  - Hosts content validator tests
+  - Safe-surface blocker note for admin auth and /etc/hosts mutation
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  historical_failure_classes:
+  - context_menu_extension_missing
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Verify every activation/deactivation control reaches HostsService or MenuBarProfileStore.
+  - Validate generated hosts content through isolated tests.
+  - Stop before administrator authorization or real /etc/hosts replacement unless
+    the run is explicitly isolated.
+  expected_outputs:
+  - UI surfaces are wired to activation/deactivation logic.
+  - Generated hosts content is validated and sanitized.
+  - Receipt records that full admin authorization and /etc/hosts mutation remain blocked
+    outside an isolated fixture.
+- id: entry-crud-search-toggle-actions
+  title: Entry add, edit, duplicate, delete, toggle, search, and validation actions
+    are covered
+  surfaces:
+  - Profile detail
+  - Add Entry sheet
+  - Edit Entry sheet
+  - Entry row toggle
+  - Entry context menu
+  - Search field
+  steps:
+  - Add a valid hosts entry in an isolated profile fixture.
+  - Edit IP, hostnames, and comment.
+  - Duplicate, toggle, and delete entries.
+  - Search/filter entries and confirm invalid hostnames are blocked.
+  assertions:
+  - Add and edit validation requires valid IP addresses and hostnames.
+  - Toggle, duplicate, and delete update only the selected profile.
+  - Generated comments cannot inject hosts-file lines.
+  evidence:
+  - Source guard for AddEntrySheet, EditEntrySheet, EntryRow, and context menus
+  - Parser, model, and generation tests
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - context_menu_extension_missing
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Add a valid hosts entry in an isolated profile fixture.
+  - Edit IP, hostnames, and comment.
+  - Duplicate, toggle, and delete entries.
+  expected_outputs:
+  - Add and edit validation requires valid IP addresses and hostnames.
+  - Toggle, duplicate, and delete update only the selected profile.
+  - Generated comments cannot inject hosts-file lines.
+- id: bulk-entry-actions
+  title: Bulk select, enable, disable, delete, and done actions are Pro-gated and
+    covered
+  surfaces:
+  - Entry selection mode
+  - Bulk actions bar
+  - Pro upsell sheet
+  steps:
+  - Enter selection mode in Pro or trigger the Pro gate in Basic.
+  - Select and deselect entries.
+  - Enable, disable, delete selected entries, then exit selection mode.
+  assertions:
+  - Basic mode opens the bulk operations upsell.
+  - Pro mode updates only selected entries.
+  - Bulk delete clears selection and does not leave stale IDs.
+  evidence:
+  - Source guard for selection mode and bulk actions
+  - Profile entry count/model tests
+  - Safe-surface blocker note for destructive delete outside isolated fixtures
+  required_proof_level: fixture_completion
+  required_evidence_types:
+  - fixture
+  - state_receipt
+  historical_failure_classes:
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - pro_basic_gate_drift
+  - state_count_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Enter selection mode in Pro or trigger the Pro gate in Basic.
+  - Select and deselect entries.
+  - Enable, disable, delete selected entries, then exit selection mode.
+  expected_outputs:
+  - Basic mode opens the bulk operations upsell.
+  - Pro mode updates only selected entries.
+  - Bulk delete clears selection and does not leave stale IDs.
+- id: settings-license-about-update-support
+  title: Settings, License, About, update, diagnostics, and support surfaces are reachable
+  surfaces:
+  - Settings window
+  - General tab
+  - License tab
+  - About tab
+  - Software Updates row
+  - Report a Bug surface
+  steps:
+  - Open Settings, License, and About from every customer access point.
+  - Verify startup, login item, Dock icon, update controls, license, licenses list,
+    diagnostics, and report-a-bug controls are present.
+  - Stop before sending support mail or performing live update checks unless explicitly
+    approved.
+  assertions:
+  - Shared SaneUI settings, license, update, and about components are used.
+  - Tab routing works when commands are issued before the settings window exists.
+  - External update/support sends are not claimed complete.
+  evidence:
+  - Source guard for SettingsView and SaneHostsApp openers
+  - Navigation source tests
+  - Safe-surface blocker notes for update and support sends
+  required_proof_level: safe_first_surface
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  historical_failure_classes:
+  - duplicate_or_stale_menu_item
+  - menu_entry_missing
+  - install_update_packaging
+  - persistence_or_relaunch_reset
+  - layout_visual_regression
+  - pro_basic_gate_drift
+  - external_integration_stub
+  - state_count_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Open Settings, License, and About from every customer access point.
+  - Verify startup, login item, Dock icon, update controls, license, licenses list,
+    diagnostics, and report-a-bug controls are present.
+  - Stop before sending support mail or performing live update checks unless explicitly
+    approved.
+  expected_outputs:
+  - Shared SaneUI settings, license, update, and about components are used.
+  - Tab routing works when commands are issued before the settings window exists.
+  - External update/support sends are not claimed complete.
+- id: persistence-security-and-release-surfaces
+  title: Persistence, privacy, helper, and release-facing security surfaces remain
+    represented
+  surfaces:
+  - ProfileStore persistence
+  - Hosts helper and AppleScript fallback
+  - Privacy manifest
+  - Direct distribution update configuration
+  steps:
+  - Verify profile files, backups, and generated hosts content use safe validation.
+  - Verify helper fallback validates content before any privileged copy.
+  - Verify privacy and direct distribution metadata remain present.
+  assertions:
+  - Profile names and entry comments are sanitized before hosts generation.
+  - Remote import and built-in blocklists respect size caps.
+  - Helper/admin flows are represented as blocked completion unless run in a safe
+    isolated fixture.
+  evidence:
+  - Source guard for ProfileStore, HostsService, helper fallback, and privacy/update
+    metadata
+  - Hosts parser, validator, remote import, and profile preset tests
+  - Safe-surface blocker note for privileged writes
+  required_proof_level: full_runtime_completion
+  required_evidence_types:
+  - mini_click
+  - screenshot
+  - fixture
+  - log
+  historical_failure_classes:
+  - permission_recovery_dead_end
+  - install_update_packaging
+  - data_loss_or_unexpected_mutation
+  - persistence_or_relaunch_reset
+  - pro_basic_gate_drift
+  - docs_promise_drift
+  - activation_noop
+  functional_state:
+    description: Seeded hosts-file workspace with representative enabled, disabled,
+      duplicate, invalid, import, backup, and recovery entries.
+    setup_steps:
+    - Use an isolated temporary hosts file on the Mini.
+    - Seed domain rows and backup files before import/export/reset/recovery actions.
+    fixture_paths:
+    - Tests/Fixtures/customer-ui/hosts-workspace/
+  user_inputs:
+  - Verify profile files, backups, and generated hosts content use safe validation.
+  - Verify helper fallback validates content before any privileged copy.
+  - Verify privacy and direct distribution metadata remain present.
+  expected_outputs:
+  - Profile names and entry comments are sanitized before hosts generation.
+  - Remote import and built-in blocklists respect size caps.
+  - Helper/admin flows are represented as blocked completion unless run in a safe
+    isolated fixture.

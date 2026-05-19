@@ -1,10 +1,23 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-05-05
+**Last updated:** 2026-05-18
 
 ## Current State
 
-- Current direct-download release is `1.1.9` (build `1109`).
+- 2026-05-15 launch-readiness cleanup:
+  - Current direct-download release identity is `1.1.11` (build `1111`), matching `Config/Shared.xcconfig`, README, and `website/appcast.xml`.
+  - `.saneprocess` now marks the website lane as active with `website_domain: sanehosts.com`.
+  - `scripts/customer_ui_action_sweep.rb` was updated to emit the current structured customer UI receipt schema required by SaneProcess.
+  - Mini customer UI sweep now passes with 11 covered actions, and Mini release preflight passes with warning-level cleanup only.
+  - The 30-second privacy-switch video was staged to `website/videos/sanehosts-privacy-switch-30s.mp4` with SHA-256 `7132b6758a8c1505d76a410b9f951912a57d909c5454660154df5568421c264e`.
+  - Remaining launch blockers are marketing/public-action gates: human visual approval and public deploy for the video, plus final Product Hunt maker comment and day-of checklist approval.
+
+- 2026-05-12 customer-facing action release gate is now recorded for SaneHosts:
+  - Added `Tests/CustomerUIActions.yml`, `scripts/customer_ui_action_sweep.rb`, and `.sane/customer_ui_action_receipt.json`.
+  - `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passes with 11 required actions covered; receipt generated `2026-05-12T03:45:56Z` on host `mini`.
+  - Mini `./scripts/SaneMaster.rb verify` passed 82 tests.
+
+- Current direct-download release is `1.1.11` (build `1111`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
@@ -90,3 +103,37 @@ All 4 sites deployed to Cloudflare Pages.
 - **SaneHosts plan from plan mode** (accessibility labels, appcast fix) — plan exists at `~/.claude/plans/reactive-popping-allen.md`, not started this session
 - **SaneBar/SaneClip non-website changes** — uncommitted Swift/config changes from prior sessions remain in those repos
 - **Remaining audit WARNs**: orphaned images on SaneBar (5 files) and SaneClip (2 files), JSON-LD on subpages, SaneBar javascript:void(0) links on index.html
+
+## Launch Ops Calendar - 2026-05-14
+
+- `.outreach.yml` now classifies SaneHosts as `released_niche_launch_not_scheduled`.
+- Scheduled gates: launch package on 2026-05-24 and launch decision on 2026-05-28. Position around privacy/security and direct-only architecture; do not imply App Store availability.
+- 2026-05-14 launch package update: website hero proof now explains why SaneHosts is a direct Mac download and why macOS asks for Touch ID/password before hosts-file changes. Generated local Product Hunt candidate assets at `website/images/product-hunt-thumbnail-240.png` and `website/images/product-hunt-gallery-01.png` through `03.png`, plus `Videos/sanehosts-privacy-switch-30s.mp4` (1920x1080, 30.0s). Current launch gate remains no-go until visual approval/hosting, final maker comment/day-of checklist, and fresh green Mini release proof.
+
+## Launch Ops Calendar - 2026-05-15
+
+- Mini `./scripts/SaneMaster.rb launch_readiness` returned nonzero for SaneHosts. No Product Hunt, Show HN, directory, or public reply action was taken.
+- Blockers recorded from the gate: the privacy-switch video is still local-only and needs human visual approval plus hosting, the Product Hunt maker comment/day-of reply checklist still needs exact approval, and the latest launch-gate `release_preflight` is not green in this context (124 issues, 4 warnings).
+- Existing support-surface URLs remain unchanged: [awesome-mac](https://github.com/jaywcjlove/awesome-mac/pull/1804) and [awesome-macOS](https://github.com/iCHAIT/awesome-macOS/pull/713).
+- Next launch-ops date stays 2026-05-24 for package prep only.
+
+## Launch Ops Calendar - 2026-05-16
+
+- Mini `./scripts/SaneMaster.rb launch_readiness --json` stayed red for SaneHosts, so no Product Hunt, Show HN, directory, or public reply action was taken.
+- Fresh blocker receipt: the privacy-switch video still needs human visual approval plus hosting, the Product Hunt maker comment/day-of reply checklist still needs exact approval, and the launch package is still incomplete even though `release_preflight` remains green with 3 warnings.
+- Existing support-surface URLs remain unchanged: [awesome-mac](https://github.com/jaywcjlove/awesome-mac/pull/1804) and [awesome-macOS](https://github.com/iCHAIT/awesome-macOS/pull/713).
+- Next launch-ops date stays 2026-05-24 for package prep only.
+
+## Launch Ops Calendar - 2026-05-17
+
+- Mini `./scripts/SaneMaster.rb launch_readiness --json` stayed red again for SaneHosts, so no Product Hunt, Show HN, directory, or public reply action was taken.
+- Fresh blocker receipt: the privacy-switch video still lacks human visual approval and a hosted public URL, the staged `website/videos` asset is not deployed publicly yet, the Product Hunt maker comment/day-of reply checklist still needs exact approval, and `release_preflight` remains warning-only with 3 warnings.
+- Existing support-surface URLs remain unchanged: [awesome-mac](https://github.com/jaywcjlove/awesome-mac/pull/1804) and [awesome-macOS](https://github.com/iCHAIT/awesome-macOS/pull/713).
+- Next launch-ops date stays 2026-05-24 for package prep only.
+
+## Launch Ops Calendar - 2026-05-18
+
+- Mini `./scripts/SaneMaster.rb launch_readiness` stayed red again for SaneHosts, so no Product Hunt, Show HN, directory, or public reply action was taken.
+- Fresh blocker receipt: the privacy-switch video still lacks human visual approval and a hosted public URL, the staged `website/videos` asset is not deployed publicly yet, the Product Hunt maker comment/day-of reply checklist still needs exact approval, and `release_preflight` remains warning-only with 3 warnings.
+- Existing support-surface URLs remain unchanged: [awesome-mac](https://github.com/jaywcjlove/awesome-mac/pull/1804) and [awesome-macOS](https://github.com/iCHAIT/awesome-macOS/pull/713).
+- Next launch-ops date stays 2026-05-24 for package prep only.

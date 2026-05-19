@@ -1,7 +1,7 @@
 ---
 name: Bug Report
 about: Report something that isn't working correctly
-title: '[Bug] '
+title: "[Bug]: "
 labels: bug
 assignees: ''
 ---
@@ -39,3 +39,5 @@ If applicable, add screenshots to help explain your problem.
 - Does this happen consistently or intermittently?
 - Did this work before? If so, what changed?
 - Any error messages in Console.app?
+- GitHub issues are public. Remove usernames, local paths, customer data, and screenshots or videos you do not want public. Email hi@saneapps.com for sensitive reports.
+- If you used Report a Bug in the app, paste the copied diagnostics here and drag any prepared files into this issue. For large videos, paste a file-sharing link instead of emailing or attaching the video.

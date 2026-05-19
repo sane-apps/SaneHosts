@@ -61,6 +61,12 @@ search_keywords:
   - "stevenblack hosts mac tutorial"
   - "native mac privacy app"
 
+x_search_keywords:
+  - "\"Gas Mask\" (alternative OR broken OR Apple Silicon OR macOS) lang:en -is:retweet"
+  - "\"hosts file\" macOS (manager OR editor OR app) lang:en -is:retweet"
+  - "\"block trackers\" Mac (hosts OR no VPN OR native) lang:en -is:retweet"
+  - "\"Pi-hole\" alternative Mac lang:en -is:retweet"
+
 pain_points:
   - "Gas Mask crashes on modern macOS"
   - "Gas Mask no Apple Silicon support"
@@ -103,6 +109,101 @@ launches:
     date: "2026-02-20"
     status: "submitted"
     notes: "17.8k star repo. PR #699 (individual, per guidelines)."
+
+launch_calendar:
+  timezone: "America/New_York"
+  classification: "released_niche_launch_not_scheduled"
+  rule: "SaneHosts is direct-download only and has a real niche privacy story, but it needs a fresh package before PH/HN/IH. Do not rely on GitHub listings as the launch."
+  current_release_state:
+    version: "1.1.11"
+    build: "1111"
+    status: "live_direct_download"
+    evidence: "Current shipped direct-download surface is 1.1.11 / build 1111 in Config/Shared.xcconfig, README, website appcast, and live website."
+  required_before_meaningful_launch:
+    - "Human visual approval plus hosted/public URL for the 30-second privacy-switch video candidate."
+    - "Final Product Hunt maker comment and day-of reply checklist approved."
+  scheduled:
+    - date: "2026-05-24"
+      time: "10:00"
+      channel: "SaneHosts launch package"
+      status: "scheduled_by_cross_product_launch_ops"
+      action: "Prepare/update website copy, screenshots, short demo plan, Product Hunt/HN/IH drafts, and directory targets for a privacy-switch launch."
+      gate: "No public launch until direct-only architecture and support surfaces are clear and visually verified."
+      success_metric: "Launch package ready with exact copy/assets and go/no-go verdict."
+    - date: "2026-05-28"
+      time: "10:00"
+      channel: "SaneHosts launch decision"
+      status: "conditional"
+      action: "If package is complete and support risk is low, schedule PH or Show HN for the next Tuesday-Thursday; otherwise continue targeted competitor/opportunity monitoring."
+      gate: "No launch without live website proof and fresh Mini verify."
+      success_metric: "Scheduled meaningful launch or explicit no-go."
+  last_launch_readiness:
+    date: "2026-05-18"
+    status: "no_go"
+    launch_readiness_exit: 1
+    blocker_summary:
+      - "Human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate."
+      - "The Product Hunt maker comment and day-of reply checklist still need final exact approval."
+      - "The staged website/videos privacy-switch clip still needs public website deploy after visual approval."
+      - "Mini launch gate remains no-go even though release_preflight only has warning-level cleanup (3 warnings)."
+    next_date: "2026-05-24"
+
+public_posting_policy:
+  approval_required: true
+  disclosure_required: "Always say 'I built SaneHosts' when recommending it publicly."
+
+launch_package:
+  status: "package_defined_assets_needed"
+  audience: "Mac users who want a simple local privacy switch for ads, trackers, gambling, adult sites, malware, social media, or vendor telemetry."
+  problem: "Manual hosts-file editing is risky, DNS/VPN blockers add external services, and older hosts managers are dated on modern macOS."
+  solution: "SaneHosts gives curated protection levels, backups, Touch ID/password approval, DNS flush, custom profiles, and direct local hosts-file control."
+  primary_story: "Professional Grade Privacy Switch: local blocking without a VPN, DNS subscription, or separate hardware."
+  pricing_proof: "Website shows Basic free and Pro one-time purchase; direct download and Buy Pro links are present."
+  privacy_proof: "Website and privacy policy must explain local hosts-file control, direct-download distribution, helper authorization, and no VPN/DNS subscription dependency."
+  proof_assets:
+    - type: "website_hero"
+      status: "current"
+      path: "website/index.html"
+    - type: "og_image"
+      status: "current"
+      path: "website/og-image.png"
+    - type: "product_screenshot"
+      status: "current"
+      path: "website/screenshot.png"
+    - type: "product_screenshot"
+      status: "current"
+      path: "website/images/sanehosts-touchid.png"
+    - type: "video"
+      status: "local_candidate_generated_and_staged_needs_review_and_public_deploy"
+      path: "Videos/sanehosts-privacy-switch-30s.mp4"
+      website_path: "website/videos/sanehosts-privacy-switch-30s.mp4"
+      sha256: "7132b6758a8c1505d76a410b9f951912a57d909c5454660154df5568421c264e"
+    - type: "product_hunt_thumbnail"
+      status: "current"
+      path: "website/images/product-hunt-thumbnail-240.png"
+    - type: "product_hunt_gallery"
+      status: "current"
+      path: "website/images/product-hunt-gallery-01.png"
+    - type: "product_hunt_gallery"
+      status: "current"
+      path: "website/images/product-hunt-gallery-02.png"
+    - type: "product_hunt_gallery"
+      status: "current"
+      path: "website/images/product-hunt-gallery-03.png"
+  channel_plan:
+    product_hunt: "prepare_after_direct_architecture_copy_and_video"
+    hacker_news: "fallback_show_hn_for_local_privacy_switch_story"
+    indie_hackers: "feedback_story_if_package_is_complete"
+    x_replies: "targeted_only_when_user_discusses_Gas_Mask_hosts_or_tracker_blocking"
+  go_no_go:
+    rule: "No public launch until the direct-download/helper-auth explanation, short demo, PH gallery, and fresh Mini proof are complete."
+  weak_launch_blockers:
+    - "30-second video is staged in website/videos but still needs human visual approval and public website deploy."
+    - "Product Hunt maker comment and day-of reply checklist still need final approval."
+
+x_tweet_drafts:
+  - "I built SaneHosts as a local Mac privacy switch: curated hosts protections, backups, Touch ID/password approval, and DNS flush without a VPN or DNS subscription."
+  - "If Gas Mask feels dated or you do not want another DNS/VPN service, SaneHosts gives hosts-file blocking a modern native Mac interface."
 
 pending_outreach: []
 
