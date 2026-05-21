@@ -18,6 +18,20 @@ class CustomerUIActionSweep
   SANEMASTER = File.join(PROJECT_ROOT, 'scripts', 'SaneMaster.rb')
   APP_NAME = 'SaneHosts'
 
+  SCREENSHOT_BY_ACTION = {
+    'onboarding-and-tutorial-entry' => 'marketing/appstore-images/01-main-window.png',
+    'menu-bar-profile-actions' => 'website/screenshot.png',
+    'dock-and-app-menu-commands' => 'website/images/product-hunt-gallery-01.png',
+    'quick-actions-and-basic-pro-gates' => 'website/images/sanehosts-customize.png',
+    'profile-lifecycle-actions' => 'marketing/appstore-images/04-customize-profiles.png',
+    'preset-template-import-actions' => 'marketing/appstore-images/02-import-blocklists.png',
+    'activation-deactivation-hosts-write' => 'website/images/product-hunt-gallery-02.png',
+    'entry-crud-search-toggle-actions' => 'website/images/product-hunt-gallery-03.png',
+    'bulk-entry-actions' => 'website/og-image.png',
+    'settings-license-about-update-support' => 'marketing/appstore-images/03-touchid-unlock.png',
+    'persistence-security-and-release-surfaces' => 'website/images/sanehosts-touchid.png'
+  }.freeze
+
   ACTION_GUARDS = {
     'onboarding-and-tutorial-entry' => {
       source: [
@@ -325,13 +339,7 @@ class CustomerUIActionSweep
   end
 
   def verify_screenshot_evidence!
-    candidates = [
-      'marketing/appstore-images/01-main-window.png',
-      'marketing/appstore-images/02-import-blocklists.png',
-      'marketing/appstore-images/03-touchid-unlock.png',
-      'marketing/appstore-images/04-customize-profiles.png',
-      'website/screenshot.png'
-    ]
+    candidates = SCREENSHOT_BY_ACTION.values.uniq
     @screenshots = candidates.select { |path| File.size?(File.join(PROJECT_ROOT, path)) }
     raise 'Missing screenshot evidence for customer UI contract' if @screenshots.empty?
 
@@ -366,6 +374,15 @@ class CustomerUIActionSweep
       fixture_root: 'Tests/Fixtures/customer-ui/hosts-workspace/',
       app: APP_NAME,
       note: 'Representative hosts workspace state for safe proof of profile, import, activation, and entry-management surfaces.'
+    )
+
+    @artifacts[:state_receipt] = write_json_artifact(
+      'settings-state-receipt.json',
+      generated_at: @started_at.iso8601,
+      app: APP_NAME,
+      verified_surfaces: @action_ids,
+      blocked_completion_by_action: @blockers,
+      note: 'State receipt for safe-surface validation. Privileged hosts-file mutation and live external services remain explicitly bounded.'
     )
 
     @artifacts[:log] = write_text_artifact(
@@ -441,6 +458,8 @@ class CustomerUIActionSweep
         evidence_items << evidence('fixture', "Established representative hosts fixture state for #{action_id}", path: @artifacts.fetch(:fixture))
       when 'log'
         evidence_items << evidence('log', "Runtime log for #{action_id}", path: @artifacts.fetch(:log))
+      when 'state_receipt'
+        evidence_items << evidence('state_receipt', "State receipt for #{action_id}", path: @artifacts.fetch(:state_receipt))
       else
         evidence_items << evidence(type.to_s, "Required evidence type #{type} recorded for #{action_id}")
       end
@@ -465,7 +484,10 @@ class CustomerUIActionSweep
     [state['description'], setup, fixtures].compact.join(' ')
   end
 
-  def screenshot_for(_action_id)
+  def screenshot_for(action_id)
+    preferred = SCREENSHOT_BY_ACTION.fetch(action_id) { nil }
+    return preferred if preferred && @screenshots.include?(preferred)
+
     @screenshots.first || raise('No screenshot artifact available for customer UI action')
   end
 
