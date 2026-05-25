@@ -190,12 +190,14 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
             let killProcess = Process()
             killProcess.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
             killProcess.arguments = ["-HUP", "mDNSResponder"]
-            try? killProcess.run()
+            try killProcess.run()
             killProcess.waitUntilExit()
 
-            if process.terminationStatus == 0 {
+            if process.terminationStatus == 0, killProcess.terminationStatus == 0 {
                 logger.info("Successfully flushed DNS cache")
                 reply(true, nil)
+            } else if process.terminationStatus == 0 {
+                reply(false, "mDNSResponder HUP returned status \(killProcess.terminationStatus)")
             } else {
                 reply(false, "dscacheutil returned status \(process.terminationStatus)")
             }

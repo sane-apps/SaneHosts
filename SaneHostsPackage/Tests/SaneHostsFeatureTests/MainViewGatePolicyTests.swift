@@ -118,6 +118,201 @@ struct EntryRowLayoutPolicyTests {
     }
 }
 
+@Suite("Dark Mode Readability Policy Tests")
+struct DarkModeReadabilityPolicyTests {
+    @Test("Customer-facing dark UI does not use secondary gray semantics")
+    func customerFacingDarkUIDoesNotUseSecondaryGraySemantics() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let files = [
+            "Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift",
+            "Sources/SaneHostsFeature/Views/MainView.swift",
+            "Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
+        ]
+
+        let combinedSource = try files.map {
+            try String(contentsOf: packageRoot.appendingPathComponent($0))
+        }.joined(separator: "\n")
+
+        #expect(!combinedSource.contains("Color.secondary"))
+        #expect(!combinedSource.contains("color: .secondary"))
+        #expect(!combinedSource.contains("iconColor: .secondary"))
+        #expect(!combinedSource.contains("foregroundStyle(.secondary"))
+    }
+
+    @Test("Sidebar profile names explicitly stay white")
+    func sidebarProfileNamesExplicitlyStayWhite() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+
+        #expect(mainSource.contains("Text(profile.name)"))
+        #expect(mainSource.contains(".foregroundColor(.white)"))
+    }
+
+    @Test("Tutorial overlay remains visibly explainable instead of blacking out the app")
+    func tutorialOverlayRemainsVisiblyExplainable() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let overlaySource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift")
+        )
+
+        #expect(overlaySource.contains("CGRect(origin: .zero, size: proxy.size)"))
+        #expect(overlaySource.contains(".black.opacity(0.45)"))
+        #expect(overlaySource.contains(".fill(Color.black.opacity(0.92))"))
+        #expect(overlaySource.contains(".foregroundColor(.white)"))
+    }
+}
+
+@Suite("Runtime Resource Policy Tests")
+struct RuntimeResourcePolicyTests {
+    @Test("Remote import cancellation cancels service and detached parse work")
+    func remoteImportCancellationCancelsServiceAndParseWork() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let syncSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/RemoteSyncService.swift")
+        )
+
+        #expect(syncSource.contains("private var currentTask: Task<RemoteHostsFile, Error>?"))
+        #expect(syncSource.contains("currentTask = task"))
+        #expect(syncSource.contains("currentTask?.cancel()"))
+        #expect(syncSource.contains("withTaskCancellationHandler"))
+        #expect(syncSource.contains("parseTask.cancel()"))
+    }
+
+    @Test("Remote import URL checks are bounded and cancelled with the sheet")
+    func remoteImportURLChecksAreBoundedAndCancelledWithSheet() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+
+        #expect(mainSource.contains("@State private var urlCheckTask: Task<Void, Never>?"))
+        #expect(mainSource.contains("let concurrencyLimit = 6"))
+        #expect(mainSource.contains("urlCheckTask?.cancel()"))
+        #expect(mainSource.contains("group.cancelAll()"))
+        #expect(mainSource.contains(".onDisappear"))
+    }
+
+    @Test("Large entry filtering is evaluated once per entries render pass")
+    func largeEntryFilteringIsEvaluatedOncePerEntriesRenderPass() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let detailSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/ProfileDetailView.swift"))
+
+        #expect(detailSource.contains("let matchingEntries = filteredEntries"))
+        #expect(detailSource.contains("let matchingCount = matchingEntries.count"))
+        #expect(detailSource.contains("Array(matchingEntries.prefix(Self.maxVisibleEntries))"))
+        #expect(detailSource.contains("Showing \\(compactNumber(profile.entries.count)) of \\(compactNumber(profile.entryCount)) entries"))
+    }
+
+    @Test("Activation and deactivation paths reject concurrent writes")
+    func activationAndDeactivationPathsRejectConcurrentWrites() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+
+        #expect(mainSource.contains("guard !isActivating else { return }"))
+        #expect(mainSource.contains("defer { isActivating = false }"))
+        #expect(mainSource.contains("try? await store.deactivate()"))
+    }
+
+    @Test("Large profile summaries keep full entry counts without eagerly loading every entry")
+    func largeProfileSummariesKeepFullEntryCounts() {
+        let preview = HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.example.com"])
+        let profile = Profile(
+            name: "Large",
+            entries: [preview],
+            entryCountOverride: 100_000,
+            enabledCountOverride: 90_000,
+            disabledCountOverride: 10_000
+        )
+
+        #expect(profile.entryCount == 100_000)
+        #expect(profile.hasPartialEntries)
+        #expect(profile.entryCounts.enabled == 90_000)
+        #expect(profile.entryCounts.disabled == 10_000)
+    }
+
+    @Test("Large profile operations load full profile content before destructive or exported writes")
+    func largeProfileOperationsLoadFullProfileContentBeforeWrites() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
+
+        #expect(mainSource.contains("let fullProfile = try await store.fullProfile(for: profile)"))
+        #expect(mainSource.contains("HostsService.shared.activateProfile(fullProfile"))
+        #expect(mainSource.contains("let fullProfile = try await store.fullProfile(for: profile)\n                    let content = store.exportProfile(fullProfile)"))
+        #expect(storeSource.contains("let sourceProfile = try await fullProfile(for: profile)"))
+        #expect(storeSource.contains("let fullProfile = try await fullProfile(for: profile)"))
+    }
+
+    @Test("Large profile loading uses summaries at startup and bounded accumulation during import")
+    func largeProfileLoadingUsesSummariesAndImportBounds() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
+
+        #expect(storeSource.contains("largeProfileSummaryThresholdBytes"))
+        #expect(storeSource.contains("LargeProfileSummaryLoader.loadSummary"))
+        #expect(storeSource.contains("largeProfilePreviewEntryLimit"))
+        #expect(storeSource.contains("Data(contentsOf: url, options: [.mappedIfSafe])"))
+        #expect(!storeSource.contains("String(decoding: data"))
+        #expect(mainSource.contains("let maxImportedEntries = 500_000"))
+        #expect(mainSource.contains("try Task.checkCancellation()"))
+        #expect(mainSource.contains("guard allEntries.count < maxImportedEntries else { break }"))
+    }
+
+    @Test("Deactivation and DNS warnings are not silently ignored")
+    func deactivationAndDNSWarningsAreNotSilentlyIgnored() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let repoRoot = packageRoot.deletingLastPathComponent()
+        let appSource = try String(contentsOf: repoRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
+        let dnsSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/DNSService.swift"))
+        let helperSource = try String(contentsOf: repoRoot.appendingPathComponent("SaneHostsHelper/main.swift"))
+
+        #expect(appSource.contains("let warning = try await HostsService.shared.deactivateProfile()"))
+        #expect(!appSource.contains("try? await HostsService.shared.deactivateProfile()"))
+        #expect(dnsSource.contains("try await killMDNSResponder()"))
+        #expect(dnsSource.contains("throw DNSServiceError.flushFailed(\"mDNSResponder HUP exited with code"))
+        #expect(!helperSource.contains("try? killProcess.run()"))
+    }
+}
+
 @Suite("Customer UI Manifest Policy Tests")
 struct CustomerUIManifestPolicyTests {
     @Test("Bulk entry actions require visual evidence")

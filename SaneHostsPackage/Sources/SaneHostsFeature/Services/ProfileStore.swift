@@ -68,6 +68,8 @@ public final class ProfileStore {
     /// Maximum number of backups to keep per profile
     private let maxBackupsPerProfile = 3
     private let maxSystemHostsBytes: Int64 = 25 * 1024 * 1024
+    private let largeProfilePreviewEntryLimit = 100
+    private let largeProfileSummaryThresholdBytes: Int64 = 2 * 1024 * 1024
 
     // MARK: - Initialization
 
@@ -279,6 +281,8 @@ public final class ProfileStore {
 
     private func loadProfiles() async throws {
         let profilesDir = profilesDirectoryURL
+        let previewLimit = largeProfilePreviewEntryLimit
+        let summaryThresholdBytes = largeProfileSummaryThresholdBytes
 
         // Phase 1: Read and decode valid profiles in background
         let result = try await Task.detached(priority: .userInitiated) {
@@ -291,16 +295,26 @@ public final class ProfileStore {
 
             for file in jsonFiles {
                 do {
-                    let data = try Data(contentsOf: file)
-
                     // Validate JSON structure before decoding
-                    guard !data.isEmpty else {
-                        logger.debug(" Empty file detected: \(file.lastPathComponent)")
-                        corruptedFiles.append(file)
-                        continue
-                    }
+                    let values = try file.resourceValues(forKeys: [.fileSizeKey])
+                    let fileSize = values.fileSize ?? 0
+                    let profile: Profile
+                    if fileSize > summaryThresholdBytes {
+                        profile = try LargeProfileSummaryLoader.loadSummary(
+                            from: file,
+                            previewEntryLimit: previewLimit
+                        )
+                    } else {
+                        let data = try Data(contentsOf: file)
 
-                    let profile = try JSONDecoder().decode(Profile.self, from: data)
+                        guard !data.isEmpty else {
+                            logger.debug(" Empty file detected: \(file.lastPathComponent)")
+                            corruptedFiles.append(file)
+                            continue
+                        }
+
+                        profile = try JSONDecoder().decode(Profile.self, from: data)
+                    }
 
                     // Basic validation: ensure profile has required data
                     guard !profile.name.isEmpty else {
@@ -342,6 +356,15 @@ public final class ProfileStore {
 
         profiles = loadedProfiles.sorted { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
         activeProfile = profiles.first { $0.isActive }
+    }
+
+    public func fullProfile(for profile: Profile) async throws -> Profile {
+        guard profile.hasPartialEntries else { return profile }
+        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
+        return try await Task.detached(priority: .userInitiated) {
+            let data = try Data(contentsOf: fileURL)
+            return try JSONDecoder().decode(Profile.self, from: data)
+        }.value
     }
 
     /// Migrate existing user entries from /etc/hosts on first run
@@ -552,15 +575,16 @@ public final class ProfileStore {
 
     /// Duplicate a profile
     public func duplicate(profile: Profile) async throws -> Profile {
+        let sourceProfile = try await fullProfile(for: profile)
         let newProfile = Profile(
             id: UUID(),
-            name: generateUniqueName(baseName: profile.name),
-            entries: profile.entries,
+            name: generateUniqueName(baseName: sourceProfile.name),
+            entries: sourceProfile.entries,
             isActive: false,
             createdAt: Date(),
             modifiedAt: Date(),
-            source: profile.source,
-            colorTag: profile.colorTag,
+            source: sourceProfile.source,
+            colorTag: sourceProfile.colorTag,
             sortOrder: nextSortOrder
         )
 
@@ -599,7 +623,8 @@ public final class ProfileStore {
         var mergedEntries: [HostEntry] = []
 
         for profile in profilesToMerge {
-            for entry in profile.entries {
+            let fullProfile = try await fullProfile(for: profile)
+            for entry in fullProfile.entries {
                 // Create a key from all hostnames
                 let hostnameKey = entry.hostnames.sorted().joined(separator: ",")
                 if !seenHostnames.contains(hostnameKey) {
@@ -654,9 +679,11 @@ public final class ProfileStore {
 
     /// Mark a profile as active (after successful write)
     public func markAsActive(profile: Profile) async throws {
+        let profile = try await fullProfile(for: profile)
+
         // Deactivate current active profile
         if let current = activeProfile, current.id != profile.id {
-            var deactivated = current
+            var deactivated = try await fullProfile(for: current)
             deactivated.isActive = false
             try await save(profile: deactivated)
         }
@@ -674,7 +701,7 @@ public final class ProfileStore {
     public func deactivate() async throws {
         guard let current = activeProfile else { return }
 
-        var deactivated = current
+        var deactivated = try await fullProfile(for: current)
         deactivated.isActive = false
         try await save(profile: deactivated)
 
@@ -686,10 +713,10 @@ public final class ProfileStore {
 
     /// Add an entry to a profile
     public func addEntry(_ entry: HostEntry, to profile: Profile) async throws {
-        guard let current = profiles.first(where: { $0.id == profile.id }) else {
+        guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
-        var updated = current
+        var updated = try await fullProfile(for: currentSummary)
         updated.entries.append(entry)
         try await save(profile: updated)
     }
@@ -697,9 +724,10 @@ public final class ProfileStore {
     /// Add multiple entries to a profile (batch operation)
     /// Limits to maxEntries to prevent memory issues with extremely large hosts files
     public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = 500_000) async throws {
-        guard let current = profiles.first(where: { $0.id == profile.id }) else {
+        guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
+        let current = try await fullProfile(for: currentSummary)
 
         // Limit entries to prevent crashes with extremely large files
         let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
@@ -724,18 +752,19 @@ public final class ProfileStore {
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) {
             profiles[index] = updated
         }
+        notifyChange()
     }
 
     /// Remove an entry from a profile
     public func removeEntry(_ entry: HostEntry, from profile: Profile) async throws {
-        var updated = profile
+        var updated = try await fullProfile(for: profile)
         updated.entries.removeAll { $0.id == entry.id }
         try await save(profile: updated)
     }
 
     /// Update an entry in a profile
     public func updateEntry(_ entry: HostEntry, in profile: Profile) async throws {
-        var updated = profile
+        var updated = try await fullProfile(for: profile)
         if let index = updated.entries.firstIndex(where: { $0.id == entry.id }) {
             updated.entries[index] = entry
             try await save(profile: updated)
@@ -755,11 +784,11 @@ public final class ProfileStore {
     ///   - profile: The profile containing the entries
     ///   - update: Closure that modifies each entry in-place
     public func bulkUpdateEntries(ids: Set<UUID>, in profile: Profile, update: (inout HostEntry) -> Void) async throws {
-        guard let current = profiles.first(where: { $0.id == profile.id }) else {
+        guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
 
-        var updated = current
+        var updated = try await fullProfile(for: currentSummary)
         for i in updated.entries.indices {
             if ids.contains(updated.entries[i].id) {
                 update(&updated.entries[i])
@@ -774,11 +803,11 @@ public final class ProfileStore {
     ///   - ids: Set of entry IDs to remove
     ///   - profile: The profile to remove entries from
     public func bulkRemoveEntries(ids: Set<UUID>, from profile: Profile) async throws {
-        guard let current = profiles.first(where: { $0.id == profile.id }) else {
+        guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
 
-        var updated = current
+        var updated = try await fullProfile(for: currentSummary)
         updated.entries.removeAll { ids.contains($0.id) }
         try await save(profile: updated)
     }
@@ -826,6 +855,257 @@ public final class ProfileStore {
 private struct LoadResult: Sendable {
     var validProfiles: [Profile]
     var corruptedFiles: [URL]
+}
+
+private enum LargeProfileSummaryLoader {
+    private struct ValueBox<T: Decodable>: Decodable {
+        let value: T
+    }
+
+    static func loadSummary(from url: URL, previewEntryLimit: Int) throws -> Profile {
+        let data = try Data(contentsOf: url, options: [.mappedIfSafe])
+        guard !data.isEmpty else {
+            throw ProfileStoreError.loadFailed("Profile file is empty")
+        }
+
+        let previewEntries = try decodePreviewEntries(from: data, limit: previewEntryLimit)
+        let counts = countEnabledStates(in: data)
+        let enabledCount = counts.enabled
+        let disabledCount = counts.disabled
+        let entryCount = max(enabledCount + disabledCount, previewEntries.count)
+
+        return Profile(
+            id: decodeValue(UUID.self, key: "id", in: data) ?? UUID(),
+            name: decodeValue(String.self, key: "name", in: data) ?? "Untitled Profile",
+            entries: previewEntries,
+            isActive: decodeValue(Bool.self, key: "isActive", in: data) ?? false,
+            createdAt: decodeValue(Date.self, key: "createdAt", in: data) ?? Date(),
+            modifiedAt: decodeValue(Date.self, key: "modifiedAt", in: data) ?? decodeValue(Date.self, key: "createdAt", in: data) ?? Date(),
+            source: decodeValue(ProfileSource.self, key: "source", in: data) ?? .local,
+            colorTag: decodeValue(ProfileColor.self, key: "colorTag", in: data) ?? .gray,
+            sortOrder: decodeValue(Int.self, key: "sortOrder", in: data) ?? 0,
+            entryCountOverride: entryCount,
+            enabledCountOverride: enabledCount,
+            disabledCountOverride: disabledCount
+        )
+    }
+
+    private static func decodePreviewEntries(from data: Data, limit: Int) throws -> [HostEntry] {
+        guard limit > 0,
+              let entriesStart = findArrayStart(forKey: "entries", in: data) else {
+            return []
+        }
+
+        let ranges = data.withUnsafeBytes { rawBuffer -> [Range<Int>] in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            var ranges: [Range<Int>] = []
+            var index = entriesStart
+            var objectStart: Int?
+            var depth = 0
+            var inString = false
+            var isEscaped = false
+
+            while index < bytes.count, ranges.count < limit {
+                let byte = bytes[index]
+
+                if inString {
+                    if isEscaped {
+                        isEscaped = false
+                    } else if byte == UInt8(ascii: "\\") {
+                        isEscaped = true
+                    } else if byte == UInt8(ascii: "\"") {
+                        inString = false
+                    }
+                } else {
+                    switch byte {
+                    case UInt8(ascii: "\""):
+                        inString = true
+                    case UInt8(ascii: "{"):
+                        if depth == 0 {
+                            objectStart = index
+                        }
+                        depth += 1
+                    case UInt8(ascii: "}"):
+                        depth -= 1
+                        if depth == 0, let start = objectStart {
+                            ranges.append(start ..< index + 1)
+                            objectStart = nil
+                        }
+                    case UInt8(ascii: "]"):
+                        if depth == 0 {
+                            return ranges
+                        }
+                    default:
+                        break
+                    }
+                }
+
+                index += 1
+            }
+            return ranges
+        }
+
+        guard !ranges.isEmpty else { return [] }
+
+        var previewJSON = Data()
+        previewJSON.append(UInt8(ascii: "["))
+        for (index, range) in ranges.enumerated() {
+            if index > 0 {
+                previewJSON.append(UInt8(ascii: ","))
+            }
+            previewJSON.append(contentsOf: data[range])
+        }
+        previewJSON.append(UInt8(ascii: "]"))
+        return try JSONDecoder().decode([HostEntry].self, from: previewJSON)
+    }
+
+    private static func findArrayStart(forKey key: String, in data: Data) -> Int? {
+        guard let valueStart = findValueStart(forKey: key, in: data) else { return nil }
+        return data.withUnsafeBytes { rawBuffer -> Int? in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            guard valueStart < bytes.count, bytes[valueStart] == UInt8(ascii: "[") else { return nil }
+            return valueStart + 1
+        }
+    }
+
+    private static func decodeValue<T: Decodable>(_ type: T.Type, key: String, in data: Data) -> T? {
+        guard let range = findValueRange(forKey: key, in: data) else { return nil }
+        var wrapped = Data(#"{"value":"#.utf8)
+        wrapped.append(contentsOf: data[range])
+        wrapped.append(UInt8(ascii: "}"))
+        return try? JSONDecoder().decode(ValueBox<T>.self, from: wrapped).value
+    }
+
+    private static func findValueRange(forKey key: String, in data: Data) -> Range<Int>? {
+        guard let start = findValueStart(forKey: key, in: data) else { return nil }
+        return data.withUnsafeBytes { rawBuffer -> Range<Int>? in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            guard start < bytes.count else { return nil }
+
+            switch bytes[start] {
+            case UInt8(ascii: "\""):
+                var index = start + 1
+                var isEscaped = false
+                while index < bytes.count {
+                    let byte = bytes[index]
+                    if isEscaped {
+                        isEscaped = false
+                    } else if byte == UInt8(ascii: "\\") {
+                        isEscaped = true
+                    } else if byte == UInt8(ascii: "\"") {
+                        return start ..< index + 1
+                    }
+                    index += 1
+                }
+                return nil
+            case UInt8(ascii: "{"), UInt8(ascii: "["):
+                let open = bytes[start]
+                let close = open == UInt8(ascii: "{") ? UInt8(ascii: "}") : UInt8(ascii: "]")
+                var index = start
+                var depth = 0
+                var inString = false
+                var isEscaped = false
+                while index < bytes.count {
+                    let byte = bytes[index]
+                    if inString {
+                        if isEscaped {
+                            isEscaped = false
+                        } else if byte == UInt8(ascii: "\\") {
+                            isEscaped = true
+                        } else if byte == UInt8(ascii: "\"") {
+                            inString = false
+                        }
+                    } else if byte == UInt8(ascii: "\"") {
+                        inString = true
+                    } else if byte == open {
+                        depth += 1
+                    } else if byte == close {
+                        depth -= 1
+                        if depth == 0 {
+                            return start ..< index + 1
+                        }
+                    }
+                    index += 1
+                }
+                return nil
+            default:
+                var index = start
+                while index < bytes.count,
+                      bytes[index] != UInt8(ascii: ","),
+                      bytes[index] != UInt8(ascii: "}"),
+                      bytes[index] != UInt8(ascii: "]") {
+                    index += 1
+                }
+                return start ..< index
+            }
+        }
+    }
+
+    private static func findValueStart(forKey key: String, in data: Data) -> Int? {
+        let keyData = Data(#""\#(key)""#.utf8)
+        var searchStart = data.startIndex
+
+        while searchStart < data.endIndex,
+              let keyRange = data.range(of: keyData, options: [], in: searchStart ..< data.endIndex) {
+            var cursor = keyRange.upperBound
+            while cursor < data.endIndex, isWhitespace(data[cursor]) {
+                cursor += 1
+            }
+            guard cursor < data.endIndex, data[cursor] == UInt8(ascii: ":") else {
+                searchStart = keyRange.upperBound
+                continue
+            }
+            cursor += 1
+            while cursor < data.endIndex, isWhitespace(data[cursor]) {
+                cursor += 1
+            }
+            return cursor
+        }
+
+        return nil
+    }
+
+    private static func countEnabledStates(in data: Data) -> (enabled: Int, disabled: Int) {
+        let keyData = Data(#""isEnabled""#.utf8)
+        var enabled = 0
+        var disabled = 0
+        var searchStart = data.startIndex
+
+        while searchStart < data.endIndex,
+              let keyRange = data.range(of: keyData, options: [], in: searchStart ..< data.endIndex) {
+            var cursor = keyRange.upperBound
+            while cursor < data.endIndex, isWhitespace(data[cursor]) {
+                cursor += 1
+            }
+            if cursor < data.endIndex, data[cursor] == UInt8(ascii: ":") {
+                cursor += 1
+                while cursor < data.endIndex, isWhitespace(data[cursor]) {
+                    cursor += 1
+                }
+                if matchesASCII("true", in: data, at: cursor) {
+                    enabled += 1
+                } else if matchesASCII("false", in: data, at: cursor) {
+                    disabled += 1
+                }
+            }
+            searchStart = keyRange.upperBound
+        }
+
+        return (enabled, disabled)
+    }
+
+    private static func matchesASCII(_ string: String, in data: Data, at index: Int) -> Bool {
+        let pattern = Array(string.utf8)
+        guard index + pattern.count <= data.endIndex else { return false }
+        return pattern.indices.allSatisfy { data[index + $0] == pattern[$0] }
+    }
+
+    private static func isWhitespace(_ byte: UInt8) -> Bool {
+        byte == UInt8(ascii: " ") ||
+            byte == UInt8(ascii: "\n") ||
+            byte == UInt8(ascii: "\r") ||
+            byte == UInt8(ascii: "\t")
+    }
 }
 
 // MARK: - Errors

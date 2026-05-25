@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.14] - 2026-05-25
+
+Fixes the first-run tutorial overlay and Tahoe dark-mode readability, reduces launch memory for very large saved profiles, and hardens remote import, activation, deactivation, export, duplicate, merge, and DNS-refresh paths so profile state stays consistent under heavier use.
+
+---
+
 ## [1.1.13] - 2026-05-25
 
 Improves Tahoe readability, keeps the included Basic profile available, and prevents long IP addresses from wrapping in the Entries table.

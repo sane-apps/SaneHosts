@@ -375,7 +375,7 @@ public struct MainView: View {
                     ProfileRowView(profile: profile)
                         .tag(profile.id)
                         .essentialsProfileAnchor(enabled: index == 0)
-                        .accessibilityLabel("\(profile.name), \(profile.isActive ? "active" : "inactive"), \(profile.entries.count) entries")
+                        .accessibilityLabel("\(profile.name), \(profile.isActive ? "active" : "inactive"), \(profile.entryCount) entries")
                         .contextMenu {
                             profileContextMenu(for: profile)
                         }
@@ -557,22 +557,22 @@ public struct MainView: View {
 
         Divider()
 
-                Button {
-                    if licenseService.isPro {
-                        Task {
-                    if let newProfile = try? await store.duplicate(profile: profile) {
-                        selectedProfileIDs = [newProfile.id]
+            Button {
+                if licenseService.isPro {
+                    Task {
+                        if let newProfile = try? await store.duplicate(profile: profile) {
+                            selectedProfileIDs = [newProfile.id]
+                        }
                     }
+                } else {
+                    proUpsellFeature = .duplicateProfile
                 }
-            } else {
-                proUpsellFeature = .duplicateProfile
+            } label: {
+                Label(
+                    licenseService.isPro ? "Duplicate" : "Duplicate (Locked)",
+                    systemImage: licenseService.isPro ? SaneIcons.duplicate : "lock.fill"
+                )
             }
-                } label: {
-                    Label(
-                        licenseService.isPro ? "Duplicate" : "Duplicate (Locked)",
-                        systemImage: licenseService.isPro ? SaneIcons.duplicate : "lock.fill"
-                    )
-                }
 
         Button {
             exportProfile(profile)
@@ -603,12 +603,17 @@ public struct MainView: View {
     // MARK: - Single Profile Actions
 
     private func activateProfile(_ profile: Profile) {
+        guard !isActivating else { return }
         isActivating = true
+        activationError = nil
+        activationWarning = nil
         Task {
+            defer { isActivating = false }
             do {
-                let warning = try await HostsService.shared.activateProfile(profile, systemEntries: store.systemEntries)
+                let fullProfile = try await store.fullProfile(for: profile)
+                let warning = try await HostsService.shared.activateProfile(fullProfile, systemEntries: store.systemEntries)
                 // Mark as active only after successful hosts file write
-                try await store.markAsActive(profile: profile)
+                try await store.markAsActive(profile: fullProfile)
 
                 if let warning {
                     activationWarning = warning
@@ -619,17 +624,20 @@ public struct MainView: View {
                 // If hosts write succeeded but markAsActive failed, the hosts file is
                 // already modified. Attempt to sync state so UI reflects reality.
                 if HostsService.shared.lastError == nil {
-                    try? await store.markAsActive(profile: profile)
+                    try? await store.markAsActive(profile: try await store.fullProfile(for: profile))
                 }
                 activationError = error.localizedDescription
             }
-            isActivating = false
         }
     }
 
     private func deactivateProfile() {
+        guard !isActivating else { return }
         isActivating = true
+        activationError = nil
+        activationWarning = nil
         Task {
+            defer { isActivating = false }
             do {
                 let warning = try await HostsService.shared.deactivateProfile()
                 try await store.deactivate()
@@ -638,9 +646,13 @@ public struct MainView: View {
                     activationWarning = warning
                 }
             } catch {
+                // If hosts write succeeded but local state failed, retry the local
+                // state update so the UI does not keep showing protection active.
+                if HostsService.shared.lastError == nil {
+                    try? await store.deactivate()
+                }
                 activationError = error.localizedDescription
             }
-            isActivating = false
         }
     }
 
@@ -655,14 +667,20 @@ public struct MainView: View {
     }
 
     private func exportProfile(_ profile: Profile) {
-        let content = store.exportProfile(profile)
-
         let panel = NSSavePanel()
         panel.allowedContentTypes = [.plainText]
         panel.nameFieldStringValue = "\(profile.name).hosts"
 
         if panel.runModal() == .OK, let url = panel.url {
-            try? content.write(to: url, atomically: true, encoding: .utf8)
+            Task {
+                do {
+                    let fullProfile = try await store.fullProfile(for: profile)
+                    let content = store.exportProfile(fullProfile)
+                    try content.write(to: url, atomically: true, encoding: .utf8)
+                } catch {
+                    activationError = "Failed to export \(profile.name): \(error.localizedDescription)"
+                }
+            }
         }
     }
 
@@ -726,10 +744,18 @@ public struct MainView: View {
         panel.message = "Choose folder to export \(selectedProfiles.count) profiles"
 
         if panel.runModal() == .OK, let folderURL = panel.url {
-            for profile in selectedProfiles {
-                let content = store.exportProfile(profile)
-                let fileURL = folderURL.appendingPathComponent("\(profile.name).hosts")
-                try? content.write(to: fileURL, atomically: true, encoding: .utf8)
+            let profilesToExport = selectedProfiles
+            Task {
+                do {
+                    for profile in profilesToExport {
+                        let fullProfile = try await store.fullProfile(for: profile)
+                        let content = store.exportProfile(fullProfile)
+                        let fileURL = folderURL.appendingPathComponent("\(profile.name).hosts")
+                        try content.write(to: fileURL, atomically: true, encoding: .utf8)
+                    }
+                } catch {
+                    activationError = "Failed to export profiles: \(error.localizedDescription)"
+                }
             }
         }
     }
@@ -861,6 +887,7 @@ struct ProfileRowView: View {
                     Text(profile.name)
                         .font(.body)
                         .fontWeight(profile.isActive ? .semibold : .regular)
+                        .foregroundColor(.white)
                         .lineLimit(1)
 
                     // Source indicator icon
@@ -890,7 +917,7 @@ struct ProfileRowView: View {
     }
 
     private var entrySummary: String {
-        let count = profile.entries.count
+        let count = profile.entryCount
         if count == 0 {
             return "Empty"
         } else if count == 1 {
@@ -914,7 +941,7 @@ struct MultiSelectDetailView: View {
     @Environment(\.colorScheme) private var colorScheme
 
     private var totalEntries: Int {
-        profiles.reduce(0) { $0 + $1.entries.count }
+        profiles.reduce(0) { $0 + $1.entryCount }
     }
 
     private var hasActiveProfile: Bool {
@@ -961,7 +988,7 @@ struct MultiSelectDetailView: View {
                                 StatusBadge("Active", color: .saneSuccess, icon: SaneIcons.success)
                             }
 
-                            Text(profile.entries.count.formatted(.number.notation(.compactName)))
+                            Text(profile.entryCount.formatted(.number.notation(.compactName)))
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(.white)
                         }
@@ -1259,6 +1286,7 @@ struct RemoteImportSheet: View {
     @State private var currentImportName = ""
     @State private var error: String?
     @State private var importTask: Task<Void, Never>?
+    @State private var urlCheckTask: Task<Void, Never>?
 
     // Custom URL
     @State private var showingCustomURL = false
@@ -1333,6 +1361,13 @@ struct RemoteImportSheet: View {
                 previousSuggestedName = suggestedName
             }
         }
+        .onDisappear {
+            urlCheckTask?.cancel()
+            urlCheckTask = nil
+            if importTask != nil {
+                cancelImport()
+            }
+        }
     }
 
     // MARK: - URL Liveness Checking
@@ -1347,25 +1382,43 @@ struct RemoteImportSheet: View {
             urlStatus[source.id] = .checking
         }
 
-        // Check all URLs in parallel
-        Task {
+        urlCheckTask?.cancel()
+        urlCheckTask = Task {
+            let sources = BlocklistCatalog.all
+            let concurrencyLimit = 6
+            var nextIndex = 0
+
             await withTaskGroup(of: (String, URLCheckStatus).self) { group in
-                for source in BlocklistCatalog.all {
+                func enqueueNext() {
+                    guard nextIndex < sources.count else { return }
+                    let source = sources[nextIndex]
+                    nextIndex += 1
                     group.addTask {
+                        guard !Task.isCancelled else { return (source.id, .unavailable(0)) }
                         let status = await checkURL(source.url)
                         return (source.id, status)
                     }
                 }
 
+                for _ in 0 ..< min(concurrencyLimit, sources.count) {
+                    enqueueNext()
+                }
+
                 for await (id, status) in group {
+                    if Task.isCancelled {
+                        group.cancelAll()
+                        break
+                    }
                     await MainActor.run {
                         urlStatus[id] = status
                     }
+                    enqueueNext()
                 }
             }
 
             await MainActor.run {
                 isCheckingURLs = false
+                urlCheckTask = nil
             }
         }
     }
@@ -1532,7 +1585,7 @@ struct RemoteImportSheet: View {
                 // Checkbox
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
-                    .foregroundStyle(isSelected ? Color.blue : Color.white.opacity(isUnavailable ? 0.35 : 0.78))
+                    .foregroundStyle(isSelected ? Color.blue : Color.white.opacity(isUnavailable ? 0.9 : 1))
 
                 // Info
                 VStack(alignment: .leading, spacing: 4) {
@@ -1568,7 +1621,7 @@ struct RemoteImportSheet: View {
                     .foregroundColor(.white)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
-                    .background(Color.secondary.opacity(0.15))
+                    .background(Color.saneAccent.opacity(0.28))
                     .clipShape(Capsule())
 
                 // URL status indicator
@@ -1579,7 +1632,7 @@ struct RemoteImportSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .opacity(isUnavailable ? 0.6 : 1.0)
+        .opacity(isUnavailable ? 0.92 : 1.0)
         .accessibilityLabel("\(source.name), \(isSelected ? "selected" : "not selected")\(isUnavailable ? ", unavailable" : "")")
         .accessibilityHint(isUnavailable ? "This blocklist is currently unavailable" : "Double-tap to \(isSelected ? "deselect" : "select") this blocklist")
     }
@@ -1882,8 +1935,11 @@ struct RemoteImportSheet: View {
                 let sources = BlocklistCatalog.all.filter { selectedSources.contains($0.id) }
                 var allEntries: [HostEntry] = []
                 var seenHostnames: Set<String> = []
+                let maxImportedEntries = 500_000
 
                 for (index, source) in sources.enumerated() {
+                    try Task.checkCancellation()
+                    guard allEntries.count < maxImportedEntries else { break }
                     currentImportName = "Downloading \(source.name)..."
                     importProgress = Double(index) / Double(sources.count)
 
@@ -1891,6 +1947,7 @@ struct RemoteImportSheet: View {
 
                     // Deduplicate as we go
                     for entry in remoteFile.entries {
+                        guard allEntries.count < maxImportedEntries else { break }
                         let key = entry.hostnames.sorted().joined(separator: ",")
                         if !seenHostnames.contains(key) {
                             seenHostnames.insert(key)
@@ -1930,6 +1987,7 @@ struct RemoteImportSheet: View {
 
     private func cancelImport() {
         importTask?.cancel()
+        importTask = nil
         RemoteSyncService.shared.cancel()
         isImporting = false
         currentImportName = ""
@@ -2089,7 +2147,7 @@ struct MergeProfilesSheet: View {
 
                                 Spacer()
 
-                                Text("\(profile.entries.count.formatted(.number.notation(.compactName))) entries")
+                                Text("\(profile.entryCount.formatted(.number.notation(.compactName))) entries")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundColor(.white)
                             }
@@ -2102,7 +2160,7 @@ struct MergeProfilesSheet: View {
                         }
                         .buttonStyle(.plain)
                         .accessibilityLabel("\(selectedProfiles.contains(profile.id) ? "Deselect" : "Select") \(profile.name)")
-                        .accessibilityHint("\(profile.entries.count) entries")
+                        .accessibilityHint("\(profile.entryCount) entries")
                     }
                 }
             }
@@ -2126,7 +2184,7 @@ struct MergeProfilesSheet: View {
 
             // Stats
             if selectedProfiles.count >= 2 {
-                let totalEntries = store.profiles.filter { selectedProfiles.contains($0.id) }.reduce(0) { $0 + $1.entries.count }
+                let totalEntries = store.profiles.filter { selectedProfiles.contains($0.id) }.reduce(0) { $0 + $1.entryCount }
                 Text("Will combine ~\(totalEntries) entries (duplicates removed)")
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.white)

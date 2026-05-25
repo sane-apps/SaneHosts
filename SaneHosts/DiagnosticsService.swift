@@ -20,7 +20,7 @@ private func collectSaneHostsSettings() async -> String {
     return """
     profileCount: \(store.profiles.count)
     activeProfile: \(store.activeProfile?.name ?? "none")
-    totalEntryCount: \(store.profiles.reduce(0) { $0 + $1.entries.count })
+    totalEntryCount: \(store.profiles.reduce(0) { $0 + $1.entryCount })
     helperRunning: \(helperRunning)
     isWritingHostsFile: \(hostsService.isWriting)
     lastWriteError: \(hostsService.lastError?.localizedDescription ?? "none")

@@ -103,7 +103,7 @@ struct ProfileDetailView: View {
                         StatusBadge("Active", color: .saneSuccess, icon: SaneIcons.success)
                             .accessibilityLabel("Profile status: Active")
                     } else {
-                        StatusBadge("Inactive", color: .secondary, icon: SaneIcons.profileInactive)
+                        StatusBadge("Inactive", color: .profileInactive, icon: SaneIcons.profileInactive)
                             .accessibilityLabel("Profile status: Inactive")
                     }
 
@@ -205,7 +205,7 @@ struct ProfileDetailView: View {
         guard let date else { return .orange }
         let hours = Date().timeIntervalSince(date) / 3600
         if hours < 24 { return .blue } // Fresh - use blue to differentiate from Active green
-        if hours < 168 { return .secondary } // 7 days
+        if hours < 168 { return .saneAccent } // 7 days
         return .orange
     }
 
@@ -234,7 +234,7 @@ struct ProfileDetailView: View {
         return HStack(spacing: 16) {
             StatCard(
                 title: "Total",
-                value: compactNumber(profile.entries.count),
+                value: compactNumber(profile.entryCount),
                 icon: SaneIcons.hosts,
                 color: .saneAccent
             )
@@ -250,7 +250,7 @@ struct ProfileDetailView: View {
                 title: "Disabled",
                 value: compactNumber(counts.disabled),
                 icon: SaneIcons.entryDisabled,
-                color: .secondary
+                color: .saneWarning
             )
 
             // Prominent Add Entry button - always visible
@@ -372,15 +372,21 @@ struct ProfileDetailView: View {
 
     private var entriesSection: some View {
         CompactSection("Entries", icon: SaneIcons.hosts, iconColor: .saneAccent) {
+            let matchingEntries = filteredEntries
+            let matchingCount = matchingEntries.count
             VStack(spacing: 0) {
                 // Header with count and selection toggle
                 HStack {
-                    if filteredEntries.count > Self.maxVisibleEntries {
-                        Text("Showing \(compactNumber(min(filteredEntries.count, Self.maxVisibleEntries))) of \(compactNumber(filteredEntries.count)) entries")
+                    if profile.hasPartialEntries, debouncedSearchText.isEmpty {
+                        Text("Showing \(compactNumber(profile.entries.count)) of \(compactNumber(profile.entryCount)) entries")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.white)
+                    } else if matchingCount > Self.maxVisibleEntries {
+                        Text("Showing \(compactNumber(min(matchingCount, Self.maxVisibleEntries))) of \(compactNumber(matchingCount)) entries")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.white)
                     } else {
-                        Text("\(compactNumber(filteredEntries.count)) entries")
+                        Text("\(compactNumber(matchingCount)) entries")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.white)
                     }
@@ -414,8 +420,19 @@ struct ProfileDetailView: View {
 
                 CompactDivider()
 
+                if profile.hasPartialEntries, !debouncedSearchText.isEmpty {
+                    HStack {
+                        Spacer()
+                        Text("Searching the loaded preview for this very large profile")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundColor(.white)
+                            .padding(.vertical, 12)
+                        Spacer()
+                    }
+                }
+
                 // Entries list - LIMITED to prevent UI freeze
-                let visibleEntries = Array(filteredEntries.prefix(Self.maxVisibleEntries))
+                let visibleEntries = Array(matchingEntries.prefix(Self.maxVisibleEntries))
                 ForEach(Array(visibleEntries.enumerated()), id: \.element.id) { index, entry in
                     HStack(spacing: 0) {
                         // Selection checkbox (when in selection mode)
@@ -463,7 +480,7 @@ struct ProfileDetailView: View {
                 }
 
                 // Show message if entries are truncated
-                if filteredEntries.count > Self.maxVisibleEntries {
+                if matchingCount > Self.maxVisibleEntries {
                     HStack {
                         Spacer()
                         Text("Use search to find specific entries")
@@ -688,7 +705,7 @@ struct EntryRow: View {
 
             // System badge
             if entry.isSystemEntry {
-                StatusBadge("System", color: .secondary, icon: SaneIcons.lock)
+                StatusBadge("System", color: .saneAccent, icon: SaneIcons.lock)
             }
         }
         .padding(.horizontal, 12)
@@ -744,7 +761,7 @@ struct AddEntrySheet: View {
                         .padding(.vertical, 10)
                 }
 
-                CompactSection("Comment (optional)", icon: "text.quote", iconColor: .secondary) {
+                CompactSection("Comment (optional)", icon: "text.quote", iconColor: .saneAccent) {
                     TextField("Block ads", text: $comment)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 12)
@@ -864,7 +881,7 @@ struct EditEntrySheet: View {
                         .padding(.vertical, 10)
                 }
 
-                CompactSection("Comment (optional)", icon: "text.quote", iconColor: .secondary) {
+                CompactSection("Comment (optional)", icon: "text.quote", iconColor: .saneAccent) {
                     TextField("Block ads", text: $comment)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 12)
