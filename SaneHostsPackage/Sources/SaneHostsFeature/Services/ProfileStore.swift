@@ -15,6 +15,12 @@ public enum ProfileStoreBootstrapPolicy {
     }
 }
 
+public enum ProfileStoreEssentialsPolicy {
+    public static func needsEssentialsProfile(profiles: [Profile]) -> Bool {
+        !profiles.contains { $0.name.caseInsensitiveCompare(ProfilePreset.essentials.displayName) == .orderedSame }
+    }
+}
+
 /// Manages profile storage and persistence
 @MainActor
 @Observable
@@ -98,9 +104,10 @@ public final class ProfileStore {
                 try await migrateExistingSystemHosts()
             }
 
-            // Create Essentials profile if none exist (migration may have created one)
-            if profiles.isEmpty {
-                logger.debug(" No profiles found, creating Essentials preset...")
+            // Basic must always have the free Essentials profile, even when
+            // first-run migration created an "Existing Entries" profile.
+            if ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: profiles) {
+                logger.debug(" Essentials profile missing, creating Essentials preset...")
                 await createEssentialsProfile()
             }
         } catch {

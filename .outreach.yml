@@ -115,10 +115,10 @@ launch_calendar:
   classification: "released_niche_launch_not_scheduled"
   rule: "SaneHosts is direct-download only and has a real niche privacy story, but it needs a fresh package before PH/HN/IH. Do not rely on GitHub listings as the launch."
   current_release_state:
-    version: "1.1.11"
-    build: "1111"
+    version: "1.1.12"
+    build: "1112"
     status: "live_direct_download"
-    evidence: "Current shipped direct-download surface is 1.1.11 / build 1111 in Config/Shared.xcconfig, README, website appcast, and live website."
+    evidence: "Current shipped direct-download surface is 1.1.12 / build 1112 in Config/Shared.xcconfig, README, website appcast, and live website."
   required_before_meaningful_launch:
     - "Human visual approval plus hosted/public URL for the 30-second privacy-switch video candidate."
     - "Final Product Hunt maker comment and day-of reply checklist approved."
@@ -130,6 +130,8 @@ launch_calendar:
       action: "Prepare/update website copy, screenshots, short demo plan, Product Hunt/HN/IH drafts, and directory targets for a privacy-switch launch."
       gate: "No public launch until direct-only architecture and support surfaces are clear and visually verified."
       success_metric: "Launch package ready with exact copy/assets and go/no-go verdict."
+      last_reviewed: "2026-05-24"
+      result: "At 09:32 EDT on 2026-05-24, the scheduled 10:00 EDT package slot had not opened yet, so nothing was executed early. Canonical launch_readiness rerun already stayed red and the wrapper reported 'Mac mini is unreachable. Falling back to local execution.' Human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video, the Product Hunt maker comment and day-of reply checklist still need final exact approval, the staged website video still needs public deploy after visual approval, and release_preflight still carries 1 warning."
     - date: "2026-05-28"
       time: "10:00"
       channel: "SaneHosts launch decision"
@@ -138,15 +140,16 @@ launch_calendar:
       gate: "No launch without live website proof and fresh Mini verify."
       success_metric: "Scheduled meaningful launch or explicit no-go."
   last_launch_readiness:
-    date: "2026-05-20"
+    date: "2026-05-24"
     status: "no_go"
     launch_readiness_exit: 1
     blocker_summary:
+      - "Canonical launch_readiness rerun at 2026-05-24 09:32 EDT exited nonzero and the wrapper reported 'Mac mini is unreachable. Falling back to local execution.'"
       - "Human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate."
       - "The Product Hunt maker comment and day-of reply checklist still need final exact approval."
       - "The staged website/videos privacy-switch clip still needs public website deploy after visual approval."
-      - "Fresh Mini launch_readiness on 2026-05-20 remains no-go even though release_preflight passed with warning-level cleanup only (3 warnings)."
-      - "Global validation at 2026-05-20 09:02 EDT is still red for SaneHosts because Lemon Squeezy hosted file `1.1.11` lags the live appcast/website `1.1.12`, and the customer UI receipt is stale with missing/reused proof artifacts."
+      - "Local fallback launch_readiness on 2026-05-24 remains no-go even though release_preflight passed; the latest receipt still carries 1 warning, and the shared validation report still flags stale SaneHosts customer UI proof."
+      - "At 09:32 EDT on 2026-05-24, the 10:00 EDT launch-package slot had not opened yet, so no scheduling or package-execution action was taken early."
     next_date: "2026-05-24"
 
 public_posting_policy:

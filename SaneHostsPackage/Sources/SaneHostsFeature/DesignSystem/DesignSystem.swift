@@ -37,15 +37,13 @@ struct SaneGradientBackground: View {
     var body: some View {
         ZStack {
             if colorScheme == .dark {
-                // Dark mode: beautiful glass effect
-                VisualEffectBlur(material: .hudWindow, blendingMode: .behindWindow)
+                Color(red: 0.035, green: 0.045, blue: 0.052)
 
-                // Subtle teal/blue tint (hosts/network theme)
                 LinearGradient(
                     colors: [
-                        Color.saneAccent.opacity(0.08),
-                        Color.blue.opacity(0.05),
-                        Color.saneAccent.opacity(0.03)
+                        Color.saneAccent.opacity(0.16),
+                        Color.blue.opacity(0.08),
+                        Color.black.opacity(0.08)
                     ],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
@@ -98,7 +96,7 @@ struct CompactSection<Content: View>: View {
                 }
                 Text(title)
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
             .padding(.leading, 4)
 
@@ -165,7 +163,7 @@ struct CompactRow<Content: View>: View {
             }
             Text(label)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             Spacer()
             content
         }
@@ -206,7 +204,7 @@ struct CompactToggle: View {
             }
             Text(label)
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             Spacer()
             Toggle("", isOn: $isOn)
                 .labelsHidden()
@@ -239,7 +237,7 @@ struct GlassGroupBoxStyle: GroupBoxStyle {
         VStack(alignment: .leading, spacing: 12) {
             configuration.label
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
 
             configuration.content
         }
@@ -281,7 +279,7 @@ struct StatusBadge: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 3)
         .background(color.opacity(0.28))
-        .foregroundStyle(.white)
+        .foregroundColor(.white)
         .clipShape(Capsule())
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(text) status")
@@ -355,7 +353,9 @@ struct IPAddressText: View {
     var body: some View {
         Text(address)
             .font(.system(.body, design: .monospaced))
-            .foregroundStyle(.white)
+            .foregroundColor(.white)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
     }
 }
 
@@ -369,7 +369,7 @@ struct HostnameText: View {
     var body: some View {
         Text(hostname)
             .fontWeight(isPrimary ? .medium : .regular)
-            .foregroundStyle(.white)
+            .foregroundColor(.white)
     }
 }
 
@@ -400,17 +400,17 @@ struct SaneEmptyState: View {
         VStack(spacing: 16) {
             Image(systemName: icon)
                 .font(.system(size: 48))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
 
             VStack(spacing: 8) {
                 Text(title)
                     .font(.title3)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
 
                 Text(description)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .multilineTextAlignment(.center)
             }
 
@@ -439,7 +439,7 @@ struct LoadingOverlay: View {
 
                 Text(message)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
             .padding(32)
             .background(.regularMaterial)

@@ -1,8 +1,29 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-05-18
+**Last updated:** 2026-05-24
 
 ## Current State
+
+- 2026-05-24 23:35 EDT validation cleanup: strict customer UI contract is
+  green locally and Mini `release_preflight` passed with warnings only. Latest
+  project QA gate is current again in the global readiness checklist.
+- 2026-05-24 Basic/Pro visual and strict UI contract pass:
+  - Visual verification found and fixed an Entries table layout regression:
+    `255.255.255.255` wrapped in the IP column. `IPAddressText` is now
+    one-line/fixed-size and the IP column is `140` points wide.
+  - Regression test added:
+    `EntryRowLayoutPolicyTests.ipAddressesStayOnOneLine`.
+  - Strict customer UI contract then caught a manifest gap:
+    `bulk-entry-actions` had fixture/state proof but no screenshot evidence.
+    `Tests/CustomerUIActions.yml` now requires `screenshot` for that action,
+    guarded by `CustomerUIManifestPolicyTests.bulkEntryActionsRequireVisualEvidence`.
+  - Fresh Mini visual receipts inspected:
+    `visual_smoke_20260524-192153_63437` in Basic and
+    `visual_smoke_20260524-192341_71984` in Pro; the IP row no longer wraps.
+  - Mini `customer_ui_sweep --json` generated receipt
+    `2026-05-24T23:28:03Z`; strict customer UI contract passed with no issues
+    or warnings; Mini `./scripts/SaneMaster.rb verify --timeout 900` passed
+    `85` tests.
 
 - 2026-05-15 launch-readiness cleanup:
   - Current direct-download release identity is `1.1.11` (build `1111`), matching `Config/Shared.xcconfig`, README, and `website/appcast.xml`.
@@ -99,6 +120,7 @@ All 4 sites deployed to Cloudflare Pages.
 
 ## Pending / Not Done
 
+- 2026-05-24 SaneHosts `#4`/`#5` patch candidate: UI text was brightened across the main/profile/settings/coach-mark surfaces for Tahoe readability, and `ProfileStore` now creates Essentials even after migration has already created "Existing Entries" so Basic users keep the included profile. Latest Mini `./scripts/SaneMaster.rb verify --timeout 900` passed with `85` counted tests after the IP wrap and strict visual manifest fixes. Worker runtime visual receipt: `outputs/visual-audit-sanehosts-20260524/sanehosts-runtime-after-fix-20260524.png`.
 - **SaneBar icon transparency** (issue #16 from AB-boi) — needs investigation
 - **SaneHosts plan from plan mode** (accessibility labels, appcast fix) — plan exists at `~/.claude/plans/reactive-popping-allen.md`, not started this session
 - **SaneBar/SaneClip non-website changes** — uncommitted Swift/config changes from prior sessions remain in those repos

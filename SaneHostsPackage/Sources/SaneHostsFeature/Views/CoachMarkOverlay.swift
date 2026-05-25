@@ -172,7 +172,7 @@ struct CoachMarkTooltip: View {
             // Description
             Text(descriptionForStep)
                 .font(.system(size: 15))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .fixedSize(horizontal: false, vertical: true)
 
             // Buttons
@@ -181,7 +181,7 @@ struct CoachMarkTooltip: View {
                     onSkip()
                 }
                 .buttonStyle(.plain)
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .font(.system(size: 13, weight: .medium))
                 .accessibilityLabel("Skip tutorial")
 

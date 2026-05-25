@@ -149,7 +149,7 @@ struct ProfileDetailView: View {
                 // Source info
                 CompactRow("Source", icon: sourceIcon, iconColor: .saneAccent) {
                     Text(profile.source.displayName)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 CompactDivider()
@@ -157,7 +157,7 @@ struct ProfileDetailView: View {
                 // Modified date
                 CompactRow("Modified", icon: "clock", iconColor: .saneAccent) {
                     Text(profile.modifiedAt, style: .relative)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 // Remote source freshness indicator
@@ -166,7 +166,7 @@ struct ProfileDetailView: View {
                     CompactRow("Source URL", icon: "link", iconColor: .blue) {
                         Text(url.host ?? url.absoluteString)
                             .font(.body)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                             .lineLimit(1)
                     }
 
@@ -176,7 +176,7 @@ struct ProfileDetailView: View {
                             if let lastFetched {
                                 Text(lastFetched, style: .relative)
                                     .font(.body)
-                                    .foregroundStyle(.white)
+                                    .foregroundColor(.white)
                                 FreshnessIndicator(date: lastFetched) // Colored badge shows status
                             } else {
                                 Text("Never")
@@ -264,7 +264,7 @@ struct ProfileDetailView: View {
                     Text("Add Entry")
                         .font(.system(size: 13, weight: .semibold))
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
@@ -291,7 +291,7 @@ struct ProfileDetailView: View {
             Text("\(selectedEntries.count) selected")
                 .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
 
             Spacer()
 
@@ -378,11 +378,11 @@ struct ProfileDetailView: View {
                     if filteredEntries.count > Self.maxVisibleEntries {
                         Text("Showing \(compactNumber(min(filteredEntries.count, Self.maxVisibleEntries))) of \(compactNumber(filteredEntries.count)) entries")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     } else {
                         Text("\(compactNumber(filteredEntries.count)) entries")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
                     Spacer()
 
@@ -468,7 +468,7 @@ struct ProfileDetailView: View {
                         Spacer()
                         Text("Use search to find specific entries")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                             .padding(.vertical, 12)
                         Spacer()
                     }
@@ -615,13 +615,13 @@ struct StatCard: View {
                 Text(value)
                     .font(.title2)
                     .fontWeight(.bold)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
 
             Text(title)
                 .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 18)
@@ -661,7 +661,7 @@ struct EntryRow: View {
 
             // IP Address
             IPAddressText(address: entry.ipAddress, isEnabled: entry.isEnabled)
-                .frame(width: 120, alignment: .leading)
+                .frame(width: 140, alignment: .leading)
 
             // Hostnames
             VStack(alignment: .leading, spacing: 2) {
@@ -670,7 +670,7 @@ struct EntryRow: View {
                 if entry.hostnames.count > 1 {
                     Text(entry.hostnames.dropFirst().joined(separator: ", "))
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .lineLimit(1)
                 }
             }
@@ -681,7 +681,7 @@ struct EntryRow: View {
             if let comment = entry.comment {
                 Text(comment)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .lineLimit(1)
                     .frame(maxWidth: 150, alignment: .trailing)
             }
@@ -758,7 +758,7 @@ struct AddEntrySheet: View {
                     Text("Invalid IP address or hostname")
                 }
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             }
 
             // Actions
@@ -878,7 +878,7 @@ struct EditEntrySheet: View {
                     Text("Invalid IP address or hostname")
                 }
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             }
 
             // Actions
@@ -944,7 +944,7 @@ struct FreshnessIndicator: View {
             Text(freshnessLabel)
                 .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.semibold)
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
