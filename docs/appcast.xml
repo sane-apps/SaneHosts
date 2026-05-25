@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                                            <item>
+                                                                                                    <item>
+            <title>1.1.14</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Mon, 25 May 2026 19:22:22 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Improves first-run tutorial readability, Tahoe dark-mode contrast, large profile startup memory, remote import cancellation, and activation/deactivation reliability.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.14.zip"
+                       sparkle:version="1114"
+                       sparkle:shortVersionString="1.1.14"
+                       length="4518794"
+                       type="application/octet-stream"
+                       sparkle:edSignature="MdxG3PXMgneu0jH84NhE6xRidvmVg7VRvTXbrwprfthxKtXz+G4sAy5um7Zj2quc1iiupNXACBuKDleilL+/DA=="/>
+        </item>
+<item>
             <title>1.1.13</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Mon, 25 May 2026 00:40:13 -0400</pubDate>
