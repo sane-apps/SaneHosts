@@ -292,7 +292,7 @@ public struct MainView: View {
                     Text("QUICK ACTIONS")
                         .font(.system(size: 13, weight: .bold))
                 }
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             }
 
             Section {
@@ -367,7 +367,7 @@ public struct MainView: View {
                     Text("PRO FEATURES")
                         .font(.system(size: 13, weight: .bold))
                 }
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             }
 
             Section {
@@ -392,7 +392,7 @@ public struct MainView: View {
                     Text("PROFILES")
                         .font(.system(size: 13, weight: .bold))
                 }
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
             }
 
             // Protection Levels - presets not yet downloaded (Pro feature)
@@ -426,7 +426,7 @@ public struct MainView: View {
                         Text("PROTECTION LEVELS")
                             .font(.system(size: 13, weight: .bold))
                     }
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                 }
             }
         }
@@ -761,10 +761,10 @@ struct QuickActionButton: View {
                     Text(title)
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                     Text(subtitle)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -804,10 +804,10 @@ struct ProGatedQuickActionButton: View {
                     Text(title)
                         .font(.body)
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                     Text(subtitle)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .lineLimit(2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -838,7 +838,7 @@ struct ProLockBadge: View {
             Text("Pro")
                 .font(.system(size: 13, weight: .semibold))
         }
-        .foregroundStyle(.white)
+        .foregroundColor(.white)
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .background(Color.teal.opacity(0.28))
@@ -877,7 +877,7 @@ struct ProfileRowView: View {
 
                 Text(entrySummary)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
 
             Spacer()
@@ -935,7 +935,7 @@ struct MultiSelectDetailView: View {
 
                 Text(totalEntriesSummary)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
 
             // Selected profiles list
@@ -943,7 +943,7 @@ struct MultiSelectDetailView: View {
                 Text("Selected")
                     .font(.system(size: 13, weight: .semibold))
                     .fontWeight(.medium)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .padding(.leading, 4)
 
                 VStack(spacing: 0) {
@@ -952,7 +952,7 @@ struct MultiSelectDetailView: View {
                             ProfileColorDot(color: profile.source.semanticColor)
 
                             Text(profile.name)
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                                 .lineLimit(1)
 
                             Spacer()
@@ -963,7 +963,7 @@ struct MultiSelectDetailView: View {
 
                             Text(profile.entries.count.formatted(.number.notation(.compactName)))
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                         }
                         .padding(.horizontal, 14)
                         .padding(.vertical, 10)
@@ -1025,7 +1025,7 @@ struct MultiSelectDetailView: View {
                 if hasActiveProfile {
                     Text("Cannot delete active profiles")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
             }
             .frame(maxWidth: 300)
@@ -1085,7 +1085,7 @@ struct NewProfileSheet: View {
                                         if selectedColor == color {
                                             Image(systemName: "checkmark")
                                                 .font(.system(size: 13, weight: .semibold))
-                                                .foregroundStyle(.white)
+                                                .foregroundColor(.white)
                                         }
                                     }
                             }
@@ -1193,21 +1193,21 @@ struct TemplateRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(template.name)
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                     Text(template.description)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
 
                 Text("\(template.entries.count.formatted(.number.notation(.compactName))) entries")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
 
                 Image(systemName: "chevron.right")
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
             .padding(12)
             .background(
@@ -1410,7 +1410,7 @@ struct RemoteImportSheet: View {
                             .scaleEffect(0.7)
                         Text("Checking URLs...")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
                 } else {
                     let unavailableCount = urlStatus.values.filter {
@@ -1425,7 +1425,7 @@ struct RemoteImportSheet: View {
                                 .foregroundStyle(.orange)
                             Text("\(unavailableCount) unavailable")
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                         }
                     }
                 }
@@ -1433,7 +1433,7 @@ struct RemoteImportSheet: View {
 
             Text("Select one or more blocklists to import. Multiple selections will be merged into a single profile.")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
@@ -1464,7 +1464,7 @@ struct RemoteImportSheet: View {
 
                     Text(category.rawValue)
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                     if selectedInCategory > 0 {
                         Text("\(selectedInCategory)")
@@ -1473,7 +1473,7 @@ struct RemoteImportSheet: View {
                             .padding(.horizontal, 8)
                             .padding(.vertical, 3)
                             .background(categoryColor(category).opacity(0.2))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                             .clipShape(Capsule())
                     }
 
@@ -1481,7 +1481,7 @@ struct RemoteImportSheet: View {
 
                     Image(systemName: isExpanded ? "chevron.down" : "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
@@ -1540,7 +1540,7 @@ struct RemoteImportSheet: View {
                         Text(source.name)
                             .font(.body)
                             .fontWeight(.medium)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
 
                         if source.isRecommended, !isUnavailable {
                             Text("Recommended")
@@ -1549,14 +1549,14 @@ struct RemoteImportSheet: View {
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 3)
                                 .background(Color.orange.opacity(0.2))
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                                 .clipShape(Capsule())
                         }
                     }
 
                     Text(source.description)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .lineLimit(2)
                 }
 
@@ -1565,7 +1565,7 @@ struct RemoteImportSheet: View {
                 // Entry count estimate
                 Text(source.estimatedEntries)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 3)
                     .background(Color.secondary.opacity(0.15))
@@ -1603,7 +1603,7 @@ struct RemoteImportSheet: View {
                 if code > 0 {
                     Text("\(code)")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
             }
         case .none:
@@ -1628,13 +1628,13 @@ struct RemoteImportSheet: View {
 
                     Text("Custom URL")
                         .fontWeight(.medium)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                     Spacer()
 
                     Image(systemName: showingCustomURL ? "chevron.down" : "chevron.right")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 12)
@@ -1661,7 +1661,7 @@ struct RemoteImportSheet: View {
                                 .foregroundStyle(.orange)
                             Text("Only HTTPS URLs are supported.")
                                 .font(.system(size: 13, weight: .medium))
-                                .foregroundStyle(.white)
+                                .foregroundColor(.white)
                         }
                     }
                 }
@@ -1688,7 +1688,7 @@ struct RemoteImportSheet: View {
                 HStack {
                     Text("Profile Name:")
                         .font(.body)
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                     TextField(suggestedName, text: $profileName)
                         .textFieldStyle(.plain)
                         .font(.body)
@@ -1703,11 +1703,11 @@ struct RemoteImportSheet: View {
                 if selectedSources.isEmpty, customURL.isEmpty {
                     Text("Select blocklists to import")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 } else if selectedSources.count == 1 {
                     Text("1 blocklist selected")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 } else if selectedSources.count > 1 {
                     HStack(spacing: 6) {
                         Image(systemName: "arrow.triangle.merge")
@@ -1716,12 +1716,12 @@ struct RemoteImportSheet: View {
                         Text("\(selectedSources.count) blocklists will be merged")
                             .font(.system(size: 13, weight: .semibold))
                             .fontWeight(.medium)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
                 } else if !customURL.isEmpty {
                     Text("Custom URL ready to import")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 Spacer()
@@ -1730,7 +1730,7 @@ struct RemoteImportSheet: View {
                 if let error {
                     Text(error)
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .lineLimit(2)
                 }
 
@@ -1813,12 +1813,12 @@ struct RemoteImportSheet: View {
 
                 Text(currentImportName)
                     .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
 
                 if selectedSources.count > 1 {
                     Text("Importing \(Int(importProgress * Double(selectedSources.count))) of \(selectedSources.count)")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 Button("Cancel") {
@@ -1956,7 +1956,7 @@ struct FetchProgressOverlay: View {
                         .scaleEffect(1.2)
                     Text("Connecting...")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                 case .downloading:
                     if !syncService.isIndeterminate {
@@ -1968,7 +1968,7 @@ struct FetchProgressOverlay: View {
 
                         Text(String(format: "%.0f%%", syncService.downloadProgress * 100))
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     } else {
                         // Indeterminate - show downloaded bytes
                         ProgressView()
@@ -1976,7 +1976,7 @@ struct FetchProgressOverlay: View {
                     }
                     Text(syncService.statusMessage)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                 case .parsing:
                     ProgressView(value: syncService.parseProgress)
@@ -1985,14 +1985,14 @@ struct FetchProgressOverlay: View {
                         .tint(.orange)
                     Text(syncService.statusMessage)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                 case .saving:
                     ProgressView()
                         .scaleEffect(1.2)
                     Text("Saving...")
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                 case .complete:
                     Image(systemName: "checkmark.circle.fill")
@@ -2000,14 +2000,14 @@ struct FetchProgressOverlay: View {
                         .foregroundStyle(.blue)
                     Text(syncService.statusMessage)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
 
                 case .idle, .error:
                     ProgressView()
                         .scaleEffect(1.2)
                     Text(syncService.statusMessage.isEmpty ? "Connecting..." : syncService.statusMessage)
                         .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                 }
 
                 // Cancel button - always available during import
@@ -2066,7 +2066,7 @@ struct MergeProfilesSheet: View {
 
             Text("Select profiles to combine into one. Duplicate entries will be removed.")
                 .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(.white)
+                .foregroundColor(.white)
                 .multilineTextAlignment(.center)
 
             // Profile selection list
@@ -2085,13 +2085,13 @@ struct MergeProfilesSheet: View {
 
                                 Text(profile.name)
                                     .font(.body)
-                                    .foregroundStyle(.white)
+                                    .foregroundColor(.white)
 
                                 Spacer()
 
                                 Text("\(profile.entries.count.formatted(.number.notation(.compactName))) entries")
                                     .font(.system(size: 13, weight: .medium))
-                                    .foregroundStyle(.white)
+                                    .foregroundColor(.white)
                             }
                             .padding(.horizontal, 14)
                             .padding(.vertical, 10)
@@ -2129,13 +2129,13 @@ struct MergeProfilesSheet: View {
                 let totalEntries = store.profiles.filter { selectedProfiles.contains($0.id) }.reduce(0) { $0 + $1.entries.count }
                 Text("Will combine ~\(totalEntries) entries (duplicates removed)")
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
 
             if let error {
                 Text(error)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
 
             // Actions
@@ -2246,11 +2246,11 @@ struct PresetRowView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(preset.displayName)
                     .font(.body)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .lineLimit(1)
                 Text(preset.tagline)
                     .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .lineLimit(1)
             }
 
@@ -2267,7 +2267,7 @@ struct PresetRowView: View {
             } else {
                 Image(systemName: "icloud.and.arrow.down")
                     .font(.system(size: 14))
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
             }
         }
         .padding(.vertical, 5)
@@ -2305,7 +2305,7 @@ struct PresetDetailView: View {
 
                         Text(preset.tagline)
                             .font(.title3)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
                 }
                 .padding(.top, 40)
@@ -2313,7 +2313,7 @@ struct PresetDetailView: View {
                 // Description
                 Text(preset.description)
                     .font(.body)
-                    .foregroundStyle(.white)
+                    .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 400)
 
@@ -2323,20 +2323,20 @@ struct PresetDetailView: View {
                         Text(preset.estimatedEntries)
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                         Text("Blocked domains")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
 
                     VStack(spacing: 4) {
                         Text("\(preset.blocklistSourceIds.count)")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                         Text("Blocklists")
                             .font(.system(size: 13, weight: .medium))
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
                     }
                 }
 
@@ -2346,7 +2346,7 @@ struct PresetDetailView: View {
                         Text("Includes")
                             .font(.system(size: 13, weight: .semibold))
                             .fontWeight(.medium)
-                            .foregroundStyle(.white)
+                            .foregroundColor(.white)
 
                         ForEach(preset.blocklistSources, id: \.id) { source in
                             HStack(spacing: 8) {
@@ -2355,7 +2355,7 @@ struct PresetDetailView: View {
                                     .foregroundStyle(presetColor)
                                 Text(source.name)
                                     .font(.system(size: 13, weight: .medium))
-                                    .foregroundStyle(.white)
+                                    .foregroundColor(.white)
                                 Spacer()
                             }
                         }

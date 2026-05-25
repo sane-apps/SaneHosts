@@ -1,6 +1,6 @@
-import Testing
-@testable import SaneHostsFeature
 import Foundation
+@testable import SaneHostsFeature
+import Testing
 
 @Suite("MainView Gate Policy Tests")
 struct MainViewGatePolicyTests {
@@ -72,5 +72,74 @@ struct ProfileStoreBootstrapPolicyTests {
     @Test("Menu bar bootstrap does not reload once profiles are already available")
     func skipsWhenProfilesAlreadyLoaded() {
         #expect(ProfileStoreBootstrapPolicy.shouldLoad(profileCount: 1, isLoading: false) == false)
+    }
+}
+
+@Suite("Profile Store Essentials Policy Tests")
+struct ProfileStoreEssentialsPolicyTests {
+    @Test("Creates Essentials when migration already created Existing Entries")
+    func createsEssentialsAlongsideExistingEntries() {
+        let existingEntries = Profile(name: "Existing Entries", source: .system)
+
+        #expect(ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: [existingEntries]))
+    }
+
+    @Test("Does not duplicate Essentials when it already exists")
+    func doesNotDuplicateExistingEssentials() {
+        let essentials = Profile(name: "Essentials")
+        let existingEntries = Profile(name: "Existing Entries", source: .system)
+
+        #expect(ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: [existingEntries, essentials]) == false)
+    }
+
+    @Test("Essentials matching is case insensitive")
+    func essentialsMatchingIsCaseInsensitive() {
+        let essentials = Profile(name: "essentials")
+
+        #expect(ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: [essentials]) == false)
+    }
+}
+
+@Suite("Entry Row Layout Policy Tests")
+struct EntryRowLayoutPolicyTests {
+    @Test("IPv4 addresses stay on one line in the entry table")
+    func ipAddressesStayOnOneLine() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let designSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift"))
+        let detailSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/ProfileDetailView.swift"))
+
+        #expect(designSource.contains(".lineLimit(1)"))
+        #expect(designSource.contains(".fixedSize(horizontal: true, vertical: false)"))
+        #expect(detailSource.contains(".frame(width: 140, alignment: .leading)"))
+    }
+}
+
+@Suite("Customer UI Manifest Policy Tests")
+struct CustomerUIManifestPolicyTests {
+    @Test("Bulk entry actions require visual evidence")
+    func bulkEntryActionsRequireVisualEvidence() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let repoRoot = packageRoot.deletingLastPathComponent()
+        let manifest = try String(contentsOf: repoRoot.appendingPathComponent("Tests/CustomerUIActions.yml"))
+
+        guard let bulkStart = manifest.range(of: "- id: bulk-entry-actions"),
+              let settingsStart = manifest.range(of: "- id: settings-license-about-update-support") else {
+            Issue.record("Customer UI manifest is missing the expected bulk/settings action boundaries")
+            return
+        }
+
+        let bulkBlock = manifest[bulkStart.lowerBound..<settingsStart.lowerBound]
+        #expect(bulkBlock.contains("required_evidence_types:"))
+        #expect(bulkBlock.contains("- screenshot"))
+        #expect(bulkBlock.contains("- fixture"))
+        #expect(bulkBlock.contains("- state_receipt"))
     }
 }

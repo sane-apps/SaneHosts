@@ -80,7 +80,7 @@ struct GeneralSettingsTab: View {
                     CompactDivider()
                     Text("If you hide the Dock icon, SaneHosts stays available from the menu bar.")
                         .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(.white)
+                        .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
