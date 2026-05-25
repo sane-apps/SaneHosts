@@ -77,7 +77,7 @@ struct CompactSection<Content: View>: View {
     init(
         _ title: String,
         icon: String? = nil,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         @ViewBuilder content: () -> Content
     ) {
         self.title = title
@@ -106,7 +106,7 @@ struct CompactSection<Content: View>: View {
             .background(
                 RoundedRectangle(cornerRadius: 10)
                     .fill(colorScheme == .dark
-                        ? Color.white.opacity(0.08)
+                        ? Color.white.opacity(0.14)
                         : Color.white)
                     .background(
                         RoundedRectangle(cornerRadius: 10)
@@ -117,7 +117,7 @@ struct CompactSection<Content: View>: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
                     .stroke(colorScheme == .dark
-                        ? Color.white.opacity(0.12)
+                        ? Color.white.opacity(0.24)
                         : Color.saneAccent.opacity(0.15), lineWidth: 1)
             )
             .shadow(
@@ -144,7 +144,7 @@ struct CompactRow<Content: View>: View {
     init(
         _ label: String,
         icon: String? = nil,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         @ViewBuilder content: () -> Content
     ) {
         self.label = label
@@ -185,7 +185,7 @@ struct CompactToggle: View {
     init(
         label: String,
         icon: String? = nil,
-        iconColor: Color = .secondary,
+        iconColor: Color = .white,
         isOn: Binding<Bool>
     ) {
         self.label = label
@@ -517,7 +517,7 @@ extension Color {
 
     // Profile colors
     static let profileActive = Color.green
-    static let profileInactive = Color.secondary
+    static let profileInactive = Color.saneAccent
 }
 
 // MARK: - Profile Color Semantics

@@ -70,21 +70,22 @@ public struct CoachMarkOverlay: View {
 
     public var body: some View {
         if tutorial.isActive && tutorial.currentStep != .none && tutorial.currentStep != .complete && currentHighlightFrame != .zero {
-            ZStack {
-                // Dimmed background with cutout
-                SpotlightBackground(
-                    highlightFrame: currentHighlightFrame,
-                    cornerRadius: 12
-                )
+            GeometryReader { proxy in
+                ZStack {
+                    SpotlightBackground(
+                        highlightFrame: currentHighlightFrame,
+                        cornerRadius: 12
+                    )
 
-                // Tooltip
-                CoachMarkTooltip(
-                    step: tutorial.currentStep,
-                    highlightFrame: currentHighlightFrame,
-                    windowFrame: windowFrame,
-                    onNext: handleNext,
-                    onSkip: { tutorial.skipTutorial() }
-                )
+                    CoachMarkTooltip(
+                        step: tutorial.currentStep,
+                        highlightFrame: currentHighlightFrame,
+                        windowFrame: CGRect(origin: .zero, size: proxy.size),
+                        onNext: handleNext,
+                        onSkip: { tutorial.skipTutorial() }
+                    )
+                    .zIndex(1)
+                }
             }
             .ignoresSafeArea()
             .transition(.opacity)
@@ -137,7 +138,7 @@ struct SpotlightBackground: View {
                 // Fill entire area with semi-transparent black
                 context.fill(
                     Path(CGRect(origin: .zero, size: size)),
-                    with: .color(.black.opacity(0.75))
+                    with: .color(.black.opacity(0.45))
                 )
 
                 // Cut out the highlight area
@@ -168,6 +169,7 @@ struct CoachMarkTooltip: View {
             // Title
             Text(titleForStep)
                 .font(.system(size: 18, weight: .semibold))
+                .foregroundColor(.white)
 
             // Description
             Text(descriptionForStep)
@@ -198,8 +200,8 @@ struct CoachMarkTooltip: View {
         .frame(width: 320)
         .background(
             RoundedRectangle(cornerRadius: 14)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.3), radius: 20, y: 10)
+                .fill(Color.black.opacity(0.92))
+                .shadow(color: .black.opacity(0.45), radius: 20, y: 10)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14)

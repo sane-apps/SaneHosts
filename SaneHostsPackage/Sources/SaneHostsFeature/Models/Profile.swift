@@ -17,6 +17,9 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     /// Sort order for manual reordering (lower values appear first)
     public var sortOrder: Int
+    public var entryCountOverride: Int?
+    public var enabledCountOverride: Int?
+    public var disabledCountOverride: Int?
 
     public init(
         id: UUID = UUID(),
@@ -27,7 +30,10 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
         modifiedAt: Date = Date(),
         source: ProfileSource = .local,
         colorTag: ProfileColor = .gray,
-        sortOrder: Int = 0
+        sortOrder: Int = 0,
+        entryCountOverride: Int? = nil,
+        enabledCountOverride: Int? = nil,
+        disabledCountOverride: Int? = nil
     ) {
         self.id = id
         self.name = name
@@ -38,6 +44,9 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
         self.source = source
         self.colorTag = colorTag
         self.sortOrder = sortOrder
+        self.entryCountOverride = entryCountOverride
+        self.enabledCountOverride = enabledCountOverride
+        self.disabledCountOverride = disabledCountOverride
     }
 
     /// Generate the full hosts file content for this profile
@@ -71,6 +80,14 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     /// Cached entry counts - computed once per access
     /// For large profiles (100K+ entries), prefer using entryCounts computed once
+    public var entryCount: Int {
+        entryCountOverride ?? entries.count
+    }
+
+    public var hasPartialEntries: Bool {
+        entryCount > entries.count
+    }
+
     public var enabledCount: Int {
         entryCounts.enabled
     }
@@ -82,6 +99,12 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     /// Compute both counts in single O(n) pass instead of two
     public var entryCounts: (enabled: Int, disabled: Int) {
+        if let enabledCountOverride,
+           let disabledCountOverride,
+           hasPartialEntries {
+            return (enabledCountOverride, disabledCountOverride)
+        }
+
         var enabled = 0
         var disabled = 0
         for entry in entries {
@@ -107,10 +130,14 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
         colorTag = try container.decode(ProfileColor.self, forKey: .colorTag)
         // Default to 0 if sortOrder is missing (for existing profiles)
         sortOrder = try container.decodeIfPresent(Int.self, forKey: .sortOrder) ?? 0
+        entryCountOverride = try container.decodeIfPresent(Int.self, forKey: .entryCountOverride)
+        enabledCountOverride = try container.decodeIfPresent(Int.self, forKey: .enabledCountOverride)
+        disabledCountOverride = try container.decodeIfPresent(Int.self, forKey: .disabledCountOverride)
     }
 
     private enum CodingKeys: String, CodingKey {
         case id, name, entries, isActive, createdAt, modifiedAt, source, colorTag, sortOrder
+        case entryCountOverride, enabledCountOverride, disabledCountOverride
     }
 }
 
@@ -198,25 +225,25 @@ public enum ProfileTemplate: CaseIterable, Sendable {
             return [
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.google.com"], comment: "Google Ads"),
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["pagead2.googlesyndication.com"]),
-                HostEntry(ipAddress: "0.0.0.0", hostnames: ["ad.doubleclick.net"]),
+                HostEntry(ipAddress: "0.0.0.0", hostnames: ["ad.doubleclick.net"])
             ]
         case .development:
             return [
                 HostEntry(ipAddress: "127.0.0.1", hostnames: ["local.dev", "api.local.dev"]),
-                HostEntry(ipAddress: "127.0.0.1", hostnames: ["test.local"]),
+                HostEntry(ipAddress: "127.0.0.1", hostnames: ["test.local"])
             ]
         case .social:
             return [
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["facebook.com", "www.facebook.com"]),
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["twitter.com", "www.twitter.com", "x.com"]),
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["instagram.com", "www.instagram.com"]),
-                HostEntry(ipAddress: "0.0.0.0", hostnames: ["tiktok.com", "www.tiktok.com"]),
+                HostEntry(ipAddress: "0.0.0.0", hostnames: ["tiktok.com", "www.tiktok.com"])
             ]
         case .privacy:
             return [
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["telemetry.microsoft.com"]),
                 HostEntry(ipAddress: "0.0.0.0", hostnames: ["metrics.apple.com"]),
-                HostEntry(ipAddress: "0.0.0.0", hostnames: ["analytics.google.com"]),
+                HostEntry(ipAddress: "0.0.0.0", hostnames: ["analytics.google.com"])
             ]
         }
     }

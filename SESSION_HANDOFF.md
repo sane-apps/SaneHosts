@@ -1,9 +1,39 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-05-24
+**Last updated:** 2026-05-25
 
 ## Current State
 
+- 2026-05-25 18:40 EDT SaneHosts `#4` latest evidence root-caused and patched:
+  - Evidence review covered `check-inbox.sh issue-review SaneHosts 4`, latest
+    GitHub screenshots, local handoff/research, and the first-run tutorial and
+    dark-mode UI source paths. `#5` has no new reporter evidence after `1.1.13`
+    and remains waiting for reporter confirmation.
+  - Root cause for the still-dark `#4` screenshot was a combination of real
+    low-contrast secondary styling and the first-run tutorial spotlight overlay:
+    the overlay dimmed the whole window while the tooltip could be positioned
+    outside the captured visible area, making normal UI look broken.
+  - Fix: core dark UI no longer uses `.secondary`/gray semantics for the affected
+    main/profile/detail rows; tutorial overlay now uses local overlay bounds,
+    lighter dimming, an opaque black tooltip, white title/body text, and a
+    regression policy test for these rules.
+  - Verification: Mini `./scripts/SaneMaster.rb verify --timeout 900` passed
+    `88` tests. Mini first-run visual smoke passed at
+    `outputs/visual_smoke/visual_smoke_20260525-183856_6753/` and the inspected
+    `app-see.png` shows the tutorial tooltip visible in-frame. Mini completed-
+    tutorial visual smoke passed at
+    `outputs/visual_smoke/visual_smoke_20260525-184024_15764/` and the inspected
+    `app-see.png` shows the normal main window readable with no visible clipping.
+
+- 2026-05-25 09:33 EDT cross-product launch ops reran canonical Mini
+  `launch_readiness`; it exited `1`, so the overdue launch-package lane stayed
+  no-go and no scheduling, package-execution, or public posting action was
+  executed. Human visual approval plus a public URL are still missing for
+  `website/videos/sanehosts-privacy-switch-30s.mp4`, the Product Hunt maker
+  comment/day-of checklist still needs exact approval, Mini `release_preflight`
+  still carries `4` warnings, and the shared validation report still flags
+  SaneHosts customer UI proof as stale and older than 12 hours. Next
+  checkpoint: `2026-05-28`. No new public URL was created in this run.
 - 2026-05-24 23:35 EDT validation cleanup: strict customer UI contract is
   green locally and Mini `release_preflight` passed with warnings only. Latest
   project QA gate is current again in the global readiness checklist.

@@ -42,6 +42,7 @@ public final class RemoteSyncService {
 
     private let parser = HostsParser()
     private var currentTask: Task<RemoteHostsFile, Error>?
+    private var currentTaskID: UUID?
     private let session: URLSession
 
     public init(session: URLSession = .shared) {
@@ -52,15 +53,32 @@ public final class RemoteSyncService {
 
     /// Fetch a hosts file from a remote URL with progress tracking
     public func fetch(from url: URL) async throws -> RemoteHostsFile {
+        currentTask?.cancel()
+        let taskID = UUID()
+        currentTaskID = taskID
+
+        let task = Task { @MainActor in
+            try await self.performFetch(from: url)
+        }
+        currentTask = task
+
+        defer {
+            if currentTaskID == taskID {
+                currentTask = nil
+                currentTaskID = nil
+            }
+        }
+
+        return try await task.value
+    }
+
+    private func performFetch(from url: URL) async throws -> RemoteHostsFile {
         // Enforce HTTPS for security — blocklists over HTTP can be tampered with
         // Allow localhost/loopback for local testing
         let isLoopback = url.host == "127.0.0.1" || url.host == "localhost" || url.host == "::1"
         if url.scheme?.lowercased() == "http", !isLoopback {
             throw RemoteSyncError.insecureURL
         }
-
-        // Cancel any existing task
-        currentTask?.cancel()
 
         syncProgress[url] = .fetching
         phase = .connecting
@@ -119,6 +137,8 @@ public final class RemoteSyncService {
     /// Cancel any in-progress fetch
     public func cancel() {
         currentTask?.cancel()
+        currentTask = nil
+        currentTaskID = nil
     }
 
     // MARK: - Private Download
@@ -224,7 +244,7 @@ public final class RemoteSyncService {
         let maxEntries = Self.maxEntries
 
         // Parse on background thread using stream - DON'T store raw content
-        let entries = try await Task.detached(priority: .userInitiated) { [weak self] in
+        let parseTask = Task.detached(priority: .userInitiated) { [weak self] in
             var entries: [HostEntry] = []
             entries.reserveCapacity(min(estimatedLines, maxEntries))
             let parser = HostsParser() // Hoist outside loop for performance
@@ -315,7 +335,13 @@ public final class RemoteSyncService {
             }
 
             return entries
-        }.value
+        }
+
+        let entries = try await withTaskCancellationHandler {
+            try await parseTask.value
+        } onCancel: {
+            parseTask.cancel()
+        }
 
         parseProgress = 1.0
         statusMessage = "Imported \(entries.count.formatted()) entries"

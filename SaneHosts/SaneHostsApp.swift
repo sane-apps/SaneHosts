@@ -305,8 +305,15 @@ struct SaneHostsAppCommands: Commands {
             Divider()
             Button("Deactivate All") {
                 Task { @MainActor in
-                    try? await HostsService.shared.deactivateProfile()
-                    try? await ProfileStore.shared.deactivate()
+                    do {
+                        let warning = try await HostsService.shared.deactivateProfile()
+                        try await ProfileStore.shared.deactivate()
+                        if let warning {
+                            print(warning)
+                        }
+                    } catch {
+                        print("Failed to deactivate profiles: \(error.localizedDescription)")
+                    }
                 }
             }
             .keyboardShortcut("d", modifiers: [.command, .shift])
@@ -542,9 +549,13 @@ class MenuBarProfileStore: ObservableObject {
         do {
             lastError = nil
             let systemEntries = ProfileStore.shared.systemEntries
-            try await HostsService.shared.activateProfile(profile, systemEntries: systemEntries)
-            try await ProfileStore.shared.markAsActive(profile: profile)
+            let fullProfile = try await ProfileStore.shared.fullProfile(for: profile)
+            let warning = try await HostsService.shared.activateProfile(fullProfile, systemEntries: systemEntries)
+            try await ProfileStore.shared.markAsActive(profile: fullProfile)
             syncFromSharedStore()
+            if let warning {
+                lastError = warning
+            }
             if markFirstValueActionIfNeeded() {
                 await EventTracker.log("first_value_action", app: "sanehosts")
             }
@@ -563,9 +574,12 @@ class MenuBarProfileStore: ObservableObject {
     func deactivateProfile() async {
         do {
             lastError = nil
-            try await HostsService.shared.deactivateProfile()
+            let warning = try await HostsService.shared.deactivateProfile()
             try await ProfileStore.shared.deactivate()
             syncFromSharedStore()
+            if let warning {
+                lastError = warning
+            }
         } catch {
             lastError = "Failed to deactivate: \(error.localizedDescription)"
         }
@@ -590,6 +604,10 @@ struct MenuBarMenuContent: View {
                 Button("🔴 No Active Profile") {
                     WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
+            }
+
+            if let lastError = store.lastError {
+                Text(lastError)
             }
 
             Divider()

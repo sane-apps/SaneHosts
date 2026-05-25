@@ -40,7 +40,7 @@ public final class DNSService {
 
             if exitCode == 0 {
                 lastFlushDate = Date()
-                await killMDNSResponder()
+                try await killMDNSResponder()
             } else {
                 throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
             }
@@ -52,18 +52,24 @@ public final class DNSService {
     }
 
     /// Send HUP signal to mDNSResponder to force cache clear
-    private func killMDNSResponder() async {
-        await Task.detached(priority: .utility) {
+    private func killMDNSResponder() async throws {
+        let exitCode = try await Task.detached(priority: .utility) {
             let process = Process()
             process.executableURL = URL(fileURLWithPath: "/usr/bin/killall")
             process.arguments = ["-HUP", "mDNSResponder"]
             do {
                 try process.run()
                 process.waitUntilExit()
+                return process.terminationStatus
             } catch {
                 logger.error("mDNSResponder HUP failed: \(error)")
+                throw error
             }
         }.value
+
+        guard exitCode == 0 else {
+            throw DNSServiceError.flushFailed("mDNSResponder HUP exited with code \(exitCode)")
+        }
     }
 
     /// Check if DNS cache was recently flushed
