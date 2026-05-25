@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.14] - 2026-05-25
 
+Improves first-run tutorial readability, Tahoe dark-mode contrast, large profile startup memory, remote import cancellation, and activation/deactivation reliability.
+
+---
+
+## [1.1.14] - 2026-05-25
+
 Fixes the first-run tutorial overlay and Tahoe dark-mode readability, reduces launch memory for very large saved profiles, and hardens remote import, activation, deactivation, export, duplicate, merge, and DNS-refresh paths so profile state stays consistent under heavier use.
 
 ---
