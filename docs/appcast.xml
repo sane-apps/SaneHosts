@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                                                    <item>
+                                                                                                            <item>
+            <title>1.1.15</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Mon, 01 Jun 2026 04:19:55 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Enables the 30-day Pro trial for direct-download users so first-run onboarding and Basic/Pro gating match the shared license flow.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.15.zip"
+                       sparkle:version="1115"
+                       sparkle:shortVersionString="1.1.15"
+                       length="4541535"
+                       type="application/octet-stream"
+                       sparkle:edSignature="i10Zcl2RU/99jBxqVyMWcUauxOI7kvGnmcjesVbs6rfH7GwuuEM6W/3WhdJCCEcxlXM2FO3NXWfQhVSuYlW0Cg=="/>
+        </item>
+<item>
             <title>1.1.14</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Mon, 25 May 2026 19:22:22 -0400</pubDate>
