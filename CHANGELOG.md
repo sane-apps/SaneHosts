@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.15] - 2026-06-01
 
+Enables the 30-day Pro trial for direct-download users so first-run onboarding and Basic/Pro gating match the shared license flow.
+
+---
+
+## [1.1.15] - 2026-06-01
+
 Enables the 30-day Pro trial for direct-download users so first-run onboarding and Basic/Pro gating match the shared SaneUI license model.
 
 ---
