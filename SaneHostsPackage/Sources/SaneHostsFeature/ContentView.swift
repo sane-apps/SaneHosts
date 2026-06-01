@@ -37,7 +37,8 @@ public extension ContentView {
     init() {
         licenseService = LicenseService(
             appName: "SaneHosts",
-            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
+            proTrial: .init(durationDays: 30, storageKeyPrefix: "sanehosts.pro_trial")
         )
     }
 }

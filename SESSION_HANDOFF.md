@@ -4,6 +4,65 @@
 
 ## Current State
 
+- 2026-05-25 22:06 EDT Basic/Pro conversion patch verified:
+  - SaneHosts now opts into the shared SaneUI 30-day Pro trial so new direct
+    users see real Pro access during onboarding instead of being able to live
+    indefinitely in a too-generous Basic path.
+  - 2026-06-01 release prep bumped this patch to `1.1.15` / build `1115` and
+    consolidated the duplicate `1.1.14` changelog entries.
+  - Runtime proof on the Mini confirmed the staged app launched with mover
+    prompts suppressed for test mode, keychain disabled for the fresh-user
+    probe, and forced license check enabled. UserDefaults showed
+    `sanehosts.pro_trial.started_at` plus the
+    `sanehosts.pro_trial_started` event.
+  - Verification: Mini `./scripts/SaneMaster.rb verify --timeout 1200` passed
+    `97` tests. Mini visual smoke passed at
+    `/Users/stephansmac/SaneApps/apps/SaneHosts/outputs/visual_smoke/visual_smoke_20260525-220458_32163`.
+    Mini `customer_ui_sweep --json` passed with receipt generated
+    `2026-05-26T02:06:25Z`.
+  - Product caveat: the failed "Move to Applications" dialog was reproduced as
+    a test-launcher problem and the tooling now suppresses/detects it during
+    verification. A real customer install-move success pass should still be
+    run before claiming the mover itself is fixed.
+
+- 2026-05-25 20:05 EDT direct-download patch `v1.1.14` shipped and deployed:
+  - Release commits on `main`: `b234f1a` fixed overlay/readability, large-profile
+    runtime, import cancellation, DNS/activation error handling, and regression
+    coverage; `4ff87eb` bumped version to `1.1.14`; `fa0b819` synced release
+    metadata.
+  - Canonical release artifact:
+    `https://dist.sanehosts.com/updates/SaneHosts-1.1.14.zip`; appcast:
+    `https://sanehosts.com/appcast.xml`; GitHub release: `v1.1.14`;
+    Homebrew tap updated to `1.1.14`; website/email webhook updated to the same
+    ZIP.
+  - Verification before ship: Mini `./scripts/SaneMaster.rb verify --timeout 900`
+    passed `96` tests; release script reran the same test suite; Mini
+    `sane_test.rb SaneHosts --no-logs` built/launched the app; Mini
+    `customer_ui_sweep --json` and strict `customer_ui_contract --strict-visual
+    --json` passed with 11 covered customer actions.
+  - Visual evidence inspected: normal completed-tutorial screenshot
+    `outputs/local-visual/sanehosts-normal-app-see-20260525-191008.png` and
+    first-run tutorial screenshot
+    `outputs/local-visual/sanehosts-first-run-app-see-20260525-191125.png`; both
+    were readable with no clipping/overlap and the first-run tooltip visible
+    in-frame.
+  - Runtime evidence: large profile startup no longer eagerly decodes 61 MB/25 MB
+    JSON files. Final Mini samples stabilized around `0%` CPU, `~158 MB` RSS,
+    and `~83 MB` physical footprint. Restricted `leaks` reported only tiny
+    AppIntents/XPC allocations, with no growing app footprint observed.
+  - Post-status dashboard cleanup: Lemon Squeezy hosted file was updated in the
+    Mini Safari dashboard from `SaneHosts-1.1.13.zip` to `SaneHosts-1.1.14.zip`;
+    the stale file was unpublished, and `./scripts/SaneMaster.rb
+    hosted_file_actions --json` now reports `current_actions: []` with
+    SaneHosts `status: In sync`.
+  - Customer replies posted after user approval:
+    `#4` comment `4538794202` was posted and the issue was closed as fixed in
+    `1.1.14`; `#5` comment `4538794511` was posted and the issue remains open
+    for reporter confirmation on `1.1.14`.
+  - Tooling note: the canonical release script invoked an `nv` README sync despite
+    the SaneApps no-NVIDIA/no-nv rule. It completed without changing README, but
+    release tooling should be patched to use GPT/local tooling instead.
+
 - 2026-05-25 18:40 EDT SaneHosts `#4` latest evidence root-caused and patched:
   - Evidence review covered `check-inbox.sh issue-review SaneHosts 4`, latest
     GitHub screenshots, local handoff/research, and the first-run tutorial and
@@ -68,7 +127,7 @@
   - `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passes with 11 required actions covered; receipt generated `2026-05-12T03:45:56Z` on host `mini`.
   - Mini `./scripts/SaneMaster.rb verify` passed 82 tests.
 
-- Current direct-download release is `1.1.11` (build `1111`).
+- Current direct-download release is `1.1.14` (build `1114`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
@@ -150,7 +209,11 @@ All 4 sites deployed to Cloudflare Pages.
 
 ## Pending / Not Done
 
-- 2026-05-24 SaneHosts `#4`/`#5` patch candidate: UI text was brightened across the main/profile/settings/coach-mark surfaces for Tahoe readability, and `ProfileStore` now creates Essentials even after migration has already created "Existing Entries" so Basic users keep the included profile. Latest Mini `./scripts/SaneMaster.rb verify --timeout 900` passed with `85` counted tests after the IP wrap and strict visual manifest fixes. Worker runtime visual receipt: `outputs/visual-audit-sanehosts-20260524/sanehosts-runtime-after-fix-20260524.png`.
+- SaneHosts `#5`: `v1.1.14` is shipped and the approved GitHub reply is posted.
+  Keep open until the reporter confirms the Basic Essentials activation path on
+  `1.1.14`.
+- SaneHosts release tooling debt: remove/replace the `nv` README sync path that
+  the canonical release script invoked during `v1.1.14`.
 - **SaneBar icon transparency** (issue #16 from AB-boi) — needs investigation
 - **SaneHosts plan from plan mode** (accessibility labels, appcast fix) — plan exists at `~/.claude/plans/reactive-popping-allen.md`, not started this session
 - **SaneBar/SaneClip non-website changes** — uncommitted Swift/config changes from prior sessions remain in those repos
