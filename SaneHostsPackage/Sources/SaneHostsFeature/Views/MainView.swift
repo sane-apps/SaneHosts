@@ -83,7 +83,8 @@ public struct MainView: View {
     private static func defaultLicenseService() -> LicenseService {
         LicenseService(
             appName: "SaneHosts",
-            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts")
+            checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
+            proTrial: .init(durationDays: 30, storageKeyPrefix: "sanehosts.pro_trial")
         )
     }
 

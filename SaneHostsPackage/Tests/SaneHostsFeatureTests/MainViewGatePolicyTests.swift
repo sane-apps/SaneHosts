@@ -4,6 +4,23 @@ import Testing
 
 @Suite("MainView Gate Policy Tests")
 struct MainViewGatePolicyTests {
+    @Test("Default SaneHosts license service enables 30 day Pro trial")
+    func defaultLicenseServiceEnablesThirtyDayProTrial() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let appRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let appSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
+        let contentSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHostsPackage/Sources/SaneHostsFeature/ContentView.swift"))
+        let mainSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"))
+
+        for source in [appSource, contentSource, mainSource] {
+            #expect(source.contains("proTrial: .init(durationDays: 30, storageKeyPrefix: \"sanehosts.pro_trial\")"))
+        }
+    }
+
     @Test("Basic users cannot open remote import from empty state")
     func basicCannotOpenRemoteImport() {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: false) == false)
