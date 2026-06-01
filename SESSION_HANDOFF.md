@@ -1,9 +1,16 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-05-25
+**Last updated:** 2026-06-01
 
 ## Current State
 
+- 2026-06-01 `v1.1.15` direct-download release shipped and deployed:
+  - Release URL: `https://dist.sanehosts.com/updates/SaneHosts-1.1.15.zip`.
+  - Appcast: `https://sanehosts.com/appcast.xml`.
+  - Release commits on `main`: `91a992b` enabled the direct 30-day Pro trial, `3b871cb` bumped version, and `802468d` synced release metadata. Tag `v1.1.15` was published.
+  - Canonical Mini preflight passed with warnings only; release script reran `./scripts/SaneMaster.rb verify` and passed `97` tests.
+  - Release script archived/exported signed app, notarized/stapled, uploaded R2 ZIP, updated appcast/website/Homebrew/email webhook, and strict post-release checks passed.
+  - Expected warnings during preflight/release: migration-path notice, open GitHub/email queues, pre-publish appcast/Homebrew skew, README freshness warning, and evening timing warning. None blocked release.
 - 2026-05-25 22:06 EDT Basic/Pro conversion patch verified:
   - SaneHosts now opts into the shared SaneUI 30-day Pro trial so new direct
     users see real Pro access during onboarding instead of being able to live
@@ -127,7 +134,7 @@
   - `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passes with 11 required actions covered; receipt generated `2026-05-12T03:45:56Z` on host `mini`.
   - Mini `./scripts/SaneMaster.rb verify` passed 82 tests.
 
-- Current direct-download release is `1.1.14` (build `1114`).
+- Current direct-download release is `1.1.15` (build `1115`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
