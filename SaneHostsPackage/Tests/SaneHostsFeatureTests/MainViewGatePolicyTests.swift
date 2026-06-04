@@ -147,6 +147,16 @@ struct DarkModeReadabilityPolicyTests {
         let files = [
             "Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift",
             "Sources/SaneHostsFeature/Views/MainView.swift",
+            "Sources/SaneHostsFeature/Views/MainView+Actions.swift",
+            "Sources/SaneHostsFeature/Views/MainView+Layout.swift",
+            "Sources/SaneHostsFeature/Views/MainViewComponents.swift",
+            "Sources/SaneHostsFeature/Views/ProfileCreationSheets.swift",
+            "Sources/SaneHostsFeature/Views/PresetViews.swift",
+            "Sources/SaneHostsFeature/Views/FetchProgressOverlay.swift",
+            "Sources/SaneHostsFeature/Views/MergeProfilesSheet.swift",
+            "Sources/SaneHostsFeature/Views/RemoteImportSheet.swift",
+            "Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift",
+            "Sources/SaneHostsFeature/Views/RemoteImportSheet+Import.swift",
             "Sources/SaneHostsFeature/Views/ProfileDetailView.swift"
         ]
 
@@ -167,7 +177,7 @@ struct DarkModeReadabilityPolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainViewComponents.swift"))
 
         #expect(mainSource.contains("Text(profile.name)"))
         #expect(mainSource.contains(".foregroundColor(.white)"))
@@ -218,9 +228,15 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let files = [
+            "Sources/SaneHostsFeature/Views/RemoteImportSheet.swift",
+            "Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift"
+        ]
+        let mainSource = try files.map {
+            try String(contentsOf: packageRoot.appendingPathComponent($0))
+        }.joined(separator: "\n")
 
-        #expect(mainSource.contains("@State private var urlCheckTask: Task<Void, Never>?"))
+        #expect(mainSource.contains("@State var urlCheckTask: Task<Void, Never>?"))
         #expect(mainSource.contains("let concurrencyLimit = 6"))
         #expect(mainSource.contains("urlCheckTask?.cancel()"))
         #expect(mainSource.contains("group.cancelAll()"))
@@ -249,7 +265,7 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Actions.swift"))
 
         #expect(mainSource.contains("guard !isActivating else { return }"))
         #expect(mainSource.contains("defer { isActivating = false }"))
@@ -280,7 +296,7 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Actions.swift"))
         let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
 
         #expect(mainSource.contains("let fullProfile = try await store.fullProfile(for: profile)"))
@@ -297,7 +313,7 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
             .deletingLastPathComponent()
-        let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView.swift"))
+        let importSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/RemoteImportSheet+Import.swift"))
         let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
 
         #expect(storeSource.contains("largeProfileSummaryThresholdBytes"))
@@ -305,9 +321,9 @@ struct RuntimeResourcePolicyTests {
         #expect(storeSource.contains("largeProfilePreviewEntryLimit"))
         #expect(storeSource.contains("Data(contentsOf: url, options: [.mappedIfSafe])"))
         #expect(!storeSource.contains("String(decoding: data"))
-        #expect(mainSource.contains("let maxImportedEntries = 500_000"))
-        #expect(mainSource.contains("try Task.checkCancellation()"))
-        #expect(mainSource.contains("guard allEntries.count < maxImportedEntries else { break }"))
+        #expect(importSource.contains("let maxImportedEntries = 500_000"))
+        #expect(importSource.contains("try Task.checkCancellation()"))
+        #expect(importSource.contains("guard allEntries.count < maxImportedEntries else { break }"))
     }
 
     @Test("Deactivation and DNS warnings are not silently ignored")

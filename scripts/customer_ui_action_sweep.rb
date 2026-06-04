@@ -88,13 +88,13 @@ class CustomerUIActionSweep
     },
     'quick-actions-and-basic-pro-gates' => {
       source: [
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'QuickActionButton('],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'title: "Open Essentials"'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'ProGatedQuickActionButton('],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'proUpsellFeature = .importProfiles'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'proUpsellFeature = .multipleProfiles'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'proUpsellFeature = .downloadablePresets'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'proUpsellFeature = .profileMerge']
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct QuickActionButton'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'title: "Open Essentials"'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct ProGatedQuickActionButton'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .importProfiles'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .multipleProfiles'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .downloadablePresets'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .profileMerge']
       ],
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicCannotOpenRemoteImport'],
@@ -103,12 +103,12 @@ class CustomerUIActionSweep
     },
     'profile-lifecycle-actions' => {
       source: [
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'struct NewProfileSheet'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'try? await store.create(name: name)'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'try? await store.duplicate(profile: profile)'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'struct MergeProfilesSheet'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'exportProfile(profile)'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'deleteWithConfirmation()'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileCreationSheets.swift', 'struct NewProfileSheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileCreationSheets.swift', 'try? await store.create(name: name)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'try? await store.duplicate(profile: profile)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MergeProfilesSheet.swift', 'struct MergeProfilesSheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'exportProfile(profile)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'deleteWithConfirmation()'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift', 'public func merge(profiles profilesToMerge: [Profile], name: String)']
       ],
       tests: [
@@ -123,12 +123,12 @@ class CustomerUIActionSweep
     },
     'preset-template-import-actions' => {
       source: [
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'struct TemplatePickerSheet'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'struct RemoteImportSheet'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'customURLSection'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'importProgressOverlay'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'store.createMerged('],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'struct PresetDetailView'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileCreationSheets.swift', 'struct TemplatePickerSheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet.swift', 'struct RemoteImportSheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift', 'customURLSection'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Import.swift', 'importProgressOverlay'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Import.swift', 'store.createMerged('],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/PresetViews.swift', 'struct PresetDetailView'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Models/ProfilePresets.swift', 'public enum ProfilePreset']
       ],
       tests: [
@@ -143,8 +143,8 @@ class CustomerUIActionSweep
     },
     'activation-deactivation-hosts-write' => {
       source: [
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'private func activateProfile(_ profile: Profile)'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'private func deactivateProfile()'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'func activateProfile(_ profile: Profile)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'func deactivateProfile()'],
         ['SaneHosts/SaneHostsApp.swift', 'func activateProfile(_ profile: Profile) async'],
         ['SaneHosts/SaneHostsApp.swift', 'func deactivateProfile() async'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift', 'activateProfile(_ profile: Profile'],
