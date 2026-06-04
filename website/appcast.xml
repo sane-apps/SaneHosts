@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                                                            <item>
+                                                                                                                    <item>
+            <title>1.1.16</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Wed, 03 Jun 2026 22:56:42 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Improves profile management reliability and keeps Basic/Pro gates, remote import, merge, activation, and deactivation surfaces consistent after the main window UI cleanup.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.16.zip"
+                       sparkle:version="1116"
+                       sparkle:shortVersionString="1.1.16"
+                       length="4554854"
+                       type="application/octet-stream"
+                       sparkle:edSignature="/jfq/8gzU+Cpeu2kP9XmTGphvBSBvNXOIIe1gCDCfDyM38CiQSkUkZTRJRI+OgCGTLE/N1d9PogvApR8mR+5Bg=="/>
+        </item>
+<item>
             <title>1.1.15</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Mon, 01 Jun 2026 04:19:55 -0400</pubDate>
