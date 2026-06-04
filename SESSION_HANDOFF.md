@@ -1,8 +1,43 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-06-01
+**Last updated:** 2026-06-04
 
 ## Current State
+
+- 2026-06-04 MainView refactor/proof pass completed:
+  - Split the former 2,457-line `MainView.swift` owner into focused SwiftUI
+    files under `SaneHostsPackage/Sources/SaneHostsFeature/Views/`: `MainView.swift`
+    (scene state/body), `MainView+Layout.swift`, `MainView+Actions.swift`,
+    `MainViewComponents.swift`, `ProfileCreationSheets.swift`, `PresetViews.swift`,
+    `FetchProgressOverlay.swift`, `RemoteImportSheet.swift`,
+    `RemoteImportSheet+Catalog.swift`, `RemoteImportSheet+Import.swift`, and
+    `MergeProfilesSheet.swift`. All split files are under 500 lines.
+  - Updated source-policy tests so dark-mode readability, activation/deactivation,
+    large-profile, and remote-import safety checks scan the new file boundaries.
+  - Mini verification passed:
+    `swift test --package-path SaneHostsPackage` and
+    `./scripts/SaneMaster.rb verify --timeout 900` both passed; SaneMaster reported
+    `97` tests passed. After the `1.1.16` / build `1116` release bump,
+    Mini `./scripts/SaneMaster.rb verify --timeout 900` passed again with
+    `97` tests.
+  - Customer UI contract was refreshed after the source split and after the
+    release metadata bump. Latest Mini `./scripts/SaneMaster.rb
+    customer_ui_sweep --json` passed with 11 actions and receipt timestamp
+    `2026-06-04T02:32:42Z`.
+  - Release preflight for `1.1.16` passed with warnings only. Expected
+    pre-publish warnings: uncommitted release-candidate files, UserDefaults
+    migration notice, live appcast/Homebrew still at `1.1.15`, one open GitHub
+    issue, pending email queue, and evening timing.
+  - Mini runtime proof passed through `./scripts/SaneMaster.rb test_mode --no-logs`
+    and `./scripts/SaneMaster.rb visual_smoke --app SaneHosts --output
+    outputs/visual-audit-20260604 --json`.
+  - Clean visual proof copied locally:
+    `outputs/visual-audit-20260604/visual_smoke_20260603-222831_16745/app-see.png`.
+    The isolated app capture shows the SaneHosts window rendering correctly with
+    readable bright text, visible sidebar/detail/stats/entries, and no overlap.
+    An earlier failed `screen.png` in
+    `visual_smoke_20260603-222650_7365` is contaminated by a Codex
+    window/notification and should not be used as visual proof.
 
 - 2026-06-01 `v1.1.15` direct-download release shipped and deployed:
   - Release URL: `https://dist.sanehosts.com/updates/SaneHosts-1.1.15.zip`.

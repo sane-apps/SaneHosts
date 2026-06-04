@@ -5,9 +5,9 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.15] - 2026-06-01
+## [1.1.16] - 2026-06-04
 
-Enables the 30-day Pro trial for direct-download users so first-run onboarding and Basic/Pro gating match the shared license flow.
+Improves profile management reliability and keeps Basic/Pro gates, remote import, merge, activation, and deactivation surfaces consistent after the main window UI cleanup.
 
 ---
 
