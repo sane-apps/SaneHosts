@@ -38,6 +38,29 @@
     An earlier failed `screen.png` in
     `visual_smoke_20260603-222650_7365` is contaminated by a Codex
     window/notification and should not be used as visual proof.
+  - Direct-download release `v1.1.16` shipped and deployed:
+    `https://dist.sanehosts.com/updates/SaneHosts-1.1.16.zip`. Release tag
+    `v1.1.16` points at `2f89e60`; release metadata commit `d87becc` is on
+    `main`.
+  - Release evidence: SaneMaster routed release from the MacBook Air to the Mini,
+    passed `97` tests, archived/exported Developer ID signed app, notarized and
+    stapled Apple submission `2c4a958d-620a-4304-b927-70972cb85f88`, uploaded R2
+    ZIP SHA-256 `3aae3614d295e5df3989fd68f89fbf32cf3f96d25a0823dad3dce3ee63a391a5`,
+    updated appcast/website/Homebrew/GitHub release, and verified the download.
+  - Post-release preflight passed at `2026-06-03T23:08:34-04:00` with `0`
+    issues and `4` warnings in `outputs/release_preflight_status.json`: upgrade
+    path warning, one open GitHub issue, three pending emails, and evening timing.
+    Live appcast/Homebrew/website download/email Worker signed download all report
+    `1.1.16` / build `1116`.
+  - Release tooling fix: Air-off-LAN releases were initially blocked because
+    `release.sh` trusted SaneMaster's routed workspace context for cleanliness
+    but still fell through to the old Mini-to-Air `.local` SSH reconcile query.
+    `SaneProcess` branch `fix/hook-staleness-gates` commit `cb934c4` now lets
+    routed releases pass reconcile from `.sanemaster/mini_route_context.json`.
+  - Email Worker follow-up: the primary SaneHosts download mapping was pushed in
+    `sane-email-automation` commit `7cff266`; bundle purchase mapping was also
+    updated and tested in `c930f98`, then deployed to Cloudflare Worker version
+    `f9b292a8-fde5-4b39-b7a6-025ecf1336dc`.
 
 - 2026-06-01 `v1.1.15` direct-download release shipped and deployed:
   - Release URL: `https://dist.sanehosts.com/updates/SaneHosts-1.1.15.zip`.
@@ -169,7 +192,7 @@
   - `./scripts/SaneMaster.rb customer_ui_contract --no-exit` passes with 11 required actions covered; receipt generated `2026-05-12T03:45:56Z` on host `mini`.
   - Mini `./scripts/SaneMaster.rb verify` passed 82 tests.
 
-- Current direct-download release is `1.1.15` (build `1115`).
+- Current direct-download release is `1.1.16` (build `1116`).
 - SaneHosts remains direct-download only. The App Store lane is intentionally disabled for the current helper/daemon architecture.
 - Pricing rollout source of truth for current customer-facing surfaces: `Basic = free`, `Pro = $14.99 once`, `direct download only`.
 - Do not reintroduce App Store positioning in customer-facing copy unless the product is intentionally redesigned around an App-Store-safe architecture.
