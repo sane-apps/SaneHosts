@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.17] - 2026-06-21
+
+Adds a clear 30-day Pro trial countdown and upgrade path after the trial ends. Keeps paid Pro users unaffected and preserves Basic/Pro routing during the trial. Removes retired distribution cruft and keeps the release surface leaner.
+
+---
+
 ## [1.1.16] - 2026-06-03
 
 Improves profile management reliability and keeps Basic/Pro gates, remote import, merge, activation, and deactivation surfaces consistent after the main window UI cleanup.
