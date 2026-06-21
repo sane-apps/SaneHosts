@@ -6,10 +6,11 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                                                                            <item>
+                                                                                                                            
+        <item>
             <title>1.1.17</title>
             <link>https://sanehosts.com/download</link>
-            <pubDate>Sun, 21 Jun 2026 05:12:19 -0400</pubDate>
+            <pubDate>Sun, 21 Jun 2026 05:17:23 -0400</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
             <description>
                 <![CDATA[
@@ -22,9 +23,9 @@
             <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip"
                        sparkle:version="1117"
                        sparkle:shortVersionString="1.1.17"
-                       length="4569426"
+                       length="4569411"
                        type="application/octet-stream"
-                       sparkle:edSignature="hjtxl5S5dk+1gqV1HsqUNsGEc7IQQpfJYktVcsa9UkLWi45ikK6K1Z1rHJgbW78S/6XmR5om+bbkGOYiRTiTAg=="/>
+                       sparkle:edSignature="pBk16roXWXtEMxKbR6HZAgD0vDSbojgSUzn2jS8xGZeGw2M9nGH1Y31RQZuGsA8/2SWxW9H/ENc90ESQCm8PCQ=="/>
         </item>
 <item>
             <title>1.1.16</title>
