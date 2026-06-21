@@ -6,7 +6,27 @@
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
 
-                                                                                                                    <item>
+                                                                                                                            <item>
+            <title>1.1.17</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Sun, 21 Jun 2026 05:12:19 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Adds a clear 30-day Pro trial countdown and upgrade path after the trial ends. Keeps paid Pro users unaffected and preserves Basic/Pro routing during the trial. Removes retired distribution cruft and keeps the release surface leaner.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip"
+                       sparkle:version="1117"
+                       sparkle:shortVersionString="1.1.17"
+                       length="4569426"
+                       type="application/octet-stream"
+                       sparkle:edSignature="hjtxl5S5dk+1gqV1HsqUNsGEc7IQQpfJYktVcsa9UkLWi45ikK6K1Z1rHJgbW78S/6XmR5om+bbkGOYiRTiTAg=="/>
+        </item>
+<item>
             <title>1.1.16</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Wed, 03 Jun 2026 22:56:42 -0400</pubDate>
