@@ -2,9 +2,7 @@ import AppKit
 import os
 import SaneHostsFeature
 import ServiceManagement
-#if !APP_STORE
-    import Sparkle
-#endif
+import Sparkle
 import SwiftUI
 
 // MARK: - Notifications
@@ -72,77 +70,73 @@ final class SettingsActionStorage {
     }
 }
 
-#if !APP_STORE
-    @MainActor
-    private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
-        func writeHostsFile(content: String) async throws {
-            do {
-                try HostsContentValidator.validate(content)
-            } catch {
-                throw HostsServiceError.invalidContent
-            }
-
-            let tempURL = FileManager.default.temporaryDirectory
-                .appendingPathComponent("sanehosts-\(UUID().uuidString).hosts")
-
-            try? FileManager.default.removeItem(at: tempURL)
-
-            do {
-                try content.write(to: tempURL, atomically: true, encoding: .utf8)
-                try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: tempURL.path)
-            } catch {
-                throw HostsServiceError.tempFileWriteFailed(error.localizedDescription)
-            }
-
-            let tempPath = tempURL.path
-            guard tempPath.allSatisfy({ $0.isASCII && !$0.isNewline }) else {
-                try? FileManager.default.removeItem(at: tempURL)
-                throw HostsServiceError.tempFileWriteFailed("Temp path contains unsafe characters")
-            }
-
-            let escapedPath = tempPath
-                .replacingOccurrences(of: "\\", with: "\\\\")
-                .replacingOccurrences(of: "\"", with: "\\\"")
-
-            let script = """
-            do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts" with administrator privileges
-            """
-
-            let result = await runAppleScript(script)
-            try? FileManager.default.removeItem(at: tempURL)
-
-            if !result.success {
-                throw HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
-            }
+@MainActor
+private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
+    func writeHostsFile(content: String) async throws {
+        do {
+            try HostsContentValidator.validate(content)
+        } catch {
+            throw HostsServiceError.invalidContent
         }
 
-        private func runAppleScript(_ script: String) async -> (success: Bool, error: String?) {
-            await withCheckedContinuation { continuation in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    var error: NSDictionary?
-                    let appleScript = NSAppleScript(source: script)
-                    appleScript?.executeAndReturnError(&error)
+        let tempURL = FileManager.default.temporaryDirectory
+            .appendingPathComponent("sanehosts-\(UUID().uuidString).hosts")
 
-                    if let error {
-                        let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
-                        continuation.resume(returning: (false, errorMessage))
-                    } else {
-                        continuation.resume(returning: (true, nil))
-                    }
+        try? FileManager.default.removeItem(at: tempURL)
+
+        do {
+            try content.write(to: tempURL, atomically: true, encoding: .utf8)
+            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: tempURL.path)
+        } catch {
+            throw HostsServiceError.tempFileWriteFailed(error.localizedDescription)
+        }
+
+        let tempPath = tempURL.path
+        guard tempPath.allSatisfy({ $0.isASCII && !$0.isNewline }) else {
+            try? FileManager.default.removeItem(at: tempURL)
+            throw HostsServiceError.tempFileWriteFailed("Temp path contains unsafe characters")
+        }
+
+        let escapedPath = tempPath
+            .replacingOccurrences(of: "\\", with: "\\\\")
+            .replacingOccurrences(of: "\"", with: "\\\"")
+
+        let script = """
+        do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts" with administrator privileges
+        """
+
+        let result = await runAppleScript(script)
+        try? FileManager.default.removeItem(at: tempURL)
+
+        if !result.success {
+            throw HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
+        }
+    }
+
+    private func runAppleScript(_ script: String) async -> (success: Bool, error: String?) {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                var error: NSDictionary?
+                let appleScript = NSAppleScript(source: script)
+                appleScript?.executeAndReturnError(&error)
+
+                if let error {
+                    let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
+                    continuation.resume(returning: (false, errorMessage))
+                } else {
+                    continuation.resume(returning: (true, nil))
                 }
             }
         }
     }
-#endif
+}
 
 @main
 struct SaneHostsApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-    #if !APP_STORE
-        private let updaterController: SPUStandardUpdaterController?
-        private let updaterDelegate = SaneHostsUpdaterDelegate()
-        private let updateEligibility: SaneUpdateEligibility
-    #endif
+    private let updaterController: SPUStandardUpdaterController?
+    private let updaterDelegate = SaneHostsUpdaterDelegate()
+    private let updateEligibility: SaneUpdateEligibility
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("hasSeenWelcomeGate") private var hasSeenWelcomeGate = false
@@ -154,21 +148,19 @@ struct SaneHostsApp: App {
     )
 
     init() {
-        #if !APP_STORE
-            updateEligibility = SaneUpdateEligibility.resolve(
-                bundleIdentifier: Bundle.main.bundleIdentifier,
-                releaseBundleIdentifier: "com.mrsane.SaneHosts",
-                bundlePath: Bundle.main.bundlePath
-            )
-            if updateEligibility.canUseInAppUpdates {
-                updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
-                AppDelegate.updater = updaterController?.updater
-            } else {
-                updaterController = nil
-                AppDelegate.updater = nil
-            }
-            AppDelegate.updateEligibility = updateEligibility
-        #endif
+        updateEligibility = SaneUpdateEligibility.resolve(
+            bundleIdentifier: Bundle.main.bundleIdentifier,
+            releaseBundleIdentifier: "com.mrsane.SaneHosts",
+            bundlePath: Bundle.main.bundlePath
+        )
+        if updateEligibility.canUseInAppUpdates {
+            updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+            AppDelegate.updater = updaterController?.updater
+        } else {
+            updaterController = nil
+            AppDelegate.updater = nil
+        }
+        AppDelegate.updateEligibility = updateEligibility
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
@@ -231,24 +223,15 @@ struct SaneHostsApp: App {
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
         .commands {
-            #if !APP_STORE
-                SaneHostsAppCommands(updater: updaterController?.updater, updateEligibility: updateEligibility)
-            #else
-                SaneHostsAppCommands()
-            #endif
+            SaneHostsAppCommands(updater: updaterController?.updater, updateEligibility: updateEligibility)
         }
         .onChange(of: hideDockIcon) { _, newValue in
             SaneActivationPolicy.applyPolicy(showDockIcon: !newValue)
         }
 
         Settings {
-            #if !APP_STORE
-                SaneHostsSettingsView(updater: updaterController?.updater, updateEligibility: updateEligibility, licenseService: licenseService)
-                    .preferredColorScheme(.dark)
-            #else
-                SaneHostsSettingsView(licenseService: licenseService)
-                    .preferredColorScheme(.dark)
-            #endif
+            SaneHostsSettingsView(updater: updaterController?.updater, updateEligibility: updateEligibility, licenseService: licenseService)
+                .preferredColorScheme(.dark)
         }
         .defaultSize(
             width: 640,
@@ -257,7 +240,7 @@ struct SaneHostsApp: App {
         .windowResizability(.contentSize)
 
         MenuBarExtra("SaneHosts", systemImage: menuBarStore.activeProfile != nil ? "network.badge.shield.half.filled" : "network") {
-            MenuBarMenuContent(store: menuBarStore)
+            MenuBarMenuContent(store: menuBarStore, licenseService: licenseService)
         }
         .menuBarExtraStyle(.menu)
     }
@@ -265,10 +248,8 @@ struct SaneHostsApp: App {
 
 struct SaneHostsAppCommands: Commands {
     @Environment(\.openWindow) private var openWindow
-    #if !APP_STORE
-        let updater: SPUUpdater?
-        let updateEligibility: SaneUpdateEligibility
-    #endif
+    let updater: SPUUpdater?
+    let updateEligibility: SaneUpdateEligibility
 
     var body: some Commands {
         CommandGroup(replacing: .newItem) {
@@ -287,11 +268,9 @@ struct SaneHostsAppCommands: Commands {
             .keyboardShortcut("i", modifiers: .command)
         }
 
-        #if !APP_STORE
-            CommandGroup(after: .appInfo) {
-                CheckForUpdatesView(updater: updater, updateEligibility: updateEligibility)
-            }
-        #endif
+        CommandGroup(after: .appInfo) {
+            CheckForUpdatesView(updater: updater, updateEligibility: updateEligibility)
+        }
 
         CommandGroup(replacing: .help) {
             Button("Show Tutorial") {
@@ -371,25 +350,21 @@ struct WindowActionCapture: ViewModifier {
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "AppDelegate")
-    #if !APP_STORE
-        weak static var updater: SPUUpdater?
-        static var updateEligibility: SaneUpdateEligibility = .notInstalledInApplications
-    #endif
+    weak static var updater: SPUUpdater?
+    static var updateEligibility: SaneUpdateEligibility = .notInstalledInApplications
 
     func applicationDidFinishLaunching(_: Notification) {
         NSApp.appearance = NSAppearance(named: .darkAqua)
         // Move to /Applications if running from Downloads (Release only)
-        #if !DEBUG && !APP_STORE
-            SaneAppMover.moveToApplicationsFolderIfNeeded(prompt: .init(
+        #if !DEBUG
+            SaneApplicationMover.moveToApplicationsFolderIfNeeded(prompt: .init(
                 messageText: "Move to Applications?",
                 informativeText: "{appName} works best from your Applications folder. Move it there now? You may be asked for your password.",
                 moveButtonTitle: "Move to Applications",
                 cancelButtonTitle: "Not Now"
             ))
         #endif
-        #if !APP_STORE
-            HostsPrivilegedWriteFallbackRegistry.install(AppleScriptHostsWriteFallback())
-        #endif
+        HostsPrivilegedWriteFallbackRegistry.install(AppleScriptHostsWriteFallback())
 
         let hideDockIcon = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool ?? !SaneBackgroundAppDefaults.showDockIcon
         SaneActivationPolicy.applyInitialPolicy(showDockIcon: !hideDockIcon)
@@ -463,34 +438,29 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
 
-    #if !APP_STORE
-        private var directUpdateAction: Selector? {
-            #selector(checkForUpdates)
-        }
+    private var directUpdateAction: Selector? {
+        #selector(checkForUpdates)
+    }
 
-        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
-            { [weak self] item in
-                self?.configureUpdateItem(item)
-            }
+    private var directUpdateConfigurator: ((NSMenuItem) -> Void)? {
+        { [weak self] item in
+            self?.configureUpdateItem(item)
         }
+    }
 
-        private func configureUpdateItem(_ item: NSMenuItem) {
-            let canUpdate = Self.updateEligibility.canUseInAppUpdates && Self.updater != nil
-            item.isEnabled = canUpdate
-            item.toolTip = canUpdate ? nil : Self.updateEligibility.userFacingStatus
-        }
+    private func configureUpdateItem(_ item: NSMenuItem) {
+        let canUpdate = Self.updateEligibility.canUseInAppUpdates && Self.updater != nil
+        item.isEnabled = canUpdate
+        item.toolTip = canUpdate ? nil : Self.updateEligibility.userFacingStatus
+    }
 
-        @objc func checkForUpdates() {
-            guard Self.updateEligibility.canUseInAppUpdates, let updater = AppDelegate.updater else {
-                NSSound.beep()
-                return
-            }
-            updater.checkForUpdates()
+    @objc func checkForUpdates() {
+        guard Self.updateEligibility.canUseInAppUpdates, let updater = AppDelegate.updater else {
+            NSSound.beep()
+            return
         }
-    #else
-        private var directUpdateAction: Selector? { nil }
-        private var directUpdateConfigurator: ((NSMenuItem) -> Void)? { nil }
-    #endif
+        updater.checkForUpdates()
+    }
 
     @objc func quit() {
         NSApp.terminate(nil)
@@ -589,11 +559,19 @@ class MenuBarProfileStore: ObservableObject {
 
 struct MenuBarMenuContent: View {
     @ObservedObject var store: MenuBarProfileStore
+    var licenseService: LicenseService
     @Environment(\.openWindow) private var openWindow
     @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         Group {
+            if licenseService.hasExpiredProTrial {
+                Button("Trial ended — Upgrade") {
+                    WindowActionStorage.shared.showMainWindow(using: openWindow)
+                }
+                Divider()
+            }
+
             if let active = store.activeProfile {
                 Button("🟢 Active: \(active.name)") {
                     WindowActionStorage.shared.showMainWindow(using: openWindow)
@@ -616,7 +594,11 @@ struct MenuBarMenuContent: View {
             Section("Profiles") {
                 ForEach(store.profiles) { profile in
                     Button {
-                        Task { await store.activateProfile(profile) }
+                        if licenseService.hasExpiredProTrial {
+                            WindowActionStorage.shared.showMainWindow(using: openWindow)
+                        } else {
+                            Task { await store.activateProfile(profile) }
+                        }
                     } label: {
                         HStack {
                             if store.activeProfile?.id == profile.id {
@@ -648,7 +630,6 @@ struct MenuBarMenuContent: View {
                 SettingsActionStorage.shared.showSettings(tab: .about)
             }
 
-            #if !APP_STORE
             Button(SaneStandardMenu.checkForUpdatesTitle) {
                 guard AppDelegate.updateEligibility.canUseInAppUpdates, let updater = AppDelegate.updater else {
                     NSSound.beep()
@@ -657,7 +638,6 @@ struct MenuBarMenuContent: View {
                 updater.checkForUpdates()
             }
             .disabled(!AppDelegate.updateEligibility.canUseInAppUpdates || AppDelegate.updater == nil)
-            #endif
 
             Divider()
 
@@ -673,55 +653,52 @@ struct MenuBarMenuContent: View {
     }
 }
 
-#if !APP_STORE
+// MARK: - Sparkle Check for Updates
 
-    // MARK: - Sparkle Check for Updates
+struct CheckForUpdatesView: View {
+    @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
 
-    struct CheckForUpdatesView: View {
-        @ObservedObject private var checkForUpdatesViewModel: CheckForUpdatesViewModel
-
-        init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
-            checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater, updateEligibility: updateEligibility)
-        }
-
-        var body: some View {
-            Button(SaneStandardMenu.checkForUpdatesTitle) {
-                checkForUpdatesViewModel.checkForUpdates()
-            }
-            .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
-            .help(checkForUpdatesViewModel.statusText)
-        }
+    init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
+        checkForUpdatesViewModel = CheckForUpdatesViewModel(updater: updater, updateEligibility: updateEligibility)
     }
 
-    final class CheckForUpdatesViewModel: ObservableObject {
-        @Published var canCheckForUpdates = false
-        @Published var statusText: String = ""
-        private let updater: SPUUpdater?
-        private let updateEligibility: SaneUpdateEligibility
-
-        init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
-            self.updater = updater
-            self.updateEligibility = updateEligibility
-            statusText = updateEligibility.canUseInAppUpdates ? "" : updateEligibility.userFacingStatus
-            guard updateEligibility.canUseInAppUpdates, let updater else { return }
-            updater.publisher(for: \.canCheckForUpdates)
-                .assign(to: &$canCheckForUpdates)
+    var body: some View {
+        Button(SaneStandardMenu.checkForUpdatesTitle) {
+            checkForUpdatesViewModel.checkForUpdates()
         }
+        .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
+        .help(checkForUpdatesViewModel.statusText)
+    }
+}
 
-        func checkForUpdates() {
-            guard updateEligibility.canUseInAppUpdates, let updater else {
-                NSSound.beep()
-                return
-            }
-            updater.checkForUpdates()
-        }
+final class CheckForUpdatesViewModel: ObservableObject {
+    @Published var canCheckForUpdates = false
+    @Published var statusText: String = ""
+    private let updater: SPUUpdater?
+    private let updateEligibility: SaneUpdateEligibility
+
+    init(updater: SPUUpdater?, updateEligibility: SaneUpdateEligibility) {
+        self.updater = updater
+        self.updateEligibility = updateEligibility
+        statusText = updateEligibility.canUseInAppUpdates ? "" : updateEligibility.userFacingStatus
+        guard updateEligibility.canUseInAppUpdates, let updater else { return }
+        updater.publisher(for: \.canCheckForUpdates)
+            .assign(to: &$canCheckForUpdates)
     }
 
-    // MARK: - Sparkle Updater Delegate
-
-    final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
-        func feedURLString(for _: SPUUpdater) -> String? {
-            "https://sanehosts.com/appcast.xml"
+    func checkForUpdates() {
+        guard updateEligibility.canUseInAppUpdates, let updater else {
+            NSSound.beep()
+            return
         }
+        updater.checkForUpdates()
     }
-#endif
+}
+
+// MARK: - Sparkle Updater Delegate
+
+final class SaneHostsUpdaterDelegate: NSObject, SPUUpdaterDelegate {
+    func feedURLString(for _: SPUUpdater) -> String? {
+        "https://sanehosts.com/appcast.xml"
+    }
+}

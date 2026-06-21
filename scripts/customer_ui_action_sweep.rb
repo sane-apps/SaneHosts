@@ -89,8 +89,11 @@ class CustomerUIActionSweep
     'quick-actions-and-basic-pro-gates' => {
       source: [
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct QuickActionButton'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct TrialCountdownCard'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'requiresPaidUpgrade(hasExpiredProTrial: licenseService.hasExpiredProTrial)'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'title: "Open Essentials"'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct ProGatedQuickActionButton'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'licenseService.proTrialDaysRemaining'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'isPro: licenseService.isPro'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .importProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .multipleProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .downloadablePresets'],
@@ -98,7 +101,9 @@ class CustomerUIActionSweep
       ],
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicCannotOpenRemoteImport'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'proCanOpenRemoteImport']
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'proCanOpenRemoteImport'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialRequiresPaidUpgrade'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'trialCountdownCopy']
       ]
     },
     'profile-lifecycle-actions' => {

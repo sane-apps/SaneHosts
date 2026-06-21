@@ -435,11 +435,7 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
-        try await save(profile: profile)
-        profiles.append(profile)
-        profiles.sort { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
-
-        return profile
+        return try await saveCreatedProfile(profile)
     }
 
     /// Create a profile from a remote source
@@ -457,24 +453,7 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
-        // Ensure profiles directory exists before writing
-        try createProfilesDirectoryIfNeeded()
-
-        // Save on background thread for large profiles
-        let profileToSave = profile
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profileToSave.id.uuidString).json")
-
-        try await Task.detached(priority: .userInitiated) {
-            var toEncode = profileToSave
-            toEncode.modifiedAt = Date()
-            let data = try JSONEncoder().encode(toEncode)
-            try data.write(to: fileURL, options: .atomic)
-            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
-        }.value
-
-        profiles.append(profile)
-        profiles.sort { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
-
+        try await saveImportedProfile(profile)
         return profile
     }
 
@@ -493,25 +472,43 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
-        // Ensure profiles directory exists before writing
+        try await saveImportedProfile(profile)
+        return profile
+    }
+
+    private func saveCreatedProfile(_ profile: Profile) async throws -> Profile {
+        try await save(profile: profile)
+        insertProfile(profile)
+        return profile
+    }
+
+    private func saveImportedProfile(_ profile: Profile) async throws {
         try createProfilesDirectoryIfNeeded()
+        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
+        try await writeProfile(profile, to: fileURL)
+        insertProfile(profile)
+    }
 
-        // Save on background thread for large profiles
-        let profileToSave = profile
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profileToSave.id.uuidString).json")
-
+    private func writeProfile(_ profile: Profile, to fileURL: URL) async throws {
         try await Task.detached(priority: .userInitiated) {
-            var toEncode = profileToSave
+            var toEncode = profile
             toEncode.modifiedAt = Date()
             let data = try JSONEncoder().encode(toEncode)
             try data.write(to: fileURL, options: .atomic)
             try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
+    }
 
+    private func insertProfile(_ profile: Profile) {
         profiles.append(profile)
-        profiles.sort { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
+        sortProfiles()
+    }
 
-        return profile
+    private func sortProfiles() {
+        profiles.sort { lhs, rhs in
+            lhs.sortOrder < rhs.sortOrder ||
+                (lhs.sortOrder == rhs.sortOrder && lhs.name.localizedCaseInsensitiveCompare(rhs.name) == .orderedAscending)
+        }
     }
 
     /// Save a profile to disk
@@ -588,11 +585,7 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
-        try await save(profile: newProfile)
-        profiles.append(newProfile)
-        profiles.sort { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
-
-        return newProfile
+        return try await saveCreatedProfile(newProfile)
     }
 
     /// Generate a unique name like "Default 1", "Default 2", etc.
@@ -646,11 +639,7 @@ public final class ProfileStore {
             sortOrder: nextSortOrder
         )
 
-        try await save(profile: newProfile)
-        profiles.append(newProfile)
-        profiles.sort { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
-
-        return newProfile
+        return try await saveCreatedProfile(newProfile)
     }
 
     // MARK: - Reordering

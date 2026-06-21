@@ -1,8 +1,61 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-06-04
+**Last updated:** 2026-06-21
 
 ## Current State
+
+- 2026-06-21 30-day Pro trial / forced-paid-after-trial release candidate:
+  - Version bumped to `1.1.17` / build `1117` in `Config/Shared.xcconfig`.
+  - Paid users are not impacted: `LicenseService.hasExpiredProTrial` is false
+    when a valid license is active. Active-trial users keep the workspace and
+    see a left-rail countdown/Upgrade card. Expired-trial users see the shared
+    `LicenseGateView` with Buy Now and Enter License Key actions.
+  - Menu bar profile activation now routes expired-trial users back to the main
+    upgrade gate instead of activating a profile from the menu.
+  - New policy tests: `expiredTrialRequiresPaidUpgrade` and
+    `trialCountdownCopy`. Mini `./scripts/SaneMaster.rb verify --timeout 900`
+    passed `99` tests after the trial change, after the customer UI contract
+    update, and after the version bump.
+  - Visual proof inspected locally:
+    `outputs/visual-audit-trial-active/direct/sanehosts-active-trial.png`
+    shows “25 days left in Pro trial” with an Upgrade action while the app
+    remains usable; `outputs/visual-audit-trial-expired/direct/sanehosts-expired-trial.png`
+    shows the tactful expired-trial upgrade/license gate.
+  - Mini `customer_ui_sweep --json` passed after the version bump with receipt
+    timestamp `2026-06-21T09:01:59Z`, source fingerprint
+    `4c0bfdbd26fd19197f133a0b8d40b8487d6bd9fe164f9e673a4df15588c12f1f`,
+    and live log `outputs/live-logs/customer_ui_sanehosts_20260621T090100Z.log`.
+  - Routed `release_preflight` for `1.1.17` passed with warnings only:
+    App Store product marker absent, uncommitted files, live appcast/Homebrew
+    still at `1.1.16` before publish, 6 pending customer emails, and evening
+    timing. The first full release attempt was correctly blocked because the
+    release script requires a clean git tree.
+
+- 2026-06-21 Ponytail staged simplification pass completed without deleting
+  customer proof or privileged hosts-write safety. Implemented stages:
+  consolidated `QuickActionButton` / Pro lock UI without changing Basic vs Pro
+  routing, removed unused local design helpers, removed the pass-through
+  `DirectDistributionSupport.swift` mover wrapper, deleted stale generated docs
+  and duplicate `docs/appcast.xml`, removed backup icon PNGs, collapsed dormant
+  App Store-only branches for the direct-download product, and deduped
+  ProfileStore create/import append-sort persistence helpers. Net diff:
+  `24 files changed, 239 insertions(+), 1979 deletions(-)` plus removed binary
+  icon backups; Swift LOC dropped from `11726` to `10949`.
+  Verification after each code stage: Mini `./scripts/SaneMaster.rb verify
+  --timeout 900` passed `97` tests after Stage 1, Stage 2, Stage 3, and Stage 4.
+  Final Mini runtime proof: `customer_ui_sweep --json` passed 11 actions with
+  receipt timestamp `2026-06-21T05:31:11Z`, live log
+  `outputs/live-logs/customer_ui_sanehosts_20260621T052946Z.log`, and visual
+  smoke receipt `outputs/visual_smoke/visual_smoke_20260621-013043_38239`.
+  Final release-mode resource soak from `/Applications/SaneHosts.app` passed
+  240s / 33 samples with `avg_cpu: 0.0`, `peak_cpu: 0.0`,
+  `peak_rss_mb: 152.859`, `peak_physical_footprint_mb: 78.0`, and no issues.
+  Follow-up fixed the SaneProcess routed-receipt gap: routed workspaces now
+  carry the canonical `.sane` receipt and `outputs/customer-ui/***` proof
+  artifacts. Fresh Mini `customer_ui_sweep --json` passed with receipt
+  `2026-06-21T07:42:44Z`, then routed `release_preflight` passed with `0`
+  issues and expected warnings only (App Store product marker absent,
+  uncommitted files, pending emails, evening release timing).
 
 - 2026-06-04 MainView refactor/proof pass completed:
   - Split the former 2,457-line `MainView.swift` owner into focused SwiftUI
