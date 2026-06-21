@@ -4,7 +4,7 @@
 
 ## Current State
 
-- 2026-06-21 30-day Pro trial / forced-paid-after-trial release candidate:
+- 2026-06-21 direct-download release `v1.1.17` shipped and deployed:
   - Version bumped to `1.1.17` / build `1117` in `Config/Shared.xcconfig`.
   - Paid users are not impacted: `LicenseService.hasExpiredProTrial` is false
     when a valid license is active. Active-trial users keep the workspace and
@@ -21,22 +21,38 @@
     shows “25 days left in Pro trial” with an Upgrade action while the app
     remains usable; `outputs/visual-audit-trial-expired/direct/sanehosts-expired-trial.png`
     shows the tactful expired-trial upgrade/license gate.
-  - Mini `customer_ui_sweep --json` passed after the version bump with receipt
-    timestamp `2026-06-21T09:01:59Z`, source fingerprint
+  - Mini `customer_ui_sweep --json` passed after the version bump and before
+    release with receipt timestamp `2026-06-21T09:05:18Z`, source fingerprint
     `4c0bfdbd26fd19197f133a0b8d40b8487d6bd9fe164f9e673a4df15588c12f1f`,
-    and live log `outputs/live-logs/customer_ui_sanehosts_20260621T090100Z.log`.
-  - Routed `release_preflight` for `1.1.17` passed with warnings only:
-    App Store product marker absent, uncommitted files, live appcast/Homebrew
-    still at `1.1.16` before publish, 6 pending customer emails, and evening
-    timing. The first full release attempt was correctly blocked because the
-    release script requires a clean git tree.
+    and live log `outputs/live-logs/customer_ui_sanehosts_20260621T090419Z.log`.
+  - Release commits on `main`: `3d5507e` simplified SaneHosts and added the Pro
+    trial gate, `5d88ed1` bumped version metadata, `363d4f2` restored appcast
+    compatibility after the cleanup pass, and `08bd021` synced release metadata.
+    Tag `v1.1.17` points at `363d4f2`.
+  - Release artifact:
+    `https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip` with SHA-256
+    `30f35dc82f7152447ebee087291a1ebb762da3196e1e9d7c16dd3b7d28dfa94b`,
+    size `4569411`, notarization submission
+    `dd1a71bc-1450-46ae-8ac1-f981d3150b11`, and Sparkle signature
+    `pBk16roXWXtEMxKbR6HZAgD0vDSbojgSUzn2jS8xGZeGw2M9nGH1Y31RQZuGsA8/2SWxW9H/ENc90ESQCm8PCQ==`.
+  - Release surfaces updated and verified: GitHub release `v1.1.17`, R2
+    download, `https://sanehosts.com/appcast.xml`, Cloudflare Pages website,
+    Homebrew tap commit `d2987c3`, and sane-email-automation commit `8b4bde9`.
+  - Lemon Squeezy dashboard sync completed on the Mini: uploaded
+    `SaneHosts-1.1.17.zip`, unpublished stale `SaneHosts-1.1.16.zip`, and
+    verified `./scripts/SaneMaster.rb hosted_file_actions --json` reports
+    SaneHosts `status: In sync` with one published file.
+  - Post-sync `./scripts/SaneMaster.rb release_preflight` passed on the
+    Mini-routed workspace with `99` tests. Remaining warnings only: App Store
+    product marker absent, UserDefaults/migration changed, 6 pending customer
+    emails, and evening release timing.
 
 - 2026-06-21 Ponytail staged simplification pass completed without deleting
   customer proof or privileged hosts-write safety. Implemented stages:
   consolidated `QuickActionButton` / Pro lock UI without changing Basic vs Pro
   routing, removed unused local design helpers, removed the pass-through
   `DirectDistributionSupport.swift` mover wrapper, deleted stale generated docs
-  and duplicate `docs/appcast.xml`, removed backup icon PNGs, collapsed dormant
+  and then restored `docs/appcast.xml` as required release metadata, removed backup icon PNGs, collapsed dormant
   App Store-only branches for the direct-download product, and deduped
   ProfileStore create/import append-sort persistence helpers. Net diff:
   `24 files changed, 239 insertions(+), 1979 deletions(-)` plus removed binary
