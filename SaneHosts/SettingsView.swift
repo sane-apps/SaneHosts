@@ -1,9 +1,7 @@
 import AppKit
 import SaneHostsFeature
 import SwiftUI
-#if !APP_STORE
-    import Sparkle
-#endif
+import Sparkle
 
 enum SaneHostsSettingsTab: String, SaneSettingsTab {
     case general = "General"
@@ -28,10 +26,8 @@ enum SaneHostsSettingsTab: String, SaneSettingsTab {
 }
 
 struct SaneHostsSettingsView: View {
-    #if !APP_STORE
-        let updater: SPUUpdater?
-        let updateEligibility: SaneUpdateEligibility
-    #endif
+    let updater: SPUUpdater?
+    let updateEligibility: SaneUpdateEligibility
     var licenseService: LicenseService
     @State private var selectedTab: SaneHostsSettingsTab?
 
@@ -42,11 +38,7 @@ struct SaneHostsSettingsView: View {
         ) { tab in
             switch tab {
             case .general:
-                #if !APP_STORE
-                    GeneralSettingsTab(updater: updater, updateEligibility: updateEligibility)
-                #else
-                    GeneralSettingsTab()
-                #endif
+                GeneralSettingsTab(updater: updater, updateEligibility: updateEligibility)
             case .license:
                 LicenseSettingsTabContent(licenseService: licenseService)
             case .about:
@@ -63,12 +55,10 @@ struct SaneHostsSettingsView: View {
 
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
-    #if !APP_STORE
-        let updater: SPUUpdater?
-        let updateEligibility: SaneUpdateEligibility
-        @State private var automaticallyChecksForUpdates = false
-        @State private var updateCheckFrequency = SaneSparkleCheckFrequency.daily
-    #endif
+    let updater: SPUUpdater?
+    let updateEligibility: SaneUpdateEligibility
+    @State private var automaticallyChecksForUpdates = false
+    @State private var updateCheckFrequency = SaneSparkleCheckFrequency.daily
 
     var body: some View {
         ScrollView {
@@ -86,35 +76,33 @@ struct GeneralSettingsTab: View {
                         .padding(.vertical, 10)
                 }
 
-                #if !APP_STORE
-                    CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
-                        SaneSparkleRow(
-                            automaticallyChecks: Binding(
-                                get: { automaticallyChecksForUpdates },
-                                set: { newValue in
-                                    automaticallyChecksForUpdates = newValue
-                                    updater?.automaticallyChecksForUpdates = newValue
-                                }
-                            ),
-                            checkFrequency: Binding(
-                                get: { updateCheckFrequency },
-                                set: { newValue in
-                                    updateCheckFrequency = newValue
-                                    updater?.updateCheckInterval = newValue.interval
-                                }
-                            ),
-                            isAvailable: updateEligibility.canUseInAppUpdates && updater != nil,
-                            unavailableStatus: updateEligibility.userFacingStatus,
-                            onCheckNow: {
-                                guard updateEligibility.canUseInAppUpdates, let updater else {
-                                    NSSound.beep()
-                                    return
-                                }
-                                updater.checkForUpdates()
+                CompactSection("Software Updates", icon: "arrow.triangle.2.circlepath", iconColor: .saneAccent) {
+                    SaneSparkleRow(
+                        automaticallyChecks: Binding(
+                            get: { automaticallyChecksForUpdates },
+                            set: { newValue in
+                                automaticallyChecksForUpdates = newValue
+                                updater?.automaticallyChecksForUpdates = newValue
                             }
-                        )
-                    }
-                #endif
+                        ),
+                        checkFrequency: Binding(
+                            get: { updateCheckFrequency },
+                            set: { newValue in
+                                updateCheckFrequency = newValue
+                                updater?.updateCheckInterval = newValue.interval
+                            }
+                        ),
+                        isAvailable: updateEligibility.canUseInAppUpdates && updater != nil,
+                        unavailableStatus: updateEligibility.userFacingStatus,
+                        onCheckNow: {
+                            guard updateEligibility.canUseInAppUpdates, let updater else {
+                                NSSound.beep()
+                                return
+                            }
+                            updater.checkForUpdates()
+                        }
+                    )
+                }
 
             }
             .padding(.horizontal, 24)
@@ -123,12 +111,10 @@ struct GeneralSettingsTab: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear {
-            #if !APP_STORE
-                automaticallyChecksForUpdates = updater?.automaticallyChecksForUpdates ?? false
-                let interval = updater?.updateCheckInterval ?? SaneUI.SaneSparkleCheckFrequency.daily.interval
-                updateCheckFrequency = SaneUI.SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
-                updater?.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: interval)
-            #endif
+            automaticallyChecksForUpdates = updater?.automaticallyChecksForUpdates ?? false
+            let interval = updater?.updateCheckInterval ?? SaneUI.SaneSparkleCheckFrequency.daily.interval
+            updateCheckFrequency = SaneUI.SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
+            updater?.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: interval)
         }
     }
 
@@ -169,24 +155,20 @@ struct AboutTab: View {
 }
 
 private let saneHostsLicenses: [SaneAboutView.LicenseEntry] = {
-    #if !APP_STORE
-        return [
-            SaneAboutView.LicenseEntry(
-                name: "Sparkle",
-                url: "https://sparkle-project.org",
-                text: """
-                Copyright (c) 2006-2013 Andy Matuschak.
-                Copyright (c) 2009-2013 Elgato Systems GmbH.
+    [
+        SaneAboutView.LicenseEntry(
+            name: "Sparkle",
+            url: "https://sparkle-project.org",
+            text: """
+            Copyright (c) 2006-2013 Andy Matuschak.
+            Copyright (c) 2009-2013 Elgato Systems GmbH.
 
-                Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+            Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-                The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+            The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-                THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-                """
-            )
-        ]
-    #else
-        return []
-    #endif
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+            """
+        )
+    ]
 }()

@@ -31,6 +31,19 @@ struct MainViewGatePolicyTests {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: true))
     }
 
+    @Test("Expired trial requires paid upgrade")
+    func expiredTrialRequiresPaidUpgrade() {
+        #expect(MainViewGatePolicy.requiresPaidUpgrade(hasExpiredProTrial: true))
+        #expect(MainViewGatePolicy.requiresPaidUpgrade(hasExpiredProTrial: false) == false)
+    }
+
+    @Test("Trial countdown copy is short and tactful")
+    func trialCountdownCopy() {
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 30) == "30 days left in Pro trial")
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 1) == "1 day left in Pro trial")
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: nil) == nil)
+    }
+
     @Test("Basic defaults to Essentials when no prior selection")
     func basicDefaultsToEssentials() {
         let essentials = Profile(id: UUID(), name: "Essentials")

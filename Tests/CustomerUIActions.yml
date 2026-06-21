@@ -179,17 +179,19 @@ actions:
   - Protection Levels section
   steps:
   - Verify Enable Protection or Disable Protection appears for the selected profile.
-  - Verify Open Essentials works for Basic.
+  - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
-    protection levels in Basic and Pro modes.
+    protection levels in active-trial and paid Pro modes.
   - Verify locked Basic paths open the appropriate upsell instead of silently performing
     Pro work.
+  - Verify expired-trial users see the license gate instead of the app workspace.
   assertions:
-  - Basic action surfaces remain usable without Pro.
+  - Active-trial action surfaces remain usable without a paid license.
   - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
+  - Expired-trial users are routed to upgrade or license entry.
   - Merge warns when fewer than two profiles are available.
   evidence:
-  - Source guard for QuickActionButton and ProGatedQuickActionButton
+  - Source guard for QuickActionButton and Pro lock routing
   - MainView gate policy tests
   - App Store screenshot proof of primary surfaces
   required_proof_level: full_runtime_completion
@@ -213,12 +215,14 @@ actions:
     - Tests/Fixtures/customer-ui/hosts-workspace/
   user_inputs:
   - Verify Enable Protection or Disable Protection appears for the selected profile.
-  - Verify Open Essentials works for Basic.
+  - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
-    protection levels in Basic and Pro modes.
+    protection levels in active-trial and paid Pro modes.
+  - Verify expired-trial users see the license gate instead of the app workspace.
   expected_outputs:
-  - Basic action surfaces remain usable without Pro.
+  - Active-trial action surfaces remain usable without a paid license.
   - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
+  - Expired-trial users are routed to upgrade or license entry.
   - Merge warns when fewer than two profiles are available.
 - id: profile-lifecycle-actions
   title: Profile create, duplicate, merge, export, delete, select, and reorder actions

@@ -23,6 +23,16 @@ extension MainView {
     @ViewBuilder
     var sidebar: some View {
         List(selection: $selectedProfileIDs) {
+            if let title = MainViewGatePolicy.trialCountdownTitle(daysRemaining: licenseService.proTrialDaysRemaining) {
+                Section {
+                    TrialCountdownCard(title: title) {
+                        if let url = licenseService.checkoutURL {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                }
+            }
+
             // Golden-ratio oriented sidebar: immediate free path first.
             Section {
                 // Primary free path: one-click protection with Essentials selected by default.
@@ -65,7 +75,7 @@ extension MainView {
 
             Section {
                 // Pro action: import curated blocklists.
-                ProGatedQuickActionButton(
+                QuickActionButton(
                     title: "Import Blocklist",
                     subtitle: "Block ads and trackers",
                     icon: "arrow.down.circle.fill",
@@ -80,7 +90,7 @@ extension MainView {
                 }
 
                 // Create custom profile (always visible, Pro gated).
-                ProGatedQuickActionButton(
+                QuickActionButton(
                     title: "New Empty Profile",
                     subtitle: "Create a custom profile",
                     icon: "plus.circle.fill",
@@ -95,7 +105,7 @@ extension MainView {
                 }
 
                 // Start from a built-in template (always visible, Pro gated).
-                ProGatedQuickActionButton(
+                QuickActionButton(
                     title: "From Template",
                     subtitle: "Start with a preset",
                     icon: "doc.badge.plus",
@@ -111,7 +121,7 @@ extension MainView {
 
                 // Merge is always visible; execution requires 2+ profiles.
                 let canMerge = store.profiles.count >= 2
-                ProGatedQuickActionButton(
+                QuickActionButton(
                     title: "Merge Profiles",
                     subtitle: canMerge ? "Combine profiles" : "Need 2+ profiles",
                     icon: "arrow.triangle.merge",

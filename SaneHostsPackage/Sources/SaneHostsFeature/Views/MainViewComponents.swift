@@ -10,57 +10,31 @@ struct QuickActionButton: View {
     let subtitle: String
     let icon: String
     let color: Color
+    let isPro: Bool?
     let action: () -> Void
 
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: icon)
-                    .font(.title2)
-                    .foregroundStyle(color)
-                    .frame(width: 28)
-
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(title)
-                        .font(.body)
-                        .fontWeight(.medium)
-                        .foregroundColor(.white)
-                    Text(subtitle)
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundColor(.white)
-                        .lineLimit(2)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                Spacer()
-            }
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .padding(.vertical, 4)
-        .accessibilityLabel(title)
-        .accessibilityHint(subtitle)
+    init(
+        title: String,
+        subtitle: String,
+        icon: String,
+        color: Color,
+        isPro: Bool? = nil,
+        action: @escaping () -> Void
+    ) {
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+        self.color = color
+        self.isPro = isPro
+        self.action = action
     }
-}
-
-// MARK: - Pro-Gated Quick Action Button
-
-/// Quick action button with optional Pro lock badge overlay.
-/// When `isPro` is false, shows a teal lock badge after the subtitle.
-struct ProGatedQuickActionButton: View {
-    let title: String
-    let subtitle: String
-    let icon: String
-    let color: Color
-    let isPro: Bool
-    let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
                 Image(systemName: icon)
                     .font(.title2)
-                    .foregroundStyle(isPro ? color : .white)
+                    .foregroundStyle(isPro == false ? .white : color)
                     .frame(width: 28)
 
                 VStack(alignment: .leading, spacing: 2) {
@@ -77,7 +51,7 @@ struct ProGatedQuickActionButton: View {
 
                 Spacer()
 
-                if !isPro {
+                if isPro == false {
                     ProLockBadge()
                 }
             }
@@ -86,7 +60,7 @@ struct ProGatedQuickActionButton: View {
         .buttonStyle(.plain)
         .padding(.vertical, 4)
         .accessibilityLabel(title)
-        .accessibilityHint(isPro ? subtitle : "\(subtitle) — Pro feature")
+        .accessibilityHint(isPro == false ? "\(subtitle) - Pro feature" : subtitle)
     }
 }
 
@@ -106,6 +80,39 @@ struct ProLockBadge: View {
         .padding(.vertical, 4)
         .background(Color.teal.opacity(0.28))
         .clipShape(Capsule())
+    }
+}
+
+struct TrialCountdownCard: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Label(title, systemImage: "clock.badge.checkmark")
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(.white)
+
+            Text("Keep Pro after the trial.")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
+
+            Button("Upgrade") {
+                action()
+            }
+            .buttonStyle(.plain)
+            .font(.system(size: 13, weight: .bold))
+            .foregroundStyle(Color.saneAccent)
+            .accessibilityIdentifier("sanehosts-trial-upgrade")
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 8))
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(Color.white.opacity(0.12), lineWidth: 1)
+        )
+        .accessibilityElement(children: .combine)
     }
 }
 

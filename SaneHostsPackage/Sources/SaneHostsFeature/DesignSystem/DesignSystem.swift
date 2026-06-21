@@ -1,5 +1,4 @@
 import SwiftUI
-import AppKit
 import SaneUI
 
 // MARK: - Notifications
@@ -7,26 +6,6 @@ import SaneUI
 public extension Notification.Name {
     static let showNewProfileSheet = Notification.Name("showNewProfileSheet")
     static let showImportSheet = Notification.Name("showImportSheet")
-}
-
-// MARK: - Visual Effect Blur (NSVisualEffectView wrapper)
-
-struct VisualEffectBlur: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    let blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let view = NSVisualEffectView()
-        view.material = material
-        view.blendingMode = blendingMode
-        view.state = .active
-        return view
-    }
-
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
-        nsView.material = material
-        nsView.blendingMode = blendingMode
-    }
 }
 
 // MARK: - Gradient Backgrounds
@@ -174,51 +153,6 @@ struct CompactRow<Content: View>: View {
     }
 }
 
-// MARK: - Compact Toggle
-
-struct CompactToggle: View {
-    let label: String
-    let icon: String?
-    let iconColor: Color
-    @Binding var isOn: Bool
-
-    init(
-        label: String,
-        icon: String? = nil,
-        iconColor: Color = .white,
-        isOn: Binding<Bool>
-    ) {
-        self.label = label
-        self.icon = icon
-        self.iconColor = iconColor
-        self._isOn = isOn
-    }
-
-    var body: some View {
-        HStack {
-            if let icon = icon {
-                Image(systemName: icon)
-                    .font(.body)
-                    .foregroundStyle(iconColor)
-                    .frame(width: 20)
-            }
-            Text(label)
-                .font(.system(size: 13, weight: .medium))
-                .foregroundColor(.white)
-            Spacer()
-            Toggle("", isOn: $isOn)
-                .labelsHidden()
-                .toggleStyle(.switch)
-                .controlSize(.small)
-        }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
-        .contentShape(Rectangle())
-        .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(label), \(isOn ? "on" : "off")")
-    }
-}
-
 // MARK: - Compact Divider
 
 struct CompactDivider: View {
@@ -312,26 +246,6 @@ struct ProfileColorDot: View {
     }
 }
 
-// MARK: - Action Button
-
-struct ActionButton: View {
-    let title: String
-    let icon: String
-    let color: Color
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 6) {
-                Image(systemName: icon)
-                Text(title)
-            }
-            .fontWeight(.medium)
-        }
-        .buttonStyle(SaneActionButtonStyle(prominent: true))
-    }
-}
-
 // MARK: - Entry Status Icon
 
 struct EntryStatusIcon: View {
@@ -420,31 +334,6 @@ struct SaneEmptyState: View {
             }
         }
         .padding(40)
-    }
-}
-
-// MARK: - Loading Overlay
-
-struct LoadingOverlay: View {
-    let message: String
-
-    var body: some View {
-        ZStack {
-            Color.black.opacity(0.3)
-                .ignoresSafeArea()
-
-            VStack(spacing: 16) {
-                ProgressView()
-                    .scaleEffect(1.2)
-
-                Text(message)
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundColor(.white)
-            }
-            .padding(32)
-            .background(.regularMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-        }
     }
 }
 
