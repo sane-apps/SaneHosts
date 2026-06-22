@@ -7,7 +7,27 @@
     <language>en</language>
 
                                                                                                                             
-                <item>
+                        <item>
+            <title>1.1.19</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Mon, 22 Jun 2026 14:53:11 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:criticalUpdate/>            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Pro is now free to try for 14 days. Basic remains included after the trial.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.19.zip"
+                       sparkle:version="1119"
+                       sparkle:shortVersionString="1.1.19"
+                       length="4616873"
+                       type="application/octet-stream"
+                       sparkle:edSignature="6hEfnbYiwEIbNRlTOoboIynITMXRDU2v+zfUmukHf51+q/Hn0MX5lB8FczZ2HEwoHhiSXuTPExJp7xFtJKrwCg=="/>
+        </item>
+<item>
             <title>1.1.18</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Mon, 22 Jun 2026 13:36:54 -0400</pubDate>
