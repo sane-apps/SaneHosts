@@ -5,7 +5,7 @@ import Testing
 @Suite("MainView Gate Policy Tests")
 struct MainViewGatePolicyTests {
     @Test("Default SaneHosts license service enables 14 day Pro trial")
-    func defaultLicenseServiceEnablesThirtyDayProTrial() throws {
+    func defaultLicenseServiceEnablesFourteenDayProTrial() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let appRoot = testURL
             .deletingLastPathComponent()
@@ -31,10 +31,24 @@ struct MainViewGatePolicyTests {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: true))
     }
 
-    @Test("Expired trial requires paid upgrade")
-    func expiredTrialRequiresPaidUpgrade() {
-        #expect(MainViewGatePolicy.requiresPaidUpgrade(hasExpiredProTrial: true))
-        #expect(MainViewGatePolicy.requiresPaidUpgrade(hasExpiredProTrial: false) == false)
+    @Test("Expired trial falls back to Basic")
+    func expiredTrialFallsBackToBasic() {
+        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: true))
+        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: false) == false)
+    }
+
+    @Test("Expired trial menu still allows profile activation")
+    func expiredTrialMenuStillAllowsProfileActivation() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let appRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let appSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
+
+        #expect(appSource.contains("Task { await store.activateProfile(profile) }"))
+        #expect(!appSource.contains("if licenseService.hasExpiredProTrial {\n                            WindowActionStorage.shared.showMainWindow(using: openWindow)\n                        } else {\n                            Task { await store.activateProfile(profile) }\n                        }"))
     }
 
     @Test("Trial countdown copy is short and tactful")

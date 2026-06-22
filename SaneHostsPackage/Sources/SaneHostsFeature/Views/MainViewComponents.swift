@@ -93,11 +93,11 @@ struct TrialCountdownCard: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
 
-            Text("Keep Pro after the trial.")
+            Text("Basic remains included after the trial.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
 
-            Button("Upgrade") {
+            Button("Keep Pro") {
                 action()
             }
             .buttonStyle(.plain)

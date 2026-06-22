@@ -115,10 +115,10 @@ launch_calendar:
   classification: "released_niche_launch_not_scheduled"
   rule: "SaneHosts is direct-download only and has a real niche privacy story, but it needs a fresh package before PH/HN/IH. Do not rely on GitHub listings as the launch."
   current_release_state:
-    version: "1.1.14"
-    build: "1114"
+    version: "1.1.18"
+    build: "1118"
     status: "live_direct_download"
-    evidence: "Current shipped direct-download surface is 1.1.14 / build 1114 across the current release channels; validation on 2026-05-26 shows the live appcast, website, webhook, Homebrew, and Lemon version are aligned."
+    evidence: "Critical trial rollout check on 2026-06-22 shows 1.1.18 / build 1118 live across appcast, website, webhook, and Homebrew; Lemon hosted-file replacement remains a manual dashboard step."
   required_before_meaningful_launch:
     - "Human visual approval plus hosted/public URL for the 30-second privacy-switch video candidate."
     - "Final Product Hunt maker comment and day-of reply checklist approved."
