@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.18] - 2026-06-22
+
+Pro is now free to try for 14 days. Basic remains included after the trial.
+
+---
+
 ## [1.1.17] - 2026-06-21
 
 Adds a clear 30-day Pro trial countdown and upgrade path after the trial ends. Keeps paid Pro users unaffected and preserves Basic/Pro routing during the trial. Removes retired distribution cruft and keeps the release surface leaner.
