@@ -10,11 +10,12 @@ let localSaneUIPath = packageDirectory
     .appendingPathComponent("../../../infra/SaneUI")
     .standardizedFileURL.path
 let saneUIDependency: Package.Dependency = {
-    if FileManager.default.fileExists(atPath: localSaneUIPath) {
+    if ProcessInfo.processInfo.environment["SANEHOSTS_USE_LOCAL_SANEUI"] == "1",
+       FileManager.default.fileExists(atPath: localSaneUIPath) {
         return .package(path: localSaneUIPath)
     }
 
-    return .package(url: "https://github.com/sane-apps/SaneUI.git", revision: "5a9c02152cfe155e3d6d06c1a489ef426e2250e1")
+    return .package(url: "https://github.com/sane-apps/SaneUI.git", revision: "9e98b9f1e93400c5d5fe164b57643513bf7f16c3")
 }()
 
 let package = Package(

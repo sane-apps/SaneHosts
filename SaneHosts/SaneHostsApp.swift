@@ -144,7 +144,7 @@ struct SaneHostsApp: App {
     @State private var licenseService = LicenseService(
         appName: "SaneHosts",
         checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
-        proTrial: .init(durationDays: 30, storageKeyPrefix: "sanehosts.pro_trial")
+        proTrial: .init(storageKeyPrefix: "sanehosts.pro_trial")
     )
 
     init() {
@@ -190,7 +190,7 @@ struct SaneHostsApp: App {
                             ("network", "DNS cache flush")
                         ],
                         proFeatures: [
-                            ("checkmark", "Everything in Basic, plus:"),
+                            ("checkmark", "Enjoy 14 days of Pro"),
                             ("doc.on.doc", "Unlimited profiles"),
                             ("arrow.down.circle", "Downloadable presets"),
                             ("arrow.triangle.merge", "Merge profiles"),

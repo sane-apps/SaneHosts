@@ -1054,7 +1054,6 @@
             line-height: 1;
             z-index: 200;
         }
-
         /* Responsive */
         @media (max-width: 768px) {
             .hamburger { display: block; }
@@ -1132,6 +1131,7 @@
         }
 
         .pricing-card.featured {
+            order: -1;
             background:
                 radial-gradient(ellipse at 80% 20%, rgba(79, 143, 250, 0.12) 0%, transparent 50%),
                 linear-gradient(160deg, #0d1830 0%, #0a1225 100%);
@@ -1269,7 +1269,7 @@
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip" class="nav-cta" style="display: inline-flex; align-items: center;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Download Free
+                    Download Pro Trial
                 </a>
             </div>
             <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
@@ -1289,12 +1289,12 @@
         <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
         <a href="https://github.com/sponsors/MrSaneApps">Donate</a>
         <p class="mobile-nav-section">More SaneApps</p>
-        <a href="https://sanebar.com">SaneBar &mdash; Menu Bar Manager</a>
-        <a href="https://saneclip.com">SaneClip &mdash; Clipboard Manager</a>
-        <a href="https://sanesales.com">SaneSales &mdash; Sales Tracker</a>
+        <a href="https://sanebar.com" data-cta="cross_sell_sanebar_mobile">SaneBar &mdash; Menu Bar Manager</a>
+        <a href="https://saneclip.com" data-cta="cross_sell_saneclip_mobile">SaneClip &mdash; Clipboard Manager</a>
+        <a href="https://saneclick.com" data-cta="cross_sell_saneclick_mobile">SaneClick &mdash; Finder Actions</a>
         <a href="https://saneapps.com">See all SaneApps &rarr;</a>
-        <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip" class="mobile-nav-cta">Download Free</a>
-        <a href="https://go.saneapps.com/buy/sanehosts?ref=website-mobile" class="mobile-nav-cta" style="margin-top: 8px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);">Buy Pro — $14.99</a>
+        <a href="https://saneapps.com" data-cta="cross_sell_saneapps_mobile">See all SaneApps &rarr;</a>
+        <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip" class="mobile-nav-cta" data-cta="download_trial">Download Pro Trial</a>
     </div>
 
     <!-- ============================================ -->
@@ -1303,19 +1303,23 @@
     <section class="hero">
         <div class="container">
             <h1 class="animate-in delay-2">Bring <em>Sanity</em> to your Mac's Network</h1>
-            <p class="subtitle animate-in delay-3">Block known ads, trackers, telemetry, and distractions through your Mac's hosts file. SaneHosts keeps hosts data local, uses curated blocklists, and applies protection in one click.</p>
-
+            <p class="subtitle animate-in delay-3">Block ads, trackers, and noisy sites across your Mac in one click. SaneHosts keeps everything local and lets you choose how much to block.</p>
             <div class="trust-signals animate-in delay-4" style="display: flex; gap: 24px; justify-content: center; font-size: 1.17rem; color: var(--text-secondary); margin-bottom: 32px; flex-wrap: wrap;">
                 <span>&#128187; 860+ Downloads/Month</span>
                 <span>&#129309; Listed in StevenBlack/hosts</span>
                 <a href="privacy.html" style="color: inherit; text-decoration: none;">&#128737;&#65039; Privacy by Design</a>
             </div>
+            <div class="animate-in delay-4" style="margin: 22px auto 28px; text-align: center;">
+                <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip" class="pricing-cta pricing-cta-pro" style="display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 240px;" data-cta="download_trial">Download Pro Trial</a>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin: 12px 0 6px;">14 days free. No credit card required. Basic remains free after trial.</p>
+                <a href="https://go.saneapps.com/buy/sanehosts?ref=website-hero" style="color: var(--accent); font-weight: 700; text-decoration: none;" data-cta="buy_pro">Buy Pro now — $14.99 once</a>
+            </div>
             <div class="animate-in delay-4" id="pricing">
                 <div class="hero-pricing-grid">
                     <div class="pricing-card">
-                        <p class="pricing-label">Basic</p>
+                        <p class="pricing-label">Basic after trial</p>
                         <p class="pricing-price">Free</p>
-                        <p class="pricing-price-note">Forever — no catch</p>
+                        <p class="pricing-price-note">Automatic fallback after 14 days</p>
                         <ul class="pricing-features">
                             <li>1 Essentials hosts profile</li>
                             <li>Add, edit, and toggle host entries</li>
@@ -1323,19 +1327,13 @@
                             <li>macOS authentication for hosts changes</li>
                             <li>hosts data stays on your Mac</li>
                         </ul>
-                        <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.17.zip" class="pricing-cta pricing-cta-free">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align: -2px; margin-right: 6px;">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            Download Free
-                        </a>
                     </div>
                     <div class="pricing-card featured">
-                        <p class="pricing-label">Pro</p>
+                        <p class="pricing-label">Pro trial</p>
                         <p class="pricing-price">$14.99<span class="price-note">*</span></p>
-                        <p class="pricing-price-note">One-time — yours forever</p>
+                        <p class="pricing-price-note">14 days free. No credit card required.</p>
                         <ul class="pricing-features">
-                            <li>Everything in Basic, plus:</li>
+                            <li>Unlimited profiles and curated blocklists</li>
                             <li class="extra">Unlimited profiles</li>
                             <li class="extra">200+ curated blocklist presets</li>
                             <li class="extra">One-click protection levels (170K–700K entries)</li>
@@ -1343,7 +1341,6 @@
                             <li class="extra">Merge &amp; duplicate profiles</li>
                             <li class="extra">Bulk enable/disable entries</li>
                         </ul>
-                        <a href="https://go.saneapps.com/buy/sanehosts?ref=website-hero" class="pricing-cta pricing-cta-pro">Buy Pro</a>
                     </div>
                 </div>
             </div>
@@ -1579,43 +1576,35 @@
     <section class="more-apps">
         <div class="container">
             <h2 class="section-title">More from SaneApps</h2>
-            <p class="more-apps-subtitle">Privacy-first Mac utilities that respect you</p>
+            <p class="more-apps-subtitle">Simple Mac utilities that respect your time and privacy.</p>
             <div class="more-apps-grid">
-                <a href="https://sanebar.com" class="app-card">
+                <a href="https://sanebar.com" class="app-card" data-cta="cross_sell_sanebar_card">
                     <div class="app-card-header">
                         <img src="images/sanebar-icon.png" alt="SaneBar" class="app-card-icon">
                         <div class="app-card-name">SaneBar</div>
                     </div>
-                    <p class="app-card-tagline">Hide menu bar clutter with a click. Lock sensitive icons behind Touch ID. The 100% Transparent Code Bartender alternative that works on macOS Tahoe.</p>
+                    <p class="app-card-tagline">Hide menu bar clutter fast and lock sensitive icons behind Touch ID.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
-                <a href="https://saneclip.com" class="app-card">
+                <a href="https://saneclip.com" class="app-card" data-cta="cross_sell_saneclip_card">
                     <div class="app-card-header">
                         <img src="images/saneclip-icon.png" alt="SaneClip" class="app-card-icon">
                         <div class="app-card-name">SaneClip</div>
                     </div>
-                    <p class="app-card-tagline">Clipboard history that never leaves your Mac. Touch ID protection, instant search, text transforms. Your copy history stays yours.</p>
+                    <p class="app-card-tagline">Save clipboard history privately. Touch ID protection, instant search, and quick text tools.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
-                <a href="https://saneclick.com" class="app-card">
+                <a href="https://saneclick.com" class="app-card" data-cta="cross_sell_saneclick_card">
                     <div class="app-card-header">
                         <img src="images/saneclick-icon.png" alt="SaneClick" class="app-card-icon">
                         <div class="app-card-name">SaneClick</div>
                     </div>
-                    <p class="app-card-tagline">Run scripts, convert files, and automate your Mac directly from the right-click menu. 50+ actions, 100% private.</p>
-                    <span class="app-card-cta">Learn more &#8594;</span>
-                </a>
-                <a href="https://sanesales.com" class="app-card">
-                    <div class="app-card-header">
-                        <img src="images/sanesales-icon.png" alt="SaneSales" class="app-card-icon">
-                        <div class="app-card-name">SaneSales</div>
-                    </div>
-                    <p class="app-card-tagline">Track your indie sales from LemonSqueezy, Gumroad, and Stripe in one beautiful, native app. Revenue charts, CSV export, local-first data.</p>
+                    <p class="app-card-tagline">Add useful right-click actions for Finder. Convert files, run scripts, and stay private.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
             </div>
             <div class="more-apps-hub">
-                <a href="https://saneapps.com">See all apps at saneapps.com &#8594;</a>
+                <a href="https://saneapps.com" data-cta="cross_sell_saneapps_hub">See all apps at saneapps.com &#8594;</a>
             </div>
         </div>
     </section>
@@ -1705,7 +1694,7 @@
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
-            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 1; margin-bottom: 12px;">One-time unlock. No subscription.</p>
+            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 1; margin-bottom: 12px;">Download starts 14 days of Pro. No credit card required. Basic remains free after trial.</p>
             <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts &middot; Requires macOS 14.0 (Sonoma) or later</p>
             <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
             <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>
@@ -1720,8 +1709,32 @@
             document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
         }
 
+        const APP_ID = 'sanehosts';
+
+        function trackCta(eventName, metadata) {
+            const detail = Object.assign({ app: APP_ID, event: eventName }, metadata || {});
+            if (typeof window.plausible === 'function') {
+                window.plausible(eventName, { props: detail });
+            }
+            if (typeof window.sa_event === 'function') {
+                window.sa_event(eventName, detail);
+            }
+            window.dispatchEvent(new CustomEvent('saneapps:cta', { detail }));
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-cta]').forEach(function(el) {
+                el.addEventListener('click', function() {
+                    trackCta(el.getAttribute('data-cta'), { href: el.getAttribute('href') || '' });
+                });
+            });
+        });
+
         function copyToClipboard(el) {
             navigator.clipboard.writeText(el.textContent);
+            if (el.closest('.crypto-item')) {
+                trackCta('crypto_copy', { asset: el.getAttribute('data-asset') || 'UNKNOWN' });
+            }
             const orig = el.textContent;
             el.textContent = 'Copied!';
             setTimeout(() => el.textContent = orig, 1500);
