@@ -90,7 +90,7 @@ class CustomerUIActionSweep
       source: [
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct QuickActionButton'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct TrialCountdownCard'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'requiresPaidUpgrade(hasExpiredProTrial: licenseService.hasExpiredProTrial)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'allowsBasicAfterTrial(hasExpiredProTrial: Bool)'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'title: "Open Essentials"'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'licenseService.proTrialDaysRemaining'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'isPro: licenseService.isPro'],
@@ -102,7 +102,8 @@ class CustomerUIActionSweep
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicCannotOpenRemoteImport'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'proCanOpenRemoteImport'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialRequiresPaidUpgrade'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialFallsBackToBasic'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialMenuStillAllowsProfileActivation'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'trialCountdownCopy']
       ]
     },

@@ -8,7 +8,7 @@ enum MainViewGatePolicy {
         isPro
     }
 
-    static func requiresPaidUpgrade(hasExpiredProTrial: Bool) -> Bool {
+    static func allowsBasicAfterTrial(hasExpiredProTrial: Bool) -> Bool {
         hasExpiredProTrial
     }
 
@@ -98,18 +98,15 @@ public struct MainView: View {
     }
 
     public var body: some View {
-        if MainViewGatePolicy.requiresPaidUpgrade(hasExpiredProTrial: licenseService.hasExpiredProTrial) {
-            LicenseGateView(licenseService: licenseService, appIcon: "network")
-        } else {
-            NavigationSplitView {
-                sidebar
-                    .navigationSplitViewColumnWidth(min: 260, ideal: 280, max: 350)
-            } detail: {
-                ZStack {
-                    SaneGradientBackground()
-                    detail
-                }
+        NavigationSplitView {
+            sidebar
+                .navigationSplitViewColumnWidth(min: 260, ideal: 280, max: 350)
+        } detail: {
+            ZStack {
+                SaneGradientBackground()
+                detail
             }
+        }
             .groupBoxStyle(GlassGroupBoxStyle())
             .onChange(of: selectedProfileIDs) { _, newValue in
                 // Clear preset selection when a profile is selected
@@ -241,6 +238,5 @@ public struct MainView: View {
             .sheet(item: $proUpsellFeature) { feature in
                 ProUpsellView(feature: feature, licenseService: licenseService)
             }
-        }
     }
 }

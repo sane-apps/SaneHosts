@@ -566,7 +566,7 @@ struct MenuBarMenuContent: View {
     var body: some View {
         Group {
             if licenseService.hasExpiredProTrial {
-                Button("Trial ended — Upgrade") {
+                Button("Trial ended — Keep Pro") {
                     WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
                 Divider()
@@ -594,11 +594,7 @@ struct MenuBarMenuContent: View {
             Section("Profiles") {
                 ForEach(store.profiles) { profile in
                     Button {
-                        if licenseService.hasExpiredProTrial {
-                            WindowActionStorage.shared.showMainWindow(using: openWindow)
-                        } else {
-                            Task { await store.activateProfile(profile) }
-                        }
+                        Task { await store.activateProfile(profile) }
                     } label: {
                         HStack {
                             if store.activeProfile?.id == profile.id {
