@@ -2,6 +2,23 @@ import Foundation
 import Testing
 
 struct NavigationSourceTests {
+    @Test("SaneUI dependency defaults to the release-tested revision")
+    func saneUIDependencyDefaultsToPinnedRevision() throws {
+        let packageRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let packageSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Package.swift"),
+            encoding: .utf8
+        )
+
+        #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
+        #expect(packageSource.contains("revision: \"9e98b9f1e93400c5d5fe164b57643513bf7f16c3\""))
+        #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
+    }
+
     @Test("SaneHosts settings actions use the shared opener across dock and menu bar")
     func saneHostsSettingsActionsUseSharedOpener() throws {
         let projectRoot = URL(fileURLWithPath: #filePath)

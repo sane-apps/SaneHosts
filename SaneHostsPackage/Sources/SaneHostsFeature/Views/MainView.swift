@@ -93,7 +93,7 @@ public struct MainView: View {
         LicenseService(
             appName: "SaneHosts",
             checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
-            proTrial: .init(durationDays: 30, storageKeyPrefix: "sanehosts.pro_trial")
+            proTrial: .init(storageKeyPrefix: "sanehosts.pro_trial")
         )
     }
 

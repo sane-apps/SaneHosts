@@ -22,6 +22,7 @@ build_debug/
 build_release/
 Packages/**/.build/
 Packages/**/.swiftpm/
+SaneHostsPackage/Package.resolved
 *.xcresult/
 *.xccheckout/
 *.xcworkspace/contents.xcworkspacedata

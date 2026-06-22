@@ -4,7 +4,7 @@ import Testing
 
 @Suite("MainView Gate Policy Tests")
 struct MainViewGatePolicyTests {
-    @Test("Default SaneHosts license service enables 30 day Pro trial")
+    @Test("Default SaneHosts license service enables 14 day Pro trial")
     func defaultLicenseServiceEnablesThirtyDayProTrial() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let appRoot = testURL
@@ -17,7 +17,7 @@ struct MainViewGatePolicyTests {
         let mainSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift"))
 
         for source in [appSource, contentSource, mainSource] {
-            #expect(source.contains("proTrial: .init(durationDays: 30, storageKeyPrefix: \"sanehosts.pro_trial\")"))
+            #expect(source.contains("proTrial: .init(storageKeyPrefix: \"sanehosts.pro_trial\")"))
         }
     }
 
@@ -39,7 +39,7 @@ struct MainViewGatePolicyTests {
 
     @Test("Trial countdown copy is short and tactful")
     func trialCountdownCopy() {
-        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 30) == "30 days left in Pro trial")
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 14) == "14 days left in Pro trial")
         #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 1) == "1 day left in Pro trial")
         #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: nil) == nil)
     }
