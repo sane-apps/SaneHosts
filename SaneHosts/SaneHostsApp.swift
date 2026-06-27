@@ -144,6 +144,7 @@ struct SaneHostsApp: App {
     @State private var licenseService = LicenseService(
         appName: "SaneHosts",
         checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
+        keychain: SaneHostsLicenseKeychain.makeService(),
         proTrial: .init(storageKeyPrefix: "sanehosts.pro_trial")
     )
 

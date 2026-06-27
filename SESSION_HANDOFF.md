@@ -1,8 +1,64 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-06-21
+**Last updated:** 2026-06-27
 
 ## Current State
+
+- 2026-06-27 **Keychain prompt-storm fix (data-protection keychain) — staged for
+  the next release.** Background: SaneApps store the license/trial in the legacy
+  login keychain, whose per-item ACL is bound to the build's code signature, so a
+  Developer ID app re-prompts ("wants to use your confidential information") on
+  every item after an update changes the signature (TN3137). Fix:
+  - SaneUI `KeychainService` gained an opt-in `accessGroup` → data-protection
+    keychain + one-time legacy→DP migration (committed/pushed, revision
+    `f8e5274`; 117 tests). SaneHosts SaneUI pin bumped to `f8e5274`.
+  - SaneHosts injects the access group via the existing `LicenseService(keychain:)`
+    param (`SaneHostsLicenseKeychain`, group `M78L6FXD48.com.mrsane.SaneHosts`).
+  - Added the `keychain-access-groups` entitlement + **manual Developer ID
+    signing** in `Config/Shared.xcconfig` (scoped to the app; helper stays
+    Automatic). The entitlement is restricted and needs a provisioning profile.
+  - Created the `com.mrsane.SaneHosts Direct` Developer ID profile via the ASC
+    API (`fastlane sigh --developer_id`), installed on the Mini. No App-ID
+    capability toggle was needed (Developer ID profiles auto-carry `M78L6FXD48.*`).
+  - Verified: `verify` passes 101 tests against the pinned remote SaneUI; the
+    signed build reaches codesign and **BUILD SUCCEEDED** (the config cleared the
+    "requires a provisioning profile" error).
+  - **NOT yet verified (needs a GUI session / the release):** the actual SIGNED
+    build can't run over headless ssh ("User interaction is not allowed" for the
+    signing key without `KEYCHAIN_PASSWORD`). The signed build + notarization
+    happen at release time via `release.sh` (which already does
+    `signingStyle: manual` + a `provisioningProfiles` map). The runtime behavior
+    (no prompt + license migrates) should be spot-checked on a real machine after
+    the release. The owner observed the storm on a real install.
+  - Replication to SaneBar/SaneClick/SaneClip/SaneSync uses the same recipe
+    (sigh profile → entitlement + manual-signing xcconfig → inject SaneUI group).
+    See memory `sanehosts-keychain-dp-migration`.
+
+- 2026-06-27 keychain prompt-storm pilot (UNCOMMITTED, not released):
+  - Problem: after an update, macOS hammers users with "wants to use your
+    confidential information" keychain prompts. Root cause: SaneUI stores the
+    license + trial timestamps in the legacy login keychain (per-item ACL bound
+    to the creating build's code signature); a signature change re-prompts on
+    every item every launch. Dev-machine artifact today; becomes fleet-wide the
+    day the signing cert rotates. Full analysis + cross-app impact in memory
+    `sanehosts-keychain-dp-migration` (also affects SaneBar/SaneClick/SaneClip/
+    SaneSync; SaneVideo/SaneSales sandboxed = safe).
+  - Fix (opt-in, pilot on SaneHosts): SaneUI `KeychainService.init(service:
+    accessGroup:)` — when accessGroup set, use data-protection keychain +
+    `kSecAttrAccessGroup` + one-time legacy->DP migration; default nil leaves
+    every other app unchanged. `LicenseService` UNCHANGED (injected via its
+    existing `keychain:` param). New `SaneHostsLicenseKeychain` (service
+    `com.mrsane.SaneHosts`, group `M78L6FXD48.com.mrsane.SaneHosts`) injected at
+    all 3 LicenseService sites; added `keychain-access-groups` entitlement.
+  - Proven on Mini: `SANEHOSTS_USE_LOCAL_SANEUI=1 verify` -> 101 tests; SaneUI
+    `swift test` -> 117 tests incl. new data-protection query test; signed
+    test_mode build succeeds (entitlement wired via Shared.xcconfig).
+  - PENDING: live runtime proof (no-prompt + migration; keychain is bypassed in
+    tests) on Mini then the Air (real broken-ACL license), then bump SaneHosts
+    SaneUI pin + release, then roll to the other 4 affected apps.
+  - Infra fixes (also uncommitted, in SaneProcess): trimmed stale GitHub/Context7
+    from MCP-verification gate (`sanetools_research.rb`); added
+    `SANEHOSTS_USE_LOCAL_SANEUI` to SaneMaster `forwarded_env_keys`.
 
 - 2026-06-21 direct-download release `v1.1.17` shipped and deployed:
   - Version bumped to `1.1.17` / build `1117` in `Config/Shared.xcconfig`.

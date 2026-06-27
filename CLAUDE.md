@@ -132,13 +132,15 @@ For cross-project knowledge graph, use official Memory MCP tools.
 - `analyze_api analysis="all"` for comprehensive API analysis
 - `apple_docs` as universal entry point (auto-routes queries)
 
-### context7 for Library Docs
-- `resolve-library-id` FIRST, then `query-docs`
-- SwiftUI ID: `/websites/developer_apple_swiftui` (13,515 snippets!)
+### Library docs
+- Apple frameworks (the vast majority for this native macOS app): `apple-docs`.
+- Third-party Swift packages (rare): WebSearch. The context7 plugin is currently
+  toggled off (`context7@claude-plugins-official: false`), so it is not callable —
+  don't reach for `mcp__context7__*` unless it's re-enabled.
 
-### github MCP
-- `search_code` to find patterns in public repos
-- `search_repositories` to find reference implementations
+### GitHub (use the `gh` CLI / gh skill — the github MCP is retired)
+- `gh search code` / `gh search repos` for patterns and reference implementations
+- WebSearch also surfaces GitHub results for real-world examples
 
 ---
 

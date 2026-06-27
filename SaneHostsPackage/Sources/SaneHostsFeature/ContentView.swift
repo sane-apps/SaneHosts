@@ -32,12 +32,13 @@ public struct ContentView: View {
     }
 }
 
-// Convenience initializer for previews
+/// Convenience initializer for previews
 public extension ContentView {
     init() {
         licenseService = LicenseService(
             appName: "SaneHosts",
             checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
+            keychain: SaneHostsLicenseKeychain.makeService(),
             proTrial: .init(storageKeyPrefix: "sanehosts.pro_trial")
         )
     }

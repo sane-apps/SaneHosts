@@ -34,6 +34,17 @@ APPSTORE_PRODUCT_ID =
 CODE_SIGN_ENTITLEMENTS = Config/SaneHosts.entitlements
 ENABLE_HARDENED_RUNTIME = YES
 
+// Manual Developer ID signing for the app target. The keychain-access-groups
+// entitlement is "restricted" and must be authorized by a provisioning profile
+// (TN3137), so automatic signing fails ("requires a provisioning profile").
+// The "com.mrsane.SaneHosts Direct" Developer ID profile carries the team
+// wildcard M78L6FXD48.* which authorizes M78L6FXD48.com.mrsane.SaneHosts.
+// (Helper target uses Helper.xcconfig and stays Automatic — no entitlement.)
+CODE_SIGN_STYLE = Manual
+DEVELOPMENT_TEAM = M78L6FXD48
+CODE_SIGN_IDENTITY = Developer ID Application
+PROVISIONING_PROFILE_SPECIFIER = com.mrsane.SaneHosts Direct
+
 // ==========================================
 // Excluded Resources
 // ==========================================
