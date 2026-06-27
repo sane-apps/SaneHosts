@@ -15,7 +15,7 @@ struct NavigationSourceTests {
         )
 
         #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
-        #expect(packageSource.contains("revision: \"0133badcb1d17a5805a34a0c251d7636de3d1a21\""))
+        #expect(packageSource.contains("revision: \"83d825911a53aaa6560fd342969b12d02a364de3\""))
         #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
     }
 
