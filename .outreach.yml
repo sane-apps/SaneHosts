@@ -130,8 +130,8 @@ launch_calendar:
       action: "Prepare/update website copy, screenshots, short demo plan, Product Hunt/HN/IH drafts, and directory targets for a privacy-switch launch."
       gate: "No public launch until direct-only architecture and support surfaces are clear and visually verified."
       success_metric: "Launch package ready with exact copy/assets and go/no-go verdict."
-      last_reviewed: "2026-06-22"
-      result: "On 2026-06-22, canonical Mini `launch_readiness --json` reran from the repo root and returned `ok: false`: human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate, the Product Hunt maker comment and day-of reply checklist still need final exact approval, the staged website video still needs public deploy after visual approval, the latest `release_preflight` is now stale at 18.43 days old with 4 warnings, and the fresh 2026-06-22 portfolio validation report still flags stale SaneHosts customer-UI proof. No scheduling, submission, or public posting action was executed."
+      last_reviewed: "2026-06-23"
+      result: "On 2026-06-23, canonical Mini `launch_readiness --json` reran from the repo root and returned `ok: false`: human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate, the Product Hunt maker comment and day-of reply checklist still need final exact approval, the staged website video still needs human visual approval plus public deploy, the latest `release_preflight` is now stale at 19.43 days old with 4 warnings, and the shared 2026-06-23 validation receipt still flags stale SaneHosts customer-UI proof. No scheduling, submission, or public posting action was executed."
     - date: "2026-05-28"
       time: "10:00"
       channel: "SaneHosts launch decision"
@@ -139,22 +139,22 @@ launch_calendar:
       action: "If package is complete and support risk is low, schedule PH or Show HN for the next Tuesday-Thursday; otherwise continue targeted competitor/opportunity monitoring."
       gate: "No launch without live website proof and fresh Mini verify."
       success_metric: "Scheduled meaningful launch or explicit no-go."
-      last_reviewed: "2026-06-22"
-      result: "On 2026-06-22, canonical Mini `launch_readiness --json` reran from the repo root and returned `ok: false`: human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate, the Product Hunt maker comment and day-of reply checklist still need final exact approval, the staged website video still needs public deploy after visual approval, the latest `release_preflight` is now stale at 18.43 days old with 4 warnings, and the fresh 2026-06-22 portfolio validation report still flags stale SaneHosts customer-UI proof. No scheduling, submission, or public posting action was executed."
+      last_reviewed: "2026-06-23"
+      result: "On 2026-06-23, canonical Mini `launch_readiness --json` reran from the repo root and returned `ok: false`: human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate, the Product Hunt maker comment and day-of reply checklist still need final exact approval, the staged website video still needs human visual approval plus public deploy, the latest `release_preflight` is now stale at 19.43 days old with 4 warnings, and the shared 2026-06-23 validation receipt still flags stale SaneHosts customer-UI proof. No scheduling, submission, or public posting action was executed."
   last_launch_readiness:
-    date: "2026-06-22"
+    date: "2026-06-23"
     status: "no_go"
     launch_readiness_exit: 1
     blocker_summary:
-      - "Canonical Mini `launch_readiness --json` reran on 2026-06-22 and exited nonzero."
+      - "Canonical Mini `launch_readiness --json` reran on 2026-06-23 and exited nonzero."
       - "Human visual approval plus a hosted/public URL are still missing for the 30-second privacy-switch video candidate."
       - "The Product Hunt maker comment and day-of reply checklist still need final exact approval."
       - "The staged website/videos privacy-switch clip still needs public website deploy after visual approval."
-      - "Mini launch_readiness remains no-go even though `release_preflight` passed; the proof is now stale at 18.43 days old and still carries 4 warnings."
-      - "The fresh 2026-06-22 portfolio validation report still returned `NOT READY FOR RELEASE`, including stale customer-UI proof blockers for SaneHosts."
+      - "Mini launch_readiness remains no-go even though `release_preflight` passed; the proof is now stale at 19.43 days old and still carries 4 warnings."
+      - "The shared validation receipt at `/Users/sj/SaneApps/infra/SaneProcess/outputs/validation/2026-06-23.json` still returned `NOT READY FOR RELEASE`, including stale customer-UI proof blockers for SaneHosts."
       - "The overdue 2026-05-24 package slot and 2026-05-28 decision slot both remain blocked."
-      - "No package work, submission, scheduling, or public posting action was executed on 2026-06-22."
-    next_date: "2026-06-29"
+      - "No package work, submission, scheduling, or public posting action was executed on 2026-06-23."
+    next_date: "2026-06-30"
 
 public_posting_policy:
   approval_required: true

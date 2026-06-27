@@ -268,3 +268,9 @@
 - Track pricing impact with `ruby ~/SaneApps/infra/SaneProcess/scripts/SaneMaster.rb sales --products`, `downloads --app SaneHosts --days 30`, and `events --app SaneHosts --days 30` before and after rollout windows.
 - Use `CHANGELOG.md`, `ARCHITECTURE.md`, and git history for older release
   history and archived launch-ops notes. Active state above is current.
+
+## Launch Ops - 2026-06-23
+
+- Cross-product launch ops reran canonical Mini `./scripts/SaneMaster.rb launch_readiness --json` from the SaneHosts repo. It stayed red.
+- Active launch blockers are unchanged: the 30-second privacy-switch video still needs human visual approval plus a hosted/public URL, the staged website video still is not publicly deployed, and the Product Hunt maker comment/day-of checklist still needs exact approval.
+- Fresh proof state: `release_preflight` still passes but is stale at 19.43 days with 4 warnings, and the shared validation receipt [`/Users/sj/SaneApps/infra/SaneProcess/outputs/validation/2026-06-23.json`](/Users/sj/SaneApps/infra/SaneProcess/outputs/validation/2026-06-23.json) is still `NOT READY FOR RELEASE` with stale SaneHosts customer-UI proof. No package/submission/scheduling/public-post action ran today.
