@@ -46,7 +46,10 @@ enum MainViewSelectionPolicy {
 
 /// Main view with sidebar navigation - SaneClip design language
 public struct MainView: View {
-    var store: ProfileStore { ProfileStore.shared }
+    var store: ProfileStore {
+        ProfileStore.shared
+    }
+
     var licenseService: LicenseService
     @State var selectedProfileIDs: Set<UUID> = []
     @State var showingNewProfile = false
@@ -93,6 +96,7 @@ public struct MainView: View {
         LicenseService(
             appName: "SaneHosts",
             checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
+            keychain: SaneHostsLicenseKeychain.makeService(),
             proTrial: .init(storageKeyPrefix: "sanehosts.pro_trial")
         )
     }
@@ -107,136 +111,136 @@ public struct MainView: View {
                 detail
             }
         }
-            .groupBoxStyle(GlassGroupBoxStyle())
-            .onChange(of: selectedProfileIDs) { _, newValue in
-                // Clear preset selection when a profile is selected
-                if !newValue.isEmpty {
-                    selectedPreset = nil
+        .groupBoxStyle(GlassGroupBoxStyle())
+        .onChange(of: selectedProfileIDs) { _, newValue in
+            // Clear preset selection when a profile is selected
+            if !newValue.isEmpty {
+                selectedPreset = nil
+            }
+        }
+        .task {
+            await store.load()
+            selectedProfileIDs = MainViewSelectionPolicy.initialSelection(
+                profiles: store.profiles,
+                isPro: licenseService.isPro,
+                currentSelection: selectedProfileIDs
+            )
+            if !selectedProfileIDs.isEmpty {
+                selectedPreset = nil
+            }
+        }
+        .alert("Activation Failed", isPresented: .constant(activationError != nil)) {
+            Button("OK") { activationError = nil }
+        } message: {
+            Text(activationError ?? "")
+        }
+        .alert("Warning", isPresented: .constant(activationWarning != nil)) {
+            Button("OK") { activationWarning = nil }
+        } message: {
+            Text(activationWarning ?? "")
+        }
+        .overlay {
+            if showingActivationSuccess {
+                VStack(spacing: 12) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.green)
+                    Text("Protection Active")
+                        .font(.headline)
                 }
-            }
-            .task {
-                await store.load()
-                selectedProfileIDs = MainViewSelectionPolicy.initialSelection(
-                    profiles: store.profiles,
-                    isPro: licenseService.isPro,
-                    currentSelection: selectedProfileIDs
-                )
-                if !selectedProfileIDs.isEmpty {
-                    selectedPreset = nil
-                }
-            }
-            .alert("Activation Failed", isPresented: .constant(activationError != nil)) {
-                Button("OK") { activationError = nil }
-            } message: {
-                Text(activationError ?? "")
-            }
-            .alert("Warning", isPresented: .constant(activationWarning != nil)) {
-                Button("OK") { activationWarning = nil }
-            } message: {
-                Text(activationWarning ?? "")
-            }
-            .overlay {
-                if showingActivationSuccess {
-                    VStack(spacing: 12) {
-                        Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 48))
-                            .foregroundStyle(.green)
-                        Text("Protection Active")
-                            .font(.headline)
+                .padding(24)
+                .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
+                .transition(.scale.combined(with: .opacity))
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        withAnimation { showingActivationSuccess = false }
                     }
-                    .padding(24)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16))
-                    .transition(.scale.combined(with: .opacity))
-                    .onAppear {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                            withAnimation { showingActivationSuccess = false }
-                        }
-                    }
                 }
             }
-            .confirmationDialog(
-                "Delete \(selectedProfileIDs.count) Profile\(selectedProfileIDs.count == 1 ? "" : "s")?",
-                isPresented: $showingDeleteConfirmation,
-                titleVisibility: .visible
-            ) {
-                Button("Delete", role: .destructive) {
-                    deleteSelectedProfiles()
-                }
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                if selectedProfiles.contains(where: \.isActive) {
-                    Text("Cannot delete active profiles. Deactivate them first.")
-                } else {
-                    Text("This action cannot be undone.")
-                }
+        }
+        .confirmationDialog(
+            "Delete \(selectedProfileIDs.count) Profile\(selectedProfileIDs.count == 1 ? "" : "s")?",
+            isPresented: $showingDeleteConfirmation,
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                deleteSelectedProfiles()
             }
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Button("Select All", action: selectAllProfiles)
-                        .keyboardShortcut("a", modifiers: .command)
-                    Button {
-                        if licenseService.isPro {
-                            duplicateSelectedProfiles()
-                        } else {
-                            proUpsellFeature = .duplicateProfile
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text("Duplicate")
-                            if !licenseService.isPro {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 13, weight: .bold))
-                                    .foregroundStyle(.teal)
-                            }
-                        }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            if selectedProfiles.contains(where: \.isActive) {
+                Text("Cannot delete active profiles. Deactivate them first.")
+            } else {
+                Text("This action cannot be undone.")
+            }
+        }
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Button("Select All", action: selectAllProfiles)
+                    .keyboardShortcut("a", modifiers: .command)
+                Button {
+                    if licenseService.isPro {
+                        duplicateSelectedProfiles()
+                    } else {
+                        proUpsellFeature = .duplicateProfile
                     }
-                    .keyboardShortcut("d", modifiers: .command)
-                    Button {
-                        if licenseService.isPro {
-                            showingMergeProfiles = true
-                        } else {
-                            proUpsellFeature = .profileMerge
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text("Merge")
-                            if !licenseService.isPro {
-                                Image(systemName: "lock.fill")
-                                    .font(.system(size: 13, weight: .bold))
-                                    .foregroundStyle(.teal)
-                            }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Duplicate")
+                        if !licenseService.isPro {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundStyle(.teal)
                         }
                     }
-                    .keyboardShortcut("m", modifiers: .command)
-                    Button("Export", action: exportSelectedProfiles)
-                        .keyboardShortcut("e", modifiers: .command)
-                    Button("Delete", action: deleteWithConfirmation)
-                        .keyboardShortcut(.delete, modifiers: .command)
-                    Button("Activate", action: activateFirstSelected)
-                        .keyboardShortcut("a", modifiers: [.command, .shift])
-                    Button("Deactivate", action: deactivateProfile)
-                        .keyboardShortcut("d", modifiers: [.command, .shift])
                 }
-            }
-            .onDeleteCommand {
-                deleteWithConfirmation()
-            }
-            .onReceive(NotificationCenter.default.publisher(for: .showNewProfileSheet)) { _ in
-                if licenseService.isPro || store.profiles.isEmpty {
-                    showingNewProfile = true
-                } else {
-                    proUpsellFeature = .multipleProfiles
+                .keyboardShortcut("d", modifiers: .command)
+                Button {
+                    if licenseService.isPro {
+                        showingMergeProfiles = true
+                    } else {
+                        proUpsellFeature = .profileMerge
+                    }
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("Merge")
+                        if !licenseService.isPro {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 13, weight: .bold))
+                                .foregroundStyle(.teal)
+                        }
+                    }
                 }
+                .keyboardShortcut("m", modifiers: .command)
+                Button("Export", action: exportSelectedProfiles)
+                    .keyboardShortcut("e", modifiers: .command)
+                Button("Delete", action: deleteWithConfirmation)
+                    .keyboardShortcut(.delete, modifiers: .command)
+                Button("Activate", action: activateFirstSelected)
+                    .keyboardShortcut("a", modifiers: [.command, .shift])
+                Button("Deactivate", action: deactivateProfile)
+                    .keyboardShortcut("d", modifiers: [.command, .shift])
             }
-            .onReceive(NotificationCenter.default.publisher(for: .showImportSheet)) { _ in
-                if licenseService.isPro {
-                    showingRemoteImport = true
-                } else {
-                    proUpsellFeature = .importProfiles
-                }
+        }
+        .onDeleteCommand {
+            deleteWithConfirmation()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showNewProfileSheet)) { _ in
+            if licenseService.isPro || store.profiles.isEmpty {
+                showingNewProfile = true
+            } else {
+                proUpsellFeature = .multipleProfiles
             }
-            .sheet(item: $proUpsellFeature) { feature in
-                ProUpsellView(feature: feature, licenseService: licenseService)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .showImportSheet)) { _ in
+            if licenseService.isPro {
+                showingRemoteImport = true
+            } else {
+                proUpsellFeature = .importProfiles
             }
+        }
+        .sheet(item: $proUpsellFeature) { feature in
+            ProUpsellView(feature: feature, licenseService: licenseService)
+        }
     }
 }

@@ -96,7 +96,7 @@ DON'T: Create files outside project without asking
 
 ### #2: VERIFY BEFORE YOU TRY
 
-DO: Check API exists before using (apple-docs MCP, context7 MCP)
+DO: Check API exists before using (apple-docs MCP; WebSearch for third-party)
 DON'T: Assume an API exists from memory or web search
 
 **Critical APIs for SaneHosts:**
@@ -209,8 +209,7 @@ This is the standard protocol for investigating problems. Used by Rule #3, Circu
 |------|---------|-------------|
 | **Task agents** | Explore codebase, analyze patterns | "Where is X used?", "How does Y work?" |
 | **apple-docs MCP** | Verify Apple APIs exist and usage | Any Apple framework API |
-| **context7 MCP** | Library documentation | Third-party packages |
-| **WebSearch/WebFetch** | Solutions, patterns, best practices | Error messages, architectural questions |
+| **WebSearch/WebFetch** | Solutions, patterns, best practices, third-party library docs | Error messages, architectural questions, non-Apple packages |
 | **Grep/Glob/Read** | Local investigation | Find similar patterns, check implementations |
 | **memory MCP** | Past bug patterns, architecture decisions | "Have we seen this before?" |
 
@@ -418,9 +417,9 @@ Use the unified SaneMaster workflow for build/test:
 - `compact: true` works on `list_technologies`, `get_sample_code`, `wwdc` (NOT on `search_apple_docs`)
 - `analyze_api analysis="all"` for comprehensive API analysis
 
-### context7 for Library Docs
-- `resolve-library-id` FIRST, then `query-docs`
-- SwiftUI ID: `/websites/developer_apple_swiftui` (13,515 snippets!)
+### Library docs (third-party packages)
+- Use WebSearch. The context7 plugin is currently toggled off, so `mcp__context7__*`
+  is not callable. For Apple frameworks use `apple-docs` instead.
 
 ---
 

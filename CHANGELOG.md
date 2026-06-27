@@ -5,6 +5,14 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+Stores your license in the modern macOS system keychain so the app should stop
+asking for keychain permission after updates. Existing licenses are moved over
+automatically on first launch.
+
+---
+
 ## [1.1.19] - 2026-06-22
 
 Pro is now free to try for 14 days. Basic remains included after the trial.

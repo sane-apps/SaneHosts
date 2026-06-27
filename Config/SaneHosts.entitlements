@@ -8,5 +8,9 @@
 	<true/>
 	<key>com.apple.security.cs.disable-library-validation</key>
 	<false/>
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.mrsane.SaneHosts</string>
+	</array>
 </dict>
 </plist>
