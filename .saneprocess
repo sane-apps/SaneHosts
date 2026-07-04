@@ -107,6 +107,9 @@ release:
     - DEVELOPMENT_TEAM=M78L6FXD48
     - "CODE_SIGN_IDENTITY=Developer ID Application"
     - CODE_SIGN_STYLE=Manual
+  export:
+    profiles:
+      - "com.mrsane.SaneHosts:com.mrsane.SaneHosts Direct"
 
 commands:
   verify: ./scripts/SaneMaster.rb verify
