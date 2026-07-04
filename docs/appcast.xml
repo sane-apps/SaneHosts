@@ -5,7 +5,7 @@
     <link>https://sanehosts.com/appcast.xml</link>
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
-            <item>
+<item>
             <title>1.1.20</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Sat, 04 Jul 2026 18:35:46 -0400</pubDate>
@@ -25,19 +25,5 @@
                        type="application/octet-stream"
                        sparkle:edSignature="pHMmDkt7rBIgv14mNc0WrH82+ctra/X2MatzkkpMUqWzHFMmzDm+yC7E6Lm9IWxcJfm0D7AScUy4Pln8/pn2BA=="/>
         </item>
-<item>
-      <title>1.1.19</title>
-      <link>https://sanehosts.com/download</link>
-      <pubDate>Mon, 22 Jun 2026 14:53:11 -0400</pubDate>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <sparkle:criticalUpdate/>
-      <description><![CDATA[
-    <h2>Important Update</h2>
-    <ul>
-    <li>Important update for continued app access, reliability, and compatibility. Recommended for all users.</li>
-    </ul>
-    ]]></description>
-      <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.19.zip" sparkle:version="1119" sparkle:shortVersionString="1.1.19" length="4616873" type="application/octet-stream" sparkle:edSignature="6hEfnbYiwEIbNRlTOoboIynITMXRDU2v+zfUmukHf51+q/Hn0MX5lB8FczZ2HEwoHhiSXuTPExJp7xFtJKrwCg=="/>
-    </item>
-  </channel>
+</channel>
 </rss>
