@@ -167,59 +167,66 @@ struct SaneHostsApp: App {
 
     var body: some Scene {
         WindowGroup(id: "main") {
-            ContentView(licenseService: licenseService)
-                .modifier(SettingsLauncher())
-                .modifier(SettingsActionCapture())
-                .modifier(WindowActionCapture())
-                .preferredColorScheme(.dark)
-                .sheet(isPresented: Binding(
-                    get: { !hasSeenWelcomeGate },
-                    set: {
-                        if !$0 {
-                            hasSeenWelcomeGate = true
-                            hasSeenWelcome = true
+            Group {
+                if licenseService.hasExpiredProTrial {
+                    LicenseGateView(licenseService: licenseService, appIcon: "network.badge.shield.half.filled")
+                        .preferredColorScheme(.dark)
+                } else {
+                    ContentView(licenseService: licenseService)
+                        .modifier(SettingsLauncher())
+                        .modifier(SettingsActionCapture())
+                        .modifier(WindowActionCapture())
+                        .preferredColorScheme(.dark)
+                        .sheet(isPresented: Binding(
+                            get: { !hasSeenWelcomeGate },
+                            set: {
+                                if !$0 {
+                                    hasSeenWelcomeGate = true
+                                    hasSeenWelcome = true
+                                }
+                            }
+                        )) {
+                            WelcomeGateView(
+                                appName: "SaneHosts",
+                                appIcon: "network.badge.shield.half.filled",
+                                freeFeatures: [
+                                    ("shield.fill", "1 Essentials profile"),
+                                    ("plus.circle", "Add/edit/delete host entries"),
+                                    ("arrow.triangle.2.circlepath", "Toggle entries on/off"),
+                                    ("network", "DNS cache flush")
+                                ],
+                                proFeatures: [
+                                    ("checkmark", "Enjoy 14 days of Pro"),
+                                    ("doc.on.doc", "Unlimited profiles"),
+                                    ("arrow.down.circle", "Downloadable presets"),
+                                    ("arrow.triangle.merge", "Merge profiles"),
+                                    ("checklist", "Bulk enable/disable"),
+                                    ("square.and.arrow.down", "Import from file/URL"),
+                                    ("plus.square.on.square", "Duplicate profiles")
+                                ],
+                                licenseService: licenseService
+                            )
                         }
-                    }
-                )) {
-                    WelcomeGateView(
-                        appName: "SaneHosts",
-                        appIcon: "network.badge.shield.half.filled",
-                        freeFeatures: [
-                            ("shield.fill", "1 Essentials profile"),
-                            ("plus.circle", "Add/edit/delete host entries"),
-                            ("arrow.triangle.2.circlepath", "Toggle entries on/off"),
-                            ("network", "DNS cache flush")
-                        ],
-                        proFeatures: [
-                            ("checkmark", "Enjoy 14 days of Pro"),
-                            ("doc.on.doc", "Unlimited profiles"),
-                            ("arrow.down.circle", "Downloadable presets"),
-                            ("arrow.triangle.merge", "Merge profiles"),
-                            ("checklist", "Bulk enable/disable"),
-                            ("square.and.arrow.down", "Import from file/URL"),
-                            ("plus.square.on.square", "Duplicate profiles")
-                        ],
-                        licenseService: licenseService
-                    )
                 }
-                .onAppear {
-                    licenseService.checkCachedLicense()
-                    let isPro = licenseService.isPro
-                    let isFirstLaunch = !hasSeenWelcome
-                    if isFirstLaunch, SaneBackgroundAppDefaults.launchAtLogin {
-                        SaneLoginItemPolicy.scheduleDefaultLaunchAtLoginPrompt(appName: "SaneHosts")
+            }
+            .onAppear {
+                licenseService.checkCachedLicense()
+                let isPro = licenseService.isPro
+                let isFirstLaunch = !hasSeenWelcome
+                if isFirstLaunch, SaneBackgroundAppDefaults.launchAtLogin {
+                    SaneLoginItemPolicy.scheduleDefaultLaunchAtLoginPrompt(appName: "SaneHosts")
+                }
+                Task.detached {
+                    if isPro {
+                        await EventTracker.log("app_launch_pro", app: "sanehosts")
+                    } else {
+                        await EventTracker.log("app_launch_free", app: "sanehosts")
                     }
-                    Task.detached {
-                        if isPro {
-                            await EventTracker.log("app_launch_pro", app: "sanehosts")
-                        } else {
-                            await EventTracker.log("app_launch_free", app: "sanehosts")
-                        }
-                        if isFirstLaunch, !isPro {
-                            await EventTracker.log("new_free_user", app: "sanehosts")
-                        }
+                    if isFirstLaunch, !isPro {
+                        await EventTracker.log("new_free_user", app: "sanehosts")
                     }
                 }
+            }
         }
         .defaultSize(width: 900, height: 650)
         .windowStyle(.automatic)
@@ -595,7 +602,11 @@ struct MenuBarMenuContent: View {
             Section("Profiles") {
                 ForEach(store.profiles) { profile in
                     Button {
-                        Task { await store.activateProfile(profile) }
+                        if licenseService.hasExpiredProTrial {
+                            WindowActionStorage.shared.showMainWindow(using: openWindow)
+                        } else {
+                            Task { await store.activateProfile(profile) }
+                        }
                     } label: {
                         HStack {
                             if store.activeProfile?.id == profile.id {
