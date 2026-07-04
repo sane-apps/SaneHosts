@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.20] - 2026-07-04
+
+Important update to onboarding, licensing, and reliability. Recommended for all users.
+
+---
+
 ## [Unreleased]
 
 Stores your license in the modern macOS system keychain so the app should stop
