@@ -9,7 +9,7 @@ enum MainViewGatePolicy {
     }
 
     static func allowsBasicAfterTrial(hasExpiredProTrial: Bool) -> Bool {
-        hasExpiredProTrial
+        false
     }
 
     static func trialCountdownTitle(daysRemaining: Int?) -> String? {

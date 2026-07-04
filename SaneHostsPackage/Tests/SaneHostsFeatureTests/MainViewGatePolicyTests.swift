@@ -31,14 +31,14 @@ struct MainViewGatePolicyTests {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: true))
     }
 
-    @Test("Expired trial falls back to Basic")
-    func expiredTrialFallsBackToBasic() {
-        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: true))
+    @Test("Expired trial does not fall back to Basic")
+    func expiredTrialDoesNotFallBackToBasic() {
+        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: true) == false)
         #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: false) == false)
     }
 
-    @Test("Expired trial menu still allows profile activation")
-    func expiredTrialMenuStillAllowsProfileActivation() throws {
+    @Test("Expired trial menu routes profile activation to main window gate")
+    func expiredTrialMenuRoutesProfileActivationToMainWindowGate() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let appRoot = testURL
             .deletingLastPathComponent()
@@ -48,7 +48,7 @@ struct MainViewGatePolicyTests {
         let appSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
 
         #expect(appSource.contains("Task { await store.activateProfile(profile) }"))
-        #expect(!appSource.contains("if licenseService.hasExpiredProTrial {\n                            WindowActionStorage.shared.showMainWindow(using: openWindow)\n                        } else {\n                            Task { await store.activateProfile(profile) }\n                        }"))
+        #expect(appSource.contains("if licenseService.hasExpiredProTrial {\n                            WindowActionStorage.shared.showMainWindow(using: openWindow)\n                        } else {\n                            Task { await store.activateProfile(profile) }\n                        }"))
     }
 
     @Test("Trial countdown copy is short and tactful")
