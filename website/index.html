@@ -409,6 +409,40 @@
             font-size: 0.95rem;
         }
 
+        .levels-mobile-cards {
+            display: none;
+            gap: 14px;
+        }
+
+        .level-mobile-card {
+            padding: 18px;
+            background:
+                linear-gradient(180deg, rgba(95, 168, 211, 0.12), rgba(95, 168, 211, 0.04)),
+                var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+
+        .level-mobile-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 14px;
+            margin-bottom: 10px;
+        }
+
+        .level-mobile-card .level-name {
+            display: block;
+            margin-bottom: 3px;
+            font-size: 1.05rem;
+        }
+
+        .level-mobile-card .level-entries {
+            flex-shrink: 0;
+            color: var(--accent);
+            font-weight: 800;
+        }
+
         .level-entries {
             color: var(--accent);
             font-weight: 500;
@@ -1245,6 +1279,16 @@
             .pricing-price {
                 font-size: 2rem;
             }
+
+            .levels-table-wrapper {
+                display: none;
+            }
+
+            .levels-mobile-cards {
+                display: grid;
+                max-width: 420px;
+                margin: 0 auto;
+            }
         }
     </style>
 </head>
@@ -1443,6 +1487,59 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+
+            <div class="levels-mobile-cards" aria-label="Protection levels">
+                <article class="level-mobile-card">
+                    <div class="level-mobile-top">
+                        <div>
+                            <span class="level-name">Essentials</span>
+                            <span class="level-tagline">Just make it work</span>
+                        </div>
+                        <span class="level-entries">~170K</span>
+                    </div>
+                    <p class="level-desc">Ads, trackers, and malware — safe for everyone.</p>
+                </article>
+                <article class="level-mobile-card">
+                    <div class="level-mobile-top">
+                        <div>
+                            <span class="level-name">Family Safe</span>
+                            <span class="level-tagline">Protect the kids</span>
+                        </div>
+                        <span class="level-entries">~400K</span>
+                    </div>
+                    <p class="level-desc">Essentials plus adult content and gambling sites.</p>
+                </article>
+                <article class="level-mobile-card">
+                    <div class="level-mobile-top">
+                        <div>
+                            <span class="level-name">Focus Mode</span>
+                            <span class="level-tagline">Get stuff done</span>
+                        </div>
+                        <span class="level-entries">~580K</span>
+                    </div>
+                    <p class="level-desc">Family Safe plus social media distractions.</p>
+                </article>
+                <article class="level-mobile-card">
+                    <div class="level-mobile-top">
+                        <div>
+                            <span class="level-name">Privacy Shield</span>
+                            <span class="level-tagline">Reduce telemetry</span>
+                        </div>
+                        <span class="level-entries">~600K</span>
+                    </div>
+                    <p class="level-desc">Focus Mode plus data collection and advanced trackers.</p>
+                </article>
+                <article class="level-mobile-card">
+                    <div class="level-mobile-top">
+                        <div>
+                            <span class="level-name">Kitchen Sink</span>
+                            <span class="level-tagline">Block everything possible</span>
+                        </div>
+                        <span class="level-entries">~700K</span>
+                    </div>
+                    <p class="level-desc">Maximum protection for users who want the strongest blocklist set.</p>
+                </article>
             </div>
         </div>
     </section>
