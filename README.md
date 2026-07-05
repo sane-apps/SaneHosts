@@ -8,9 +8,11 @@
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **⭐ Star this repo if it's useful!** · **[Download Basic](https://sanehosts.com)** · **[Unlock Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
+> **⭐ Star this repo if it's useful!** · **[Start a free 14-day Pro trial](https://sanehosts.com)** · **[Buy Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, just deactivate.
+
+**Current direct release: 1.1.20.** The Mac app starts with a free 14-day Pro trial; after that, Pro is required and remains a one-time $14.99 purchase.
 
 ## Features
 
@@ -33,6 +35,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles
 - **Menu Bar Access** - Quick profile switching from the menu bar
+- **macOS Authentication** - Hosts changes require the system authorization flow instead of silent file edits
 - **Crash Resilient** - Automatic backups (3 per profile), corrupted profiles recovered automatically
 - **Native macOS** - Built with SwiftUI, follows system conventions
 - **Privacy-First** - Your hosts data stays on your Mac, with limited anonymous product events and optional network features
@@ -43,11 +46,9 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 ## Installation
 
-**[Download from sanehosts.com](https://sanehosts.com)** — Signed, notarized, ready to use.
+**[Download from sanehosts.com](https://sanehosts.com)** — signed, notarized, and ready to use.
 
-**Basic is free to start. Pro is $14.99 once.** No subscription.
-
-Current direct release: **1.1.16**.
+**Start with a free 14-day Pro trial. Pro is $14.99 once after that.** No subscription.
 
 **Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
 
@@ -87,7 +88,7 @@ See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
 SaneHosts is designed with privacy in mind:
 - All data stored locally in `~/Library/Application Support/SaneHosts/`
 - No personal content uploaded to SaneApps servers
-- The app may send limited anonymous product events, like launch, license, version, OS, and Basic vs Pro status
+- The app may send limited anonymous product events, like launch, license, version, OS, and trial/license status
 - Network access is limited to remote imports or protection levels you choose, update checks, those simple anonymous product events, checkout/license delivery when you choose Pro, and privacy-first aggregate website analytics on public pages
 
 See [PRIVACY.md](PRIVACY.md) for details.
