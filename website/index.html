@@ -53,7 +53,7 @@
       "offers": [
         {
           "@type": "Offer",
-          "name": "Free 14-day trial",
+          "name": "Full Pro Trial",
           "price": "0",
           "priceCurrency": "USD"
         },
@@ -1133,7 +1133,7 @@
             }
         }
         .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.75rem; vertical-align: super; margin-left: 3px; cursor: default; }
-        .price-note::after { content: "One-time unlock. No subscription."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
+        .price-note::after { content: "One-time purchase. No subscription."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
         .price-note:hover::after { opacity: 1; }
         @media (max-width: 768px) { .price-note { display: none; } }
 
@@ -1313,7 +1313,7 @@
                 <a href="https://github.com/sane-apps/SaneHosts">GitHub</a>
                 <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.20.zip" class="nav-cta" style="display: inline-flex; align-items: center;">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Start Free 14-Day Trial
+                    Start Full Pro Trial
                 </a>
             </div>
             <button class="hamburger" onclick="toggleMobileNav()" aria-label="Menu">
@@ -1336,9 +1336,8 @@
         <a href="https://sanebar.com" data-cta="cross_sell_sanebar_mobile">SaneBar &mdash; Menu Bar Manager</a>
         <a href="https://saneclip.com" data-cta="cross_sell_saneclip_mobile">SaneClip &mdash; Clipboard Manager</a>
         <a href="https://saneclick.com" data-cta="cross_sell_saneclick_mobile">SaneClick &mdash; Finder Actions</a>
-        <a href="https://saneapps.com">See all SaneApps &rarr;</a>
         <a href="https://saneapps.com" data-cta="cross_sell_saneapps_mobile">See all SaneApps &rarr;</a>
-        <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.20.zip" class="mobile-nav-cta" data-cta="download_trial">Start Free 14-Day Trial</a>
+        <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.20.zip" class="mobile-nav-cta" data-cta="download_trial">Start Full Pro Trial</a>
     </div>
 
     <!-- ============================================ -->
@@ -1354,30 +1353,17 @@
                 <a href="privacy.html" style="color: inherit; text-decoration: none;">&#128737;&#65039; Privacy by Design</a>
             </div>
             <div class="animate-in delay-4" style="margin: 22px auto 28px; text-align: center;">
-                <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.20.zip" class="pricing-cta pricing-cta-pro" style="display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 240px;" data-cta="download_trial">Start Free 14-Day Trial</a>
-                <p style="color: var(--text-muted); font-size: 0.92rem; margin: 12px 0 6px;">14 days free. No credit card required. Pro is required after trial.</p>
+                <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.20.zip" class="pricing-cta pricing-cta-pro" style="display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 240px;" data-cta="download_trial">Start Full Pro Trial</a>
+                <p style="color: var(--text-muted); font-size: 0.92rem; margin: 12px 0 6px;">Full Pro for 14 days. No credit card required. Pro is required after trial.</p>
                 <a href="https://go.saneapps.com/buy/sanehosts?ref=website-hero" style="color: var(--accent); font-weight: 700; text-decoration: none;" data-cta="buy_pro">Buy Pro now — $14.99 once</a>
             </div>
-            <div class="animate-in delay-4" id="pricing">
-                <div class="hero-pricing-grid">
-                    <div class="pricing-card">
-                        <p class="pricing-label">Trial access</p>
-                        <p class="pricing-price">14 days</p>
-                        <p class="pricing-price-note">Pro required after 14 days</p>
-                        <ul class="pricing-features">
-                            <li>1 Essentials hosts profile</li>
-                            <li>Add, edit, and toggle host entries</li>
-                            <li>DNS cache flush</li>
-                            <li>macOS authentication for hosts changes</li>
-                            <li>hosts data stays on your Mac</li>
-                        </ul>
-                    </div>
+            <div class="animate-in delay-4" id="pricing" style="scroll-margin-top: 120px;">
+                <div class="hero-pricing-grid" style="max-width: 520px; grid-template-columns: 1fr;">
                     <div class="pricing-card featured">
-                        <p class="pricing-label">Free trial</p>
+                        <p class="pricing-label">Full Pro Trial</p>
                         <p class="pricing-price">$14.99<span class="price-note">*</span></p>
-                        <p class="pricing-price-note">14 days free. No credit card required.</p>
+                        <p class="pricing-price-note">Every Pro feature free for 14 days. Then Pro is required.</p>
                         <ul class="pricing-features">
-                            <li>Unlimited profiles and curated blocklists</li>
                             <li class="extra">Unlimited profiles</li>
                             <li class="extra">200+ curated blocklist presets</li>
                             <li class="extra">One-click protection levels (170K–700K entries)</li>
