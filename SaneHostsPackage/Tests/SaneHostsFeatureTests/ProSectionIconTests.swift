@@ -1,0 +1,17 @@
+@testable import SaneHostsFeature
+import Testing
+
+/// Regression (2026-07-14, customer report): after activating a Pro license
+/// the sidebar "PRO FEATURES" header kept its closed padlock because the icon
+/// was hardcoded decoration. The header icon must track license state.
+struct ProSectionIconTests {
+    @Test("Pro features header padlock opens once Pro is active")
+    func padlockOpensWhenPro() {
+        #expect(ProFeature.sectionIcon(isPro: true) == "lock.open.fill")
+    }
+
+    @Test("Pro features header padlock stays closed while features are gated")
+    func padlockStaysClosedWhenLocked() {
+        #expect(ProFeature.sectionIcon(isPro: false) == "lock.fill")
+    }
+}

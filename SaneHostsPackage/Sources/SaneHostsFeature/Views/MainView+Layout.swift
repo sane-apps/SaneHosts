@@ -20,7 +20,6 @@ extension MainView {
 
     // MARK: - Sidebar
 
-    @ViewBuilder
     var sidebar: some View {
         List(selection: $selectedProfileIDs) {
             if let title = MainViewGatePolicy.trialCountdownTitle(daysRemaining: licenseService.proTrialDaysRemaining) {
@@ -140,7 +139,7 @@ extension MainView {
                 }
             } header: {
                 HStack(spacing: 6) {
-                    Image(systemName: "lock.fill")
+                    Image(systemName: ProFeature.sectionIcon(isPro: licenseService.isPro))
                         .font(.system(size: 13, weight: .semibold))
                     Text("PRO FEATURES")
                         .font(.system(size: 13, weight: .bold))
@@ -185,17 +184,17 @@ extension MainView {
                                 showPresetUpsell(for: preset)
                             }
                         )
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                if licenseService.isPro {
-                                    selectedProfileIDs = []
-                                    selectedPreset = preset
-                                } else {
-                                    showPresetUpsell(for: preset)
-                                }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if licenseService.isPro {
+                                selectedProfileIDs = []
+                                selectedPreset = preset
+                            } else {
+                                showPresetUpsell(for: preset)
                             }
-                            .accessibilityLabel("\(preset.displayName) protection level")
-                            .accessibilityHint(licenseService.isPro ? "Double-tap to view details and download" : "Pro feature — double-tap to upgrade")
+                        }
+                        .accessibilityLabel("\(preset.displayName) protection level")
+                        .accessibilityHint(licenseService.isPro ? "Double-tap to view details and download" : "Pro feature — double-tap to upgrade")
                     }
                 } header: {
                     HStack(spacing: 6) {
