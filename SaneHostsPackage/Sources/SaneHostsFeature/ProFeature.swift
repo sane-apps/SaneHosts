@@ -9,9 +9,13 @@ public enum ProFeature: String, ProFeatureDescribing, CaseIterable, Sendable {
     case importProfiles = "Import from File / URL"
     case duplicateProfile = "Duplicate Profile"
 
-    public var id: String { rawValue }
+    public var id: String {
+        rawValue
+    }
 
-    public var featureName: String { rawValue }
+    public var featureName: String {
+        rawValue
+    }
 
     public var featureDescription: String {
         switch self {
@@ -39,5 +43,13 @@ public enum ProFeature: String, ProFeatureDescribing, CaseIterable, Sendable {
         case .importProfiles: "square.and.arrow.down"
         case .duplicateProfile: "plus.square.on.square"
         }
+    }
+
+    /// Sidebar "PRO FEATURES" section icon. The padlock communicates lock
+    /// STATE, not decoration: closed while the features are gated, open once
+    /// Pro is active. A licensed customer seeing a closed padlock over
+    /// features that already work reads it as a broken license.
+    public static func sectionIcon(isPro: Bool) -> String {
+        isPro ? "lock.open.fill" : "lock.fill"
     }
 }
