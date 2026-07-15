@@ -2,7 +2,36 @@
 
 **Last updated:** 2026-07-15
 
-## FIXED IN SOURCE: Glenn large-profile activation failures (pending release)
+## SHIPPED: 1.1.22 large-profile activation fix LIVE on Sparkle channel
+
+- **SaneHosts 1.1.22 is live on the Sparkle channel** (2026-07-15): the
+  appcast serves `SaneHosts-1.1.22.zip` with the large-profile fix release
+  note (bump `81509da`, metadata sync `5dcfd0e`). Pre-ship real-data proof:
+  the actual Steven Black Unified list (76,158 entries, 10.7 MB persisted)
+  ran parse → persist → summary reload → hydration → hosts generation, all
+  green. **Remaining owner step:** the LS dashboard-hosted file still serves
+  1.1.19 — publish the 1.1.22 ZIP (product 794910 → variant 1253740) from
+  `https://dist.sanehosts.com/updates/SaneHosts-1.1.22.zip`, unpublish old
+  files, then rerun `release.sh --project ~/SaneApps/apps/SaneHosts
+  --version 1.1.22 --post-release-checks-only`. This supersedes the 1.1.21
+  LS step below.
+- **Post-ship refactor (`9f0582f`):** ProfileStore.swift split 1,201 → 736
+  lines (Rule #10) into `LargeProfileSummaryLoader` /
+  `ProfileDirectoryLoader` / `ProfileBackupArchive` / `ProfileStoreError`
+  collaborator files, behavior unchanged. New `lastHydrationIssue` records
+  the last hydration failure (cleared on the next success) and is surfaced
+  in the diagnostics settings summary, with a behavioral test — Glenn's
+  feedback payloads previously carried no trace of hydration failures.
+  Mini verify 114 tests green; customer UI sweep passed (receipt
+  2026-07-15T14:28:19Z). The
+  `largeProfileLoadingUsesSummariesAndImportBounds` policy test now scans
+  the new file boundaries.
+- Glenn consolidated reply (#1136/#1139/#1141) is drafted at
+  `~/SaneApps/outputs/glenn-1139-1141-consolidated-reply.txt` and awaits
+  owner approval; the media-review gate still needs the documented
+  exception (see caveat below).
+
+## Source history: Glenn large-profile activation failures (shipped in 1.1.22)
 
 - Glenn's July 14-15 support emails `#1139` and `#1141` showed the same failure
   for Kitchen Sink and Steven Black Unified: activation tried to open a profile
