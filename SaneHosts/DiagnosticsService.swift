@@ -26,6 +26,7 @@ private func collectSaneHostsSettings() async -> String {
     lastWriteError: \(hostsService.lastError?.localizedDescription ?? "none")
     storeIsLoading: \(store.isLoading)
     storeError: \(store.error?.localizedDescription ?? "none")
+    lastHydrationIssue: \(store.lastHydrationIssue ?? "none")
 
     settings:
       hideDockIcon: \(defaults.bool(forKey: "hideDockIcon"))

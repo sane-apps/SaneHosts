@@ -43,6 +43,11 @@ public final class ProfileStore {
     public private(set) var isLoading = false
     public private(set) var error: ProfileStoreError?
 
+    /// Most recent large-profile hydration failure, kept for diagnostics
+    /// reports (customer payloads previously carried no trace of these).
+    /// Cleared by the next successful hydration.
+    public private(set) var lastHydrationIssue: String?
+
     private let fileManager = FileManager.default
     private let parser = HostsParser()
     private let profilesDirectoryOverrideURL: URL?
@@ -161,7 +166,7 @@ public final class ProfileStore {
             withIntermediateDirectories: true,
             attributes: [.posixPermissions: 0o700]
         )
-        try protectStoragePermissions()
+        try backupArchive.protectStoragePermissions()
     }
 
     // MARK: - Preset Profiles
@@ -211,77 +216,14 @@ public final class ProfileStore {
 
     // MARK: - Backup & Recovery
 
-    /// Create a backup of a profile before destructive operations
-    private func backupProfile(_ profile: Profile) {
-        let sourceURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
-        guard fileManager.fileExists(atPath: sourceURL.path) else { return }
-
-        let timestamp = ISO8601DateFormatter().string(from: Date())
-            .replacingOccurrences(of: ":", with: "-")
-        let backupName = "\(profile.id.uuidString)_\(timestamp).json"
-        let backupURL = backupsDirectoryURL.appendingPathComponent(backupName)
-
-        do {
-            try fileManager.copyItem(at: sourceURL, to: backupURL)
-            try protectPrivateFile(backupURL)
-            cleanupOldBackups(for: profile.id)
-            logger.debug(" Backup created: \(backupName)")
-        } catch {
-            logger.debug(" Backup failed: \(error.localizedDescription)")
-        }
-    }
-
-    /// Remove old backups keeping only the most recent ones
-    private func cleanupOldBackups(for profileId: UUID) {
-        do {
-            let files = try fileManager.contentsOfDirectory(at: backupsDirectoryURL, includingPropertiesForKeys: [.creationDateKey])
-            let profileBackups = files
-                .filter { $0.lastPathComponent.hasPrefix(profileId.uuidString) }
-                .sorted { url1, url2 in
-                    let date1 = (try? url1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                    let date2 = (try? url2.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                    return date1 > date2
-                }
-
-            // Delete backups beyond the limit
-            for backup in profileBackups.dropFirst(maxBackupsPerProfile) {
-                try? fileManager.removeItem(at: backup)
-            }
-        } catch {
-            logger.debug(" Cleanup failed: \(error.localizedDescription)")
-        }
-    }
-
-    /// Attempt to recover a corrupted profile from backup
-    private func recoverProfile(id: UUID) -> Profile? {
-        do {
-            let files = try fileManager.contentsOfDirectory(at: backupsDirectoryURL, includingPropertiesForKeys: [.creationDateKey])
-            let backups = files
-                .filter { $0.lastPathComponent.hasPrefix(id.uuidString) }
-                .sorted { url1, url2 in
-                    let date1 = (try? url1.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                    let date2 = (try? url2.resourceValues(forKeys: [.creationDateKey]).creationDate) ?? .distantPast
-                    return date1 > date2
-                }
-
-            for backup in backups {
-                do {
-                    let data = try Data(contentsOf: backup)
-                    let profile = try JSONDecoder().decode(Profile.self, from: data)
-                    guard profile.id == id else {
-                        logger.debug(" Ignoring backup with mismatched profile identity: \(backup.lastPathComponent)")
-                        continue
-                    }
-                    logger.debug(" Recovered profile from backup: \(backup.lastPathComponent)")
-                    return profile
-                } catch {
-                    continue // Try next backup
-                }
-            }
-        } catch {
-            logger.debug(" Recovery scan failed: \(error.localizedDescription)")
-        }
-        return nil
+    /// Backup, recovery, and storage-permission enforcement. Computed because
+    /// the storage directories can be overridden per instance for tests.
+    private var backupArchive: ProfileBackupArchive {
+        ProfileBackupArchive(
+            profilesDirectoryURL: profilesDirectoryURL,
+            backupsDirectoryURL: backupsDirectoryURL,
+            maxBackupsPerProfile: maxBackupsPerProfile
+        )
     }
 
     private func loadSystemHosts() async throws {
@@ -310,86 +252,19 @@ public final class ProfileStore {
         systemEntries = entries
     }
 
+    private var directoryLoader: ProfileDirectoryLoader {
+        ProfileDirectoryLoader(
+            profilesDirectoryURL: profilesDirectoryURL,
+            backupsDirectoryURL: backupsDirectoryURL,
+            largeProfilePreviewEntryLimit: largeProfilePreviewEntryLimit,
+            largeProfileSummaryThresholdBytes: largeProfileSummaryThresholdBytes,
+            archive: backupArchive
+        )
+    }
+
     private func loadProfiles() async throws {
-        let profilesDir = profilesDirectoryURL
-        let previewLimit = largeProfilePreviewEntryLimit
-        let summaryThresholdBytes = largeProfileSummaryThresholdBytes
-
-        // Phase 1: Read and decode valid profiles in background
-        let result = try await Task.detached(priority: .userInitiated) {
-            let fileManager = FileManager.default
-            let files = try fileManager.contentsOfDirectory(at: profilesDir, includingPropertiesForKeys: nil)
-            let jsonFiles = files.filter { $0.pathExtension == "json" }
-
-            var validProfiles: [Profile] = []
-            var corruptedFiles: [URL] = []
-
-            for file in jsonFiles {
-                do {
-                    guard let canonicalID = UUID(uuidString: file.deletingPathExtension().lastPathComponent) else {
-                        throw ProfileStoreError.invalidProfileIdentity("Profile filename is not a UUID")
-                    }
-
-                    // Validate JSON structure before decoding
-                    let values = try file.resourceValues(forKeys: [.fileSizeKey])
-                    let fileSize = values.fileSize ?? 0
-                    let profile: Profile
-                    if fileSize > summaryThresholdBytes {
-                        profile = try LargeProfileSummaryLoader.loadSummary(
-                            from: file,
-                            previewEntryLimit: previewLimit
-                        )
-                    } else {
-                        let data = try Data(contentsOf: file)
-
-                        guard !data.isEmpty else {
-                            logger.debug(" Empty file detected: \(file.lastPathComponent)")
-                            corruptedFiles.append(file)
-                            continue
-                        }
-
-                        profile = try JSONDecoder().decode(Profile.self, from: data)
-                        guard profile.id == canonicalID else {
-                            throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its filename")
-                        }
-                    }
-
-                    // Basic validation: ensure profile has required data
-                    guard !profile.name.isEmpty else {
-                        logger.debug(" Invalid profile (empty name): \(file.lastPathComponent)")
-                        corruptedFiles.append(file)
-                        continue
-                    }
-
-                    validProfiles.append(profile)
-                } catch {
-                    logger.debug(" Failed to load \(file.lastPathComponent): \(error.localizedDescription)")
-                    corruptedFiles.append(file)
-                }
-            }
-            return LoadResult(validProfiles: validProfiles, corruptedFiles: corruptedFiles)
-        }.value
-
-        var loadedProfiles = result.validProfiles
-        let corruptedFiles = result.corruptedFiles
-
-        // Phase 2: Handle corrupted files (Main Actor)
-        for file in corruptedFiles {
-            // Attempt recovery from backup
-            let filename = file.deletingPathExtension().lastPathComponent
-            if let profileId = UUID(uuidString: filename),
-               let recovered = recoverProfile(id: profileId) {
-                loadedProfiles.append(recovered)
-                // Restore the recovered profile to the main directory
-                try? await save(profile: recovered)
-            } else {
-                // Move corrupted files to a quarantine location instead of deleting
-                let quarantineName = "CORRUPTED_\(file.lastPathComponent)"
-                let quarantineURL = backupsDirectoryURL.appendingPathComponent(quarantineName)
-                try? fileManager.moveItem(at: file, to: quarantineURL)
-                try? protectPrivateFile(quarantineURL)
-                logger.debug(" Quarantined corrupted file: \(quarantineName)")
-            }
+        let loadedProfiles = try await directoryLoader.load { recovered in
+            try? await self.save(profile: recovered)
         }
 
         profiles = loadedProfiles.sorted { $0.sortOrder < $1.sortOrder || ($0.sortOrder == $1.sortOrder && $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending) }
@@ -399,14 +274,21 @@ public final class ProfileStore {
     public func fullProfile(for profile: Profile) async throws -> Profile {
         guard profile.hasPartialEntries else { return profile }
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
-        return try await Task.detached(priority: .userInitiated) {
-            let data = try Data(contentsOf: fileURL)
-            let fullProfile = try JSONDecoder().decode(Profile.self, from: data)
-            guard fullProfile.id == profile.id else {
-                throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its summary or filename")
-            }
+        do {
+            let fullProfile = try await Task.detached(priority: .userInitiated) {
+                let data = try Data(contentsOf: fileURL)
+                let fullProfile = try JSONDecoder().decode(Profile.self, from: data)
+                guard fullProfile.id == profile.id else {
+                    throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its summary or filename")
+                }
+                return fullProfile
+            }.value
+            lastHydrationIssue = nil
             return fullProfile
-        }.value
+        } catch {
+            lastHydrationIssue = "Hydrating '\(profile.name)' failed: \(error.localizedDescription)"
+            throw error
+        }
     }
 
     /// Migrate existing user entries from /etc/hosts on first run
@@ -588,7 +470,7 @@ public final class ProfileStore {
         }
 
         // Backup before delete for recovery
-        backupProfile(profile)
+        backupArchive.backup(profile)
 
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
         try fileManager.removeItem(at: fileURL)
@@ -604,7 +486,7 @@ public final class ProfileStore {
 
         // Backup profiles before deletion
         for profile in profiles where idsToRemove.contains(profile.id) && !profile.isActive {
-            backupProfile(profile)
+            backupArchive.backup(profile)
         }
 
         // Delete files
@@ -849,353 +731,6 @@ public final class ProfileStore {
         let size = attributes[.size] as? Int64 ?? 0
         guard size <= maxSystemHostsBytes else {
             throw ProfileStoreError.loadFailed("/etc/hosts is too large to import automatically")
-        }
-    }
-
-    private func protectStoragePermissions() throws {
-        try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: profilesDirectoryURL.path)
-        try fileManager.setAttributes([.posixPermissions: 0o700], ofItemAtPath: backupsDirectoryURL.path)
-
-        for directory in [profilesDirectoryURL, backupsDirectoryURL] {
-            let files = try fileManager.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)
-            for file in files where file.pathExtension == "json" {
-                try? protectPrivateFile(file)
-            }
-        }
-    }
-
-    private func protectPrivateFile(_ url: URL) throws {
-        try fileManager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: url.path)
-    }
-}
-
-// MARK: - Private Helpers
-
-private struct LoadResult: Sendable {
-    var validProfiles: [Profile]
-    var corruptedFiles: [URL]
-}
-
-private enum LargeProfileSummaryLoader {
-    private struct ValueBox<T: Decodable>: Decodable {
-        let value: T
-    }
-
-    static func loadSummary(from url: URL, previewEntryLimit: Int) throws -> Profile {
-        let data = try Data(contentsOf: url, options: [.mappedIfSafe])
-        guard !data.isEmpty else {
-            throw ProfileStoreError.loadFailed("Profile file is empty")
-        }
-        guard let canonicalID = UUID(uuidString: url.deletingPathExtension().lastPathComponent) else {
-            throw ProfileStoreError.invalidProfileIdentity("Profile filename is not a UUID")
-        }
-        guard let storedID = decodeValue(UUID.self, key: "id", in: data) else {
-            throw ProfileStoreError.invalidProfileIdentity("Profile payload is missing a top-level ID")
-        }
-        guard storedID == canonicalID else {
-            throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its filename")
-        }
-
-        let previewEntries = try decodePreviewEntries(from: data, limit: previewEntryLimit)
-        let counts = countEnabledStates(in: data)
-        let enabledCount = counts.enabled
-        let disabledCount = counts.disabled
-        let entryCount = max(enabledCount + disabledCount, previewEntries.count)
-
-        return Profile(
-            id: canonicalID,
-            name: decodeValue(String.self, key: "name", in: data) ?? "Untitled Profile",
-            entries: previewEntries,
-            isActive: decodeValue(Bool.self, key: "isActive", in: data) ?? false,
-            createdAt: decodeValue(Date.self, key: "createdAt", in: data) ?? Date(),
-            modifiedAt: decodeValue(Date.self, key: "modifiedAt", in: data) ?? decodeValue(Date.self, key: "createdAt", in: data) ?? Date(),
-            source: decodeValue(ProfileSource.self, key: "source", in: data) ?? .local,
-            colorTag: decodeValue(ProfileColor.self, key: "colorTag", in: data) ?? .gray,
-            sortOrder: decodeValue(Int.self, key: "sortOrder", in: data) ?? 0,
-            entryCountOverride: entryCount,
-            enabledCountOverride: enabledCount,
-            disabledCountOverride: disabledCount
-        )
-    }
-
-    private static func decodePreviewEntries(from data: Data, limit: Int) throws -> [HostEntry] {
-        guard limit > 0,
-              let entriesStart = findArrayStart(forKey: "entries", in: data) else {
-            return []
-        }
-
-        let ranges = data.withUnsafeBytes { rawBuffer -> [Range<Int>] in
-            let bytes = rawBuffer.bindMemory(to: UInt8.self)
-            var ranges: [Range<Int>] = []
-            var index = entriesStart
-            var objectStart: Int?
-            var depth = 0
-            var inString = false
-            var isEscaped = false
-
-            while index < bytes.count, ranges.count < limit {
-                let byte = bytes[index]
-
-                if inString {
-                    if isEscaped {
-                        isEscaped = false
-                    } else if byte == UInt8(ascii: "\\") {
-                        isEscaped = true
-                    } else if byte == UInt8(ascii: "\"") {
-                        inString = false
-                    }
-                } else {
-                    switch byte {
-                    case UInt8(ascii: "\""):
-                        inString = true
-                    case UInt8(ascii: "{"):
-                        if depth == 0 {
-                            objectStart = index
-                        }
-                        depth += 1
-                    case UInt8(ascii: "}"):
-                        depth -= 1
-                        if depth == 0, let start = objectStart {
-                            ranges.append(start ..< index + 1)
-                            objectStart = nil
-                        }
-                    case UInt8(ascii: "]"):
-                        if depth == 0 {
-                            return ranges
-                        }
-                    default:
-                        break
-                    }
-                }
-
-                index += 1
-            }
-            return ranges
-        }
-
-        guard !ranges.isEmpty else { return [] }
-
-        var previewJSON = Data()
-        previewJSON.append(UInt8(ascii: "["))
-        for (index, range) in ranges.enumerated() {
-            if index > 0 {
-                previewJSON.append(UInt8(ascii: ","))
-            }
-            previewJSON.append(contentsOf: data[range])
-        }
-        previewJSON.append(UInt8(ascii: "]"))
-        return try JSONDecoder().decode([HostEntry].self, from: previewJSON)
-    }
-
-    private static func findArrayStart(forKey key: String, in data: Data) -> Int? {
-        guard let valueStart = findValueStart(forKey: key, in: data) else { return nil }
-        return data.withUnsafeBytes { rawBuffer -> Int? in
-            let bytes = rawBuffer.bindMemory(to: UInt8.self)
-            guard valueStart < bytes.count, bytes[valueStart] == UInt8(ascii: "[") else { return nil }
-            return valueStart + 1
-        }
-    }
-
-    private static func decodeValue<T: Decodable>(_ type: T.Type, key: String, in data: Data) -> T? {
-        guard let range = findValueRange(forKey: key, in: data) else { return nil }
-        var wrapped = Data(#"{"value":"#.utf8)
-        wrapped.append(contentsOf: data[range])
-        wrapped.append(UInt8(ascii: "}"))
-        return try? JSONDecoder().decode(ValueBox<T>.self, from: wrapped).value
-    }
-
-    private static func findValueRange(forKey key: String, in data: Data) -> Range<Int>? {
-        guard let start = findValueStart(forKey: key, in: data) else { return nil }
-        return data.withUnsafeBytes { rawBuffer -> Range<Int>? in
-            let bytes = rawBuffer.bindMemory(to: UInt8.self)
-            guard start < bytes.count else { return nil }
-
-            switch bytes[start] {
-            case UInt8(ascii: "\""):
-                var index = start + 1
-                var isEscaped = false
-                while index < bytes.count {
-                    let byte = bytes[index]
-                    if isEscaped {
-                        isEscaped = false
-                    } else if byte == UInt8(ascii: "\\") {
-                        isEscaped = true
-                    } else if byte == UInt8(ascii: "\"") {
-                        return start ..< index + 1
-                    }
-                    index += 1
-                }
-                return nil
-            case UInt8(ascii: "{"), UInt8(ascii: "["):
-                let open = bytes[start]
-                let close = open == UInt8(ascii: "{") ? UInt8(ascii: "}") : UInt8(ascii: "]")
-                var index = start
-                var depth = 0
-                var inString = false
-                var isEscaped = false
-                while index < bytes.count {
-                    let byte = bytes[index]
-                    if inString {
-                        if isEscaped {
-                            isEscaped = false
-                        } else if byte == UInt8(ascii: "\\") {
-                            isEscaped = true
-                        } else if byte == UInt8(ascii: "\"") {
-                            inString = false
-                        }
-                    } else if byte == UInt8(ascii: "\"") {
-                        inString = true
-                    } else if byte == open {
-                        depth += 1
-                    } else if byte == close {
-                        depth -= 1
-                        if depth == 0 {
-                            return start ..< index + 1
-                        }
-                    }
-                    index += 1
-                }
-                return nil
-            default:
-                var index = start
-                while index < bytes.count,
-                      bytes[index] != UInt8(ascii: ","),
-                      bytes[index] != UInt8(ascii: "}"),
-                      bytes[index] != UInt8(ascii: "]") {
-                    index += 1
-                }
-                return start ..< index
-            }
-        }
-    }
-
-    private static func findValueStart(forKey key: String, in data: Data) -> Int? {
-        let expectedKey = Array(key.utf8)
-        return data.withUnsafeBytes { rawBuffer -> Int? in
-            let bytes = rawBuffer.bindMemory(to: UInt8.self)
-            var index = 0
-            var objectDepth = 0
-            var arrayDepth = 0
-
-            while index < bytes.count {
-                switch bytes[index] {
-                case UInt8(ascii: "{"):
-                    objectDepth += 1
-                    index += 1
-                case UInt8(ascii: "}"):
-                    objectDepth -= 1
-                    index += 1
-                case UInt8(ascii: "["):
-                    arrayDepth += 1
-                    index += 1
-                case UInt8(ascii: "]"):
-                    arrayDepth -= 1
-                    index += 1
-                case UInt8(ascii: "\""):
-                    let stringStart = index + 1
-                    var cursor = stringStart
-                    var isEscaped = false
-                    while cursor < bytes.count {
-                        let byte = bytes[cursor]
-                        if isEscaped {
-                            isEscaped = false
-                        } else if byte == UInt8(ascii: "\\") {
-                            isEscaped = true
-                        } else if byte == UInt8(ascii: "\"") {
-                            break
-                        }
-                        cursor += 1
-                    }
-                    guard cursor < bytes.count else { return nil }
-
-                    if objectDepth == 1,
-                       arrayDepth == 0,
-                       cursor - stringStart == expectedKey.count,
-                       expectedKey.indices.allSatisfy({ bytes[stringStart + $0] == expectedKey[$0] }) {
-                        var valueStart = cursor + 1
-                        while valueStart < bytes.count, isWhitespace(bytes[valueStart]) {
-                            valueStart += 1
-                        }
-                        if valueStart < bytes.count, bytes[valueStart] == UInt8(ascii: ":") {
-                            valueStart += 1
-                            while valueStart < bytes.count, isWhitespace(bytes[valueStart]) {
-                                valueStart += 1
-                            }
-                            return valueStart
-                        }
-                    }
-                    index = cursor + 1
-                default:
-                    index += 1
-                }
-            }
-            return nil
-        }
-    }
-
-    private static func countEnabledStates(in data: Data) -> (enabled: Int, disabled: Int) {
-        let keyData = Data(#""isEnabled""#.utf8)
-        var enabled = 0
-        var disabled = 0
-        var searchStart = data.startIndex
-
-        while searchStart < data.endIndex,
-              let keyRange = data.range(of: keyData, options: [], in: searchStart ..< data.endIndex) {
-            var cursor = keyRange.upperBound
-            while cursor < data.endIndex, isWhitespace(data[cursor]) {
-                cursor += 1
-            }
-            if cursor < data.endIndex, data[cursor] == UInt8(ascii: ":") {
-                cursor += 1
-                while cursor < data.endIndex, isWhitespace(data[cursor]) {
-                    cursor += 1
-                }
-                if matchesASCII("true", in: data, at: cursor) {
-                    enabled += 1
-                } else if matchesASCII("false", in: data, at: cursor) {
-                    disabled += 1
-                }
-            }
-            searchStart = keyRange.upperBound
-        }
-
-        return (enabled, disabled)
-    }
-
-    private static func matchesASCII(_ string: String, in data: Data, at index: Int) -> Bool {
-        let pattern = Array(string.utf8)
-        guard index + pattern.count <= data.endIndex else { return false }
-        return pattern.indices.allSatisfy { data[index + $0] == pattern[$0] }
-    }
-
-    private static func isWhitespace(_ byte: UInt8) -> Bool {
-        byte == UInt8(ascii: " ") ||
-            byte == UInt8(ascii: "\n") ||
-            byte == UInt8(ascii: "\r") ||
-            byte == UInt8(ascii: "\t")
-    }
-}
-
-// MARK: - Errors
-
-public enum ProfileStoreError: LocalizedError {
-    case loadFailed(String)
-    case saveFailed(String)
-    case cannotDeleteActive
-    case profileNotFound
-    case invalidName(String)
-    case invalidProfileIdentity(String)
-    case partialProfileRequiresHydration
-
-    public var errorDescription: String? {
-        switch self {
-        case let .loadFailed(reason): "Failed to load profiles: \(reason)"
-        case let .saveFailed(reason): "Failed to save profile: \(reason)"
-        case .cannotDeleteActive: "Cannot delete the active profile. Deactivate it first."
-        case .profileNotFound: "Profile not found"
-        case let .invalidName(reason): "Invalid profile name: \(reason)"
-        case let .invalidProfileIdentity(reason): "Invalid profile identity: \(reason)"
-        case .partialProfileRequiresHydration: "The complete profile must be loaded before it can be saved."
         }
     }
 }
