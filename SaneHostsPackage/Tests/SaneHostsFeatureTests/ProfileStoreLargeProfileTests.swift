@@ -47,11 +47,11 @@ struct ProfileStoreLargeProfileTests {
         let baseline = Profile(
             id: Self.baselineProfileID,
             name: "Essentials",
-            entries: [Self.entry(at: 90_000)],
+            entries: [Self.entry(at: 90000)],
             createdAt: Self.fixedDate,
             modifiedAt: Self.fixedDate
         )
-        try fixture.write(try Self.encodedProfile(baseline), profileID: baseline.id)
+        try fixture.write(Self.encodedProfile(baseline), profileID: baseline.id)
 
         let large = Self.largeProfile(id: Self.largeProfileID, name: "Invalid", sortOrder: 1)
         let invalidPayload = try Self.payloadWithInvalidIdentity(
@@ -77,7 +77,7 @@ struct ProfileStoreLargeProfileTests {
         defer { fixture.remove() }
 
         let original = Self.largeProfile(id: Self.largeProfileID, name: "Essentials", sortOrder: 0)
-        try fixture.write(try Self.encodedProfile(original), profileID: original.id)
+        try fixture.write(Self.encodedProfile(original), profileID: original.id)
 
         let store = fixture.makeStore()
         await store.load()
@@ -99,6 +99,40 @@ struct ProfileStoreLargeProfileTests {
         #expect(try Data(contentsOf: fixture.profileURL(for: original.id)) == invalidPayload)
     }
 
+    @Test("Hydration failures are recorded for diagnostics and cleared by the next success")
+    @MainActor
+    func hydrationFailureIsRecordedForDiagnostics() async throws {
+        let fixture = try StorageFixture()
+        defer { fixture.remove() }
+
+        let original = Self.largeProfile(id: Self.largeProfileID, name: "Essentials", sortOrder: 0)
+        let validPayload = try Self.encodedProfile(original)
+        try fixture.write(validPayload, profileID: original.id)
+
+        let store = fixture.makeStore()
+        await store.load()
+        let summary = try #require(store.profiles.first(where: { $0.id == original.id }))
+        #expect(summary.hasPartialEntries)
+        #expect(store.lastHydrationIssue == nil)
+
+        let invalidPayload = try Self.payloadWithInvalidIdentity(for: original, missingIdentity: false)
+        try invalidPayload.write(to: fixture.profileURL(for: original.id), options: .atomic)
+
+        do {
+            _ = try await store.fullProfile(for: summary)
+            Issue.record("Hydration accepted a mismatched profile identity")
+        } catch {
+            // Expected.
+        }
+        let issue = try #require(store.lastHydrationIssue)
+        #expect(issue.contains("Essentials"))
+
+        try validPayload.write(to: fixture.profileURL(for: original.id), options: .atomic)
+        let hydrated = try await store.fullProfile(for: summary)
+        #expect(hydrated.entries == original.entries)
+        #expect(store.lastHydrationIssue == nil)
+    }
+
     @Test("Reordering hydrates summaries and preserves every large-profile entry")
     @MainActor
     func reorderPreservesFullLargeProfile() async throws {
@@ -109,7 +143,7 @@ struct ProfileStoreLargeProfileTests {
         let other = Profile(
             id: Self.alternateProfileID,
             name: "Other",
-            entries: [Self.entry(at: 90_001)],
+            entries: [Self.entry(at: 90001)],
             createdAt: Self.fixedDate,
             modifiedAt: Self.fixedDate,
             sortOrder: 1
@@ -117,7 +151,7 @@ struct ProfileStoreLargeProfileTests {
         let originalPayload = try Self.encodedProfile(large)
         #expect(originalPayload.count > 2 * 1024 * 1024)
         try fixture.write(originalPayload, profileID: large.id)
-        try fixture.write(try Self.encodedProfile(other), profileID: other.id)
+        try fixture.write(Self.encodedProfile(other), profileID: other.id)
 
         let store = fixture.makeStore()
         await store.load()
@@ -156,7 +190,7 @@ struct ProfileStoreLargeProfileTests {
         Profile(
             id: id,
             name: name,
-            entries: (0 ..< 15_000).map { entry(at: $0) },
+            entries: (0 ..< 15000).map { entry(at: $0) },
             createdAt: fixedDate,
             modifiedAt: fixedDate,
             colorTag: .blue,

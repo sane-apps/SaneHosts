@@ -390,14 +390,14 @@ struct RuntimeResourcePolicyTests {
             name: "Large",
             entries: [preview],
             entryCountOverride: 100_000,
-            enabledCountOverride: 90_000,
-            disabledCountOverride: 10_000
+            enabledCountOverride: 90000,
+            disabledCountOverride: 10000
         )
 
         #expect(profile.entryCount == 100_000)
         #expect(profile.hasPartialEntries)
-        #expect(profile.entryCounts.enabled == 90_000)
-        #expect(profile.entryCounts.disabled == 10_000)
+        #expect(profile.entryCounts.enabled == 90000)
+        #expect(profile.entryCounts.disabled == 10000)
     }
 
     @Test("Large profile operations load full profile content before destructive or exported writes")
@@ -426,12 +426,15 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
         let importSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/RemoteImportSheet+Import.swift"))
         let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
+        let directoryLoaderSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileDirectoryLoader.swift"))
+        let summaryLoaderSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/LargeProfileSummaryLoader.swift"))
 
-        #expect(storeSource.contains("largeProfileSummaryThresholdBytes"))
-        #expect(storeSource.contains("LargeProfileSummaryLoader.loadSummary"))
-        #expect(storeSource.contains("largeProfilePreviewEntryLimit"))
-        #expect(storeSource.contains("Data(contentsOf: url, options: [.mappedIfSafe])"))
+        #expect(directoryLoaderSource.contains("largeProfileSummaryThresholdBytes"))
+        #expect(directoryLoaderSource.contains("LargeProfileSummaryLoader.loadSummary"))
+        #expect(directoryLoaderSource.contains("largeProfilePreviewEntryLimit"))
+        #expect(summaryLoaderSource.contains("Data(contentsOf: url, options: [.mappedIfSafe])"))
         #expect(!storeSource.contains("String(decoding: data"))
+        #expect(!summaryLoaderSource.contains("String(decoding: data"))
         #expect(importSource.contains("let maxImportedEntries = 500_000"))
         #expect(importSource.contains("try Task.checkCancellation()"))
         #expect(importSource.contains("guard allEntries.count < maxImportedEntries else { break }"))
@@ -470,12 +473,13 @@ struct CustomerUIManifestPolicyTests {
         let manifest = try String(contentsOf: repoRoot.appendingPathComponent("Tests/CustomerUIActions.yml"))
 
         guard let bulkStart = manifest.range(of: "- id: bulk-entry-actions"),
-              let settingsStart = manifest.range(of: "- id: settings-license-about-update-support") else {
+              let settingsStart = manifest.range(of: "- id: settings-license-about-update-support")
+        else {
             Issue.record("Customer UI manifest is missing the expected bulk/settings action boundaries")
             return
         }
 
-        let bulkBlock = manifest[bulkStart.lowerBound..<settingsStart.lowerBound]
+        let bulkBlock = manifest[bulkStart.lowerBound ..< settingsStart.lowerBound]
         #expect(bulkBlock.contains("required_evidence_types:"))
         #expect(bulkBlock.contains("- screenshot"))
         #expect(bulkBlock.contains("- fixture"))
