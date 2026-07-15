@@ -37,8 +37,8 @@ extension MainView {
                 // Primary free path: one-click protection with Essentials selected by default.
                 if let primaryProfile = selectedProfile ?? store.profiles.first {
                     QuickActionButton(
-                        title: primaryProfile.isActive ? "Disable Protection" : "Enable Protection",
-                        subtitle: primaryProfile.isActive ? "Restore original hosts file" : "Apply \(primaryProfile.name) in one click",
+                        title: primaryProfile.isActive ? ProtectionUXCopy.turnOffActionTitle : "Enable Protection",
+                        subtitle: primaryProfile.isActive ? ProtectionUXCopy.quickDeactivationImpact : "Apply \(primaryProfile.name) in one click",
                         icon: primaryProfile.isActive ? "shield.slash.fill" : "shield.checkered",
                         color: primaryProfile.isActive ? .orange : .green
                     ) {

@@ -36,7 +36,7 @@
 | **Shared UI** | `~/SaneApps/infra/SaneUI/` |
 | **Hooks/tooling** | `~/SaneApps/infra/SaneProcess/` |
 
-**Sister apps:** SaneBar, SaneClip, SaneVideo, SaneSync, SaneAI, SaneClick, SaneSales, SaneScan, Sane Mac Utilities Bundle
+**Sister apps:** SaneBar, SaneClip, SaneVideo, SaneSync, SaneAI, SaneClick, SaneSales, SaneScan, SaneLot, Sane Mac Utilities Bundle
 
 ---
 
@@ -125,7 +125,8 @@ Use Serena for project-specific knowledge:
 read_memory  # Check past learnings
 write_memory # Save important findings
 ```
-For cross-project knowledge graph, use official Memory MCP tools.
+For cross-project context, use AgentMemory `memory_recall`/`memory_smart_search`
+and persist durable facts with `memory_save`; the legacy graph MCP is retired.
 
 ### apple-docs Optimization
 - `compact: true` works on `list_technologies`, `get_sample_code`, `wwdc` (NOT on `search_apple_docs`)

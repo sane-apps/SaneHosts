@@ -42,7 +42,7 @@ extension MainView {
             Button {
                 deactivateProfile()
             } label: {
-                Label("Deactivate", systemImage: SaneIcons.deactivate)
+                Label(ProtectionUXCopy.turnOffActionTitle, systemImage: SaneIcons.deactivate)
             }
         } else {
             Button {
@@ -54,22 +54,22 @@ extension MainView {
 
         Divider()
 
-            Button {
-                if licenseService.isPro {
-                    Task {
-                        if let newProfile = try? await store.duplicate(profile: profile) {
-                            selectedProfileIDs = [newProfile.id]
-                        }
+        Button {
+            if licenseService.isPro {
+                Task {
+                    if let newProfile = try? await store.duplicate(profile: profile) {
+                        selectedProfileIDs = [newProfile.id]
                     }
-                } else {
-                    proUpsellFeature = .duplicateProfile
                 }
-            } label: {
-                Label(
-                    licenseService.isPro ? "Duplicate" : "Duplicate (Locked)",
-                    systemImage: licenseService.isPro ? SaneIcons.duplicate : "lock.fill"
-                )
+            } else {
+                proUpsellFeature = .duplicateProfile
             }
+        } label: {
+            Label(
+                licenseService.isPro ? "Duplicate" : "Duplicate (Locked)",
+                systemImage: licenseService.isPro ? SaneIcons.duplicate : "lock.fill"
+            )
+        }
 
         Button {
             exportProfile(profile)
@@ -84,7 +84,8 @@ extension MainView {
             if selectedProfileIDs.count > 1, selectedProfileIDs.contains(profile.id) {
                 deleteWithConfirmation()
             } else {
-                deleteProfile(profile)
+                selectedProfileIDs = [profile.id]
+                deleteWithConfirmation()
             }
         } label: {
             // Show count if multiple selected and this profile is in selection
@@ -118,12 +119,17 @@ extension MainView {
                     withAnimation { showingActivationSuccess = true }
                 }
             } catch {
+                guard let message = HostsServiceError.actionErrorMessage(
+                    for: error,
+                    action: "Couldn’t activate \(profile.name)"
+                ) else { return }
+
                 // If hosts write succeeded but markAsActive failed, the hosts file is
                 // already modified. Attempt to sync state so UI reflects reality.
                 if HostsService.shared.lastError == nil {
                     try? await store.markAsActive(profile: try await store.fullProfile(for: profile))
                 }
-                activationError = error.localizedDescription
+                activationError = message
             }
         }
     }
@@ -143,22 +149,17 @@ extension MainView {
                     activationWarning = warning
                 }
             } catch {
+                guard let message = HostsServiceError.actionErrorMessage(
+                    for: error,
+                    action: "Couldn’t turn off protection"
+                ) else { return }
+
                 // If hosts write succeeded but local state failed, retry the local
                 // state update so the UI does not keep showing protection active.
                 if HostsService.shared.lastError == nil {
                     try? await store.deactivate()
                 }
-                activationError = error.localizedDescription
-            }
-        }
-    }
-
-    func deleteProfile(_ profile: Profile) {
-        Task {
-            try? await store.delete(profile: profile)
-            selectedProfileIDs.remove(profile.id)
-            if selectedProfileIDs.isEmpty, let first = store.profiles.first {
-                selectedProfileIDs = [first.id]
+                activationError = message
             }
         }
     }
@@ -188,7 +189,7 @@ extension MainView {
         // Count deletable (non-active) profiles
         let deletableCount = selectedProfiles.filter { !$0.isActive }.count
         if deletableCount == 0 {
-            activationError = "Cannot delete active profiles. Deactivate them first."
+            activationError = "Cannot delete active profiles. Turn off protection first."
             return
         }
         showingDeleteConfirmation = true

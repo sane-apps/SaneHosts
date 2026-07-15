@@ -69,7 +69,7 @@ actions:
   - Open the SaneHosts menu bar extra on the Mini.
   - Verify active and inactive states render.
   - Verify each profile row can request activation.
-  - Verify Deactivate is present only when an active profile exists.
+  - Verify Turn Off Protection is present only when an active profile exists.
   - Verify utility items open the shared customer surfaces or are safely cancelable.
   assertions:
   - Profile actions call the shared profile store and hosts service routes.
@@ -124,11 +124,11 @@ actions:
   steps:
   - Open the Dock menu and app commands from the Mini.
   - Exercise Open SaneHosts, New Profile, Import Blocklist, Show Tutorial, Settings,
-    License, About, Check for Updates, and Deactivate All where safe.
+    License, About, Check for Updates, and Turn Off Protection where safe.
   - Cancel or stop before destructive/external completion.
   assertions:
   - Dock and app menu items are present and wired to shared window/settings openers.
-  - Deactivate All calls the same hosts/profile deactivation paths as other surfaces.
+  - Turn Off Protection calls the same hosts/profile deactivation paths as other surfaces.
   - Check for Updates is disabled or cancelable when direct-update eligibility is
     not available.
   evidence:
@@ -163,11 +163,11 @@ actions:
   user_inputs:
   - Open the Dock menu and app commands from the Mini.
   - Exercise Open SaneHosts, New Profile, Import Blocklist, Show Tutorial, Settings,
-    License, About, Check for Updates, and Deactivate All where safe.
+    License, About, Check for Updates, and Turn Off Protection where safe.
   - Cancel or stop before destructive/external completion.
   expected_outputs:
   - Dock and app menu items are present and wired to shared window/settings openers.
-  - Deactivate All calls the same hosts/profile deactivation paths as other surfaces.
+  - Turn Off Protection calls the same hosts/profile deactivation paths as other surfaces.
   - Check for Updates is disabled or cancelable when direct-update eligibility is
     not available.
 - id: quick-actions-and-basic-pro-gates
@@ -178,7 +178,7 @@ actions:
   - Pro upsell sheet
   - Protection Levels section
   steps:
-  - Verify Enable Protection or Disable Protection appears for the selected profile.
+  - Verify Enable Protection or Turn Off Protection appears for the selected profile.
   - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
     protection levels in active-trial and paid Pro modes.
@@ -214,7 +214,7 @@ actions:
     fixture_paths:
     - Tests/Fixtures/customer-ui/hosts-workspace/
   user_inputs:
-  - Verify Enable Protection or Disable Protection appears for the selected profile.
+  - Verify Enable Protection or Turn Off Protection appears for the selected profile.
   - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
     protection levels in active-trial and paid Pro modes.
@@ -342,10 +342,10 @@ actions:
     /etc/hosts
   surfaces:
   - Enable Protection quick action
-  - Activate and Deactivate profile buttons
+  - Activate and Turn Off Protection profile buttons
   - Profile context menu activation
   - Menu bar activation and deactivation
-  - Deactivate All command
+  - Turn Off Protection command
   steps:
   - Verify every activation/deactivation control reaches HostsService or MenuBarProfileStore.
   - Validate generated hosts content through isolated tests.

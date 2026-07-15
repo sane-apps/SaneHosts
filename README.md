@@ -10,9 +10,9 @@
 
 > **⭐ Star this repo if it's useful!** · **[Start a free 14-day Pro trial](https://sanehosts.com)** · **[Buy Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
 
-SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, just deactivate.
+SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, turn off protection.
 
-**Current direct release: 1.1.20.** The Mac app starts with a free 14-day Pro trial; after that, Pro is required and remains a one-time $14.99 purchase.
+**Current direct release: 1.1.21.** The Mac app starts with a free 14-day Pro trial; after that, Pro is required and remains a one-time $14.99 purchase.
 
 ## Features
 
@@ -31,7 +31,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 - **Profile Management** - Create and manage multiple hosts configurations with color tagging
 - **200+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, OISD, and 10+ categories. SaneHosts is an **officially listed tool** in the upstream StevenBlack/hosts repository.
 - **Guided Setup** - Coach mark tutorial walks you through activation on first launch
-- **Remote Import** - Import hosts from any URL or paste custom blocklist URLs
+- **Remote Import** - Import curated sources or custom HTTPS blocklist URLs
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles
 - **Menu Bar Access** - Quick profile switching from the menu bar
@@ -79,7 +79,7 @@ See [sanehosts.com](https://sanehosts.com) for screenshots and demo.
 | `⌘M` | Merge Selected Profiles |
 | `⌘E` | Export Profile |
 | `⌘⇧A` | Activate Profile |
-| `⌘⇧D` | Deactivate All |
+| `⌘⇧D` | Turn Off Protection… |
 | `⌘⌫` | Delete Profile |
 | `Delete` | Delete Selected (in list) |
 

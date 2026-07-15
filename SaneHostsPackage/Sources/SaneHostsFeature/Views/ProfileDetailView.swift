@@ -116,12 +116,12 @@ struct ProfileDetailView: View {
                         } label: {
                             HStack(spacing: 6) {
                                 Image(systemName: SaneIcons.deactivate)
-                                Text("Deactivate")
+                                Text(ProtectionUXCopy.turnOffActionTitle)
                             }
                         }
                         .buttonStyle(SaneActionButtonStyle(destructive: true))
-                        .accessibilityLabel("Deactivate profile")
-                        .accessibilityHint("Double-tap to deactivate this profile")
+                        .accessibilityLabel(ProtectionUXCopy.turnOffActionTitle)
+                        .accessibilityHint("Removes this profile’s rules while leaving standard hosts entries")
                     } else {
                         Button {
                             onActivate()
@@ -143,6 +143,22 @@ struct ProfileDetailView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 10)
+
+                if profile.isActive {
+                    CompactDivider()
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(ProtectionUXCopy.activePersistence)
+                        Text(ProtectionUXCopy.authenticationRequirement)
+                        Text(ProtectionUXCopy.deactivationImpact)
+                    }
+                    .font(.callout)
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 10)
+                    .accessibilityElement(children: .combine)
+                }
 
                 CompactDivider()
 

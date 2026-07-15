@@ -1,6 +1,44 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-07-15 (early)
+**Last updated:** 2026-07-15
+
+## FIXED IN SOURCE: Glenn large-profile activation failures (pending release)
+
+- Glenn's July 14-15 support emails `#1139` and `#1141` showed the same failure
+  for Kitchen Sink and Steven Black Unified: activation tried to open a profile
+  JSON file named after an entry UUID that never existed. Reproduced against a
+  real 61 MB profile. The large-profile summary reader was finding the first
+  nested `entries[].id` instead of the top-level profile `id` whenever encoded
+  key order put `entries` first.
+- `ProfileStore` now treats the profile filename UUID as canonical, validates
+  stored IDs on every load/hydration path, quarantines malformed or mismatched
+  files, and refuses to save a 100-entry partial summary over the full profile.
+  Reordering hydrates before writing, closing the adjacent data-loss risk.
+- Added `ProfileStoreLargeProfileTests`: both JSON key orders, reload and full
+  hydration, malformed/mismatched identity recovery, partial-save protection,
+  and reorder preservation. Mini `SaneMaster verify` is green: **113 tests**,
+  receipt `f607dda3fb263faaa4526ad33907689e`.
+- Easy wins shipped in source with the repair: the UI now says protection stays
+  active after SaneHosts closes/quits, says exactly how deactivation/profile
+  switching is authenticated, labels the action `Turn Off Protection…`, keeps
+  user-cancelled authentication quiet, and routes profile deletion through a
+  confirmation. The existing Pro padlock fix remains covered.
+- Runtime proof on the Mini: customer action sweep **11/11 green**, receipt
+  `00735bebcfee5a95d20c2acd0eadcb42`; isolated visual smoke **green**, receipt
+  `5959fa99bde4d91a616f1979b1b45ce5`; clean capture at
+  `outputs/visual-audit-glenn/visual_smoke_20260715-074808_98547/app-see.png`.
+  The live log has no activation/file-identity/partial-profile errors.
+- No release or customer email has been sent. Recommend shipping this as
+  **1.1.22** (Sparkle requires a new version), then send one consolidated reply
+  to Glenn and ask him to retest both lists. A separate parent-only passcode is
+  deliberately deferred: current behavior persists through quit/restart and
+  uses Touch ID or the Mac account password, but is not a tamper-proof parental
+  control boundary.
+- Support-media caveat: the current inbox classifier skipped Glenn's inline
+  screenshots as decorative, so `confirm-media-review` cannot issue its normal
+  semantic receipt even though the screenshots were manually downloaded and
+  inspected. Keep `#1139` and `#1141` open; do not reply/resolve until the gate
+  has a valid receipt or the owner explicitly approves the documented exception.
 
 ## SHIPPED: 1.1.21 Sparkle channel LIVE
 
@@ -16,9 +54,8 @@
   old files. Then rerun `release.sh --project ~/SaneApps/apps/SaneHosts
   --version 1.1.21 --post-release-checks-only` to confirm green. (This is the
   standing manual per-release LS step, not a new bug.)
-- Glenn reply drafted at `~/SaneApps/outputs/glenn-1136-padlock-reply.txt`;
-  awaiting owner approval to send (owner pre-approved pending live; appcast
-  is live). Email #1136.
+- The older standalone Glenn `#1136` padlock reply is superseded by the pending
+  consolidated response covering `#1136`, `#1139`, and `#1141`.
 
 
 ## Current State

@@ -44,6 +44,14 @@ enum MainViewSelectionPolicy {
     }
 }
 
+public enum ProtectionUXCopy {
+    public static let turnOffActionTitle = "Turn Off Protection…"
+    public static let activePersistence = "Protection stays active when SaneHosts is closed or quit."
+    public static let authenticationRequirement = "Turning it off or switching profiles requires Touch ID or your Mac account password."
+    public static let deactivationImpact = "Turning it off removes this profile’s rules while leaving standard hosts entries."
+    public static let quickDeactivationImpact = "Removes profile rules; keeps standard hosts entries"
+}
+
 /// Main view with sidebar navigation - SaneClip design language
 public struct MainView: View {
     var store: ProfileStore {
@@ -129,7 +137,7 @@ public struct MainView: View {
                 selectedPreset = nil
             }
         }
-        .alert("Activation Failed", isPresented: .constant(activationError != nil)) {
+        .alert("Action Failed", isPresented: .constant(activationError != nil)) {
             Button("OK") { activationError = nil }
         } message: {
             Text(activationError ?? "")
@@ -169,7 +177,7 @@ public struct MainView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             if selectedProfiles.contains(where: \.isActive) {
-                Text("Cannot delete active profiles. Deactivate them first.")
+                Text("Cannot delete active profiles. Turn off protection first.")
             } else {
                 Text("This action cannot be undone.")
             }
@@ -218,7 +226,7 @@ public struct MainView: View {
                     .keyboardShortcut(.delete, modifiers: .command)
                 Button("Activate", action: activateFirstSelected)
                     .keyboardShortcut("a", modifiers: [.command, .shift])
-                Button("Deactivate", action: deactivateProfile)
+                Button(ProtectionUXCopy.turnOffActionTitle, action: deactivateProfile)
                     .keyboardShortcut("d", modifiers: [.command, .shift])
             }
         }

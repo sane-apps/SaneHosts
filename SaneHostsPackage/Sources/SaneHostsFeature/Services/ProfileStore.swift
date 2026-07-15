@@ -45,9 +45,14 @@ public final class ProfileStore {
 
     private let fileManager = FileManager.default
     private let parser = HostsParser()
+    private let profilesDirectoryOverrideURL: URL?
+    private let backupsDirectoryOverrideURL: URL?
 
     /// URL for storing profiles
     private var profilesDirectoryURL: URL {
+        if let profilesDirectoryOverrideURL {
+            return profilesDirectoryOverrideURL
+        }
         guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             fatalError("Application Support directory unavailable")
         }
@@ -56,6 +61,9 @@ public final class ProfileStore {
 
     /// URL for profile backups (crash resilience)
     private var backupsDirectoryURL: URL {
+        if let backupsDirectoryOverrideURL {
+            return backupsDirectoryOverrideURL
+        }
         guard let appSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             fatalError("Application Support directory unavailable")
         }
@@ -63,17 +71,36 @@ public final class ProfileStore {
     }
 
     /// URL for the system hosts file
-    private let systemHostsURL = URL(fileURLWithPath: "/etc/hosts")
+    private let systemHostsURL: URL
 
     /// Maximum number of backups to keep per profile
     private let maxBackupsPerProfile = 3
     private let maxSystemHostsBytes: Int64 = 25 * 1024 * 1024
-    private let largeProfilePreviewEntryLimit = 100
-    private let largeProfileSummaryThresholdBytes: Int64 = 2 * 1024 * 1024
+    private let largeProfilePreviewEntryLimit: Int
+    private let largeProfileSummaryThresholdBytes: Int64
 
     // MARK: - Initialization
 
-    public init() {}
+    public init() {
+        profilesDirectoryOverrideURL = nil
+        backupsDirectoryOverrideURL = nil
+        systemHostsURL = URL(fileURLWithPath: "/etc/hosts")
+        largeProfilePreviewEntryLimit = 100
+        largeProfileSummaryThresholdBytes = 2 * 1024 * 1024
+    }
+
+    init(
+        storageRootURL: URL,
+        systemHostsURL: URL,
+        largeProfilePreviewEntryLimit: Int = 100,
+        largeProfileSummaryThresholdBytes: Int64 = 2 * 1024 * 1024
+    ) {
+        profilesDirectoryOverrideURL = storageRootURL.appendingPathComponent("Profiles", isDirectory: true)
+        backupsDirectoryOverrideURL = storageRootURL.appendingPathComponent("Backups", isDirectory: true)
+        self.systemHostsURL = systemHostsURL
+        self.largeProfilePreviewEntryLimit = largeProfilePreviewEntryLimit
+        self.largeProfileSummaryThresholdBytes = largeProfileSummaryThresholdBytes
+    }
 
     // MARK: - Loading
 
@@ -241,6 +268,10 @@ public final class ProfileStore {
                 do {
                     let data = try Data(contentsOf: backup)
                     let profile = try JSONDecoder().decode(Profile.self, from: data)
+                    guard profile.id == id else {
+                        logger.debug(" Ignoring backup with mismatched profile identity: \(backup.lastPathComponent)")
+                        continue
+                    }
                     logger.debug(" Recovered profile from backup: \(backup.lastPathComponent)")
                     return profile
                 } catch {
@@ -295,6 +326,10 @@ public final class ProfileStore {
 
             for file in jsonFiles {
                 do {
+                    guard let canonicalID = UUID(uuidString: file.deletingPathExtension().lastPathComponent) else {
+                        throw ProfileStoreError.invalidProfileIdentity("Profile filename is not a UUID")
+                    }
+
                     // Validate JSON structure before decoding
                     let values = try file.resourceValues(forKeys: [.fileSizeKey])
                     let fileSize = values.fileSize ?? 0
@@ -314,6 +349,9 @@ public final class ProfileStore {
                         }
 
                         profile = try JSONDecoder().decode(Profile.self, from: data)
+                        guard profile.id == canonicalID else {
+                            throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its filename")
+                        }
                     }
 
                     // Basic validation: ensure profile has required data
@@ -363,7 +401,11 @@ public final class ProfileStore {
         let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
         return try await Task.detached(priority: .userInitiated) {
             let data = try Data(contentsOf: fileURL)
-            return try JSONDecoder().decode(Profile.self, from: data)
+            let fullProfile = try JSONDecoder().decode(Profile.self, from: data)
+            guard fullProfile.id == profile.id else {
+                throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its summary or filename")
+            }
+            return fullProfile
         }.value
     }
 
@@ -490,6 +532,9 @@ public final class ProfileStore {
     }
 
     private func writeProfile(_ profile: Profile, to fileURL: URL) async throws {
+        guard !profile.hasPartialEntries else {
+            throw ProfileStoreError.partialProfileRequiresHydration
+        }
         try await Task.detached(priority: .userInitiated) {
             var toEncode = profile
             toEncode.modifiedAt = Date()
@@ -513,6 +558,9 @@ public final class ProfileStore {
 
     /// Save a profile to disk
     public func save(profile: Profile) async throws {
+        guard !profile.hasPartialEntries else {
+            throw ProfileStoreError.partialProfileRequiresHydration
+        }
         var updatedProfile = profile
         updatedProfile.modifiedAt = Date()
 
@@ -651,7 +699,7 @@ public final class ProfileStore {
         // Reassign sort orders based on new positions
         for (index, profile) in profiles.enumerated() {
             if profile.sortOrder != index {
-                var updated = profile
+                var updated = try await fullProfile(for: profile)
                 updated.sortOrder = index
                 try await save(profile: updated)
             }
@@ -723,25 +771,7 @@ public final class ProfileStore {
 
         var updated = current
         updated.entries.append(contentsOf: limitedEntries)
-
-        // Perform encoding on background thread to avoid blocking UI
-        let profileToSave = updated
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profileToSave.id.uuidString).json")
-
-        try await Task.detached(priority: .userInitiated) {
-            var toEncode = profileToSave
-            toEncode.modifiedAt = Date()
-            let data = try JSONEncoder().encode(toEncode)
-            try data.write(to: fileURL, options: .atomic)
-            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
-        }.value
-
-        // Update in-memory list on main actor
-        updated.modifiedAt = Date()
-        if let index = profiles.firstIndex(where: { $0.id == profile.id }) {
-            profiles[index] = updated
-        }
-        notifyChange()
+        try await save(profile: updated)
     }
 
     /// Remove an entry from a profile
@@ -856,6 +886,15 @@ private enum LargeProfileSummaryLoader {
         guard !data.isEmpty else {
             throw ProfileStoreError.loadFailed("Profile file is empty")
         }
+        guard let canonicalID = UUID(uuidString: url.deletingPathExtension().lastPathComponent) else {
+            throw ProfileStoreError.invalidProfileIdentity("Profile filename is not a UUID")
+        }
+        guard let storedID = decodeValue(UUID.self, key: "id", in: data) else {
+            throw ProfileStoreError.invalidProfileIdentity("Profile payload is missing a top-level ID")
+        }
+        guard storedID == canonicalID else {
+            throw ProfileStoreError.invalidProfileIdentity("Stored profile ID does not match its filename")
+        }
 
         let previewEntries = try decodePreviewEntries(from: data, limit: previewEntryLimit)
         let counts = countEnabledStates(in: data)
@@ -864,7 +903,7 @@ private enum LargeProfileSummaryLoader {
         let entryCount = max(enabledCount + disabledCount, previewEntries.count)
 
         return Profile(
-            id: decodeValue(UUID.self, key: "id", in: data) ?? UUID(),
+            id: canonicalID,
             name: decodeValue(String.self, key: "name", in: data) ?? "Untitled Profile",
             entries: previewEntries,
             isActive: decodeValue(Bool.self, key: "isActive", in: data) ?? false,
@@ -1031,27 +1070,67 @@ private enum LargeProfileSummaryLoader {
     }
 
     private static func findValueStart(forKey key: String, in data: Data) -> Int? {
-        let keyData = Data(#""\#(key)""#.utf8)
-        var searchStart = data.startIndex
+        let expectedKey = Array(key.utf8)
+        return data.withUnsafeBytes { rawBuffer -> Int? in
+            let bytes = rawBuffer.bindMemory(to: UInt8.self)
+            var index = 0
+            var objectDepth = 0
+            var arrayDepth = 0
 
-        while searchStart < data.endIndex,
-              let keyRange = data.range(of: keyData, options: [], in: searchStart ..< data.endIndex) {
-            var cursor = keyRange.upperBound
-            while cursor < data.endIndex, isWhitespace(data[cursor]) {
-                cursor += 1
+            while index < bytes.count {
+                switch bytes[index] {
+                case UInt8(ascii: "{"):
+                    objectDepth += 1
+                    index += 1
+                case UInt8(ascii: "}"):
+                    objectDepth -= 1
+                    index += 1
+                case UInt8(ascii: "["):
+                    arrayDepth += 1
+                    index += 1
+                case UInt8(ascii: "]"):
+                    arrayDepth -= 1
+                    index += 1
+                case UInt8(ascii: "\""):
+                    let stringStart = index + 1
+                    var cursor = stringStart
+                    var isEscaped = false
+                    while cursor < bytes.count {
+                        let byte = bytes[cursor]
+                        if isEscaped {
+                            isEscaped = false
+                        } else if byte == UInt8(ascii: "\\") {
+                            isEscaped = true
+                        } else if byte == UInt8(ascii: "\"") {
+                            break
+                        }
+                        cursor += 1
+                    }
+                    guard cursor < bytes.count else { return nil }
+
+                    if objectDepth == 1,
+                       arrayDepth == 0,
+                       cursor - stringStart == expectedKey.count,
+                       expectedKey.indices.allSatisfy({ bytes[stringStart + $0] == expectedKey[$0] }) {
+                        var valueStart = cursor + 1
+                        while valueStart < bytes.count, isWhitespace(bytes[valueStart]) {
+                            valueStart += 1
+                        }
+                        if valueStart < bytes.count, bytes[valueStart] == UInt8(ascii: ":") {
+                            valueStart += 1
+                            while valueStart < bytes.count, isWhitespace(bytes[valueStart]) {
+                                valueStart += 1
+                            }
+                            return valueStart
+                        }
+                    }
+                    index = cursor + 1
+                default:
+                    index += 1
+                }
             }
-            guard cursor < data.endIndex, data[cursor] == UInt8(ascii: ":") else {
-                searchStart = keyRange.upperBound
-                continue
-            }
-            cursor += 1
-            while cursor < data.endIndex, isWhitespace(data[cursor]) {
-                cursor += 1
-            }
-            return cursor
+            return nil
         }
-
-        return nil
     }
 
     private static func countEnabledStates(in data: Data) -> (enabled: Int, disabled: Int) {
@@ -1105,6 +1184,8 @@ public enum ProfileStoreError: LocalizedError {
     case cannotDeleteActive
     case profileNotFound
     case invalidName(String)
+    case invalidProfileIdentity(String)
+    case partialProfileRequiresHydration
 
     public var errorDescription: String? {
         switch self {
@@ -1113,6 +1194,8 @@ public enum ProfileStoreError: LocalizedError {
         case .cannotDeleteActive: "Cannot delete the active profile. Deactivate it first."
         case .profileNotFound: "Profile not found"
         case let .invalidName(reason): "Invalid profile name: \(reason)"
+        case let .invalidProfileIdentity(reason): "Invalid profile identity: \(reason)"
+        case .partialProfileRequiresHydration: "The complete profile must be loaded before it can be saved."
         }
     }
 }
