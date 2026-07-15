@@ -5,6 +5,12 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.22] - 2026-07-15
+
+Fixed: very large blocklists like Kitchen Sink and Steven Black Unified now activate reliably. The active-profile card explains that protection stays on when the app quits, the action is now Turn Off Protection, and deleting a profile asks first. Thanks again to a sharp-eyed customer.
+
+---
+
 ## [1.1.21] - 2026-07-14
 
 Fixed: the Pro Features padlock in the sidebar now opens once Pro is active. Thanks to a sharp-eyed customer report.
