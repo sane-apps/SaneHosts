@@ -50,7 +50,7 @@ class CustomerUIActionSweep
     'menu-bar-profile-actions' => {
       source: [
         ['SaneHosts/SaneHostsApp.swift', 'struct MenuBarMenuContent'],
-        ['SaneHosts/SaneHostsApp.swift', 'Button("Deactivate")'],
+        ['SaneHosts/SaneHostsApp.swift', 'Button(ProtectionUXCopy.turnOffActionTitle)'],
         ['SaneHosts/SaneHostsApp.swift', 'ForEach(store.profiles)'],
         ['SaneHosts/SaneHostsApp.swift', 'Task { await store.activateProfile(profile) }'],
         ['SaneHosts/SaneHostsApp.swift', 'Button(SaneStandardMenu.settingsTitle)'],
@@ -72,7 +72,7 @@ class CustomerUIActionSweep
         ['SaneHosts/SaneHostsApp.swift', 'Button("New Profile")'],
         ['SaneHosts/SaneHostsApp.swift', 'Button("Import Blocklist...")'],
         ['SaneHosts/SaneHostsApp.swift', 'Button("Show Tutorial")'],
-        ['SaneHosts/SaneHostsApp.swift', 'Button("Deactivate All")'],
+        ['SaneHosts/SaneHostsApp.swift', 'Button(ProtectionUXCopy.turnOffActionTitle)'],
         ['SaneHosts/SaneHostsApp.swift', 'func applicationDockMenu'],
         ['SaneHosts/SaneHostsApp.swift', 'SaneStandardMenu.openAppItem'],
         ['SaneHosts/SaneHostsApp.swift', 'SaneStandardMenu.addCoreUtilityItems']
@@ -82,7 +82,7 @@ class CustomerUIActionSweep
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/NavigationSourceTests.swift', 'directUpdateAction']
       ],
       blocked_completion: [
-        'Deactivate All is verified to reach the deactivation route only; this sweep does not perform a privileged hosts-file restore.',
+        'Turn Off Protection is verified to reach the deactivation route only; this sweep does not perform a privileged hosts-file write.',
         'Update checks are verified as safe surfaces only.'
       ]
     },
@@ -97,14 +97,18 @@ class CustomerUIActionSweep
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .importProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .multipleProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .downloadablePresets'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .profileMerge']
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .profileMerge'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'ProFeature.sectionIcon(isPro: licenseService.isPro)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'Text(ProtectionUXCopy.activePersistence)']
       ],
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicCannotOpenRemoteImport'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'proCanOpenRemoteImport'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialDoesNotFallBackToBasic'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialMenuRoutesProfileActivationToMainWindowGate'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'trialCountdownCopy']
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'trialCountdownCopy'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'activeProtectionCopyIsWiredIntoUI'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/ProSectionIconTests.swift', 'sidebarPassesLiveLicenseStateToPadlock']
       ]
     },
     'profile-lifecycle-actions' => {
@@ -120,7 +124,8 @@ class CustomerUIActionSweep
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'createBasicProfile'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'profileSourceDisplayNames'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'existingSelectionIsPreserved']
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'existingSelectionIsPreserved'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'singleProfileDeletionUsesConfirmation']
       ],
       blocked_completion: [
         'Export is verified to the save/open panel surface only; this sweep does not write customer-selected files outside an isolated destination.',
@@ -160,7 +165,9 @@ class CustomerUIActionSweep
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'hostsContentValidatorRejectsInjectedLines'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'hostsContentValidatorAcceptsGeneratedContent'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'mergeSanitizesProfileName']
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'mergeSanitizesProfileName'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'userCancellationIsQuiet'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'activationSurfacesUseQuietCancellationMapping']
       ],
       blocked_completion: [
         'Full activation/deactivation requires administrator authorization and writes /etc/hosts; this sweep verifies the safe first surface and isolated generated-content fixtures only.'

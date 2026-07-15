@@ -211,7 +211,7 @@ This is the standard protocol for investigating problems. Used by Rule #3, Circu
 | **apple-docs MCP** | Verify Apple APIs exist and usage | Any Apple framework API |
 | **WebSearch/WebFetch** | Solutions, patterns, best practices, third-party library docs | Error messages, architectural questions, non-Apple packages |
 | **Grep/Glob/Read** | Local investigation | Find similar patterns, check implementations |
-| **memory MCP** | Past bug patterns, architecture decisions | "Have we seen this before?" |
+| **AgentMemory** | Shared bug patterns and architecture decisions | `memory_recall` / `memory_smart_search` |
 
 ### Research Output -> Plan
 
@@ -405,13 +405,14 @@ Use the unified SaneMaster workflow for build/test:
 ./scripts/SaneMaster.rb logs --follow
 ```
 
-### Memory MCP 3-Layer Workflow (10x Token Savings)
+### AgentMemory Recall Workflow
 ```
-1. search_nodes(query, project: "SaneHosts") -> Get index with node IDs
-2. Use node IDs to fetch specific context
-3. read_graph() -> Full graph only if needed
+1. mcp__agentmemory__memory_smart_search(query: "SaneHosts ...")
+2. Expand only relevant observation IDs when more detail is needed
+3. Use mcp__agentmemory__memory_recall for broader session context
 ```
-**Always filter by project for isolation.**
+Use Serena for project-scoped long-form notes. Graph extraction is optional and
+intentionally off; do not use the retired `mcp__memory__*` namespace.
 
 ### apple-docs Optimization
 - `compact: true` works on `list_technologies`, `get_sample_code`, `wwdc` (NOT on `search_apple_docs`)

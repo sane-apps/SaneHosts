@@ -224,6 +224,21 @@ public enum HostsServiceError: LocalizedError {
     case userCancelled
     case writeInProgress
 
+    /// Returns no customer-facing message when the user dismisses macOS
+    /// authentication. All real failures remain visible with action context.
+    public static func actionErrorMessage(for error: Error, action: String) -> String? {
+        if let serviceError = error as? HostsServiceError {
+            switch serviceError {
+            case .userCancelled:
+                return nil
+            default:
+                break
+            }
+        }
+
+        return "\(action): \(error.localizedDescription)"
+    }
+
     public var errorDescription: String? {
         switch self {
         case .tempFileWriteFailed(let reason):

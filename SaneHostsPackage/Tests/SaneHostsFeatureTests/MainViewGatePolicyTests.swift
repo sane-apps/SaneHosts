@@ -58,6 +58,90 @@ struct MainViewGatePolicyTests {
         #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: nil) == nil)
     }
 
+    @Test("Protection copy matches the actual hosts write and authentication behavior")
+    func protectionCopyIsTruthful() {
+        #expect(ProtectionUXCopy.turnOffActionTitle == "Turn Off Protection…")
+        #expect(ProtectionUXCopy.activePersistence == "Protection stays active when SaneHosts is closed or quit.")
+        #expect(ProtectionUXCopy.authenticationRequirement == "Turning it off or switching profiles requires Touch ID or your Mac account password.")
+        #expect(ProtectionUXCopy.deactivationImpact == "Turning it off removes this profile’s rules while leaving standard hosts entries.")
+        #expect(!ProtectionUXCopy.deactivationImpact.localizedCaseInsensitiveContains("original hosts file"))
+    }
+
+    @Test("Active profile detail and quick action render the truthful protection copy")
+    func activeProtectionCopyIsWiredIntoUI() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let detailSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/ProfileDetailView.swift")
+        )
+        let layoutSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Layout.swift")
+        )
+
+        #expect(detailSource.contains("Text(ProtectionUXCopy.activePersistence)"))
+        #expect(detailSource.contains("Text(ProtectionUXCopy.authenticationRequirement)"))
+        #expect(detailSource.contains("Text(ProtectionUXCopy.deactivationImpact)"))
+        #expect(detailSource.contains(".foregroundColor(.white)"))
+        #expect(layoutSource.contains("primaryProfile.isActive ? ProtectionUXCopy.turnOffActionTitle"))
+        #expect(layoutSource.contains("primaryProfile.isActive ? ProtectionUXCopy.quickDeactivationImpact"))
+        #expect(!layoutSource.localizedCaseInsensitiveContains("original hosts file"))
+    }
+
+    @Test("User-cancelled authentication is quiet while real failures stay contextual")
+    func userCancellationIsQuiet() {
+        let cancelledMessage = HostsServiceError.actionErrorMessage(
+            for: HostsServiceError.userCancelled,
+            action: "Couldn’t activate Family Safe"
+        )
+        let realFailureMessage = HostsServiceError.actionErrorMessage(
+            for: HostsServiceError.helperUnavailable,
+            action: "Couldn’t activate Family Safe"
+        )
+
+        #expect(cancelledMessage == nil)
+        #expect(realFailureMessage?.hasPrefix("Couldn’t activate Family Safe: ") == true)
+        #expect(realFailureMessage?.contains("helper service") == true)
+    }
+
+    @Test("Main-window and menu-bar actions use quiet cancellation mapping")
+    func activationSurfacesUseQuietCancellationMapping() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let appRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let actionsSource = try String(
+            contentsOf: appRoot.appendingPathComponent("SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift")
+        )
+        let appSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
+
+        let mainWindowMappings = actionsSource.components(separatedBy: "HostsServiceError.actionErrorMessage(").count - 1
+        let appAndMenuMappings = appSource.components(separatedBy: "HostsServiceError.actionErrorMessage(").count - 1
+        #expect(mainWindowMappings == 2)
+        #expect(appAndMenuMappings == 3)
+        #expect(!actionsSource.contains("activationError = error.localizedDescription"))
+        #expect(!appSource.contains("lastError = \"Failed to activate:"))
+    }
+
+    @Test("Single-profile context deletion uses the existing confirmation route")
+    func singleProfileDeletionUsesConfirmation() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let actionsSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Actions.swift")
+        )
+
+        #expect(actionsSource.contains("selectedProfileIDs = [profile.id]\n                deleteWithConfirmation()"))
+        #expect(!actionsSource.contains("deleteProfile(profile)"))
+    }
+
     @Test("Basic defaults to Essentials when no prior selection")
     func basicDefaultsToEssentials() {
         let essentials = Profile(id: UUID(), name: "Essentials")

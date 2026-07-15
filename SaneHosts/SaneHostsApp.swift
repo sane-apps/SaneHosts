@@ -291,7 +291,7 @@ struct SaneHostsAppCommands: Commands {
 
         CommandGroup(after: .sidebar) {
             Divider()
-            Button("Deactivate All") {
+            Button(ProtectionUXCopy.turnOffActionTitle) {
                 Task { @MainActor in
                     do {
                         let warning = try await HostsService.shared.deactivateProfile()
@@ -300,7 +300,12 @@ struct SaneHostsAppCommands: Commands {
                             print(warning)
                         }
                     } catch {
-                        print("Failed to deactivate profiles: \(error.localizedDescription)")
+                        if let message = HostsServiceError.actionErrorMessage(
+                            for: error,
+                            action: "Couldn’t turn off protection"
+                        ) {
+                            print(message)
+                        }
                     }
                 }
             }
@@ -539,7 +544,10 @@ class MenuBarProfileStore: ObservableObject {
                 await EventTracker.log("first_value_action", app: "sanehosts")
             }
         } catch {
-            lastError = "Failed to activate: \(error.localizedDescription)"
+            lastError = HostsServiceError.actionErrorMessage(
+                for: error,
+                action: "Couldn’t activate \(profile.name)"
+            )
         }
     }
 
@@ -560,7 +568,10 @@ class MenuBarProfileStore: ObservableObject {
                 lastError = warning
             }
         } catch {
-            lastError = "Failed to deactivate: \(error.localizedDescription)"
+            lastError = HostsServiceError.actionErrorMessage(
+                for: error,
+                action: "Couldn’t turn off protection"
+            )
         }
     }
 }
@@ -584,7 +595,7 @@ struct MenuBarMenuContent: View {
                 Button("🟢 Active: \(active.name)") {
                     WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
-                Button("Deactivate") {
+                Button(ProtectionUXCopy.turnOffActionTitle) {
                     Task { await store.deactivateProfile() }
                 }
             } else {
