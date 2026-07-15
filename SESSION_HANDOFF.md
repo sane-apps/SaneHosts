@@ -1,8 +1,36 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-06-27
+**Last updated:** 2026-07-14 (late)
 
 ## Current State
+
+- 2026-07-14 **Pro padlock fix + 1.1.21 release in flight.** Customer report
+  (Glenn, work-email #1136, redeemed the THANKSGLENN comp same day): the
+  sidebar "PRO FEATURES" header kept its closed padlock after Pro activation.
+  Fixed in `d0bf8e1` — header renders `ProFeature.sectionIcon(isPro:)`
+  (`lock.open.fill` when Pro); Swift Testing regression
+  (`ProSectionIconTests`); routed verify green 103 tests; runtime proof
+  screenshot on the Mini: `~/Desktop/Screenshots/sanehosts-padlock-pro-proof-20260714.png`
+  (open padlock, Pro-mode launch). Cross-app sweep: only SaneHosts affected.
+- 2026-07-14 **Version bumped to 1.1.21 (1121)** in `Config/Shared.xcconfig`
+  (`18edf6c`): 1.1.20 channel artifacts (appcast/site/webhook/tap) were
+  already rolled out WITHOUT the padlock fix (LemonSqueezy hosted file still
+  1.1.19), and Sparkle ignores same-version updates.
+- 2026-07-14 **Sweep tooling fix (`c40ba15`):**
+  `scripts/customer_ui_action_sweep.rb` now parses the customer UI contract
+  JSON from stdout only (`Open3.capture3`); `capture2e` merged SaneMaster's
+  stderr Ruby re-exec notice into the payload and broke the sweep under the
+  Mini GUI-session PATH. Sweep passed after the fix (receipt at
+  `.sane/customer_ui_action_receipt.json` on the Mini).
+- 2026-07-14 **Release lane state:** run preflight/release via
+  `mini-gui-run.sh` on the Mini (plain SSH sessions see a locked keychain →
+  "release authorization key is unavailable" / codesign
+  errSecInternalComponent). The Mini checkout's stray working-tree deletions
+  (incl. `SaneHosts.xcworkspace/contents.xcworkspacedata`) were restored —
+  their absence made verify fall back to a project-only invocation with "no
+  test bundles available". Preflight round 3 running; next: release.sh
+  --full --deploy (1.1.21), live-appcast check, owner-approved reply to
+  Glenn (#1136) asking him to update and verify.
 
 - 2026-06-27 **Keychain prompt-storm fix (data-protection keychain) — staged for
   the next release.** Background: SaneApps store the license/trial in the legacy
