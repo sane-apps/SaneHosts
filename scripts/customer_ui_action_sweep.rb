@@ -446,8 +446,11 @@ class CustomerUIActionSweep
   def customer_ui_contract_report_before_receipt
     FileUtils.rm_f(RECEIPT_PATH)
     FileUtils.rm_f(MIRROR_RECEIPT_PATH)
-    out, status = Open3.capture2e(SANEMASTER, 'customer_ui_contract', '--json', '--no-exit')
-    raise "Could not read customer UI contract report: #{out}" unless status.success?
+    # stdout only: SaneMaster prints bootstrap notices on stderr (e.g. the
+    # Ruby re-exec line under a system-Ruby PATH such as the Mini GUI
+    # session), and merging them corrupts the JSON payload.
+    out, err, status = Open3.capture3(SANEMASTER, 'customer_ui_contract', '--json', '--no-exit')
+    raise "Could not read customer UI contract report: #{out}#{err}" unless status.success?
 
     JSON.parse(out)
   end
