@@ -5,7 +5,27 @@
     <link>https://sanehosts.com/appcast.xml</link>
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
-        <item>
+                <item>
+            <title>1.1.22</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Wed, 15 Jul 2026 09:38:01 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Fixed: very large blocklists like Kitchen Sink and Steven Black Unified now activate reliably. The active-profile card explains that protection stays on when the app quits, the action is now Turn Off Protection, and deleting a profile asks first. Thanks again to a sharp-eyed customer.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.22.zip"
+                       sparkle:version="1122"
+                       sparkle:shortVersionString="1.1.22"
+                       length="4876526"
+                       type="application/octet-stream"
+                       sparkle:edSignature="/2nPeYSk60xO5VTgQht/imDk1/0bgR3zXFpJ2YoibqjBoKDRdgJkR8SY7hlJ6XdtCbrXqWqY+q3ssR6iMrTqAw=="/>
+        </item>
+<item>
             <title>1.1.21</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Tue, 14 Jul 2026 21:24:52 -0400</pubDate>
