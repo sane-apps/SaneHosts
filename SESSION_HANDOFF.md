@@ -1,6 +1,25 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-07-14 (late)
+**Last updated:** 2026-07-15 (early)
+
+## SHIPPED: 1.1.21 Sparkle channel LIVE
+
+- **SaneHosts 1.1.21 is live on the Sparkle auto-update channel**
+  (`sanehosts.com/appcast.xml` serves `SaneHosts-1.1.21.zip` + the padlock
+  release note). This is the path "Check for Updates" uses — Glenn can update
+  now. Build signed + notarized + deployed via `release.sh --full --deploy`
+  from the Mini GUI session; git tag/appcast/site/webhook all updated.
+- **ONE owner step remains:** the LemonSqueezy dashboard-hosted file (direct
+  download / new purchases) still serves 1.1.19. Replace it via the LS
+  dashboard: product 794910 → Files for variant 1253740 → publish the 1.1.21
+  ZIP from `https://dist.sanehosts.com/updates/SaneHosts-1.1.21.zip`, unpublish
+  old files. Then rerun `release.sh --project ~/SaneApps/apps/SaneHosts
+  --version 1.1.21 --post-release-checks-only` to confirm green. (This is the
+  standing manual per-release LS step, not a new bug.)
+- Glenn reply drafted at `~/SaneApps/outputs/glenn-1136-padlock-reply.txt`;
+  awaiting owner approval to send (owner pre-approved pending live; appcast
+  is live). Email #1136.
+
 
 ## Current State
 
