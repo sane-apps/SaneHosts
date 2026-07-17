@@ -206,7 +206,11 @@
             font-size: 0.9rem;
             margin-top: 80px;
         }
-    </style>
+    @view-transition{navigation:auto}
+/* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
+@keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+</style>
 </head>
 <body>
     <div class="gradient-bg"></div>
