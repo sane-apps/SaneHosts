@@ -1411,6 +1411,7 @@
                 <a href="https://saneapps.com" class="logo-family">Part of the SaneApps family</a>
             </div>
             <div class="nav-links">
+                <a href="#watch">Watch</a>
                 <a href="#protection">Protection</a>
                 <a href="#features">Features</a>
                 <a href="#comparison">Why SaneHosts</a>
@@ -1431,6 +1432,7 @@
     <div id="mobileNav" class="mobile-nav">
         <button class="mobile-nav-close" onclick="toggleMobileNav()" aria-label="Close menu">&times;</button>
         <p class="mobile-nav-section">Navigation</p>
+        <a href="#watch" onclick="toggleMobileNav()">Watch</a>
         <a href="#protection" onclick="toggleMobileNav()">Protection Levels</a>
         <a href="#features" onclick="toggleMobileNav()">Features</a>
         <a href="#comparison" onclick="toggleMobileNav()">Why SaneHosts</a>
@@ -1531,6 +1533,40 @@
     <!-- ============================================ -->
     <!-- SECTION 2: PROTECTION LEVELS (MOVED UP)     -->
     <!-- ============================================ -->
+    <!-- Watch: the pitch demo (click-to-play, self-hosted, no autoplay; reduced-motion-safe by design) -->
+    <section id="watch" style="padding: 72px 0 10px; scroll-margin-top: 110px;">
+        <style>
+            #watch .watch-wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px; text-align: center; }
+            #watch .watch-kicker { font-size: 14px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); margin: 0 0 10px; }
+            #watch h2 { font-size: clamp(26px, 3vw, 38px); margin: 0 0 10px; color: var(--text-primary); }
+            #watch .watch-sub { margin: 0 0 22px; font-size: 15px; color: var(--text-primary); }
+            #watch video { width: 100%; max-width: 960px; aspect-ratio: 16/9; height: auto; background: #08080c; border-radius: 14px; border: 1px solid rgba(79, 143, 250, 0.35); box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5); display: block; margin: 0 auto; }
+            #watch .watch-after { margin: 18px 0 0; font-size: 14.5px; color: var(--text-primary); }
+            #watch .watch-after a { color: var(--accent); text-decoration: none; font-weight: 700; }
+        </style>
+        <div class="watch-wrap">
+            <p class="watch-kicker">See it in action</p>
+            <h2>Watch the 1-minute demo</h2>
+            <p class="watch-sub">Curated blocklists, one-click protection levels, system-wide &mdash; with the real app on screen.</p>
+            <video controls preload="metadata" poster="demo/sanehosts-pitch-poster.jpg" playsinline width="1920" height="1080" aria-label="SaneHosts pitch video: ads and trackers in every app, then a real screen capture of the curated blocklist catalog, the five protection levels, and the one-time price">
+                <source src="demo/sanehosts-pitch.mp4" type="video/mp4">
+            </video>
+            <p class="watch-after">Sold? <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.22.zip" data-cta="download_trial_watch">Start the full Pro trial</a> &mdash; 14 days free, no credit card required.</p>
+        </div>
+        <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "VideoObject",
+          "name": "SaneHosts demo — block ads and trackers across your Mac in one click",
+          "description": "SaneHosts makes your Mac's hosts file usable: 200+ curated blocklists, five one-click protection levels, system-wide protection in every app. Everything stays local. Real capture, no mockups.",
+          "thumbnailUrl": "https://sanehosts.com/demo/sanehosts-pitch-poster.jpg",
+          "contentUrl": "https://sanehosts.com/demo/sanehosts-pitch.mp4",
+          "uploadDate": "2026-07-17",
+          "duration": "PT1M4S"
+        }
+        </script>
+    </section>
+
     <section class="protection-levels" id="protection">
         <div class="container">
             <h2 class="section-title reveal">Pick Your Protection Level</h2>
