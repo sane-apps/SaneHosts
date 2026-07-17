@@ -175,16 +175,19 @@
             }
         }
 
-        .animate-in {
-            animation: fadeInUp 0.8s ease-out forwards;
-            opacity: 0;
-        }
+        /* Load-in is motion-guarded: with animations off (reduced motion or
+           no support) every .animate-in element is simply fully visible. */
+        @media (prefers-reduced-motion: no-preference) {
+            .animate-in {
+                animation: fadeInUp 0.8s ease-out backwards;
+            }
 
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-        .delay-5 { animation-delay: 0.5s; }
+            .delay-1 { animation-delay: 0.1s; }
+            .delay-2 { animation-delay: 0.2s; }
+            .delay-3 { animation-delay: 0.3s; }
+            .delay-4 { animation-delay: 0.4s; }
+            .delay-5 { animation-delay: 0.5s; }
+        }
 
         .container {
             max-width: 1100px;
@@ -1291,6 +1294,108 @@
                 margin: 0 auto;
             }
         }
+
+        /* ============================================ */
+        /* MOTION — progressive enhancement only.       */
+        /* Fully readable with no JS and no animation;  */
+        /* nothing here changes copy, layout, or SEO.   */
+        /* ============================================ */
+        @view-transition { navigation: auto; }
+
+        /* Hover lifts (transform-only, matches existing card behavior) */
+        .feature-item, .level-mobile-card, .trust-badge {
+            transition: transform 0.3s cubic-bezier(0.22, 0.7, 0.3, 1);
+        }
+        .feature-item:hover, .level-mobile-card:hover { transform: translateY(-4px); }
+        .trust-badge:hover { transform: translateY(-2px); }
+        .nav-cta { transition: color 0.2s, transform 0.2s ease, box-shadow 0.2s ease; }
+
+        /* Hero screenshot wrapper: ambient glow + micro-demo anchor */
+        .hero { overflow-x: clip; }
+        .hero-shot {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            isolation: isolate;
+        }
+        .hero-shot::before {
+            content: '';
+            position: absolute;
+            inset: 6% -8%;
+            background: radial-gradient(closest-side, var(--accent-glow), transparent 70%);
+            filter: blur(14px);
+            border-radius: 50%;
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Real screen-capture demo video (replaces the old decorative micro-demo). */
+        .block-video-wrap {
+            position: relative;
+            isolation: isolate;
+            max-width: 760px;
+            margin: 34px auto 0;
+            pointer-events: auto;
+        }
+        .block-video-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -8% -12%;
+            background: radial-gradient(closest-side, rgba(79, 143, 250, 0.17), transparent 70%);
+            border-radius: 50%;
+            z-index: -1;
+        }
+        .block-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 14px;
+            border: 1px solid rgba(79, 143, 250, 0.35);
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        }
+        .block-video-caption {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        /* IO fallback path — html.io (which hides .reveal pre-scroll) is
+           added by JS only when CSS scroll timelines are unsupported;
+           crawlers and no-JS visitors always get the full static page. */
+        html.io .reveal {
+            opacity: 0;
+            transform: translateY(18px);
+            transition: opacity 0.7s cubic-bezier(0.22, 0.7, 0.3, 1), transform 0.7s cubic-bezier(0.22, 0.7, 0.3, 1);
+        }
+        html.io .reveal.in { opacity: 1; transform: none; }
+
+        @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+        @keyframes glowBreathe { 0%, 100% { opacity: 0.4; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.05); } }
+        @keyframes emSweep { to { background-size: 100% 2px; } }
+
+        @media (prefers-reduced-motion: no-preference) {
+            html { scroll-behavior: smooth; }
+            .hero-shot::before { animation: glowBreathe 9s ease-in-out infinite; }
+            .hero h1 em {
+                background-image: linear-gradient(var(--accent), var(--accent));
+                background-repeat: no-repeat;
+                background-position: 0 94%;
+                background-size: 0% 2px;
+                animation: emSweep 0.7s ease-out 1.3s forwards;
+            }
+            .testimonial-marquee { animation: testimonialScroll 20s linear infinite; }
+            .testimonial-marquee:hover { animation-play-state: paused; }
+            @supports (animation-timeline: view()) {
+                .reveal {
+                    animation: rise 0.7s cubic-bezier(0.22, 0.7, 0.3, 1) both;
+                    animation-timeline: view();
+                    animation-range: entry 8% entry 45%;
+                }
+            }
+        }
     </style>
 </head>
 <body>
@@ -1386,11 +1491,21 @@
 
             <h2 class="section-title animate-in delay-5" style="margin-bottom: 8px;">Pick. Click. <em>Protected.</em></h2>
             <p class="animate-in delay-5" style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 24px;">Choose a protection level. Hit activate. SaneHosts handles the rest.</p>
-            <div class="hero-image animate-in delay-5">
-                <img src="screenshot.png" alt="SaneHosts App - pick a protection level and activate with one click">
+            <div class="hero-shot animate-in delay-5">
+                <div class="hero-image">
+                    <img src="screenshot.png" alt="SaneHosts App - pick a protection level and activate with one click">
+                </div>
             </div>
 
-            <div style="margin-top: 48px; text-align: center;">
+            <!-- Real screen capture: browsing the curated blocklist catalog in SaneHosts (recorded unedited). -->
+            <div class="block-video-wrap animate-in delay-5">
+                <video class="block-video" autoplay muted loop playsinline preload="metadata" width="1260" height="800" poster="demo/sanehosts-demo-poster.jpg" aria-label="Screen recording: SaneHosts with the Essentials profile active opens the Import Blocklists catalog of curated lists, and selecting AdAway Default updates the merge count to four blocklists">
+                    <source src="demo/sanehosts-block-demo.mp4" type="video/mp4">
+                </video>
+                <p class="block-video-caption">Real capture, no mockups &mdash; 186K entries active, plus a curated catalog one checkbox away.</p>
+            </div>
+
+            <div class="reveal" style="margin-top: 48px; text-align: center;">
                 <h2 class="section-title" style="margin-bottom: 8px;">Protected by macOS Authentication</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem;">SaneHosts is a direct Mac download because hosts-file protection needs local system access. macOS asks for Touch ID or your password before any hosts change, and SaneHosts keeps backups so you can roll back.</p>
                 <div class="hero-image">
@@ -1398,7 +1513,7 @@
                 </div>
             </div>
 
-            <div style="margin-top: 64px; text-align: center; padding: 40px; border: 1px solid var(--accent-subtle); border-radius: 16px; background: var(--accent-subtle);">
+            <div class="reveal" style="margin-top: 64px; text-align: center; padding: 40px; border: 1px solid var(--accent-subtle); border-radius: 16px; background: var(--accent-subtle);">
                 <h2 class="section-title" style="margin-bottom: 8px;">Make It Yours</h2>
                 <p style="color: var(--text-secondary); margin-bottom: 24px; font-size: 1rem;">Custom profiles. Hand-picked blocklists from security researchers. Merge protection levels or build from scratch.</p>
                 <div style="display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;">
@@ -1418,10 +1533,10 @@
     <!-- ============================================ -->
     <section class="protection-levels" id="protection">
         <div class="container">
-            <h2 class="section-title">Pick Your Protection Level</h2>
-            <p class="section-subtitle">Five curated levels. Each bundles the right blocklists for your needs. Choose one and go.</p>
+            <h2 class="section-title reveal">Pick Your Protection Level</h2>
+            <p class="section-subtitle reveal">Five curated levels. Each bundles the right blocklists for your needs. Choose one and go.</p>
 
-            <div class="levels-table-wrapper">
+            <div class="levels-table-wrapper reveal">
                 <table class="levels-table">
                     <thead>
                         <tr>
@@ -1476,7 +1591,7 @@
             </div>
 
             <div class="levels-mobile-cards" aria-label="Protection levels">
-                <article class="level-mobile-card">
+                <article class="level-mobile-card reveal">
                     <div class="level-mobile-top">
                         <div>
                             <span class="level-name">Essentials</span>
@@ -1486,7 +1601,7 @@
                     </div>
                     <p class="level-desc">Ads, trackers, and malware — safe for everyone.</p>
                 </article>
-                <article class="level-mobile-card">
+                <article class="level-mobile-card reveal">
                     <div class="level-mobile-top">
                         <div>
                             <span class="level-name">Family Safe</span>
@@ -1496,7 +1611,7 @@
                     </div>
                     <p class="level-desc">Essentials plus adult content and gambling sites.</p>
                 </article>
-                <article class="level-mobile-card">
+                <article class="level-mobile-card reveal">
                     <div class="level-mobile-top">
                         <div>
                             <span class="level-name">Focus Mode</span>
@@ -1506,7 +1621,7 @@
                     </div>
                     <p class="level-desc">Family Safe plus social media distractions.</p>
                 </article>
-                <article class="level-mobile-card">
+                <article class="level-mobile-card reveal">
                     <div class="level-mobile-top">
                         <div>
                             <span class="level-name">Privacy Shield</span>
@@ -1516,7 +1631,7 @@
                     </div>
                     <p class="level-desc">Focus Mode plus data collection and advanced trackers.</p>
                 </article>
-                <article class="level-mobile-card">
+                <article class="level-mobile-card reveal">
                     <div class="level-mobile-top">
                         <div>
                             <span class="level-name">Kitchen Sink</span>
@@ -1537,21 +1652,21 @@
     <!-- 5b: Core Features -->
     <section class="features" id="features">
         <div class="container">
-            <h2 class="section-title">Everything You Need, Nothing You Don't</h2>
-            <p class="section-subtitle">200+ curated blocklists from Steven Black, Hagezi, AdGuard, and more.</p>
+            <h2 class="section-title reveal">Everything You Need, Nothing You Don't</h2>
+            <p class="section-subtitle reveal">200+ curated blocklists from Steven Black, Hagezi, AdGuard, and more.</p>
 
             <div class="features-row">
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l3 3 5-5"/></svg></div>
                     <h3>One-Click Setup</h3>
                     <p>Pick a protection level. Click activate. Done. No Terminal, no commands, no manual editing.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#5fa8d3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
                     <h3>System-Wide Protection</h3>
                     <p>Every app, not just browsers. Safari, Chrome, Slack, games — all protected at the system level.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
                     <h3>Hosts Data Stays Local</h3>
                     <p>Your hosts data stays on your Mac. No cloud account. No personal-content upload. Automatic backups protect your profiles from corruption.</p>
@@ -1559,17 +1674,17 @@
             </div>
 
             <div class="features-row" style="margin-top: 24px;">
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
                     <h3>Multiple Profiles</h3>
                     <p>Create profiles for different contexts — work, family, focus. Switch instantly from the menu bar.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></div>
                     <h3>Automatic DNS Flush</h3>
                     <p>DNS cache cleared automatically when you activate or switch profiles. Changes take effect immediately.</p>
                 </div>
-                <div class="feature-item">
+                <div class="feature-item reveal">
                     <div class="feature-icon-small"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#f472b6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10v4"/><path d="M7.5 7a5 5 0 0 1 9 0"/><path d="M4.5 9.5a8 8 0 0 1 3-3.5"/><path d="M16.5 6a8 8 0 0 1 3 3.5"/><path d="M4.5 14.5a8 8 0 0 0 2 3.5"/><path d="M17.5 18a8 8 0 0 0 2-3.5"/><path d="M9.5 5a5 5 0 0 0-2.5 4v3a5 5 0 0 0 1 3"/><path d="M14.5 5a5 5 0 0 1 2.5 4v3a5 5 0 0 1-3 4.5"/><path d="M12 18v-4"/></svg></div>
                     <h3>macOS Auth Protected</h3>
                     <p>macOS asks for Touch ID or your password when SaneHosts updates the system hosts file.</p>
@@ -1583,9 +1698,9 @@
     <!-- 5d: Comparison -->
     <section class="comparison" id="comparison">
         <div class="container">
-            <h2 class="section-title">Why SaneHosts?</h2>
-            <p class="section-subtitle">No VPN. No cloud. No subscription. Just your Mac's built-in hosts file, made usable.</p>
-            <div class="comparison-table-wrapper">
+            <h2 class="section-title reveal">Why SaneHosts?</h2>
+            <p class="section-subtitle reveal">No VPN. No cloud. No subscription. Just your Mac's built-in hosts file, made usable.</p>
+            <div class="comparison-table-wrapper reveal">
                 <table class="comparison-table">
                     <thead>
                         <tr>
@@ -1641,7 +1756,7 @@
     <!-- Transparent Code Section -->
     <section class="open-source" id="transparent">
         <div class="container">
-            <div class="open-source-card">
+            <div class="open-source-card reveal">
                 <h2>100% Transparent Code &amp; Trusted</h2>
                 <p class="tagline">Officially recognized by the community.</p>
                 <p>SaneHosts is proud to be an <strong>officially listed tool</strong> in the <a href="https://github.com/StevenBlack/hosts" style="color: var(--accent); text-decoration: none;">StevenBlack/hosts</a> repository, the gold standard for unified hosts files. SaneHosts is committed to maintaining the highest standards of safety and compatibility.</p>
@@ -1658,10 +1773,10 @@
     <!-- More Apps -->
     <section class="more-apps">
         <div class="container">
-            <h2 class="section-title">More from SaneApps</h2>
-            <p class="more-apps-subtitle">Simple Mac utilities that respect your time and privacy.</p>
+            <h2 class="section-title reveal">More from SaneApps</h2>
+            <p class="more-apps-subtitle reveal">Simple Mac utilities that respect your time and privacy.</p>
             <div class="more-apps-grid">
-                <a href="https://saneclip.com" class="app-card" data-cta="cross_sell_saneclip_card">
+                <a href="https://saneclip.com" class="app-card reveal" data-cta="cross_sell_saneclip_card">
                     <div class="app-card-header">
                         <img src="images/saneclip-icon.png" alt="SaneClip" class="app-card-icon">
                         <div class="app-card-name">SaneClip</div>
@@ -1669,7 +1784,7 @@
                     <p class="app-card-tagline">Save clipboard history privately. Touch ID protection, instant search, and quick text tools.</p>
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
-                <a href="https://saneclick.com" class="app-card" data-cta="cross_sell_saneclick_card">
+                <a href="https://saneclick.com" class="app-card reveal" data-cta="cross_sell_saneclick_card">
                     <div class="app-card-header">
                         <img src="images/saneclick-icon.png" alt="SaneClick" class="app-card-icon">
                         <div class="app-card-name">SaneClick</div>
@@ -1678,7 +1793,7 @@
                     <span class="app-card-cta">Learn more &#8594;</span>
                 </a>
             </div>
-            <div class="more-apps-hub">
+            <div class="more-apps-hub reveal">
                 <a href="https://saneapps.com" data-cta="cross_sell_saneapps_hub">See all apps at saneapps.com &#8594;</a>
             </div>
         </div>
@@ -1686,7 +1801,7 @@
 
     <section style="padding: 60px 0; border-top: 1px solid var(--border-subtle);">
         <div class="container">
-            <div class="crypto-addresses">
+            <div class="crypto-addresses reveal">
                 <p style="font-size: 1.1rem; font-weight: 600; margin-bottom: 16px;">Support with Crypto</p>
                 <div class="crypto-grid">
                     <div class="crypto-item crypto-btc">
@@ -1713,11 +1828,11 @@
 
     <section style="padding: 60px 0 80px; text-align: center; overflow: hidden;">
         <div class="container">
-            <h2 class="section-title">Trusted by Privacy-Conscious Mac Users</h2>
-            <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px;">From the SaneApps community</p>
+            <h2 class="section-title reveal">Trusted by Privacy-Conscious Mac Users</h2>
+            <p class="reveal" style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 40px;">From the SaneApps community</p>
         </div>
         <div style="overflow: hidden; mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);">
-            <div style="display: flex; gap: 20px; animation: testimonialScroll 20s linear infinite; width: max-content;" onmouseenter="this.style.animationPlayState='paused'" onmouseleave="this.style.animationPlayState='running'">
+            <div class="testimonial-marquee" style="display: flex; gap: 20px; width: max-content;">
                 <div style="background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(255,255,255,0.02)); border-radius: 16px; padding: 24px 28px; border: 1px solid var(--border); text-align: left; min-width: 340px; max-width: 340px; flex-shrink: 0;">
                     <p style="font-style: italic; color: var(--text-primary); margin-bottom: 16px; font-size: 0.95rem; line-height: 1.6;">"Actually local is the only way to do this, cool, will check it."</p>
                     <div style="color: var(--accent); font-size: 0.9rem; font-weight: 500;">@manuotel (X)</div>
@@ -1816,5 +1931,28 @@
         }
     </script>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->
+    <script>
+        // Scroll reveals: CSS scroll-timelines where supported; IntersectionObserver otherwise.
+        // html.io (which hides .reveal pre-scroll) is only added when JS runs —
+        // no-JS visitors and crawlers always get the full static page.
+        (function () {
+            if (CSS.supports('animation-timeline: view()')) return;
+            if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            document.documentElement.classList.add('io');
+            var o = new IntersectionObserver(function (es) {
+                es.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('in'); o.unobserve(e.target); }
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+            document.querySelectorAll('.reveal').forEach(function (el) { o.observe(el); });
+        })();
+        // Reduced motion: demo video becomes click-to-play with controls instead of an autoplaying loop.
+        (function () {
+            var v = document.querySelector('.block-video');
+            if (v && matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                v.removeAttribute('autoplay'); v.removeAttribute('loop'); v.controls = true; v.pause();
+            }
+        })();
+    </script>
 </body>
 </html>
