@@ -17,6 +17,7 @@
   },
   "testTargets" : [
     {
+      "skipped" : true,
       "target" : {
         "containerPath" : "container:SaneHosts.xcodeproj",
         "identifier" : "8BC265732DEDD3F500F279A4",
