@@ -23,9 +23,9 @@ release:
   use_sparkle: true
   min_system_version: "14.0"
   upgrade_path_test:
-    scheme: SaneHosts
-    test_plan: SaneHosts
-    test_selector: SaneHostsFeatureTests/ProfileStoreEssentialsPolicyTests/createsEssentialsAlongsideExistingEntries
+    scheme: SaneHostsFeature
+    package_path: SaneHostsPackage
+    test_selector: ProfileStoreEssentialsPolicyTests/createsEssentialsAlongsideExistingEntries()
     from_version: "1.1.22"
     timeout_seconds: 300
   reviewed_auto_reconcile_stashes:
