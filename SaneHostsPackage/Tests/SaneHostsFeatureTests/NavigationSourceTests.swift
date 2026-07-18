@@ -15,7 +15,7 @@ struct NavigationSourceTests {
         )
 
         #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
-        #expect(packageSource.contains("revision: \"001fc7f40d8c1315c128ff66c17f2efc3ea0fc96\""))
+        #expect(packageSource.contains("revision: \"103803d6fc3069c83270dded16734d3195546e8e\""))
         #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
     }
 
@@ -66,5 +66,23 @@ struct NavigationSourceTests {
         #expect(settingsSource.contains("NotificationCenter.default.publisher(for: .showSettingsTab)"))
         #expect(appSource.contains("static let showSettingsTab"))
         #expect(appSource.contains("NotificationCenter.default.post(name: .showSettingsTab, object: tab)"))
+    }
+
+    @Test("SaneHosts owns its direct Sparkle settings UI")
+    func saneHostsOwnsDirectSparkleSettingsUI() throws {
+        let projectRoot = URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+
+        let sparkleSource = try String(
+            contentsOf: projectRoot.appendingPathComponent("SaneHosts/SaneSparkleRow.swift"),
+            encoding: .utf8
+        )
+
+        #expect(sparkleSource.contains("struct SaneSparkleRow"))
+        #expect(sparkleSource.contains("enum SaneSparkleCheckFrequency"))
+        #expect(sparkleSource.contains("Check for updates automatically"))
     }
 }

@@ -112,9 +112,9 @@ struct GeneralSettingsTab: View {
         }
         .onAppear {
             automaticallyChecksForUpdates = updater?.automaticallyChecksForUpdates ?? false
-            let interval = updater?.updateCheckInterval ?? SaneUI.SaneSparkleCheckFrequency.daily.interval
-            updateCheckFrequency = SaneUI.SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
-            updater?.updateCheckInterval = SaneUI.SaneSparkleCheckFrequency.normalizedInterval(from: interval)
+            let interval = updater?.updateCheckInterval ?? SaneSparkleCheckFrequency.daily.interval
+            updateCheckFrequency = SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
+            updater?.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: interval)
         }
     }
 
