@@ -5,11 +5,32 @@
     <link>https://sanehosts.com/appcast.xml</link>
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
-                <item>
+                        <item>
+            <title>1.1.23</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Sat, 18 Jul 2026 06:48:22 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:criticalUpdate/>            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Fixed SaneApps Everything Bundle licenses so Pro unlocks correctly in SaneHosts.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.23.zip"
+                       sparkle:version="1123"
+                       sparkle:shortVersionString="1.1.23"
+                       length="4893772"
+                       type="application/octet-stream"
+                       sparkle:edSignature="X9qsg4lWTtsjQsKstFsStEh/9s4qXgorjOsfHcNcDEtHKz4DoaPOm3WY5Qr1qaJQE9SbIkIyxeKNNdFmpm5ADg=="/>
+        </item>
+<item>
             <title>1.1.22</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Wed, 15 Jul 2026 09:38:01 -0400</pubDate>
             <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <sparkle:criticalUpdate/>
             <description>
                 <![CDATA[
                 <h2>What's New</h2>
