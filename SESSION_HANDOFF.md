@@ -438,6 +438,29 @@
 - Use `CHANGELOG.md`, `ARCHITECTURE.md`, and git history for older release
   history and archived launch-ops notes. Active state above is current.
 
+## Release Update - 2026-07-18
+
+- Direct-channel SaneHosts `1.1.23` (build `1123`) is live. The public appcast
+  contains a signed `SaneHosts-1.1.23.zip` enclosure and
+  `<sparkle:criticalUpdate/>`. The release updated the website, Homebrew cask,
+  and email webhook product mapping.
+- The release fixes SaneApps Everything Bundle entitlement matching through the
+  shared SaneUI revision `103803d`; SaneHosts now accepts the bundle while
+  retaining mismatched single-app license rejection.
+- Mini release proof: customer UI contract `11` actions, behavioral migration
+  proof, and release preflight verify evidence `115` tests passed. Clean Mini
+  visual proof: `/Users/sj/Desktop/Screenshots/codex-shot-2026-07-18_06-29-08.png`.
+- The direct-channel release is not fully complete until the Lemon Squeezy
+  hosted variant is manually replaced with the already-public
+  `SaneHosts-1.1.23.zip` from `https://dist.sanehosts.com/updates/` and
+  post-release checks are rerun. The dashboard product is `794910`, variant
+  `1253740`; current hosted file is still `1.1.22`.
+- Product roadmap issue: `https://github.com/sane-apps/SaneHosts/issues/6`
+  tracks helper-enforced Parent Lock, update migration, and acceptance tests.
+- Customer feedback about large blocklist activation shipped in `1.1.22`; a
+  delivery-confirmed support response was sent, but the thread remains pending
+  without a subsequent customer confirmation.
+
 ## Launch Ops - 2026-06-23
 
 - Cross-product launch ops reran canonical Mini `./scripts/SaneMaster.rb launch_readiness --json` from the SaneHosts repo. It stayed red.
