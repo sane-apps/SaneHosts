@@ -9,8 +9,8 @@
 PRODUCT_NAME = SaneHosts
 PRODUCT_DISPLAY_NAME = SaneHosts
 PRODUCT_BUNDLE_IDENTIFIER = com.mrsane.SaneHosts
-MARKETING_VERSION = 1.1.22
-CURRENT_PROJECT_VERSION = 1122
+MARKETING_VERSION = 1.1.23
+CURRENT_PROJECT_VERSION = 1123
 
 // ==========================================
 // Platform Configuration
