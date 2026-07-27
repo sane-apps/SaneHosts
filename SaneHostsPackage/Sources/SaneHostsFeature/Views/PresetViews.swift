@@ -50,7 +50,7 @@ struct PresetRowView: View {
             }
         }
         .padding(.vertical, 5)
-        .background(isSelected ? Color.accentColor.opacity(0.1) : Color.clear)
+        .background(isSelected ? Color.saneAccent.opacity(0.1) : Color.clear)
         .clipShape(RoundedRectangle(cornerRadius: 6))
     }
 }

@@ -32,9 +32,9 @@ extension MainView {
                 }
             }
 
-            // Golden-ratio oriented sidebar: immediate free path first.
+            // Golden-ratio oriented sidebar: immediate protection path first.
             Section {
-                // Primary free path: one-click protection with Essentials selected by default.
+                // Primary path: one-click protection with Essentials selected by default.
                 if let primaryProfile = selectedProfile ?? store.profiles.first {
                     QuickActionButton(
                         title: primaryProfile.isActive ? ProtectionUXCopy.turnOffActionTitle : "Enable Protection",
@@ -52,7 +52,7 @@ extension MainView {
 
                 QuickActionButton(
                     title: "Open Essentials",
-                    subtitle: "Review and edit your free profile",
+                    subtitle: "Review and edit your included profile",
                     icon: "list.bullet.rectangle",
                     color: .blue
                 ) {
