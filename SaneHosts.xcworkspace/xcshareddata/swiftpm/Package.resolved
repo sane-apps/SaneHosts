@@ -1,12 +1,12 @@
 {
-  "originHash" : "75cdfd65dcc48613bcc018f2e47d722dadbdf7d1a2d480476c293e3da8e71b64",
+  "originHash" : "51ff1457a9c88e25cca6da130939389b44b2f0619f9d78859ab5e5d24c62dfb0",
   "pins" : [
     {
       "identity" : "saneui",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/sane-apps/SaneUI.git",
       "state" : {
-        "revision" : "103803d6fc3069c83270dded16734d3195546e8e"
+        "revision" : "e578dcd77a93124364e063fd1d9f91c09f5c590a"
       }
     },
     {

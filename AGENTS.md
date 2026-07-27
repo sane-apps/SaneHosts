@@ -17,7 +17,7 @@ SaneHosts is a macOS app for managing the `/etc/hosts` file through profiles:
 
 **Key architecture note**: the app writes `/etc/hosts` through the privileged XPC helper when available. Direct builds can fall back to a validated AppleScript admin prompt if the helper is unavailable.
 
-**Pricing**: Basic is free; Pro is $14.99 one-time. Direct download only — no App Store lane.
+**Purchase model**: All features are available during a 14-day trial, followed by a one-time purchase. Direct download only — no App Store lane.
 
 ## Source Of Truth
 

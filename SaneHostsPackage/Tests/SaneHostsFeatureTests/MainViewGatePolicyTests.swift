@@ -4,7 +4,7 @@ import Testing
 
 @Suite("MainView Gate Policy Tests")
 struct MainViewGatePolicyTests {
-    @Test("Default SaneHosts license service enables 14 day Pro trial")
+    @Test("Default SaneHosts license service enables a 14 day trial")
     func defaultLicenseServiceEnablesFourteenDayProTrial() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let appRoot = testURL
@@ -21,20 +21,20 @@ struct MainViewGatePolicyTests {
         }
     }
 
-    @Test("Basic users cannot open remote import from empty state")
+    @Test("Unlicensed users cannot open remote import from empty state")
     func basicCannotOpenRemoteImport() {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: false) == false)
     }
 
-    @Test("Pro users can open remote import from empty state")
+    @Test("Paid users can open remote import from empty state")
     func proCanOpenRemoteImport() {
         #expect(MainViewGatePolicy.canOpenRemoteImport(isPro: true))
     }
 
-    @Test("Expired trial does not fall back to Basic")
-    func expiredTrialDoesNotFallBackToBasic() {
-        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: true) == false)
-        #expect(MainViewGatePolicy.allowsBasicAfterTrial(hasExpiredProTrial: false) == false)
+    @Test("Expired trial does not fall back to unpaid use")
+    func expiredTrialDoesNotFallBackToUnpaidUse() {
+        #expect(MainViewGatePolicy.allowsUseAfterTrial(hasExpiredProTrial: true) == false)
+        #expect(MainViewGatePolicy.allowsUseAfterTrial(hasExpiredProTrial: false) == false)
     }
 
     @Test("Expired trial menu routes profile activation to main window gate")
@@ -53,8 +53,8 @@ struct MainViewGatePolicyTests {
 
     @Test("Trial countdown copy is short and tactful")
     func trialCountdownCopy() {
-        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 14) == "14 days left in Pro trial")
-        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 1) == "1 day left in Pro trial")
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 14) == "14 days left in trial")
+        #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: 1) == "1 day left in trial")
         #expect(MainViewGatePolicy.trialCountdownTitle(daysRemaining: nil) == nil)
     }
 
@@ -142,8 +142,8 @@ struct MainViewGatePolicyTests {
         #expect(!actionsSource.contains("deleteProfile(profile)"))
     }
 
-    @Test("Basic defaults to Essentials when no prior selection")
-    func basicDefaultsToEssentials() {
+    @Test("Essentials is the default when no prior selection exists")
+    func essentialsIsDefaultSelection() {
         let essentials = Profile(id: UUID(), name: "Essentials")
         let strict = Profile(id: UUID(), name: "Strict")
 
