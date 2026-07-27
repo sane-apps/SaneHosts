@@ -22,7 +22,7 @@ class CustomerUIActionSweep
     'onboarding-and-tutorial-entry' => 'marketing/appstore-images/01-main-window.png',
     'menu-bar-profile-actions' => 'website/screenshot.png',
     'dock-and-app-menu-commands' => 'website/images/product-hunt-gallery-01.png',
-    'quick-actions-and-basic-pro-gates' => 'website/images/sanehosts-customize.png',
+    'quick-actions-and-paid-access-gates' => 'outputs/visual-audit-trial-expired/1.1.24/sanehosts-expired-trial.png',
     'profile-lifecycle-actions' => 'marketing/appstore-images/04-customize-profiles.png',
     'preset-template-import-actions' => 'marketing/appstore-images/02-import-blocklists.png',
     'activation-deactivation-hosts-write' => 'website/images/product-hunt-gallery-02.png',
@@ -32,19 +32,27 @@ class CustomerUIActionSweep
     'persistence-security-and-release-surfaces' => 'website/images/sanehosts-touchid.png'
   }.freeze
 
+  LIVE_RUNTIME_BY_ACTION = {
+    'quick-actions-and-paid-access-gates' => {
+      log: 'outputs/live-logs/sanehosts-expired-trial-20260727.log',
+      workflow_receipt: 'ae13667f37f2d271c5203ccb3cada69a'
+    }
+  }.freeze
+
   ACTION_GUARDS = {
     'onboarding-and-tutorial-entry' => {
       source: [
         ['SaneHosts/SaneHostsApp.swift', 'WelcomeGateView('],
-        ['SaneHosts/SaneHostsApp.swift', 'freeFeatures:'],
-        ['SaneHosts/SaneHostsApp.swift', 'proFeatures:'],
+        ['SaneHosts/SaneHostsApp.swift', '("checkmark", "Use all features for 14 days")'],
+        ['SaneHosts/SaneHostsApp.swift', 'LicenseService.directCheckoutURL(appSlug: "sanehosts")'],
         ['SaneHosts/SaneHostsApp.swift', 'Button("Show Tutorial")'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/CoachMarkOverlay.swift', 'Button("Skip Tutorial")'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'MainViewSelectionPolicy.initialSelection']
       ],
       tests: [
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/NavigationSourceTests.swift', 'currentCustomerCopyUsesTrialThenPurchaseModel'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/CoachMarkOverlayCoordinateTests.swift', 'convertsGlobalToLocalFrame'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicDefaultsToEssentials']
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'essentialsIsDefaultSelection']
       ]
     },
     'menu-bar-profile-actions' => {
@@ -86,25 +94,27 @@ class CustomerUIActionSweep
         'Update checks are verified as safe surfaces only.'
       ]
     },
-    'quick-actions-and-basic-pro-gates' => {
+    'quick-actions-and-paid-access-gates' => {
       source: [
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct QuickActionButton'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct TrialCountdownCard'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'allowsBasicAfterTrial(hasExpiredProTrial: Bool)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'allowsUseAfterTrial(hasExpiredProTrial: Bool)'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'title: "Open Essentials"'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'licenseService.proTrialDaysRemaining'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'isPro: licenseService.isPro'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'Text("Paid")'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'Button("Buy SaneHosts")'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'Text("ADVANCED TOOLS")'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .importProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .multipleProfiles'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .downloadablePresets'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'proUpsellFeature = .profileMerge'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'ProFeature.sectionIcon(isPro: licenseService.isPro)'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'Text(ProtectionUXCopy.activePersistence)']
       ],
       tests: [
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/NavigationSourceTests.swift', 'currentCustomerCopyUsesTrialThenPurchaseModel'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'basicCannotOpenRemoteImport'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'proCanOpenRemoteImport'],
-        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialDoesNotFallBackToBasic'],
+        ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialDoesNotFallBackToUnpaidUse'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'expiredTrialMenuRoutesProfileActivationToMainWindowGate'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'trialCountdownCopy'],
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/MainViewGatePolicyTests.swift', 'activeProtectionCopyIsWiredIntoUI'],
@@ -333,7 +343,7 @@ class CustomerUIActionSweep
         inputs: Array(action['user_inputs']),
         output_assertions: Array(action['expected_outputs']),
         workflow: workflow_proof(action_id, action),
-        evidence: source_evidence + test_evidence + required_runtime_evidence(action_id, action) + blocked_completion.map { |detail| evidence('blocked_completion', detail) }
+        evidence: source_evidence + test_evidence + required_runtime_evidence(action_id, action) + live_runtime_evidence(action_id) + blocked_completion.map { |detail| evidence('blocked_completion', detail) }
       }
       @transcript << "action=#{action_id} source_checks=#{source_evidence.length} test_checks=#{test_evidence.length} blocked_completion=#{blocked_completion.length}"
     end
@@ -483,8 +493,28 @@ class CustomerUIActionSweep
     evidence_items
   end
 
+  def live_runtime_evidence(action_id)
+    spec = LIVE_RUNTIME_BY_ACTION[action_id]
+    return [] unless spec
+
+    log_path = spec.fetch(:log)
+    full_log_path = File.join(PROJECT_ROOT, log_path)
+    raise "#{action_id}: missing saved live runtime log #{log_path}" unless File.size?(full_log_path)
+
+    workflow_receipt = spec.fetch(:workflow_receipt)
+    unless File.read(full_log_path).include?("SANEMASTER_WORKFLOW_RECEIPT=#{workflow_receipt}")
+      raise "#{action_id}: live runtime log does not contain workflow receipt #{workflow_receipt}"
+    end
+
+    [evidence(
+      'log',
+      "Saved live Mini expired-trial runtime log; canonical workflow receipt #{workflow_receipt}",
+      path: log_path
+    )]
+  end
+
   def workflow_proof(action_id, action)
-    evidence_paths = required_runtime_evidence(action_id, action).flat_map { |item| Array(item[:path]) }.compact
+    evidence_paths = (required_runtime_evidence(action_id, action) + live_runtime_evidence(action_id)).flat_map { |item| Array(item[:path]) }.compact
     {
       runner: relative(__FILE__),
       outcome: "#{action['title']} passed with structured Mini evidence",
