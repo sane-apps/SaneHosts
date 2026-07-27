@@ -5,7 +5,7 @@
 ## ACTIVE: 1.1.24 direct-release candidate — not released
 
 - Version `1.1.24` (build `1124`) pins SaneUI to
-  `c79cc6892aa3a8a92c2166f8e096c24303ee8567` and replaces current
+  `7a06370f1712552c4d0e3e0860b19bf22175e3d6` and replaces current
   Basic/Pro tier copy with the 14-day trial, then one-time purchase model.
   Current app UI, README, privacy copy, website, release metadata, and
   customer-action tests use neutral trial and paid-access language. This
@@ -35,14 +35,18 @@
   shared accent, included-profile copy, clear one-time pricing, required
   website trust badges, and a 13px minimum for site helper text.
 - SaneUI full Mini tests passed 132 tests across 28 suites. SaneHosts full Mini
-  verify passed 117 tests after pinning the shared fix; receipt
-  `c681d0afb6502d52c88a5666a104029f`.
-- Clean first-run visual proof:
-  `outputs/visual-audit-neutral-trial/1.1.24/sanehosts-welcome.png`.
-  Verdict: balanced, bright, unclipped, and free of tier wording. The canonical
-  wrapper could not advance the nested onboarding controls for later-page
-  captures; source/branch tests cover the neutral trial summary, but later-page
-  screenshots remain a release-proof limitation.
+  verify passed 117 tests after pinning the final shared fix; receipt
+  `55568261ad9949c39977f3176cbff238`.
+- All seven first-run screens were exercised on the Mini with a live log.
+  The complete evidence set is in
+  `outputs/visual-audit-neutral-trial/1.1.24/`. Final corrected receipts:
+  `final-page2-walkthrough.png` and `final-page7-trial-summary.png`.
+  Verdict: bright, balanced, clear, and unclipped; the final trial action is
+  explicitly labeled `Continue Trial`.
+- The real `Continue Trial` action dismissed setup, preserved the active
+  14-day trial, and opened the normal first-use tutorial. Result screenshot:
+  `final-after-continue-trial.png`; live log:
+  `outputs/live-logs/sanehosts-onboarding-conversion-final-20260727.log`.
 - Customer UI action sweep and contract pass after the audit fixes; contract
   receipt `afe0ad57c664cebb780a6ad74bc2ce9c`.
 
