@@ -231,7 +231,7 @@
             border-radius: 8px;
         }
         .logo-group { display: flex; flex-direction: column; }
-        .logo-family { font-size: 0.7rem; color: var(--text-secondary); text-decoration: none; margin-left: 44px; margin-top: -2px; opacity: 1; transition: color 0.2s; }
+        .logo-family { font-size: 0.8125rem; color: var(--text-secondary); text-decoration: none; margin-left: 44px; margin-top: -2px; opacity: 1; transition: color 0.2s; }
         .logo-family:hover { color: var(--text-primary); }
         @media (max-width: 768px) { .logo-family { display: none; } }
 
@@ -1056,7 +1056,7 @@
 
         .mobile-nav-section {
             padding: 20px 0 8px;
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.1em;
@@ -1136,8 +1136,8 @@
                 padding-top: 110px !important;
             }
         }
-        .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.75rem; vertical-align: super; margin-left: 3px; cursor: default; }
-        .price-note::after { content: "One-time purchase. No subscription."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
+        .price-note { position: relative; display: inline; color: var(--text-primary); font-size: 0.8125rem; vertical-align: super; margin-left: 3px; cursor: default; }
+        .price-note::after { content: "One-time purchase. No subscription."; position: absolute; left: calc(100% + 6px); top: 50%; transform: translateY(-50%); background: var(--bg-card); color: var(--text-primary); padding: 8px 14px; border-radius: 8px; font-size: 0.8125rem; font-style: italic; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.1s; z-index: 999; border: 1px solid var(--border); }
         .price-note:hover::after { opacity: 1; }
         @media (max-width: 768px) { .price-note { display: none; } }
 
@@ -1182,7 +1182,7 @@
         }
 
         .pricing-label {
-            font-size: 0.8rem;
+            font-size: 0.8125rem;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.08em;
@@ -1468,6 +1468,11 @@
                 <span>&#129309; Listed in StevenBlack/hosts</span>
                 <a href="privacy.html" style="color: inherit; text-decoration: none;">&#128737;&#65039; Privacy by Design</a>
             </div>
+            <div class="trust-badges animate-in delay-4" aria-label="Product commitments">
+                <span>No spying</span>
+                <span>No subscription</span>
+                <span>Actively maintained</span>
+            </div>
             <div class="animate-in delay-4" style="margin: 12px auto 14px; text-align: center;">
                 <a href="https://dist.sanehosts.com/updates/SaneHosts-1.1.23.zip" class="pricing-cta pricing-cta-pro" style="display: inline-flex; align-items: center; justify-content: center; width: auto; min-width: 240px;" data-cta="download_trial">Start 14-Day Trial</a>
                 <p style="color: var(--text-muted); font-size: 0.92rem; margin: 12px 0 6px;">All features for 14 days. No credit card required. Buy once after the trial.</p>
@@ -1484,7 +1489,7 @@
             <div id="pricing" style="scroll-margin-top: 120px;">
                 <div class="hero-pricing-grid" style="max-width: 520px; grid-template-columns: 1fr;">
                     <div class="pricing-card featured">
-                        <p class="pricing-label">14-Day Trial</p>
+                        <p class="pricing-label">One-Time Purchase</p>
                         <p class="pricing-price">$14.99<span class="price-note">*</span></p>
                         <p class="pricing-price-note">Every feature is available for 14 days. Buy once to keep using SaneHosts.</p>
                         <ul class="pricing-features">
@@ -1500,7 +1505,7 @@
             </div>
             </div>
             <p class="animate-in delay-4 hero-pricing-footer" style="color: var(--text-muted); font-size: 0.85rem; margin-top: var(--phi-sm, 8px); margin-bottom: 36px; text-align: center;">
-                <code style="background: var(--bg-card); padding: 4px 10px; border-radius: 6px; font-size: 0.8rem; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;" onclick="copyToClipboard(this)" title="Click to copy">brew install --cask sane-apps/tap/sanehosts</code>
+                <code style="background: var(--bg-card); padding: 4px 10px; border-radius: 6px; font-size: 0.8125rem; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer;" onclick="copyToClipboard(this)" title="Click to copy">brew install --cask sane-apps/tap/sanehosts</code>
             </p>
             <div class="animate-in delay-4" style="max-width: 780px; margin: 0 auto 34px; padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: rgba(92, 232, 255, 0.08); text-align: center;">
                 <p style="color: var(--text-primary); font-weight: 700; margin-bottom: 6px;">Buying more than one SaneApps Mac app?</p>
@@ -1928,7 +1933,7 @@
                 <a href="https://github.com/sponsors/MrSaneApps"><svg height="12" viewBox="0 0 16 16" width="12" fill="#ea4aaa" style="vertical-align: -1px; margin-right: 3px;"><path d="M4.25 2.5c-1.336 0-2.75 1.164-2.75 3 0 2.15 1.58 4.144 3.365 5.682A20.565 20.565 0 008 13.393a20.561 20.561 0 003.135-2.211C12.92 9.644 14.5 7.65 14.5 5.5c0-1.836-1.414-3-2.75-3-1.373 0-2.609.986-3.029 2.456a.75.75 0 01-1.442 0C6.859 3.486 5.623 2.5 4.25 2.5zM8 14.25l-.345.666-.002-.001-.006-.003-.018-.01a7.643 7.643 0 01-.31-.17 22.075 22.075 0 01-3.434-2.414C2.045 10.731 0 8.35 0 5.5 0 2.836 2.086 1 4.25 1 5.797 1 7.153 1.802 8 3.02 8.847 1.802 10.203 1 11.75 1 13.914 1 16 2.836 16 5.5c0 2.85-2.045 5.231-3.885 6.818a22.08 22.08 0 01-3.744 2.584l-.018.01-.006.003h-.002L8 14.25z"/></svg>Sponsor</a>
                 <a href="https://saneapps.com">SaneApps</a>
             </div>
-            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8rem; font-style: italic; opacity: 1; margin-bottom: 12px;">Download starts your 14-day trial. No credit card required. Buy once after the trial.</p>
+            <p id="pricing-note" style="color: var(--text-secondary); font-size: 0.8125rem; font-style: italic; opacity: 1; margin-bottom: 12px;">Download starts your 14-day trial. No credit card required. Buy once after the trial.</p>
             <p class="footer-copy">Made with care by Mr. Sane &middot; &copy; 2026 SaneHosts &middot; Requires macOS 14.0 (Sonoma) or later</p>
             <p class="footer-philosophy" style="font-style: italic; color: var(--text-muted); margin-top: 16px;">"For God has not given us a spirit of fear, but of power, love, and a sound mind." -- 2 Timothy 1:7</p>
             <p class="footer-philosophy">"Built for a Sound Mind" &middot; <a href="https://saneapps.com" style="color: var(--text-muted);">saneapps.com</a></p>

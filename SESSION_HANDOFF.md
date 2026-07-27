@@ -5,7 +5,7 @@
 ## ACTIVE: 1.1.24 direct-release candidate — not released
 
 - Version `1.1.24` (build `1124`) pins SaneUI to
-  `e578dcd77a93124364e063fd1d9f91c09f5c590a` and replaces current
+  `c79cc6892aa3a8a92c2166f8e096c24303ee8567` and replaces current
   Basic/Pro tier copy with the 14-day trial, then one-time purchase model.
   Current app UI, README, privacy copy, website, release metadata, and
   customer-action tests use neutral trial and paid-access language. This
@@ -19,9 +19,32 @@
   `outputs/visual-audit-trial-expired/1.1.24/sanehosts-expired-trial.png`
   and `outputs/live-logs/sanehosts-expired-trial-20260727.log`.
   Visual verdict: clean, bright, no clipping, and no tier language.
-- Post-launch cleanup reported a Ruby `filter_map` helper error. It did not
-  affect the app gate or runtime proof and remains a shared tooling issue.
-- No commit, push, or release has run for `1.1.24`.
+- Customer UI proof now uses the current trial/paid action ID and test
+  markers, plus the saved Mini expired-trial screenshot and workflow log.
+  The contract passes with no issues; fresh release preflight receipt:
+  `dc8cd1fe03b2789fb2a5ced415f9afe0`.
+- Fresh Mini pre-push and preflight verification passed `117` tests; verify
+  receipts: `e4a312030a405b0fa7bcccdfadfdd1ee` and the receipt embedded in the
+  signed preflight above.
+- The live email/download Worker now serves SaneHosts `1.1.23` (build `1123`)
+  for standalone and bundle downloads. Worker deploy:
+  `9175e22a-8977-4345-91be-1da97067e783`.
+- App commits `9d06f6d` and `f36f7e8` are pushed to `origin/main`.
+  Version `1.1.24` is not released.
+- Audit fixes are implemented: neutral shared direct-trial onboarding, current
+  shared accent, included-profile copy, clear one-time pricing, required
+  website trust badges, and a 13px minimum for site helper text.
+- SaneUI full Mini tests passed 132 tests across 28 suites. SaneHosts full Mini
+  verify passed 117 tests after pinning the shared fix; receipt
+  `c681d0afb6502d52c88a5666a104029f`.
+- Clean first-run visual proof:
+  `outputs/visual-audit-neutral-trial/1.1.24/sanehosts-welcome.png`.
+  Verdict: balanced, bright, unclipped, and free of tier wording. The canonical
+  wrapper could not advance the nested onboarding controls for later-page
+  captures; source/branch tests cover the neutral trial summary, but later-page
+  screenshots remain a release-proof limitation.
+- Customer UI action sweep and contract pass after the audit fixes; contract
+  receipt `afe0ad57c664cebb780a6ad74bc2ce9c`.
 
 ## SHIPPED: 1.1.22 large-profile activation fix LIVE on Sparkle channel
 

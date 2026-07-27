@@ -398,7 +398,6 @@ enum SaneIcons {
 // MARK: - Semantic Colors
 
 extension Color {
-    static let saneAccent = Color(red: 0.373, green: 0.659, blue: 0.827) // Shield Teal #5fa8d3
     static let saneSuccess = Color.green
     static let saneWarning = Color.orange
     static let saneError = Color.red

@@ -23,7 +23,7 @@ struct NavigationSourceTests {
         )
 
         #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
-        #expect(packageSource.contains("revision: \"e578dcd77a93124364e063fd1d9f91c09f5c590a\""))
+        #expect(packageSource.contains("revision: \"c79cc6892aa3a8a92c2166f8e096c24303ee8567\""))
         #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
     }
 
@@ -33,7 +33,7 @@ struct NavigationSourceTests {
             "SaneHosts.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
             "SaneHosts.xcworkspace/xcshareddata/swiftpm/Package.resolved"
         ]
-        let expectedRevision = "\"revision\" : \"e578dcd77a93124364e063fd1d9f91c09f5c590a\""
+        let expectedRevision = "\"revision\" : \"c79cc6892aa3a8a92c2166f8e096c24303ee8567\""
 
         for relativePath in resolvedPaths {
             let resolvedSource = try String(
@@ -53,6 +53,8 @@ struct NavigationSourceTests {
             "SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift",
             "SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift",
             "SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/Views/PresetViews.swift",
             "Tests/CustomerUIActions.yml", "website/index.html", "website/privacy.html"
         ]
         let copy = try paths.map {
@@ -62,12 +64,18 @@ struct NavigationSourceTests {
             "Basic is free", "Basic vs Pro", "14-day Pro trial", "Buy Pro",
             "PRO FEATURES", "Pro feature —", "Basic remains included", "Keep Pro",
             "SaneHosts Pro", "Start Full Pro Trial", "Full Pro Trial",
-            "Every Pro feature", "Pro is required", "14 days of Pro", "Pro purchases"
+            "Every Pro feature", "Pro is required", "14 days of Pro", "Pro purchases",
+            "free profile"
         ]
 
         #expect(copy.contains("14-day trial"))
         #expect(copy.contains("Buy SaneHosts once"))
         #expect(copy.contains("ADVANCED TOOLS"))
+        #expect(copy.contains("No spying"))
+        #expect(copy.contains("No subscription"))
+        #expect(copy.contains("Actively maintained"))
+        #expect(copy.contains("Color.saneAccent.opacity"))
+        #expect(!copy.contains("static let saneAccent ="))
         for phrase in retired {
             #expect(!copy.contains(phrase))
         }
