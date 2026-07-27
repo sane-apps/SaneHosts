@@ -15,7 +15,7 @@ let saneUIDependency: Package.Dependency = {
         return .package(path: localSaneUIPath)
     }
 
-    return .package(url: "https://github.com/sane-apps/SaneUI.git", revision: "103803d6fc3069c83270dded16734d3195546e8e")
+    return .package(url: "https://github.com/sane-apps/SaneUI.git", revision: "e578dcd77a93124364e063fd1d9f91c09f5c590a")
 }()
 
 let package = Package(

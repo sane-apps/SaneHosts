@@ -427,8 +427,8 @@ struct ProfileDetailView: View {
                             }
                         }
                         .buttonStyle(SaneActionButtonStyle(compact: true))
-                        .help(licenseService.isPro ? "Select entries for bulk enable, disable, or delete" : "Bulk operations require SaneHosts Pro")
-                        .accessibilityLabel(licenseService.isPro ? "Enter selection mode" : "Bulk operations — Pro feature")
+                        .help(licenseService.isPro ? "Select entries for bulk enable, disable, or delete" : "Bulk operations require paid access")
+                        .accessibilityLabel(licenseService.isPro ? "Enter selection mode" : "Bulk operations — paid feature")
                     }
                 }
                 .padding(.horizontal, 12)

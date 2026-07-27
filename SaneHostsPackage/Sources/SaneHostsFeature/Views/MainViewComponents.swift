@@ -60,19 +60,19 @@ struct QuickActionButton: View {
         .buttonStyle(.plain)
         .padding(.vertical, 4)
         .accessibilityLabel(title)
-        .accessibilityHint(isPro == false ? "\(subtitle) - Pro feature" : subtitle)
+        .accessibilityHint(isPro == false ? "\(subtitle) - Paid feature" : subtitle)
     }
 }
 
 // MARK: - Pro Lock Badge
 
-/// Teal lock + "Pro" badge used on gated actions.
+/// Teal lock + paid-access badge used on gated actions.
 struct ProLockBadge: View {
     var body: some View {
         HStack(spacing: 4) {
             Image(systemName: "lock.fill")
                 .font(.system(size: 13, weight: .semibold))
-            Text("Pro")
+            Text("Paid")
                 .font(.system(size: 13, weight: .semibold))
         }
         .foregroundColor(.white)
@@ -93,11 +93,11 @@ struct TrialCountdownCard: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
 
-            Text("Basic remains included after the trial.")
+            Text("Buy once to keep using all features after the trial.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
 
-            Button("Keep Pro") {
+            Button("Buy SaneHosts") {
                 action()
             }
             .buttonStyle(.plain)

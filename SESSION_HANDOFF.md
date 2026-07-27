@@ -1,6 +1,27 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-07-15
+**Last updated:** 2026-07-27
+
+## ACTIVE: 1.1.24 direct-release candidate — not released
+
+- Version `1.1.24` (build `1124`) pins SaneUI to
+  `e578dcd77a93124364e063fd1d9f91c09f5c590a` and replaces current
+  Basic/Pro tier copy with the 14-day trial, then one-time purchase model.
+  Current app UI, README, privacy copy, website, release metadata, and
+  customer-action tests use neutral trial and paid-access language. This
+  supersedes older Basic/Pro source-of-truth notes below without rewriting
+  their historical record.
+- Canonical Mini verify passed `117` tests:
+  `0b816afd532953600ec359df9504627d`. Focused source-policy and docs checks
+  passed: `ca789d910f52af369fbfd20ecb837c5f`.
+- Live expired-trial gate passed on the Mini:
+  `ae13667f37f2d271c5203ccb3cada69a`. Evidence:
+  `outputs/visual-audit-trial-expired/1.1.24/sanehosts-expired-trial.png`
+  and `outputs/live-logs/sanehosts-expired-trial-20260727.log`.
+  Visual verdict: clean, bright, no clipping, and no tier language.
+- Post-launch cleanup reported a Ruby `filter_map` helper error. It did not
+  affect the app gate or runtime proof and remains a shared tooling issue.
+- No commit, push, or release has run for `1.1.24`.
 
 ## SHIPPED: 1.1.22 large-profile activation fix LIVE on Sparkle channel
 

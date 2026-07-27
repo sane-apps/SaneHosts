@@ -2,6 +2,14 @@ import Foundation
 import Testing
 
 struct NavigationSourceTests {
+    private var projectRoot: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+    }
+
     @Test("SaneUI dependency defaults to the release-tested revision")
     func saneUIDependencyDefaultsToPinnedRevision() throws {
         let packageRoot = URL(fileURLWithPath: #filePath)
@@ -15,8 +23,54 @@ struct NavigationSourceTests {
         )
 
         #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
-        #expect(packageSource.contains("revision: \"103803d6fc3069c83270dded16734d3195546e8e\""))
+        #expect(packageSource.contains("revision: \"e578dcd77a93124364e063fd1d9f91c09f5c590a\""))
         #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
+    }
+
+    @Test("Every tracked package resolution uses the release-tested SaneUI revision")
+    func trackedPackageResolutionsUsePinnedSaneUIRevision() throws {
+        let resolvedPaths = [
+            "SaneHosts.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+            "SaneHosts.xcworkspace/xcshareddata/swiftpm/Package.resolved"
+        ]
+        let expectedRevision = "\"revision\" : \"e578dcd77a93124364e063fd1d9f91c09f5c590a\""
+
+        for relativePath in resolvedPaths {
+            let resolvedSource = try String(
+                contentsOf: projectRoot.appendingPathComponent(relativePath),
+                encoding: .utf8
+            )
+
+            #expect(resolvedSource.contains(expectedRevision))
+        }
+    }
+
+    @Test("Current customer copy uses the trial then purchase model")
+    func currentCustomerCopyUsesTrialThenPurchaseModel() throws {
+        let paths = [
+            "AGENTS.md", "README.md", "PRIVACY.md", "SaneHosts/SaneHostsApp.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift",
+            "SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift",
+            "Tests/CustomerUIActions.yml", "website/index.html", "website/privacy.html"
+        ]
+        let copy = try paths.map {
+            try String(contentsOf: projectRoot.appendingPathComponent($0), encoding: .utf8)
+        }.joined(separator: "\n")
+        let retired = [
+            "Basic is free", "Basic vs Pro", "14-day Pro trial", "Buy Pro",
+            "PRO FEATURES", "Pro feature —", "Basic remains included", "Keep Pro",
+            "SaneHosts Pro", "Start Full Pro Trial", "Full Pro Trial",
+            "Every Pro feature", "Pro is required", "14 days of Pro", "Pro purchases"
+        ]
+
+        #expect(copy.contains("14-day trial"))
+        #expect(copy.contains("Buy SaneHosts once"))
+        #expect(copy.contains("ADVANCED TOOLS"))
+        for phrase in retired {
+            #expect(!copy.contains(phrase))
+        }
     }
 
     @Test("SaneHosts settings actions use the shared opener across dock and menu bar")

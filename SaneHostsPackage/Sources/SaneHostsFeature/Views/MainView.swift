@@ -8,13 +8,13 @@ enum MainViewGatePolicy {
         isPro
     }
 
-    static func allowsBasicAfterTrial(hasExpiredProTrial: Bool) -> Bool {
+    static func allowsUseAfterTrial(hasExpiredProTrial: Bool) -> Bool {
         false
     }
 
     static func trialCountdownTitle(daysRemaining: Int?) -> String? {
         guard let daysRemaining else { return nil }
-        return daysRemaining == 1 ? "1 day left in Pro trial" : "\(daysRemaining) days left in Pro trial"
+        return daysRemaining == 1 ? "1 day left in trial" : "\(daysRemaining) days left in trial"
     }
 }
 

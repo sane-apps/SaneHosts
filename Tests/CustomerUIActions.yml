@@ -3,7 +3,7 @@ version: 1
 app: SaneHosts
 actions:
 - id: onboarding-and-tutorial-entry
-  title: First-run gate and tutorial expose the promised Basic and Pro paths
+  title: First-run gate and tutorial expose the promised trial and purchase path
   surfaces:
   - Welcome gate
   - Help menu tutorial command
@@ -11,14 +11,14 @@ actions:
   - Main window Essentials selection
   steps:
   - Launch the release-like app on the Mini.
-  - Verify the welcome gate lists Basic and Pro capabilities.
+  - Verify the welcome gate explains the 14-day trial and one-time purchase.
   - Use Show Tutorial from Help and advance through the safe tutorial surfaces.
-  - Confirm Basic users land on Essentials when no prior selection exists.
+  - Confirm Essentials is selected when no prior selection exists.
   assertions:
-  - First-run copy names the actual Basic and Pro capabilities.
+  - First-run copy explains that all features are available during the trial.
   - Tutorial controls can start, advance, skip, and finish without moving the highlight
     off-screen.
-  - The initial Basic selection chooses Essentials rather than an empty or locked
+  - The initial selection chooses Essentials rather than an empty or locked
     profile.
   evidence:
   - Source guard for WelcomeGateView and tutorial notifications
@@ -50,13 +50,13 @@ actions:
     - Tests/Fixtures/customer-ui/hosts-workspace/
   user_inputs:
   - Launch the release-like app on the Mini.
-  - Verify the welcome gate lists Basic and Pro capabilities.
+  - Verify the welcome gate explains the 14-day trial and one-time purchase.
   - Use Show Tutorial from Help and advance through the safe tutorial surfaces.
   expected_outputs:
-  - First-run copy names the actual Basic and Pro capabilities.
+  - First-run copy explains that all features are available during the trial.
   - Tutorial controls can start, advance, skip, and finish without moving the highlight
     off-screen.
-  - The initial Basic selection chooses Essentials rather than an empty or locked
+  - The initial selection chooses Essentials rather than an empty or locked
     profile.
 - id: menu-bar-profile-actions
   title: Menu bar profile actions expose active state, activation, deactivation, and
@@ -170,28 +170,28 @@ actions:
   - Turn Off Protection calls the same hosts/profile deactivation paths as other surfaces.
   - Check for Updates is disabled or cancelable when direct-update eligibility is
     not available.
-- id: quick-actions-and-basic-pro-gates
-  title: Sidebar quick actions and Pro gates match shipped Basic and Pro boundaries
+- id: quick-actions-and-paid-access-gates
+  title: Sidebar quick actions and paid access gates match the 14-day trial model
   surfaces:
   - Quick Actions section
-  - Pro Features section
-  - Pro upsell sheet
+  - Advanced Tools section
+  - Paid access sheet
   - Protection Levels section
   steps:
   - Verify Enable Protection or Turn Off Protection appears for the selected profile.
-  - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
+  - Verify active-trial users can use all features and see the trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
-    protection levels in active-trial and paid Pro modes.
-  - Verify locked Basic paths open the appropriate upsell instead of silently performing
-    Pro work.
+    protection levels in active-trial and paid modes.
+  - Verify locked unpaid paths open the purchase prompt instead of silently performing
+    paid work.
   - Verify expired-trial users see the license gate instead of the app workspace.
   assertions:
   - Active-trial action surfaces remain usable without a paid license.
-  - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
-  - Expired-trial users are routed to upgrade or license entry.
+  - Paid actions are visible, locked, and routed to the matching purchase gate.
+  - Expired-trial users are routed to purchase or license entry.
   - Merge warns when fewer than two profiles are available.
   evidence:
-  - Source guard for QuickActionButton and Pro lock routing
+  - Source guard for QuickActionButton and paid-access lock routing
   - MainView gate policy tests
   - App Store screenshot proof of primary surfaces
   required_proof_level: full_runtime_completion
@@ -215,14 +215,14 @@ actions:
     - Tests/Fixtures/customer-ui/hosts-workspace/
   user_inputs:
   - Verify Enable Protection or Turn Off Protection appears for the selected profile.
-  - Verify active-trial users can keep using Essentials and see the Pro trial countdown.
+  - Verify active-trial users can use all features and see the trial countdown.
   - Click Import Blocklist, New Empty Profile, From Template, Merge Profiles, and
-    protection levels in active-trial and paid Pro modes.
+    protection levels in active-trial and paid modes.
   - Verify expired-trial users see the license gate instead of the app workspace.
   expected_outputs:
   - Active-trial action surfaces remain usable without a paid license.
-  - Pro-only actions are visible, locked, and routed to the matching ProFeature gate.
-  - Expired-trial users are routed to upgrade or license entry.
+  - Paid actions are visible, locked, and routed to the matching purchase gate.
+  - Expired-trial users are routed to purchase or license entry.
   - Merge warns when fewer than two profiles are available.
 - id: profile-lifecycle-actions
   title: Profile create, duplicate, merge, export, delete, select, and reorder actions
@@ -447,19 +447,19 @@ actions:
   - Toggle, duplicate, and delete update only the selected profile.
   - Generated comments cannot inject hosts-file lines.
 - id: bulk-entry-actions
-  title: Bulk select, enable, disable, delete, and done actions are Pro-gated and
+  title: Bulk select, enable, disable, delete, and done actions require paid access and are
     covered
   surfaces:
   - Entry selection mode
   - Bulk actions bar
-  - Pro upsell sheet
+  - Paid access sheet
   steps:
-  - Enter selection mode in Pro or trigger the Pro gate in Basic.
+  - Enter selection mode with paid access or trigger the purchase gate when unpaid.
   - Select and deselect entries.
   - Enable, disable, delete selected entries, then exit selection mode.
   assertions:
-  - Basic mode opens the bulk operations upsell.
-  - Pro mode updates only selected entries.
+  - Unpaid mode opens the bulk operations purchase prompt.
+  - Paid mode updates only selected entries.
   - Bulk delete clears selection and does not leave stale IDs.
   evidence:
   - Source guard for selection mode and bulk actions
@@ -485,12 +485,12 @@ actions:
     fixture_paths:
     - Tests/Fixtures/customer-ui/hosts-workspace/
   user_inputs:
-  - Enter selection mode in Pro or trigger the Pro gate in Basic.
+  - Enter selection mode with paid access or trigger the purchase gate when unpaid.
   - Select and deselect entries.
   - Enable, disable, delete selected entries, then exit selection mode.
   expected_outputs:
-  - Basic mode opens the bulk operations upsell.
-  - Pro mode updates only selected entries.
+  - Unpaid mode opens the bulk operations purchase prompt.
+  - Paid mode updates only selected entries.
   - Bulk delete clears selection and does not leave stale IDs.
 - id: settings-license-about-update-support
   title: Settings, License, About, update, diagnostics, and support surfaces are reachable

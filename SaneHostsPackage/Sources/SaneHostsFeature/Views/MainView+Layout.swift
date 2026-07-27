@@ -141,7 +141,7 @@ extension MainView {
                 HStack(spacing: 6) {
                     Image(systemName: ProFeature.sectionIcon(isPro: licenseService.isPro))
                         .font(.system(size: 13, weight: .semibold))
-                    Text("PRO FEATURES")
+                    Text("ADVANCED TOOLS")
                         .font(.system(size: 13, weight: .bold))
                 }
                 .foregroundColor(.white)
@@ -194,7 +194,7 @@ extension MainView {
                             }
                         }
                         .accessibilityLabel("\(preset.displayName) protection level")
-                        .accessibilityHint(licenseService.isPro ? "Double-tap to view details and download" : "Pro feature — double-tap to upgrade")
+                        .accessibilityHint(licenseService.isPro ? "Double-tap to view details and download" : "Paid feature — double-tap to buy")
                     }
                 } header: {
                     HStack(spacing: 6) {

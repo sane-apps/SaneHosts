@@ -8,11 +8,11 @@
 [![Swift 6.2](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
 [![Listed on macOS apps list](https://img.shields.io/badge/Listed%20on-macOS--apps--list%20(40k%E2%98%85)-black)](https://github.com/serhii-londar/open-source-mac-os-apps)
 
-> **⭐ Star this repo if it's useful!** · **[Start a free 14-day Pro trial](https://sanehosts.com)** · **[Buy Pro — $14.99 once](https://sanehosts.com)** · Keeps development alive
+> **⭐ Star this repo if it's useful!** · **[Start a free 14-day trial](https://sanehosts.com)** · **[Buy SaneHosts once](https://sanehosts.com)** · Keeps development alive
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, turn off protection.
 
-**Current direct release: 1.1.21.** The Mac app starts with a free 14-day Pro trial; after that, Pro is required and remains a one-time $14.99 purchase.
+**Current direct release: 1.1.23.** The Mac app starts with a free 14-day trial. Buy SaneHosts once to keep using all features after the trial.
 
 ## Features
 
@@ -48,7 +48,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 **[Download from sanehosts.com](https://sanehosts.com)** — signed, notarized, and ready to use.
 
-**Start with a free 14-day Pro trial. Pro is $14.99 once after that.** No subscription.
+**Start with a free 14-day trial, then buy SaneHosts once.** No subscription.
 
 **Building from source?** The app resolves `SaneUI` automatically from GitHub outside the monorepo. Consider [buying the app](https://sanehosts.com) to support continued development.
 
@@ -89,7 +89,7 @@ SaneHosts is designed with privacy in mind:
 - All data stored locally in `~/Library/Application Support/SaneHosts/`
 - No personal content uploaded to SaneApps servers
 - The app may send limited anonymous product events, like launch, license, version, OS, and trial/license status
-- Network access is limited to remote imports or protection levels you choose, update checks, those simple anonymous product events, checkout/license delivery when you choose Pro, and privacy-first aggregate website analytics on public pages
+- Network access is limited to remote imports or protection levels you choose, update checks, those simple anonymous product events, checkout/license delivery when you choose to buy, and privacy-first aggregate website analytics on public pages
 
 See [PRIVACY.md](PRIVACY.md) for details.
 

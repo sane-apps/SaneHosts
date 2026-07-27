@@ -196,7 +196,7 @@ struct SaneHostsApp: App {
                                     ("network", "DNS cache flush")
                                 ],
                                 proFeatures: [
-                                    ("checkmark", "Enjoy 14 days of Pro"),
+                                    ("checkmark", "Use all features for 14 days"),
                                     ("doc.on.doc", "Unlimited profiles"),
                                     ("arrow.down.circle", "Downloadable presets"),
                                     ("arrow.triangle.merge", "Merge profiles"),
@@ -585,7 +585,7 @@ struct MenuBarMenuContent: View {
     var body: some View {
         Group {
             if licenseService.hasExpiredProTrial {
-                Button("Trial ended — Keep Pro") {
+                Button("Trial ended — Buy SaneHosts") {
                     WindowActionStorage.shared.showMainWindow(using: openWindow)
                 }
                 Divider()
