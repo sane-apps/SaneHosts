@@ -5,7 +5,27 @@
     <link>https://sanehosts.com/appcast.xml</link>
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
-                        <item>
+                                <item>
+            <title>1.1.24</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Mon, 27 Jul 2026 14:45:31 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Improves setup clarity and reliability.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.24.zip"
+                       sparkle:version="1124"
+                       sparkle:shortVersionString="1.1.24"
+                       length="4899932"
+                       type="application/octet-stream"
+                       sparkle:edSignature="NYWyk8FTGh0f/GKC5nd+3I80Fy4vUN+N97zV+PTPTty0QsjCIIJ89eCZohKFtKFRPJFcekuIEPRCsH82uWqcCQ=="/>
+        </item>
+<item>
             <title>1.1.23</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Sat, 18 Jul 2026 06:48:22 -0400</pubDate>
