@@ -15,9 +15,13 @@ class SaneHostsUIActionExecutor
   MANIFEST = File.join(ROOT, 'Tests', 'CustomerUIActions.yml')
   AX_SOURCE = File.join(__dir__, 'customer_ui_ax_driver.swift')
   SCREENSHOT_WRAPPER = File.expand_path('../../infra/SaneProcess/scripts/mini/capture-mini-screenshot.sh', ROOT)
+  SCREENSHOT_HELPER_DIR = File.expand_path('~/.codex/skills/screenshot/scripts')
+  MINI_GUI_RUNNER = File.expand_path('../../infra/SaneProcess/scripts/mini/mini-gui-run.sh', ROOT)
   APP_BUNDLE_ID = 'com.mrsane.SaneHosts'
+  APP_EXECUTABLE = '/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'
   FIXTURE_PROFILE = 'UI Proof Profile'
   FIXTURE_HOST = 'proof.invalid'
+  PROCESS_EXIT_TIMEOUT = 8
 
   SAFE_BOUNDARIES = {
     'menu-bar-profile-actions' => [
@@ -58,6 +62,7 @@ class SaneHostsUIActionExecutor
     @manifest = YAML.safe_load(File.read(MANIFEST), aliases: false)
     @actions = Array(@manifest.fetch('actions')).select { |action| action['release_required'] != false }
     @plans = build_plans
+    @owned_processes = []
     validate_plan!
   end
 
@@ -68,9 +73,11 @@ class SaneHostsUIActionExecutor
     require_clean_checkout!
     refuse_competing_gui!
     prepare_paths!
+    execution_error = nil
     begin
       prepare_isolated_fixture!
       compile_ax_driver!
+      validate_screenshot_route!
       start_live_log!
       launch_app!
       load_contract_identity!
@@ -79,12 +86,13 @@ class SaneHostsUIActionExecutor
       ingest_evidence!
       puts @execution_path
     rescue StandardError => e
-      write_failure(e)
-      raise
+      execution_error = e
     ensure
-      stop_live_log!
-      restore_gui_environment!
+      cleanup_error = cleanup_after_execution
+      write_failure(execution_error || cleanup_error, cleanup_error: cleanup_error) if execution_error || cleanup_error
     end
+    raise execution_error if execution_error
+    raise cleanup_error if cleanup_error
   end
 
   def plan_report
@@ -290,14 +298,38 @@ class SaneHostsUIActionExecutor
     @log_io = File.open(@live_log, 'a')
     @log_pid = Process.spawn('/usr/bin/log', 'stream', '--style', 'compact', '--level', 'debug',
                              '--predicate', 'process == "SaneHosts"', out: @log_io, err: @log_io)
+    register_owned_process!(:log, @log_pid)
     @log_started_at = Time.now.utc
   end
 
   def launch_app!
-    system!('./scripts/SaneMaster.rb', 'test_mode', '--release', '--no-logs', chdir: ROOT)
+    before = process_pids('SaneHosts')
+    raise "SaneHosts appeared before launch: #{before.join(', ')}" unless before.empty?
+
+    launch_error = nil
+    begin
+      system!('./scripts/SaneMaster.rb', 'test_mode', '--release', '--no-logs', chdir: ROOT)
+    rescue StandardError => e
+      launch_error = e
+    end
     deadline = Time.now + 30
-    sleep 0.2 until system('pgrep', '-x', 'SaneHosts', out: File::NULL) || Time.now >= deadline
-    raise 'SaneHosts did not launch' unless system('pgrep', '-x', 'SaneHosts', out: File::NULL)
+    launched = []
+    until Time.now >= deadline
+      launched = process_pids('SaneHosts') - before
+      break unless launched.empty? && launch_error.nil?
+      sleep 0.2
+    end
+    launched.each do |pid|
+      identity = process_identity(pid)
+      register_owned_process!(:app, pid, identity: identity) if identity&.include?(APP_EXECUTABLE)
+    end
+    raise launch_error if launch_error
+    raise 'SaneHosts did not launch' if launched.empty?
+    raise "Expected one launched SaneHosts process, found: #{launched.join(', ')}" unless launched.one?
+
+    @app_pid = launched.first
+    owned_app = @owned_processes.find { |owned| owned[:kind] == :app && owned[:pid] == @app_pid }
+    raise "Launched PID #{@app_pid} is not the canonical SaneHosts app" unless owned_app
     raise 'Live log was not attached before launch' unless @log_started_at
   end
 
@@ -321,7 +353,7 @@ class SaneHostsUIActionExecutor
 
     screenshot_rel = "#{@run_rel}/visual/#{id}.png"
     screenshot = File.join(ROOT, screenshot_rel)
-    system!(SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', screenshot)
+    system!(*screenshot_command(screenshot))
     raise "#{id}: canonical screenshot missing" unless File.size?(screenshot)
     raise "#{id}: screenshot path was reused" if @screenshots.include?(screenshot_rel)
 
@@ -416,24 +448,126 @@ class SaneHostsUIActionExecutor
     end
   end
 
-  def stop_live_log!
-    return unless @log_pid
-
-    Process.kill('TERM', @log_pid)
-    Process.wait(@log_pid)
-  rescue Errno::ESRCH, Errno::ECHILD
-    nil
-  ensure
-    @log_io&.close
+  def validate_screenshot_route!
+    dependencies = [
+      SCREENSHOT_WRAPPER,
+      MINI_GUI_RUNNER,
+      File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh'),
+      File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
+    ]
+    missing = dependencies.reject { |path| File.file?(path) }
+    raise "Canonical Mini screenshot route is incomplete: #{missing.join(', ')}" unless missing.empty?
   end
 
-  def write_failure(error)
+  def screenshot_command(path)
+    [SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', path]
+  end
+
+  def cleanup_after_execution
+    errors = []
+    @owned_processes.reverse_each do |owned|
+      terminate_owned_process!(owned)
+    rescue StandardError => e
+      errors << "#{owned.fetch(:kind)} PID #{owned.fetch(:pid)}: #{e.message}"
+    end
+    begin
+      @log_io&.close
+    rescue StandardError => e
+      errors << "log handle: #{e.message}"
+    end
+    begin
+      restore_gui_environment!
+    rescue StandardError => e
+      errors << "environment: #{e.message}"
+    end
+    remaining = owned_processes_alive
+    errors << "owned processes remain: #{remaining.map { |item| "#{item[:kind]}=#{item[:pid]}" }.join(', ')}" unless remaining.empty?
+    write_cleanup_receipt(errors, remaining) if @run_dir
+    errors.empty? ? nil : StandardError.new("Executor cleanup failed: #{errors.join('; ')}")
+  end
+
+  def register_owned_process!(kind, pid, identity: nil)
+    resolved_identity = identity || process_identity(pid)
+    raise "Could not identify owned #{kind} PID #{pid}" if resolved_identity.to_s.empty?
+
+    @owned_processes << { kind: kind, pid: pid, identity: resolved_identity }
+  end
+
+  def terminate_owned_process!(owned)
+    pid = owned.fetch(:pid)
+    identity = owned.fetch(:identity)
+    return unless process_matches?(pid, identity)
+
+    signal_process('TERM', pid)
+    wait_for_owned_exit(pid, identity)
+    if process_matches?(pid, identity)
+      signal_process('KILL', pid)
+      wait_for_owned_exit(pid, identity)
+    end
+    raise "process did not exit after TERM/KILL" if process_matches?(pid, identity)
+  rescue Errno::ESRCH
+    nil
+  ensure
+    begin
+      wait_process(pid)
+    rescue Errno::ECHILD
+      nil
+    end
+  end
+
+  def wait_for_owned_exit(pid, identity)
+    deadline = Time.now + PROCESS_EXIT_TIMEOUT
+    sleep 0.1 while process_matches?(pid, identity) && Time.now < deadline
+  end
+
+  def owned_processes_alive
+    @owned_processes.select { |owned| process_matches?(owned.fetch(:pid), owned.fetch(:identity)) }
+  end
+
+  def process_matches?(pid, identity)
+    process_identity(pid) == identity
+  end
+
+  def process_identity(pid)
+    out, status = Open3.capture2e('ps', '-p', pid.to_s, '-o', 'lstart=', '-o', 'command=')
+    status.success? && !out.strip.empty? ? out.strip : nil
+  end
+
+  def signal_process(signal, pid)
+    Process.kill(signal, pid)
+  end
+
+  def wait_process(pid)
+    Process.wait(pid, Process::WNOHANG)
+  end
+
+  def process_pids(name)
+    out, status = Open3.capture2e('pgrep', '-x', name)
+    return [] unless status.success?
+
+    out.lines.filter_map { |line| Integer(line.strip, exception: false) }
+  end
+
+  def write_cleanup_receipt(errors, remaining)
+    write_json(File.join(@run_dir, 'cleanup-receipt.json'), {
+      app: 'SaneHosts',
+      status: errors.empty? ? 'passed' : 'failed',
+      generated_at: Time.now.utc.iso8601,
+      owned_processes: @owned_processes,
+      remaining_owned_processes: remaining,
+      remaining_owned_process_count: remaining.length,
+      errors: errors
+    })
+  end
+
+  def write_failure(error, cleanup_error: nil)
     return unless @run_dir
 
     write_json(File.join(@run_dir, 'execution-failed.json'), {
       app: 'SaneHosts', status: 'failed', execution_mode: 'executed',
       generated_at: Time.now.utc.iso8601, completed_action_ids: @results.keys,
-      error: "#{error.class}: #{error.message}"
+      error: "#{error.class}: #{error.message}",
+      cleanup_error: cleanup_error && "#{cleanup_error.class}: #{cleanup_error.message}"
     })
   end
 
