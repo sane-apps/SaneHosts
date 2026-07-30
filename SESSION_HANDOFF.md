@@ -1,10 +1,16 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-07-27
+**Last updated:** 2026-07-30
 
-## ACTIVE: 1.1.24 direct-release candidate — not released
+## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
-- Version `1.1.24` (build `1124`) pins SaneUI to
+- Version `1.1.24` (build `1124`) shipped on 2026-07-27. GitHub release
+  `v1.1.24` is public; its release tag points to
+  `508eb958616a3670df4db5ecebdc49214feaf144`. Current `origin/main`
+  (`b3c7187da3fc0e0d6250405137a8ac5ef675d2d8`) differs only in
+  release/site metadata, not app source. The release ledger records appcast,
+  website, webhook, Homebrew cask, and Lemon Squeezy at `1.1.24`.
+- Version `1.1.24` pins SaneUI to
   `7a06370f1712552c4d0e3e0860b19bf22175e3d6` and replaces current
   Basic/Pro tier copy with the 14-day trial, then one-time purchase model.
   Current app UI, README, privacy copy, website, release metadata, and
@@ -19,18 +25,26 @@
   `outputs/visual-audit-trial-expired/1.1.24/sanehosts-expired-trial.png`
   and `outputs/live-logs/sanehosts-expired-trial-20260727.log`.
   Visual verdict: clean, bright, no clipping, and no tier language.
-- Customer UI proof now uses the current trial/paid action ID and test
-  markers, plus the saved Mini expired-trial screenshot and workflow log.
-  The contract passes with no issues; fresh release preflight receipt:
-  `dc8cd1fe03b2789fb2a5ced415f9afe0`.
+- The old customer UI action sweep generated its own click transcript and
+  copied manifest steps into `steps_completed`; that receipt does not prove
+  those actions ran. The replacement runner refuses synthetic completion
+  claims and requires an external, fresh Mini execution receipt with a real
+  click artifact and distinct screenshot for every action. It also binds the
+  run to the exact manifest hash, source fingerprint, SaneHosts commit,
+  SaneUI commit, live log, functional state, inputs, assertions, and safe
+  boundary results.
+- Remaining proof boundary: run the external Mini UI executor across every
+  release-required action and ingest its receipt with
+  `scripts/customer_ui_action_sweep.rb --execution-evidence PATH`. Until that
+  succeeds, the older customer-action receipts are historical evidence only,
+  not current full execution proof. This is post-release proof repair; do not
+  republish `1.1.24`.
 - Fresh Mini pre-push and preflight verification passed `117` tests; verify
   receipts: `e4a312030a405b0fa7bcccdfadfdd1ee` and the receipt embedded in the
   signed preflight above.
-- The live email/download Worker now serves SaneHosts `1.1.23` (build `1123`)
-  for standalone and bundle downloads. Worker deploy:
-  `9175e22a-8977-4345-91be-1da97067e783`.
-- App commits `9d06f6d` and `f36f7e8` are pushed to `origin/main`.
-  Version `1.1.24` is not released.
+- The older Worker deployment receipt
+  `9175e22a-8977-4345-91be-1da97067e783` predates the `1.1.24` release and
+  must not be used as current download-version proof.
 - Audit fixes are implemented: neutral shared direct-trial onboarding, current
   shared accent, included-profile copy, clear one-time pricing, required
   website trust badges, and a 13px minimum for site helper text.
