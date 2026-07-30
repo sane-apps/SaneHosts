@@ -5,6 +5,7 @@ require 'json'
 require 'minitest/autorun'
 require 'open3'
 require 'rbconfig'
+require 'tmpdir'
 
 require_relative 'customer_ui_action_executor'
 
@@ -61,6 +62,142 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'capture-mini-screenshot.sh'
     assert_includes source, "'--app', 'SaneHosts', '--mode', 'temp', '--path'"
     assert_includes source, "'customer_ui_sweep', '--execution-evidence'"
+  end
+
+  def test_screenshot_command_routes_locally_through_canonical_mini_wrapper
+    destination = '/tmp/sanehosts-proof.png'
+    command = @executor.send(:screenshot_command, destination)
+
+    assert_equal SaneHostsUIActionExecutor::SCREENSHOT_WRAPPER, command.first
+    assert_equal ['--app', 'SaneHosts', '--mode', 'temp', '--path', destination], command.drop(1)
+    refute_includes command, 'ssh'
+    refute command.any? { |argument| argument.include?('/usr/sbin/screencapture') }
+  end
+
+  def test_screenshot_route_preflight_requires_wrapper_runner_and_helpers
+    source = File.read(File.expand_path('customer_ui_action_executor.rb', __dir__))
+
+    assert_includes source, 'SCREENSHOT_WRAPPER'
+    assert_includes source, 'MINI_GUI_RUNNER'
+    assert_includes source, "File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh')"
+    assert_includes source, "File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')"
+    assert_includes source, 'validate_screenshot_route!'
+  end
+
+  def test_cleanup_terminates_only_exact_owned_app_and_log_processes
+    app_identity = "Mon Jul 30 12:00:00 2026 #{SaneHostsUIActionExecutor::APP_EXECUTABLE}"
+    log_identity = 'Mon Jul 30 11:59:59 2026 /usr/bin/log stream --predicate process == "SaneHosts"'
+    unrelated_identity = "Mon Jul 30 11:00:00 2026 #{SaneHostsUIActionExecutor::APP_EXECUTABLE}"
+    identities = { 101 => log_identity, 202 => app_identity, 303 => unrelated_identity }
+    signals = []
+
+    @executor.instance_variable_set(:@owned_processes, [
+                                      { kind: :log, pid: 101, identity: log_identity },
+                                      { kind: :app, pid: 202, identity: app_identity }
+                                    ])
+    @executor.define_singleton_method(:process_identity) { |pid| identities[pid] }
+    @executor.define_singleton_method(:signal_process) do |signal, pid|
+      signals << [signal, pid]
+      identities.delete(pid)
+    end
+    @executor.define_singleton_method(:wait_process) { |_pid| nil }
+    @executor.define_singleton_method(:restore_gui_environment!) {}
+
+    assert_nil @executor.send(:cleanup_after_execution)
+    assert_equal [['TERM', 202], ['TERM', 101]], signals
+    assert_equal unrelated_identity, identities.fetch(303)
+  end
+
+  def test_cleanup_runs_after_execution_failure_and_records_zero_owned_processes
+    app_identity = "Mon Jul 30 12:00:00 2026 #{SaneHostsUIActionExecutor::APP_EXECUTABLE}"
+    identities = { 404 => app_identity }
+    signals = []
+
+    Dir.mktmpdir do |run_dir|
+      executor = SaneHostsUIActionExecutor.new(['--execute'])
+      executor.instance_variable_set(:@actions, [{ 'id' => 'simulated-failure' }])
+      executor.define_singleton_method(:require_mini!) {}
+      executor.define_singleton_method(:require_clean_checkout!) {}
+      executor.define_singleton_method(:refuse_competing_gui!) {}
+      executor.define_singleton_method(:prepare_paths!) do
+        @run_dir = run_dir
+        @results = {}
+        @owned_processes = []
+      end
+      executor.define_singleton_method(:prepare_isolated_fixture!) {}
+      executor.define_singleton_method(:compile_ax_driver!) {}
+      executor.define_singleton_method(:validate_screenshot_route!) {}
+      executor.define_singleton_method(:start_live_log!) do
+        @owned_processes << { kind: :app, pid: 404, identity: app_identity }
+      end
+      executor.define_singleton_method(:launch_app!) {}
+      executor.define_singleton_method(:load_contract_identity!) {}
+      executor.define_singleton_method(:execute_action!) { |_action| raise 'simulated action failure' }
+      executor.define_singleton_method(:restore_gui_environment!) {}
+      executor.define_singleton_method(:process_identity) { |pid| identities[pid] }
+      executor.define_singleton_method(:signal_process) do |signal, pid|
+        signals << [signal, pid]
+        identities.delete(pid)
+      end
+      executor.define_singleton_method(:wait_process) { |_pid| nil }
+
+      error = assert_raises(RuntimeError) { executor.run }
+
+      assert_equal 'simulated action failure', error.message
+      assert_equal [['TERM', 404]], signals
+      cleanup = JSON.parse(File.read(File.join(run_dir, 'cleanup-receipt.json')))
+      assert_equal 'passed', cleanup.fetch('status')
+      assert_equal 0, cleanup.fetch('remaining_owned_process_count')
+      recorded_failure = JSON.parse(File.read(File.join(run_dir, 'execution-failed.json')))
+      assert_equal 'RuntimeError: simulated action failure', recorded_failure.fetch('error')
+      assert_nil recorded_failure.fetch('cleanup_error')
+    end
+  end
+
+  def test_cleanup_receipt_records_zero_owned_processes
+    app_identity = "Mon Jul 30 12:00:00 2026 #{SaneHostsUIActionExecutor::APP_EXECUTABLE}"
+    identities = { 404 => app_identity }
+    signals = []
+
+    Dir.mktmpdir do |run_dir|
+      @executor.instance_variable_set(:@run_dir, run_dir)
+      @executor.instance_variable_set(:@results, {})
+      @executor.instance_variable_set(:@owned_processes, [
+                                        { kind: :app, pid: 404, identity: app_identity }
+                                      ])
+      @executor.define_singleton_method(:process_identity) { |pid| identities[pid] }
+      @executor.define_singleton_method(:signal_process) do |signal, pid|
+        signals << [signal, pid]
+        identities.delete(pid)
+      end
+      @executor.define_singleton_method(:wait_process) { |_pid| nil }
+      @executor.define_singleton_method(:restore_gui_environment!) {}
+
+      cleanup_error = @executor.send(:cleanup_after_execution)
+
+      assert_nil cleanup_error
+      assert_equal [['TERM', 404]], signals
+      cleanup = JSON.parse(File.read(File.join(run_dir, 'cleanup-receipt.json')))
+      assert_equal 'passed', cleanup.fetch('status')
+      assert_equal 0, cleanup.fetch('remaining_owned_process_count')
+    end
+  end
+
+  def test_cleanup_does_not_signal_reused_pid_with_different_identity
+    original_identity = "Mon Jul 30 12:00:00 2026 #{SaneHostsUIActionExecutor::APP_EXECUTABLE}"
+    reused_identity = 'Mon Jul 30 12:01:00 2026 /Applications/Other.app/Contents/MacOS/Other'
+    signals = []
+
+    @executor.instance_variable_set(:@owned_processes, [
+                                      { kind: :app, pid: 505, identity: original_identity }
+                                    ])
+    @executor.define_singleton_method(:process_identity) { |_pid| reused_identity }
+    @executor.define_singleton_method(:signal_process) { |signal, pid| signals << [signal, pid] }
+    @executor.define_singleton_method(:wait_process) { |_pid| nil }
+    @executor.define_singleton_method(:restore_gui_environment!) {}
+
+    assert_nil @executor.send(:cleanup_after_execution)
+    assert_empty signals
   end
 
   def test_no_passed_execution_evidence_is_prefilled_in_plan
