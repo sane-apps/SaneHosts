@@ -5,9 +5,216 @@ require 'digest'
 require 'fileutils'
 require 'json'
 require 'open3'
+require 'optparse'
+require 'pathname'
 require 'socket'
 require 'time'
 require 'yaml'
+
+class SaneHostsExecutionEvidenceValidator
+  MAX_AGE_SECONDS = 12 * 60 * 60
+  IMAGE_EXTENSIONS = %w[.png .jpg .jpeg].freeze
+  ACCEPTED_STATES = %w[passed pass established].freeze
+
+  def initialize(project_root:, action_ids:, manifest_actions:, manifest_sha256:, source_fingerprint:, app_git_sha:, saneui_git_sha:, safe_boundary_action_ids:)
+    @project_root = File.realpath(project_root)
+    @action_ids = action_ids
+    @manifest_actions = manifest_actions
+    @manifest_sha256 = manifest_sha256
+    @source_fingerprint = source_fingerprint
+    @app_git_sha = app_git_sha
+    @saneui_git_sha = saneui_git_sha
+    @safe_boundary_action_ids = safe_boundary_action_ids
+  end
+
+  def validate!(payload)
+    raise 'Execution evidence must be a JSON object' unless payload.is_a?(Hash)
+    raise 'Execution evidence app does not match SaneHosts' unless payload['app'].to_s == 'SaneHosts'
+    raise 'Execution evidence must come from the Mini' unless payload['host'].to_s.downcase.include?('mini')
+    raise 'Execution evidence status must be passed' unless payload['status'].to_s == 'passed'
+    raise 'Execution evidence must declare execution_mode=executed' unless payload['execution_mode'].to_s == 'executed'
+    raise 'Execution evidence manifest hash is stale' unless payload['manifest_sha256'].to_s == @manifest_sha256
+    raise 'Execution evidence source fingerprint is stale' unless payload['source_fingerprint'].to_s == @source_fingerprint
+    raise 'Execution evidence app Git SHA does not match the checkout' unless payload['app_git_sha'].to_s == @app_git_sha
+    raise 'Execution evidence SaneUI Git SHA does not match the dependency checkout' unless payload['saneui_git_sha'].to_s == @saneui_git_sha
+
+    validate_fresh_timestamp!(payload.fetch('generated_at'))
+    live_log = validate_artifact_path!(payload.fetch('live_log'), expected_prefix: 'outputs/live-logs/')
+    raise 'Execution evidence live log is empty' unless File.size?(live_log)
+
+    action_results = payload['action_results']
+    raise 'Execution evidence is missing per-action results' unless action_results.is_a?(Hash)
+    result_ids = action_results.keys.map(&:to_s)
+    missing = @action_ids - result_ids
+    extra = result_ids - @action_ids
+    raise "Execution evidence misses action(s): #{missing.join(', ')}" unless missing.empty?
+    raise "Execution evidence has unknown action(s): #{extra.join(', ')}" unless extra.empty?
+
+    screenshot_paths = {}
+    @action_ids.each do |action_id|
+      screenshot = validate_action!(action_id, action_results.fetch(action_id), payload.fetch('live_log'))
+      if screenshot_paths.key?(screenshot)
+        raise "#{action_id}: screenshot is reused from #{screenshot_paths.fetch(screenshot)}: #{screenshot}"
+      end
+      screenshot_paths[screenshot] = action_id
+    end
+
+    declared_screenshots = Array(payload['screenshots']).map(&:to_s).sort
+    expected_screenshots = screenshot_paths.keys.sort
+    raise 'Execution evidence screenshots must exactly match per-action screenshot evidence' unless declared_screenshots == expected_screenshots
+
+    payload
+  end
+
+  private
+
+  def validate_action!(action_id, result, expected_live_log)
+    raise "#{action_id}: action result must be an object" unless result.is_a?(Hash)
+
+    action = @manifest_actions.fetch(action_id)
+    raise "#{action_id}: status must be passed" unless result['status'].to_s == 'passed'
+    raise "#{action_id}: proof level does not match the manifest" unless result['proof_level'].to_s == action.fetch('required_proof_level').to_s
+    raise "#{action_id}: workflow must declare executed=true" unless result.dig('workflow', 'executed') == true
+
+    steps_completed = Array(result.dig('workflow', 'steps_completed'))
+    expected_steps = Array(action['steps'])
+    raise "#{action_id}: completed steps do not exactly match the manifest" unless steps_completed == expected_steps
+    raise "#{action_id}: functional state must be established" unless result.dig('functional_state', 'status').to_s == 'established'
+    raise "#{action_id}: functional state detail is blank" if result.dig('functional_state', 'detail').to_s.strip.empty?
+    raise "#{action_id}: inputs do not exactly match the manifest" unless Array(result['inputs']) == Array(action['user_inputs'])
+    raise "#{action_id}: output assertions do not exactly match the manifest" unless Array(result['output_assertions']) == Array(action['expected_outputs'])
+    raise "#{action_id}: live log does not match the run-level log" unless result['live_log'].to_s == expected_live_log.to_s
+    raise "#{action_id}: workflow runner is blank" if result.dig('workflow', 'runner').to_s.strip.empty?
+    raise "#{action_id}: workflow outcome is blank" if result.dig('workflow', 'outcome').to_s.strip.empty?
+
+    safe_boundaries = Array(result['safe_boundaries']).map(&:to_s).reject(&:empty?)
+    if @safe_boundary_action_ids.include?(action_id) && safe_boundaries.empty?
+      raise "#{action_id}: missing explicit safe-boundary result"
+    end
+
+    evidence = Array(result['evidence'])
+    raise "#{action_id}: evidence must be path-backed objects" if evidence.empty? || evidence.any? { |item| !item.is_a?(Hash) }
+
+    evidence_by_type = evidence.group_by { |item| item['type'].to_s }
+    required_types = Array(action['required_evidence_types']).map(&:to_s)
+    missing_types = required_types.reject { |type| evidence_by_type.key?(type) }
+    raise "#{action_id}: missing evidence type(s): #{missing_types.join(', ')}" unless missing_types.empty?
+
+    screenshot_items = Array(evidence_by_type['screenshot'])
+    raise "#{action_id}: exactly one screenshot is required" unless screenshot_items.length == 1
+
+    screenshot_path = screenshot_items.first.fetch('path').to_s
+    workflow_artifacts = Array(result.dig('workflow', 'artifacts')).map(&:to_s)
+    evidence_paths = evidence.map { |item| item['path'].to_s }
+    missing_workflow_paths = evidence_paths - workflow_artifacts
+    unless missing_workflow_paths.empty?
+      raise "#{action_id}: workflow omits evidence artifact(s): #{missing_workflow_paths.join(', ')}"
+    end
+
+    evidence.each do |item|
+      type = item['type'].to_s
+      path = item['path'].to_s
+      raise "#{action_id}: #{type} evidence detail is blank" if item['detail'].to_s.strip.empty?
+      raise "#{action_id}: #{type} evidence path is blank" if path.empty?
+
+      full_path = validate_artifact_path!(path)
+      case type
+      when 'mini_click'
+        validate_click_artifact!(action_id, full_path, screenshot_path)
+      when 'screenshot'
+        validate_screenshot!(action_id, full_path)
+      when 'fixture', 'state_receipt'
+        validate_state_artifact!(action_id, type, full_path)
+      when 'log'
+        raise "#{action_id}: log evidence is empty" unless File.size?(full_path)
+      end
+    end
+
+    screenshot_path
+  end
+
+  def validate_click_artifact!(action_id, path, expected_screenshot)
+    click_receipt = JSON.parse(File.read(path, encoding: Encoding::UTF_8))
+    raise "#{action_id}: mini-click receipt app mismatch" unless click_receipt['app'].to_s == 'SaneHosts'
+    raise "#{action_id}: mini-click receipt must come from the Mini" unless click_receipt['host'].to_s.downcase.include?('mini')
+    raise "#{action_id}: mini-click receipt status must be passed" unless click_receipt['status'].to_s == 'passed'
+    raise "#{action_id}: mini-click receipt must declare execution_mode=executed" unless click_receipt['execution_mode'].to_s == 'executed'
+    raise "#{action_id}: mini-click receipt action mismatch" unless click_receipt['action_id'].to_s == action_id
+    raise "#{action_id}: mini-click receipt does not bind its screenshot" unless click_receipt['screenshot'].to_s == expected_screenshot
+
+    clicks = click_receipt['clicks']
+    raise "#{action_id}: mini-click receipt has no executed clicks" unless clicks.is_a?(Array) && !clicks.empty?
+    clicks.each_with_index do |click, index|
+      unless click.is_a?(Hash) &&
+             !click['control'].to_s.strip.empty? &&
+             !click['action'].to_s.strip.empty? &&
+             !click['observed_result'].to_s.strip.empty? &&
+             fresh_timestamp?(click['performed_at'])
+        raise "#{action_id}: click ##{index + 1} lacks control, action, observed result, or timestamp"
+      end
+    end
+  rescue JSON::ParserError => e
+    raise "#{action_id}: mini-click receipt is invalid JSON: #{e.message}"
+  end
+
+  def validate_screenshot!(action_id, path)
+    extension = File.extname(path).downcase
+    raise "#{action_id}: screenshot extension is not supported" unless IMAGE_EXTENSIONS.include?(extension)
+    raise "#{action_id}: screenshot is empty" unless File.size?(path)
+  end
+
+  def validate_state_artifact!(action_id, type, path)
+    receipt = JSON.parse(File.read(path, encoding: Encoding::UTF_8))
+    status = (receipt['status'] || receipt['state']).to_s.downcase
+    raise "#{action_id}: #{type} status is not established/passed" unless ACCEPTED_STATES.include?(status)
+
+    receipt_action = receipt['action_id'].to_s
+    receipt_actions = Array(receipt['actions']).map(&:to_s)
+    unless receipt_action == action_id || receipt_actions.include?(action_id)
+      raise "#{action_id}: #{type} does not bind the action"
+    end
+  rescue JSON::ParserError => e
+    raise "#{action_id}: #{type} is invalid JSON: #{e.message}"
+  end
+
+  def validate_artifact_path!(relative_path, expected_prefix: nil)
+    path = relative_path.to_s
+    raise 'Artifact path is blank' if path.empty?
+    raise "Artifact path must be relative: #{path}" if Pathname.new(path).absolute?
+    raise "Artifact path is outside the project: #{path}" if path.split(File::SEPARATOR).include?('..')
+    raise "Artifact path must start with #{expected_prefix}: #{path}" if expected_prefix && !path.start_with?(expected_prefix)
+
+    expanded = File.expand_path(path, @project_root)
+    stat = File.lstat(expanded)
+    raise "Artifact must be a regular non-symlink file: #{path}" if stat.symlink? || !stat.file?
+
+    real = File.realpath(expanded)
+    unless real.start_with?("#{@project_root}/")
+      raise "Artifact resolves outside the project: #{path}"
+    end
+
+    expanded
+  rescue Errno::ENOENT
+    raise "Artifact file does not exist: #{path}"
+  end
+
+  def validate_fresh_timestamp!(value)
+    generated_at = Time.iso8601(value.to_s)
+    age = Time.now.utc - generated_at.utc
+    raise 'Execution evidence timestamp is in the future' if age < -300
+    raise 'Execution evidence is older than 12 hours' if age > MAX_AGE_SECONDS
+  rescue ArgumentError
+    raise 'Execution evidence generated_at is invalid'
+  end
+
+  def fresh_timestamp?(value)
+    timestamp = Time.iso8601(value.to_s)
+    age = Time.now.utc - timestamp.utc
+    age >= -300 && age <= MAX_AGE_SECONDS
+  rescue ArgumentError
+    false
+  end
+end
 
 class CustomerUIActionSweep
   PROJECT_ROOT = File.expand_path('..', __dir__)
@@ -17,27 +224,6 @@ class CustomerUIActionSweep
   MANIFEST_PATH = File.join(PROJECT_ROOT, 'Tests', 'CustomerUIActions.yml')
   SANEMASTER = File.join(PROJECT_ROOT, 'scripts', 'SaneMaster.rb')
   APP_NAME = 'SaneHosts'
-
-  SCREENSHOT_BY_ACTION = {
-    'onboarding-and-tutorial-entry' => 'marketing/appstore-images/01-main-window.png',
-    'menu-bar-profile-actions' => 'website/screenshot.png',
-    'dock-and-app-menu-commands' => 'website/images/product-hunt-gallery-01.png',
-    'quick-actions-and-paid-access-gates' => 'outputs/visual-audit-trial-expired/1.1.24/sanehosts-expired-trial.png',
-    'profile-lifecycle-actions' => 'marketing/appstore-images/04-customize-profiles.png',
-    'preset-template-import-actions' => 'marketing/appstore-images/02-import-blocklists.png',
-    'activation-deactivation-hosts-write' => 'website/images/product-hunt-gallery-02.png',
-    'entry-crud-search-toggle-actions' => 'website/images/product-hunt-gallery-03.png',
-    'bulk-entry-actions' => 'website/og-image.png',
-    'settings-license-about-update-support' => 'marketing/appstore-images/03-touchid-unlock.png',
-    'persistence-security-and-release-surfaces' => 'website/images/sanehosts-touchid.png'
-  }.freeze
-
-  LIVE_RUNTIME_BY_ACTION = {
-    'quick-actions-and-paid-access-gates' => {
-      log: 'outputs/live-logs/sanehosts-expired-trial-20260727.log',
-      workflow_receipt: 'ae13667f37f2d271c5203ccb3cada69a'
-    }
-  }.freeze
 
   ACTION_GUARDS = {
     'onboarding-and-tutorial-entry' => {
@@ -261,15 +447,15 @@ class CustomerUIActionSweep
     }
   }.freeze
 
-  def initialize
+  def initialize(argv = [])
+    @execution_evidence_path = nil
+    parse_options!(argv.dup)
     @started_at = Time.now.utc
     @timestamp = @started_at.strftime('%Y%m%dT%H%M%SZ')
     @transcript = []
     @action_results = {}
     @blockers = {}
     @manifest_actions = {}
-    @artifact_dir = File.join(OUTPUT_DIR, "sweep-#{@timestamp}")
-    @artifacts = {}
   end
 
   def run
@@ -277,11 +463,12 @@ class CustomerUIActionSweep
       require_mini!
       FileUtils.mkdir_p(OUTPUT_DIR)
       load_manifest!
-      verify_screenshot_evidence!
-      write_runtime_artifacts
+      report = customer_ui_contract_report_before_receipt
+      load_execution_evidence!(report)
       verify_manifest_guards!
-      write_receipt
+      write_receipt(report)
       write_transcript
+      verify_written_receipt!
       puts "Customer UI action sweep passed: #{relative(RECEIPT_PATH)}"
     end
   rescue StandardError => e
@@ -291,6 +478,22 @@ class CustomerUIActionSweep
   end
 
   private
+
+  def parse_options!(argv)
+    parser = OptionParser.new do |options|
+      options.banner = 'Usage: customer_ui_action_sweep.rb --execution-evidence PATH'
+      options.on('--execution-evidence PATH', 'Ingest a real Mini per-action execution receipt') do |path|
+        @execution_evidence_path = path
+      end
+      options.on_tail('-h', '--help', 'Show this help without changing receipts') do
+        puts options
+        exit 0
+      end
+    end
+    parser.parse!(argv)
+    raise OptionParser::InvalidOption, argv.join(' ') unless argv.empty?
+    raise OptionParser::MissingArgument, '--execution-evidence is required; synthetic source/screenshot receipts are not accepted' if @execution_evidence_path.to_s.empty?
+  end
 
   def require_mini!
     host = Socket.gethostname.to_s.downcase
@@ -324,27 +527,51 @@ class CustomerUIActionSweep
     @transcript << "manifest=#{relative(MANIFEST_PATH)} actions=#{@action_ids.length}"
   end
 
+  def load_execution_evidence!(report)
+    path = File.expand_path(@execution_evidence_path, PROJECT_ROOT)
+    payload = JSON.parse(File.read(path, encoding: Encoding::UTF_8))
+    safe_boundary_action_ids = ACTION_GUARDS.filter_map do |action_id, spec|
+      action_id unless Array(spec[:blocked_completion]).empty?
+    end
+    validator = SaneHostsExecutionEvidenceValidator.new(
+      project_root: PROJECT_ROOT,
+      action_ids: @action_ids,
+      manifest_actions: @manifest_actions,
+      manifest_sha256: report.fetch('manifest_sha256'),
+      source_fingerprint: report.fetch('source_fingerprint'),
+      app_git_sha: git_sha(PROJECT_ROOT),
+      saneui_git_sha: git_sha(File.expand_path('../../infra/SaneUI', PROJECT_ROOT)),
+      safe_boundary_action_ids: safe_boundary_action_ids
+    )
+    @execution_evidence = validator.validate!(payload)
+    @execution_evidence['source_path'] = relative(path)
+    @transcript << "execution_evidence=#{relative(path)} status=passed actions=#{@action_ids.length}"
+  rescue JSON::ParserError => e
+    raise "Execution evidence is invalid JSON: #{e.message}"
+  end
+
+  def git_sha(path)
+    out, status = Open3.capture2e('git', '-C', path, 'rev-parse', 'HEAD')
+    sha = out.to_s.strip
+    raise "Could not resolve Git HEAD for #{path}" unless status.success? && sha.match?(/\A[0-9a-f]{40}\z/i)
+
+    sha
+  end
+
   def verify_manifest_guards!
     @action_ids.each do |action_id|
-      action = @manifest_actions.fetch(action_id)
       guard_spec = ACTION_GUARDS.fetch(action_id)
       source_evidence = verify_expected_strings(action_id, 'source_guard', guard_spec.fetch(:source))
       test_evidence = verify_expected_strings(action_id, 'test_guard', guard_spec.fetch(:tests))
       blocked_completion = Array(guard_spec[:blocked_completion])
 
       @blockers[action_id] = blocked_completion unless blocked_completion.empty?
-      @action_results[action_id] = {
-        status: 'passed',
-        proof_level: action.fetch('required_proof_level'),
-        functional_state: {
-          status: 'established',
-          detail: functional_state_detail(action)
-        },
-        inputs: Array(action['user_inputs']),
-        output_assertions: Array(action['expected_outputs']),
-        workflow: workflow_proof(action_id, action),
-        evidence: source_evidence + test_evidence + required_runtime_evidence(action_id, action) + live_runtime_evidence(action_id) + blocked_completion.map { |detail| evidence('blocked_completion', detail) }
-      }
+      result = JSON.parse(JSON.generate(@execution_evidence.fetch('action_results').fetch(action_id)))
+      result['evidence'] = Array(result['evidence']) +
+                           source_evidence +
+                           test_evidence +
+                           blocked_completion.map { |detail| evidence('blocked_completion', detail) }
+      @action_results[action_id] = result
       @transcript << "action=#{action_id} source_checks=#{source_evidence.length} test_checks=#{test_evidence.length} blocked_completion=#{blocked_completion.length}"
     end
   end
@@ -361,80 +588,25 @@ class CustomerUIActionSweep
     end
   end
 
-  def verify_screenshot_evidence!
-    candidates = SCREENSHOT_BY_ACTION.values.uniq
-    @screenshots = candidates.select { |path| File.size?(File.join(PROJECT_ROOT, path)) }
-    raise 'Missing screenshot evidence for customer UI contract' if @screenshots.empty?
-
-    @transcript << "screenshots=#{@screenshots.join(', ')}"
-  end
-
-  def write_runtime_artifacts
-    FileUtils.mkdir_p(@artifact_dir)
-
-    @artifacts[:mini_click] = write_json_artifact(
-      'mini-click-transcript.json',
-      generated_at: @started_at.iso8601,
-      host: 'mini',
-      app: APP_NAME,
-      runner: relative(__FILE__),
-      note: 'Structured Mini customer-surface transcript assembled from current source/test guards and screenshot evidence.',
-      actions: @action_ids.map do |action_id|
-        action = @manifest_actions.fetch(action_id)
-        {
-          id: action_id,
-          surfaces: Array(action['surfaces']),
-          inputs: Array(action['user_inputs']),
-          expected_outputs: Array(action['expected_outputs']),
-          screenshot: screenshot_for(action_id)
-        }
-      end
-    )
-
-    @artifacts[:fixture] = write_json_artifact(
-      'fixture-state.json',
-      generated_at: @started_at.iso8601,
-      fixture_root: 'Tests/Fixtures/customer-ui/hosts-workspace/',
-      app: APP_NAME,
-      note: 'Representative hosts workspace state for safe proof of profile, import, activation, and entry-management surfaces.'
-    )
-
-    @artifacts[:state_receipt] = write_json_artifact(
-      'settings-state-receipt.json',
-      generated_at: @started_at.iso8601,
-      app: APP_NAME,
-      verified_surfaces: @action_ids,
-      blocked_completion_by_action: @blockers,
-      note: 'State receipt for safe-surface validation. Privileged hosts-file mutation and live external services remain explicitly bounded.'
-    )
-
-    @artifacts[:log] = write_text_artifact(
-      'customer-ui-runtime-proof.log',
-      [
-        "Generated: #{@started_at.iso8601}",
-        "Runner: #{relative(__FILE__)}",
-        "Actions: #{@action_ids.join(', ')}",
-        "Screenshots: #{@screenshots.join(', ')}",
-        'Admin authorization, real /etc/hosts mutation, external network import, live update checks, and support sends remain safe-surface bounded unless separately isolated.'
-      ].join("\n")
-    )
-  end
-
-  def write_receipt
-    report = customer_ui_contract_report_before_receipt
+  def write_receipt(report)
     receipt = {
       app: APP_NAME,
       status: 'passed',
-      host: 'mini',
-      generated_at: Time.now.utc.iso8601,
+      host: @execution_evidence.fetch('host'),
+      generated_at: @execution_evidence.fetch('generated_at'),
       manifest_sha256: report.fetch('manifest_sha256'),
       source_fingerprint: report.fetch('source_fingerprint'),
+      app_git_sha: @execution_evidence.fetch('app_git_sha'),
+      saneui_git_sha: @execution_evidence.fetch('saneui_git_sha'),
+      execution_mode: 'executed',
+      execution_source: @execution_evidence.fetch('source_path'),
       tested_action_ids: @action_ids,
       action_results: @action_results,
-      screenshots: @screenshots,
+      screenshots: @execution_evidence.fetch('screenshots'),
       evidence: {
         sweep: relative(File.join(OUTPUT_DIR, "customer-ui-action-sweep-#{@timestamp}.txt")),
-        mode: 'Mini-only source/test proof sweep',
+        live_log: @execution_evidence.fetch('live_log'),
+        mode: 'Executed Mini action proof plus source/test guards',
         limitation: 'This sweep verifies customer-visible safe surfaces and isolated source/test fixtures. It does not perform real admin authorization, /etc/hosts mutation, live support sends, live update checks, or live external network imports.',
         blocked_completion_by_action: @blockers
       }
@@ -463,6 +635,10 @@ class CustomerUIActionSweep
   def customer_ui_contract_report_before_receipt
     FileUtils.rm_f(RECEIPT_PATH)
     FileUtils.rm_f(MIRROR_RECEIPT_PATH)
+    customer_ui_contract_report
+  end
+
+  def customer_ui_contract_report
     # stdout only: SaneMaster prints bootstrap notices on stderr (e.g. the
     # Ruby re-exec line under a system-Ruby PATH such as the Mini GUI
     # session), and merging them corrupts the JSON payload.
@@ -472,79 +648,15 @@ class CustomerUIActionSweep
     JSON.parse(out)
   end
 
-  def required_runtime_evidence(action_id, action)
-    evidence_items = []
-    Array(action['required_evidence_types']).each do |type|
-      case type.to_s
-      when 'mini_click'
-        evidence_items << evidence('mini_click', "Mini interaction transcript for #{action_id}", path: @artifacts.fetch(:mini_click))
-      when 'screenshot'
-        evidence_items << evidence('screenshot', "Mini visual proof for #{action_id}", path: screenshot_for(action_id))
-      when 'fixture'
-        evidence_items << evidence('fixture', "Established representative hosts fixture state for #{action_id}", path: @artifacts.fetch(:fixture))
-      when 'log'
-        evidence_items << evidence('log', "Runtime log for #{action_id}", path: @artifacts.fetch(:log))
-      when 'state_receipt'
-        evidence_items << evidence('state_receipt', "State receipt for #{action_id}", path: @artifacts.fetch(:state_receipt))
-      else
-        evidence_items << evidence(type.to_s, "Required evidence type #{type} recorded for #{action_id}")
-      end
-    end
-    evidence_items
-  end
+  def verify_written_receipt!
+    report = customer_ui_contract_report
+    return if report['ok'] == true && Array(report['issues']).empty?
 
-  def live_runtime_evidence(action_id)
-    spec = LIVE_RUNTIME_BY_ACTION[action_id]
-    return [] unless spec
-
-    log_path = spec.fetch(:log)
-    full_log_path = File.join(PROJECT_ROOT, log_path)
-    raise "#{action_id}: missing saved live runtime log #{log_path}" unless File.size?(full_log_path)
-
-    workflow_receipt = spec.fetch(:workflow_receipt)
-    unless File.read(full_log_path).include?("SANEMASTER_WORKFLOW_RECEIPT=#{workflow_receipt}")
-      raise "#{action_id}: live runtime log does not contain workflow receipt #{workflow_receipt}"
-    end
-
-    [evidence(
-      'log',
-      "Saved live Mini expired-trial runtime log; canonical workflow receipt #{workflow_receipt}",
-      path: log_path
-    )]
-  end
-
-  def workflow_proof(action_id, action)
-    evidence_paths = (required_runtime_evidence(action_id, action) + live_runtime_evidence(action_id)).flat_map { |item| Array(item[:path]) }.compact
-    {
-      runner: relative(__FILE__),
-      outcome: "#{action['title']} passed with structured Mini evidence",
-      steps_completed: Array(action['steps']),
-      artifacts: evidence_paths
-    }
-  end
-
-  def functional_state_detail(action)
-    state = action['functional_state'] || {}
-    setup = Array(state['setup_steps']).join(' ')
-    fixtures = Array(state['fixture_paths']).join(', ')
-    [state['description'], setup, fixtures].compact.join(' ')
-  end
-
-  def screenshot_for(action_id)
-    preferred = SCREENSHOT_BY_ACTION.fetch(action_id) { nil }
-    return preferred if preferred && @screenshots.include?(preferred)
-
-    @screenshots.first || raise('No screenshot artifact available for customer UI action')
-  end
-
-  def write_json_artifact(name, payload)
-    write_text_artifact(name, JSON.pretty_generate(payload) + "\n")
-  end
-
-  def write_text_artifact(name, content)
-    path = File.join(@artifact_dir, name)
-    File.write(path, content)
-    relative(path)
+    FileUtils.rm_f(RECEIPT_PATH)
+    FileUtils.rm_f(MIRROR_RECEIPT_PATH)
+    issues = Array(report['issues'])
+    detail = issues.empty? ? 'shared customer UI contract returned ok=false' : issues.join(' | ')
+    raise "Written customer UI receipt failed shared contract validation: #{detail}"
   end
 
   def evidence(type, detail, path: nil)
@@ -561,4 +673,4 @@ class CustomerUIActionSweep
   end
 end
 
-CustomerUIActionSweep.new.run if __FILE__ == $PROGRAM_NAME
+CustomerUIActionSweep.new(ARGV).run if __FILE__ == $PROGRAM_NAME
