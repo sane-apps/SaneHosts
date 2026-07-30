@@ -4,10 +4,30 @@
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
+- 2026-07-30: PRs #7 and #8 merged the real external execution-evidence
+  contract and the Mini-only 11-action accessibility executor. The focused
+  runner tests passed 12/162 and 10/26; the full Mini suite passed 117 tests
+  with receipt `c544712be28cd18a5eccdd903727eee0`.
+- SaneProcess PRs #28 and #29 fixed Release provisioning parity and isolated
+  `CFFIXED_USER_HOME` DerivedData discovery. Their focused tests passed 28/28
+  locally and on the Mini. The live executor now builds, signs, stages, and
+  launches the exact Release app with a live log attached before launch.
+- The 2026-07-30 live run completed
+  `onboarding-and-tutorial-entry`, saved a clean screenshot, then stopped on
+  `menu-bar-profile-actions`: the AX driver returned
+  `show_menu returned -25200`. Evidence:
+  `outputs/customer-ui/sweep-20260730T070224Z/execution-failed.json`,
+  `visual/onboarding-and-tutorial-entry.png`, and
+  `cleanup-receipt.json`. Cleanup passed with zero owned processes left.
+- The screenshot is clean and readable, but the trial helper line is visibly
+  truncated. The remaining ten actions are unproved. Do not rerun without
+  first diagnosing the AX menu failure; do not claim full customer-action
+  clearance or republish `1.1.24`.
+
 - Version `1.1.24` (build `1124`) shipped on 2026-07-27. GitHub release
   `v1.1.24` is public; its release tag points to
   `508eb958616a3670df4db5ecebdc49214feaf144`. Current `origin/main`
-  (`b3c7187da3fc0e0d6250405137a8ac5ef675d2d8`) differs only in
+  (`df17cdbab247641ef295a7b48bc1ee69cb00c3c4`) differs only in
   release/site metadata, not app source. The release ledger records appcast,
   website, webhook, Homebrew cask, and Lemon Squeezy at `1.1.24`.
 - Version `1.1.24` pins SaneUI to
