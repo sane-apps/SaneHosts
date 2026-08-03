@@ -23,7 +23,7 @@ struct NavigationSourceTests {
         )
 
         #expect(packageSource.contains("SANEHOSTS_USE_LOCAL_SANEUI"))
-        #expect(packageSource.contains("revision: \"6101a7475124d0c6bde57ac55de7ae709eeaeabe\""))
+        #expect(packageSource.contains("revision: \"7f87b04bd74c6903a34e715ff46adf583d854f87\""))
         #expect(!packageSource.contains("if FileManager.default.fileExists(atPath: localSaneUIPath)"))
     }
 
@@ -33,7 +33,7 @@ struct NavigationSourceTests {
             "SaneHosts.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
             "SaneHosts.xcworkspace/xcshareddata/swiftpm/Package.resolved"
         ]
-        let expectedRevision = "\"revision\" : \"6101a7475124d0c6bde57ac55de7ae709eeaeabe\""
+        let expectedRevision = "\"revision\" : \"7f87b04bd74c6903a34e715ff46adf583d854f87\""
 
         for relativePath in resolvedPaths {
             let resolvedSource = try String(
