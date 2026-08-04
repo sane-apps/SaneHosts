@@ -109,6 +109,16 @@
   closed. Targeted SHA normalization produced the canonical 257 KB dialog image
   (`58f3f1be8c922ab9fa822c61299d0792b72dc884ee244cbc7336f85e42cdf5cf`).
   Focused tests are green at 20 runs / 222 assertions; full sweep remains pending.
+- The following full sweep passed that paid-gate capture, then the fixture
+  profile was persisted but not visible for its context action. This exposed a
+  real first-launch product race: the live log recorded two simultaneous
+  `load()` paths, two migrations, two `Existing Entries`, and two `Essentials`
+  creations. `MenuBarProfileStore` and `MainView` both invoke the shared store;
+  `ProfileStore.load()` now coordinates them through one in-flight task so all
+  callers await the same initialization. A concurrent 2,000-entry regression
+  asserts one of each default and two persisted profile files. Canonical Mini
+  verify is green at 119 tests with receipt
+  `08cfd08d23e4370b1302358bbde988ce`. A fresh full Release sweep remains pending.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

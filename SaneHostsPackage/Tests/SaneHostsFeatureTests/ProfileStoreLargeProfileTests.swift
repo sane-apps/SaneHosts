@@ -8,6 +8,32 @@ struct ProfileStoreLargeProfileTests {
     private static let alternateProfileID = UUID(uuidString: "BDB7C9C8-10EF-4072-AE89-937C68F1EC95")!
     private static let baselineProfileID = UUID(uuidString: "F84F947E-1DD8-4F82-AC87-B9557C68A032")!
 
+    @Test("Concurrent loads share one first-run initialization")
+    @MainActor
+    func concurrentLoadsShareOneFirstRunInitialization() async throws {
+        let userHosts = (0 ..< 2000)
+            .map { "0.0.0.0 proof-\($0).invalid" }
+            .joined(separator: "\n")
+        let fixture = try StorageFixture(systemHostsContent: "127.0.0.1 localhost\n\(userHosts)\n")
+        defer { fixture.remove() }
+
+        let store = fixture.makeStore()
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0 ..< 2 {
+                group.addTask { await store.load() }
+            }
+        }
+
+        #expect(store.profiles.filter { $0.name == "Existing Entries" }.count == 1)
+        #expect(store.profiles.filter { $0.name == "Essentials" }.count == 1)
+        #expect(Set(store.profiles.map(\.id)).count == 2)
+        let persistedProfiles = try fixture.fileManager.contentsOfDirectory(
+            at: fixture.profilesURL,
+            includingPropertiesForKeys: nil
+        ).filter { $0.pathExtension == "json" }
+        #expect(persistedProfiles.count == 2)
+    }
+
     @Test("Large profiles keep filename identity whether entries come before or after ID", arguments: [false, true])
     @MainActor
     func largeProfileIdentityIsStableAcrossReloads(idBeforeEntries: Bool) async throws {
@@ -251,7 +277,7 @@ private struct StorageFixture {
     let backupsURL: URL
     let systemHostsURL: URL
 
-    init() throws {
+    init(systemHostsContent: String = "127.0.0.1 localhost\n::1 localhost\n") throws {
         let root = FileManager.default.temporaryDirectory
             .appendingPathComponent("SaneHosts-ProfileStoreTests-\(UUID().uuidString)", isDirectory: true)
         rootURL = root
@@ -259,7 +285,7 @@ private struct StorageFixture {
         backupsURL = root.appendingPathComponent("Backups", isDirectory: true)
         systemHostsURL = root.appendingPathComponent("hosts")
         try FileManager.default.createDirectory(at: profilesURL, withIntermediateDirectories: true)
-        try "127.0.0.1 localhost\n::1 localhost\n".write(to: systemHostsURL, atomically: true, encoding: .utf8)
+        try systemHostsContent.write(to: systemHostsURL, atomically: true, encoding: .utf8)
     }
 
     @MainActor

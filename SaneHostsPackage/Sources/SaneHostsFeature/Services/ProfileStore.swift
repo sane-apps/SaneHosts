@@ -50,6 +50,7 @@ public final class ProfileStore {
 
     private let fileManager = FileManager.default
     private let parser = HostsParser()
+    private var loadTask: Task<Void, Never>?
     private let profilesDirectoryOverrideURL: URL?
     private let backupsDirectoryOverrideURL: URL?
 
@@ -111,6 +112,22 @@ public final class ProfileStore {
 
     /// Load all profiles and system hosts
     public func load() async {
+        if let loadTask {
+            logger.debug("Joining in-flight profile load")
+            await loadTask.value
+            return
+        }
+
+        let task = Task { @MainActor [weak self] in
+            guard let self else { return }
+            await performLoad()
+        }
+        loadTask = task
+        await task.value
+        loadTask = nil
+    }
+
+    private func performLoad() async {
         logger.debug(" load() started")
         isLoading = true
         error = nil
