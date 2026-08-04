@@ -55,6 +55,24 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_operator bounded.length, :>=, 8
   end
 
+  def test_status_menu_targets_the_menu_extra_instead_of_the_application_menu
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'menu-bar-profile-actions' }
+
+    assert_equal ['status menu'], action.fetch(:controls).first
+    assert_equal ['AXMenuBarItem'], action.fetch(:roles).first
+    assert_equal ['AXMenuExtra'], action.fetch(:subroles).first
+  end
+
+  def test_ax_driver_queries_supported_actions_and_falls_back_to_press
+    source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
+
+    assert_includes source, 'AXUIElementCopyActionNames'
+    assert_includes source, 'actions.contains(kAXShowMenuAction as String)'
+    assert_includes source, 'actions.contains(kAXPressAction as String)'
+    assert_operator source.index('actions.contains(kAXShowMenuAction as String)'), :<,
+                    source.index('actions.contains(kAXPressAction as String)')
+  end
+
   def test_command_construction_uses_canonical_launch_log_and_capture_paths
     source = File.read(File.expand_path('customer_ui_action_executor.rb', __dir__))
     assert_includes source, "'test_mode', '--release', '--no-logs'"

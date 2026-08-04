@@ -41,6 +41,18 @@
   is regression-covered; post-approval live activation remains the only
   unattended runtime proof gap. The full `/ship` checkpoint and mandatory user
   release gate remain required.
+- The post-SaneUI-pin candidate suite remains green at 118 tests with receipt
+  `647d1efeb61760b8e1fbc133f0905f58`; canonical lint is green with receipt
+  `6a34d84b7019251b04fdf59ba55bc45c`. The first fresh 11-action executor run
+  rebuilt and staged the signed Release app, then reproduced the older tooling
+  failure at `menu-bar-profile-actions` (`show_menu returned -25200`). Diagnosis
+  proved the driver had selected the ordinary app menu named `SaneHosts`; the
+  real SwiftUI menu extra is an `AXMenuExtra` exposed as `status menu` and
+  advertises only `AXPress`. The executor now targets role + subrole + exposed
+  description, queries supported AX actions, and falls back from supported
+  `AXShowMenu` to supported `AXPress`. Its focused tests pass 14 runs / 173
+  assertions and the Swift driver type-checks. A fresh clean-checkout live run
+  is still required before release preflight can pass.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
