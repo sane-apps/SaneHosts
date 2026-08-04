@@ -119,6 +119,13 @@
   asserts one of each default and two persisted profile files. Canonical Mini
   verify is green at 119 tests with receipt
   `08cfd08d23e4370b1302358bbde988ce`. A fresh full Release sweep remains pending.
+- The next sweep proved the load fix live (`load() started` once plus one
+  `Joining in-flight` caller) and reached the real merge. Disk contained the
+  exact `UI Proof Profile + UI Proof Profile 1` with merged `sourceCount: 2`;
+  only its sidebar AX label was offscreen after five rows. The executor now
+  pairs an AX responsiveness readback with a bounded exact persisted-name and
+  two-source assertion. That assertion passes on the real failed-run fixture;
+  focused coverage is green at 21 tests / 227 assertions. Full sweep remains pending.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

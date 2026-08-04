@@ -22,7 +22,6 @@ class SaneHostsUIActionExecutor
   FIXTURE_PROFILE = 'UI Proof Profile'
   FIXTURE_DUPLICATE = "#{FIXTURE_PROFILE} 1"
   FIXTURE_MERGED = "#{FIXTURE_PROFILE} + #{FIXTURE_DUPLICATE}"
-  FIXTURE_MERGED_SUMMARY = "#{FIXTURE_MERGED}, inactive"
   FIXTURE_HOST = 'proof.invalid'
   PROCESS_EXIT_TIMEOUT = 8
   MIN_SCREENSHOT_BYTES = 10_000
@@ -176,7 +175,7 @@ class SaneHostsUIActionExecutor
         step('Merge Profiles', action: 'press',
              expected: [['Merge Profiles'], ["Select #{FIXTURE_PROFILE}"], ["Deselect #{FIXTURE_DUPLICATE}"]]),
         step("Select #{FIXTURE_PROFILE}", action: 'press', expected: ["Deselect #{FIXTURE_PROFILE}"]),
-        step('Merge', action: 'press', expected: [FIXTURE_MERGED_SUMMARY]),
+        step('Merge', action: 'press', expected: ['Add new host entry']),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: ['Export']),
         step('Export', action: 'press', expected: [['Save'], ['Cancel']]),
         step('Cancel', action: 'press', expected: [FIXTURE_PROFILE]),
@@ -358,6 +357,7 @@ class SaneHostsUIActionExecutor
       execute_ax_request!(id, index, request)
     end
     raise "#{id}: action has no executed AX mutations" if observations.none? { |item| item.fetch('action') != 'read' }
+    fixture_assertions = action_fixture_assertions!(id)
 
     activate_for_screenshot!(id, observations.length, @plans.fetch(id).last.fetch(:expected))
 
@@ -385,6 +385,7 @@ class SaneHostsUIActionExecutor
     write_json(File.join(ROOT, state_rel), {
       state: 'passed', actions: [id], screenshot_sha256: Digest::SHA256.file(screenshot).hexdigest,
       readbacks: observations.map { |item| item.fetch('matchedReadbacks') },
+      fixture_assertions: fixture_assertions,
       safe_boundaries: SAFE_BOUNDARIES.fetch(id, [])
     })
     evidence = [
@@ -405,7 +406,7 @@ class SaneHostsUIActionExecutor
       },
       functional_state: {
         status: 'established',
-        detail: "Isolated fixture #{@fixture_rel}; no real /etc/hosts mutation"
+        detail: (["Isolated fixture #{@fixture_rel}; no real /etc/hosts mutation"] + fixture_assertions).join('; ')
       },
       inputs: action.fetch('user_inputs'),
       output_assertions: action.fetch('expected_outputs'),
@@ -429,6 +430,32 @@ class SaneHostsUIActionExecutor
     payload = JSON.parse(out)
     raise "#{action_id}: AX driver did not return passed" unless payload['status'] == 'passed'
     payload
+  end
+
+  def action_fixture_assertions!(action_id)
+    return [] unless action_id == 'profile-lifecycle-actions'
+
+    [verify_merged_profile_fixture!]
+  end
+
+  def verify_merged_profile_fixture!(timeout: 12)
+    profiles_directory = File.join(@fixture_home, 'Library', 'Application Support', 'SaneHosts', 'Profiles')
+    deadline = Time.now + timeout
+    loop do
+      profiles = Dir.glob(File.join(profiles_directory, '*.json')).filter_map do |path|
+        JSON.parse(File.read(path))
+      rescue JSON::ParserError, Errno::ENOENT
+        nil
+      end
+      merged = profiles.find { |profile| profile['name'] == FIXTURE_MERGED }
+      if merged&.dig('source', 'merged', 'sourceCount') == 2
+        return "Persisted #{FIXTURE_MERGED} with exactly 2 merged sources"
+      end
+      break if Time.now >= deadline
+
+      sleep 0.2
+    end
+    raise "Exact two-source merged profile did not persist: #{FIXTURE_MERGED}"
   end
 
   def activate_for_screenshot!(action_id, index, expected)
