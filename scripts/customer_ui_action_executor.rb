@@ -144,7 +144,7 @@ class SaneHostsUIActionExecutor
         step('Finish tutorial', action: 'press', expected: ['QUICK ACTIONS'])
       ],
       'menu-bar-profile-actions' => [
-        step('status menu', action: 'show_menu', roles: 'AXMenuBarItem', subroles: 'AXMenuExtra',
+        step(%w[network status\ menu], action: 'show_menu', roles: 'AXMenuBarItem', subroles: 'AXMenuExtra',
              expected: [['Open SaneHosts'], ['Quit SaneHosts']]),
         step('Open SaneHosts', action: 'press', expected: ['QUICK ACTIONS'])
       ],
