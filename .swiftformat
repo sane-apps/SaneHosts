@@ -1,0 +1,7 @@
+--indent 4
+--allman false
+--semicolons never
+--trimwhitespace always
+--header strip
+--disable fileHeader
+--exclude Pods,Carthage,DerivedData,SaneHostsPackage/.build,build,outputs,Scripts

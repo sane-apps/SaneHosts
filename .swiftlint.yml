@@ -34,11 +34,14 @@ excluded:
   - Pods
   - DerivedData
   - .build
+  - SaneHostsPackage/.build
   - .swiftpm
   - SourcePackages
   - Tests
+  - SaneHostsPackage/Tests
   - Scripts
   - scripts
   - build
+  - outputs
   - vendor
   - node_modules

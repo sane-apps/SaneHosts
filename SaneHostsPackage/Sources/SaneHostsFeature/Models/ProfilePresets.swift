@@ -9,9 +9,13 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
     case privacyShield = "Privacy Shield"
     case kitchenSink = "Kitchen Sink"
 
-    public var id: String { rawValue }
+    public var id: String {
+        rawValue
+    }
 
-    public var displayName: String { rawValue }
+    public var displayName: String {
+        rawValue
+    }
 
     public var description: String {
         switch self {

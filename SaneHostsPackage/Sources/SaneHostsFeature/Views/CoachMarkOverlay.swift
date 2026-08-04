@@ -1,5 +1,5 @@
-import SwiftUI
 import SaneUI
+import SwiftUI
 
 // MARK: - Tutorial State
 
@@ -277,9 +277,9 @@ struct ActivateButtonFrameKey: PreferenceKey {
 
 // MARK: - View Extension for Tutorial Anchors
 
-extension View {
-    public func essentialsProfileAnchor(enabled: Bool = true) -> some View {
-        self.background(
+public extension View {
+    func essentialsProfileAnchor(enabled: Bool = true) -> some View {
+        background(
             GeometryReader { geometry in
                 Color.clear
                     .onAppear {
@@ -296,8 +296,8 @@ extension View {
         )
     }
 
-    public func activateButtonAnchor() -> some View {
-        self.background(
+    func activateButtonAnchor() -> some View {
+        background(
             GeometryReader { geometry in
                 Color.clear
                     .onAppear {

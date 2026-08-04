@@ -101,7 +101,9 @@ extension RemoteImportSheet {
                     }
                 } else {
                     let unavailableCount = urlStatus.values.filter {
-                        if case .unavailable = $0 { return true }
+                        if case .unavailable = $0 {
+                            return true
+                        }
                         return false
                     }.count
 
@@ -204,7 +206,11 @@ extension RemoteImportSheet {
     func blocklistRow(_ source: BlocklistSource) -> some View {
         let isSelected = selectedSources.contains(source.id)
         let status = urlStatus[source.id]
-        let isUnavailable = if case .unavailable = status { true } else { false }
+        let isUnavailable = if case .unavailable = status {
+            true
+        } else {
+            false
+        }
 
         return Button {
             guard !isUnavailable else { return } // Don't allow selecting unavailable sources

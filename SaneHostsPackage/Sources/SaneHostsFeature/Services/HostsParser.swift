@@ -1,5 +1,5 @@
-import Foundation
 import Darwin
+import Foundation
 
 /// Parses and generates hosts file content
 public struct HostsParser: Sendable {
@@ -71,7 +71,7 @@ public struct HostsParser: Sendable {
         if parts.count == 1 {
             let potentialDomain = parts[0]
             // Must look like a domain (contains a dot, valid hostname chars)
-            if potentialDomain.contains(".") && isValidHostname(potentialDomain) {
+            if potentialDomain.contains("."), isValidHostname(potentialDomain) {
                 return HostEntry(
                     ipAddress: "0.0.0.0",
                     hostnames: [potentialDomain],
@@ -138,9 +138,13 @@ public struct HostsParser: Sendable {
     /// Validate IPv4 or IPv6 address format
     public func isValidIPAddress(_ string: String) -> Bool {
         // IPv4
-        if isValidIPv4(string) { return true }
+        if isValidIPv4(string) {
+            return true
+        }
         // IPv6
-        if isValidIPv6(string) { return true }
+        if isValidIPv6(string) {
+            return true
+        }
         return false
     }
 
@@ -174,7 +178,7 @@ public struct HostsParser: Sendable {
     /// Extract only the entries from parsed lines
     public func extractEntries(from lines: [HostsLine]) -> [HostEntry] {
         lines.compactMap { line in
-            if case .entry(let entry) = line {
+            if case let .entry(entry) = line {
                 return entry
             }
             return nil

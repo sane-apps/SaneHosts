@@ -5,6 +5,14 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.25] - 2026-08-04
+
+- Fixes DNS refresh after an administrator-authorized fallback hosts write by
+  keeping the cache commands inside the same privileged operation.
+- Restores the main window close control when cached license state replaces the
+  expired-trial gate with the normal workspace.
+- Records a DNS refresh only after both cache commands complete successfully.
+
 ## [1.1.24] - 2026-07-27
 
 Improved trial-ending guidance.
@@ -30,14 +38,6 @@ Fixed: the Pro Features padlock in the sidebar now opens once Pro is active. Tha
 ## [1.1.20] - 2026-07-04
 
 Important update to onboarding, licensing, and reliability. Recommended for all users.
-
----
-
-## [Unreleased]
-
-Stores your license in the modern macOS system keychain so the app should stop
-asking for keychain permission after updates. Existing licenses are moved over
-automatically on first launch.
 
 ---
 

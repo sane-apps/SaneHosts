@@ -1,7 +1,6 @@
 import XCTest
 
 final class SaneHostsUITests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -16,7 +15,7 @@ final class SaneHostsUITests: XCTestCase {
     }
 
     @MainActor
-    func testExample() throws {
+    func testExample() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()

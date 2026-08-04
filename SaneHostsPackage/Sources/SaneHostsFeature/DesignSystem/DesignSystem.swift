@@ -1,5 +1,5 @@
-import SwiftUI
 import SaneUI
+import SwiftUI
 
 // MARK: - Notifications
 

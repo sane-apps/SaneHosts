@@ -214,7 +214,9 @@ public final class RemoteSyncService {
         }
 
         let scheme = finalURL.scheme?.lowercased()
-        if scheme == "https" { return true }
+        if scheme == "https" {
+            return true
+        }
 
         guard scheme == "http" else { return false }
         let host = finalURL.host?.lowercased()
@@ -424,7 +426,9 @@ public struct RemoteHostsFile: Sendable {
     public let etag: String?
     public let lastModified: String?
 
-    public var entryCount: Int { entries.count }
+    public var entryCount: Int {
+        entries.count
+    }
 }
 
 /// Sync status for a URL

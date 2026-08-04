@@ -22,6 +22,10 @@ public final class HostsService {
     /// Used to route DNS flush through the helper (root) when available.
     private var lastWriteUsedHelper = false
 
+    /// Non-nil when the direct-build fallback already attempted DNS refresh
+    /// inside the same administrator-authorized operation as the hosts write.
+    private var lastFallbackDNSRefreshSucceeded: Bool?
+
     private let hostsPath = "/etc/hosts"
     private let parser = HostsParser()
     private let helperConnection = HostsHelperConnection()
@@ -63,16 +67,18 @@ public final class HostsService {
 
         isWriting = true
         lastError = nil
+        lastWriteUsedHelper = false
+        lastFallbackDNSRefreshSucceeded = nil
 
         defer { isWriting = false }
 
         #if DEBUG
-        // Debug bypass - skip auth entirely in debug builds if enabled
-        if AuthenticationService.debugBypassEnabled {
-            logger.debug("Bypassing authentication, simulating write")
-            logger.debug("Would write \(content.count) bytes to /etc/hosts")
-            return
-        }
+            // Debug bypass - skip auth entirely in debug builds if enabled
+            if AuthenticationService.debugBypassEnabled {
+                logger.debug("Bypassing authentication, simulating write")
+                logger.debug("Would write \(content.count) bytes to /etc/hosts")
+                return
+            }
         #endif
 
         // Strategy 1: XPC helper with Touch ID
@@ -95,8 +101,8 @@ public final class HostsService {
                     throw serviceError
                 }
                 logger.info("XPC helper unavailable, using direct-build privileged fallback")
-                lastWriteUsedHelper = false
-                try await fallbackWriter.writeHostsFile(content: content)
+                let result = try await fallbackWriter.writeHostsFile(content: content)
+                lastFallbackDNSRefreshSucceeded = result.didRefreshDNSCache
                 return
             } else {
                 // Post-auth helper failure (writeFailed, etc.) —
@@ -106,7 +112,6 @@ public final class HostsService {
                 throw serviceError
             }
         }
-
     }
 
     // MARK: - XPC Helper Path (Touch ID)
@@ -199,17 +204,23 @@ public final class HostsService {
 
     /// Flush DNS cache using the appropriate method based on how the write was performed.
     /// - XPC path: Uses helperConnection.flushDNSCache() (runs as root, can signal mDNSResponder)
-    /// - Fallback path: Uses DNSService.shared.flushCache() (existing behavior)
+    /// - Fallback path: Reuses the DNS outcome from the same privileged operation
+    ///   that wrote the hosts file, avoiding an impossible unprivileged HUP.
+    /// - Debug path: Uses DNSService.shared.flushCache().
     private func flushDNSCache() async throws {
         if lastWriteUsedHelper {
             logger.info("Flushing DNS via XPC helper (root)")
             try await helperConnection.flushDNSCache()
+        } else if let succeeded = lastFallbackDNSRefreshSucceeded {
+            guard succeeded else {
+                throw DNSServiceError.flushFailed("privileged DNS cache refresh did not complete")
+            }
+            logger.info("DNS was refreshed by the privileged fallback operation")
         } else {
             logger.info("Flushing DNS via DNSService")
             try await DNSService.shared.flushCache()
         }
     }
-
 }
 
 // MARK: - Errors
@@ -241,17 +252,17 @@ public enum HostsServiceError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .tempFileWriteFailed(let reason):
+        case let .tempFileWriteFailed(reason):
             return "Failed to prepare hosts file: \(reason)"
-        case .writePermissionDenied(let reason):
+        case let .writePermissionDenied(reason):
             return "Permission denied: \(reason)"
-        case .readFailed(let reason):
+        case let .readFailed(reason):
             return "Failed to read hosts file: \(reason)"
         case .invalidContent:
             return "Invalid hosts file content"
         case .helperUnavailable:
             return "SaneHosts couldn't reach its helper service. Reopen the app and try again."
-        case .authenticationFailed(let reason):
+        case let .authenticationFailed(reason):
             return "Authentication failed: \(reason)"
         case .userCancelled:
             return "Operation cancelled"

@@ -1,6 +1,6 @@
-import XCTest
-@testable import SaneHostsFeature
 import Foundation
+@testable import SaneHostsFeature
+import XCTest
 
 final class CustomImportIntegrationTests: XCTestCase {
     @MainActor
@@ -42,7 +42,7 @@ final class CustomImportIntegrationTests: XCTestCase {
 
         XCTAssertEqual(profile.name, profileName)
         XCTAssertEqual(profile.entries.count, 3)
-        if case .remote(let sourceUrl, _) = profile.source {
+        if case let .remote(sourceUrl, _) = profile.source {
             XCTAssertEqual(sourceUrl, fixtureURL)
         } else {
             XCTFail("Profile source should be remote")

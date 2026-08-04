@@ -1,3 +1,4 @@
+import AppKit
 import Foundation
 @testable import SaneHostsFeature
 import Testing
@@ -65,6 +66,23 @@ struct MainViewGatePolicyTests {
         #expect(ProtectionUXCopy.authenticationRequirement == "Turning it off or switching profiles requires Touch ID or your Mac account password.")
         #expect(ProtectionUXCopy.deactivationImpact == "Turning it off removes this profile’s rules while leaving standard hosts entries.")
         #expect(!ProtectionUXCopy.deactivationImpact.localizedCaseInsensitiveContains("original hosts file"))
+    }
+
+    @Test("Normal workspace restores the main window close control")
+    @MainActor
+    func normalWorkspaceRestoresMainWindowCloseControl() {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 900, height: 650),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.styleMask.remove(.closable)
+
+        SaneHostsWindowPolicy.restoreCloseControl(for: window)
+
+        #expect(window.styleMask.contains(.closable))
+        #expect(window.standardWindowButton(.closeButton)?.isEnabled == true)
     }
 
     @Test("Active profile detail and quick action render the truthful protection copy")
@@ -238,7 +256,7 @@ struct EntryRowLayoutPolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
         let designSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/DesignSystem/DesignSystem.swift"))
-        let detailSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/ProfileDetailView.swift"))
+        let detailSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift"))
 
         #expect(designSource.contains(".lineLimit(1)"))
         #expect(designSource.contains(".fixedSize(horizontal: true, vertical: false)"))
@@ -440,8 +458,8 @@ struct RuntimeResourcePolicyTests {
         #expect(importSource.contains("guard allEntries.count < maxImportedEntries else { break }"))
     }
 
-    @Test("Deactivation and DNS warnings are not silently ignored")
-    func deactivationAndDNSWarningsAreNotSilentlyIgnored() throws {
+    @Test("Privileged fallback refreshes DNS inside its authorized write")
+    func privilegedFallbackRefreshesDNSInsideAuthorizedWrite() throws {
         let testURL = URL(fileURLWithPath: #filePath)
         let packageRoot = testURL
             .deletingLastPathComponent()
@@ -450,12 +468,21 @@ struct RuntimeResourcePolicyTests {
         let repoRoot = packageRoot.deletingLastPathComponent()
         let appSource = try String(contentsOf: repoRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
         let dnsSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/DNSService.swift"))
+        let hostsSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/HostsService.swift"))
         let helperSource = try String(contentsOf: repoRoot.appendingPathComponent("SaneHostsHelper/main.swift"))
 
         #expect(appSource.contains("let warning = try await HostsService.shared.deactivateProfile()"))
         #expect(!appSource.contains("try? await HostsService.shared.deactivateProfile()"))
+        #expect(appSource.contains("/usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder"))
+        #expect(appSource.contains("with administrator privileges"))
+        #expect(appSource.contains("HostsPrivilegedWriteResult(didRefreshDNSCache:"))
+        #expect(hostsSource.contains("lastFallbackDNSRefreshSucceeded = result.didRefreshDNSCache"))
+        #expect(hostsSource.contains("DNS was refreshed by the privileged fallback operation"))
         #expect(dnsSource.contains("try await killMDNSResponder()"))
         #expect(dnsSource.contains("throw DNSServiceError.flushFailed(\"mDNSResponder HUP exited with code"))
+        let hupRange = try #require(dnsSource.range(of: "try await killMDNSResponder()"))
+        let dateRange = try #require(dnsSource.range(of: "lastFlushDate = Date()"))
+        #expect(hupRange.lowerBound < dateRange.lowerBound)
         #expect(!helperSource.contains("try? killProcess.run()"))
     }
 }

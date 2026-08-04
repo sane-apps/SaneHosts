@@ -1,12 +1,11 @@
-import Testing
 import Foundation
 @testable import SaneHostsFeature
+import Testing
 
 // MARK: - ProfilePreset Tests
 
 @Suite("ProfilePreset Tests")
 struct ProfilePresetTests {
-
     // MARK: - Properties
 
     @Test("All protection levels have required properties")
@@ -113,7 +112,7 @@ struct ProfilePresetTests {
     @Test("Each successive level has strictly more sources")
     func strictlyIncreasingSourceCounts() {
         let allCases = ProfilePreset.allCases
-        for i in 1..<allCases.count {
+        for i in 1 ..< allCases.count {
             let previousCount = allCases[i - 1].blocklistSourceIds.count
             let currentCount = allCases[i].blocklistSourceIds.count
             #expect(currentCount > previousCount)
@@ -160,7 +159,7 @@ struct ProfilePresetTests {
     func presetCreateProfile() {
         let entries = [
             HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.example.com"]),
-            HostEntry(ipAddress: "0.0.0.0", hostnames: ["tracker.example.com"]),
+            HostEntry(ipAddress: "0.0.0.0", hostnames: ["tracker.example.com"])
         ]
 
         for preset in ProfilePreset.allCases {
@@ -172,7 +171,7 @@ struct ProfilePresetTests {
             #expect(profile.colorTag == preset.colorTag)
 
             // Source should be .merged with correct source count
-            if case .merged(let sourceCount) = profile.source {
+            if case let .merged(sourceCount) = profile.source {
                 #expect(sourceCount == preset.blocklistSourceIds.count)
             } else {
                 Issue.record("Profile source should be .merged for preset \(preset.displayName), got \(profile.source)")
@@ -192,9 +191,8 @@ struct ProfilePresetTests {
 
 @Suite("PresetManager Tests")
 struct PresetManagerTests {
-
     @Test("PresetManager shared instance exists")
-    func sharedInstanceExists() async {
+    func sharedInstanceExists() {
         // PresetManager is an actor with a shared singleton
         let manager = PresetManager.shared
         // Actor references are never nil; verify the type is correct
@@ -206,7 +204,6 @@ struct PresetManagerTests {
 
 @Suite("PresetError Tests")
 struct PresetErrorTests {
-
     @Test("PresetError has localized descriptions")
     func errorDescriptions() {
         #expect(PresetError.invalidData.errorDescription != nil)

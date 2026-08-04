@@ -1,6 +1,6 @@
-import Testing
 import Foundation
 @testable import SaneHostsFeature
+import Testing
 
 // MARK: - HostsParser Tests
 
@@ -16,7 +16,7 @@ struct HostsParserTests {
         let lines = parser.parse(content)
 
         #expect(lines.count == 1)
-        if case .entry(let entry) = lines[0] {
+        if case let .entry(entry) = lines[0] {
             #expect(entry.ipAddress == "127.0.0.1")
             #expect(entry.hostnames == ["localhost"])
             #expect(entry.isEnabled == true)
@@ -32,7 +32,7 @@ struct HostsParserTests {
         let lines = parser.parse(content)
 
         #expect(lines.count == 1)
-        if case .entry(let entry) = lines[0] {
+        if case let .entry(entry) = lines[0] {
             #expect(entry.hostnames.count == 3)
             #expect(entry.hostnames.contains("localhost"))
             #expect(entry.hostnames.contains("local"))
@@ -47,7 +47,7 @@ struct HostsParserTests {
         let content = "127.0.0.1 example.local # Development server"
         let lines = parser.parse(content)
 
-        if case .entry(let entry) = lines[0] {
+        if case let .entry(entry) = lines[0] {
             #expect(entry.comment == "Development server")
             #expect(entry.hostnames == ["example.local"])
         } else {
@@ -60,7 +60,7 @@ struct HostsParserTests {
         let content = "# 127.0.0.1 blocked.com"
         let lines = parser.parse(content)
 
-        if case .entry(let entry) = lines[0] {
+        if case let .entry(entry) = lines[0] {
             #expect(entry.isEnabled == false)
             #expect(entry.ipAddress == "127.0.0.1")
             #expect(entry.hostnames == ["blocked.com"])
@@ -74,7 +74,7 @@ struct HostsParserTests {
         let content = "# This is just a comment"
         let lines = parser.parse(content)
 
-        if case .comment(let comment) = lines[0] {
+        if case let .comment(comment) = lines[0] {
             #expect(comment.text == "This is just a comment")
         } else {
             Issue.record("Expected comment, got \(lines[0])")
@@ -356,7 +356,6 @@ struct HostsParserTests {
 
 @Suite("HostEntry Tests")
 struct HostEntryTests {
-
     @Test("Create basic entry")
     func createBasicEntry() {
         let entry = HostEntry(
@@ -418,7 +417,6 @@ struct HostEntryTests {
 
 @Suite("Profile Tests")
 struct ProfileTests {
-
     @Test("Create basic profile")
     func createBasicProfile() {
         let profile = Profile(name: "Test Profile")
@@ -452,17 +450,17 @@ struct ProfileTests {
     }
 
     @Test("Profile source display names")
-    func profileSourceDisplayNames() {
+    func profileSourceDisplayNames() throws {
         #expect(ProfileSource.local.displayName == "Local")
-        #expect(ProfileSource.remote(url: URL(string: "https://example.com")!, lastFetched: nil).displayName == "Remote")
+        #expect(try ProfileSource.remote(url: #require(URL(string: "https://example.com")), lastFetched: nil).displayName == "Remote")
         #expect(ProfileSource.system.displayName == "System")
     }
 
     @Test("Profile source isRemote")
-    func profileSourceIsRemote() {
+    func profileSourceIsRemote() throws {
         #expect(ProfileSource.local.isRemote == false)
         #expect(ProfileSource.system.isRemote == false)
-        #expect(ProfileSource.remote(url: URL(string: "https://example.com")!, lastFetched: Date()).isRemote == true)
+        #expect(try ProfileSource.remote(url: #require(URL(string: "https://example.com")), lastFetched: Date()).isRemote == true)
     }
 }
 
@@ -470,7 +468,6 @@ struct ProfileTests {
 
 @Suite("ProfileTemplate Tests")
 struct ProfileTemplateTests {
-
     @Test("Ad blocking template has entries")
     func adBlockingTemplate() {
         let template = ProfileTemplate.adBlocking
@@ -511,7 +508,6 @@ struct ProfileTemplateTests {
 
 @Suite("HostsLine Tests")
 struct HostsLineTests {
-
     @Test("Entry line generates correctly")
     func entryLine() {
         let entry = HostEntry(ipAddress: "127.0.0.1", hostnames: ["localhost"])
@@ -540,7 +536,6 @@ struct HostsLineTests {
 
 @Suite("RemoteSyncError Tests")
 struct RemoteSyncErrorTests {
-
     @Test("Error descriptions are localized")
     func errorDescriptions() {
         #expect(RemoteSyncError.invalidURL.errorDescription != nil)
@@ -555,7 +550,6 @@ struct RemoteSyncErrorTests {
 
 @Suite("PopularHostsSource Tests")
 struct PopularHostsSourceTests {
-
     @Test("All sources have valid URLs")
     func validURLs() {
         for source in PopularHostsSource.allCases {
