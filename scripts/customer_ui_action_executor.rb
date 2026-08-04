@@ -191,7 +191,9 @@ class SaneHostsUIActionExecutor
         step('Cancel', action: 'system_click', roles: 'AXButton', expected: [FIXTURE_PROFILE])
       ],
       'preset-template-import-actions' => [
+        step('PROFILES', action: 'scroll_vertical', value: '1', expected: ['Family Safe protection level']),
         step('Family Safe protection level', action: 'press', expected: ['Add Family Safe']),
+        step('PROTECTION LEVELS', action: 'scroll_vertical', value: '0', expected: ['From Template']),
         step('From Template', action: 'press', expected: ['Create from Template']),
         step('Cancel template selection', action: 'press', expected: ['ADVANCED TOOLS']),
         step('Import Blocklist', action: 'press', expected: ['Import Blocklists']),
@@ -201,6 +203,7 @@ class SaneHostsUIActionExecutor
         step('Cancel', action: 'press', expected: ['ADVANCED TOOLS'])
       ],
       'activation-deactivation-hosts-write' => [
+        step('PROFILES', action: 'scroll_vertical', value: '0', expected: ['Essentials']),
         step('Essentials', action: 'show_menu', expected: [['Activate'], ['Export']])
       ],
       'entry-crud-search-toggle-actions' => [

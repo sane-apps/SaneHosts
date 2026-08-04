@@ -195,6 +195,15 @@ extension MainView {
                         }
                         .accessibilityLabel("\(preset.displayName) protection level")
                         .accessibilityHint(licenseService.isPro ? "Double-tap to view details and download" : "Paid feature — double-tap to buy")
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction {
+                            if licenseService.isPro {
+                                selectedProfileIDs = []
+                                selectedPreset = preset
+                            } else {
+                                showPresetUpsell(for: preset)
+                            }
+                        }
                     }
                 } header: {
                     HStack(spacing: 6) {

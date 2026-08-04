@@ -169,6 +169,20 @@
   A targeted signed-Release replay then matched, in order, every welcome page,
   `You're all set`, `Start Using SaneHosts`, and final `QUICK ACTIONS`, using
   only real `AXButton` controls. The remaining gate is the complete sweep.
+- The next full sweep passed onboarding, status-menu, Dock/app-menu, paid-gate,
+  and the complete profile lifecycle before `Family Safe` was below the
+  virtualized sidebar fold. A native AX scroll helper now walks from visible
+  sidebar headings to their owning `AXScrollArea` and sets the numeric vertical
+  scrollbar value; exact readback must expose the destination. That revealed a
+  product accessibility defect: the labeled protection-level row was
+  `AXStaticText`, and AXPress returned success without invoking its tap gesture.
+  The row now exposes the button trait plus an accessibility action with the
+  same paid/unlocked routing. Targeted signed-Release proof passed
+  `PROFILES -> Family Safe -> Add Family Safe -> PROTECTION LEVELS -> From
+  Template -> Create from Template`, using `AXHeading`/`AXButton` controls.
+  Focused coverage passes 25 tests / 277 assertions; canonical Mini verification
+  passes 121 tests, receipt `23a9ed6f6af26465359a5dd258ad25e7`;
+  lint receipt `ceafb910c8a87e4eca505310ba5ad6ac`. Full sweep remains.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

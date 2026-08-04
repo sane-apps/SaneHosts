@@ -134,6 +134,27 @@ private func axElementAttribute(_ element: AXUIElement, _ attribute: String) -> 
     return unsafeDowncast(value as AnyObject, to: AXUIElement.self)
 }
 
+private func setVerticalScrollPosition(from element: AXUIElement, rawValue: String?) -> AXError {
+    guard let rawValue, let value = Double(rawValue) else {
+        return .illegalArgument
+    }
+
+    var current: AXUIElement? = element
+    for _ in 0 ..< 30 {
+        guard let node = current else { break }
+        if axString(node, kAXRoleAttribute as String) == kAXScrollAreaRole as String,
+           let scrollBar = axElementAttribute(node, kAXVerticalScrollBarAttribute as String) {
+            return AXUIElementSetAttributeValue(
+                scrollBar,
+                kAXValueAttribute as CFString,
+                NSNumber(value: value)
+            )
+        }
+        current = axElementAttribute(node, kAXParentAttribute as String)
+    }
+    return .attributeUnsupported
+}
+
 private func searchableElements(of application: AXUIElement) -> [AXUIElement] {
     let roots = [
         application,
@@ -340,6 +361,8 @@ private func perform(_ request: Request) throws -> Response {
                 throw DriverError.actionFailed("set_value requires value")
             }
             result = AXUIElementSetAttributeValue(target, kAXValueAttribute as CFString, value as CFTypeRef)
+        case "scroll_vertical":
+            result = setVerticalScrollPosition(from: target, rawValue: request.value)
         default:
             throw DriverError.actionFailed("unsupported action \(request.action)")
         }
