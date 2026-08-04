@@ -140,6 +140,7 @@ class SaneHostsUIActionExecutor
     {
       'onboarding-and-tutorial-entry' => [
         step(%w[Continue Get\ Started Next] + ['Continue Trial', 'Start Using SaneHosts'], action: 'press',
+             roles: 'AXButton',
              expected: [['QUICK ACTIONS', 'Next', 'Continue Trial', 'Start Using SaneHosts']]),
         step('Help', action: 'press', roles: 'AXMenuBarItem', expected: ['Show Tutorial']),
         step('Show Tutorial', action: 'press', expected: [['Next step', 'Skip tutorial']]),
