@@ -105,6 +105,8 @@ class SaneHostsUIActionExecutor
         {
           id: action.fetch('id'),
           controls: plan.map { |step| step.fetch(:labels) },
+          roles: plan.map { |step| step.fetch(:roles) },
+          subroles: plan.map { |step| step.fetch(:subroles) },
           ax_actions: plan.map { |step| step.fetch(:action) },
           readbacks: plan.map { |step| step.fetch(:expected) },
           screenshot: "outputs/customer-ui/sweep-<timestamp>/visual/#{action.fetch('id')}.png",
@@ -118,7 +120,7 @@ class SaneHostsUIActionExecutor
 
   private
 
-  def step(labels, action:, expected:, app_name: 'SaneHosts', bundle_id: APP_BUNDLE_ID, roles: nil, value: nil)
+  def step(labels, action:, expected:, app_name: 'SaneHosts', bundle_id: APP_BUNDLE_ID, roles: nil, subroles: nil, value: nil)
     {
       labels: Array(labels),
       action: action,
@@ -126,6 +128,7 @@ class SaneHostsUIActionExecutor
       app_name: app_name,
       bundle_id: bundle_id,
       roles: Array(roles).compact,
+      subroles: Array(subroles).compact,
       value: value
     }
   end
@@ -141,7 +144,7 @@ class SaneHostsUIActionExecutor
         step('Finish tutorial', action: 'press', expected: ['QUICK ACTIONS'])
       ],
       'menu-bar-profile-actions' => [
-        step('SaneHosts', action: 'show_menu', roles: 'AXMenuBarItem',
+        step('status menu', action: 'show_menu', roles: 'AXMenuBarItem', subroles: 'AXMenuExtra',
              expected: [['Open SaneHosts'], ['Quit SaneHosts']]),
         step('Open SaneHosts', action: 'press', expected: ['QUICK ACTIONS'])
       ],
@@ -410,6 +413,7 @@ class SaneHostsUIActionExecutor
     write_json(request_path, {
       appName: request.fetch(:app_name), bundleID: request.fetch(:bundle_id),
       action: request.fetch(:action), labels: request.fetch(:labels), roles: request.fetch(:roles),
+      subroles: request.fetch(:subroles),
       value: request[:value], expected: request.fetch(:expected), timeoutSeconds: 12
     })
     out, err, status = Open3.capture3(@ax_binary, request_path)

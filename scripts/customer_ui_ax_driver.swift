@@ -8,6 +8,7 @@ private struct Request: Decodable {
     let action: String
     let labels: [String]
     let roles: [String]?
+    let subroles: [String]?
     let value: String?
     let expected: [[String]]
     let timeoutSeconds: Double?
@@ -122,9 +123,18 @@ private func descendants(of root: AXUIElement, limit: Int = 8000) -> [AXUIElemen
     return result
 }
 
-private func matches(_ element: AXUIElement, labels: [String], roles: [String]?) -> Bool {
+private func matches(
+    _ element: AXUIElement,
+    labels: [String],
+    roles: [String]?,
+    subroles: [String]? = nil
+) -> Bool {
     let role = axString(element, kAXRoleAttribute as String)
     if let roles, !roles.isEmpty, !roles.contains(role) {
+        return false
+    }
+    let subrole = axString(element, kAXSubroleAttribute as String)
+    if let subroles, !subroles.isEmpty, !subroles.contains(subrole) {
         return false
     }
     let identities = identityStrings(element)
@@ -134,6 +144,30 @@ private func matches(_ element: AXUIElement, labels: [String], roles: [String]?)
                 actual.localizedCaseInsensitiveContains(wanted)
         }
     }
+}
+
+private func supportedActions(of element: AXUIElement) -> [String] {
+    var value: CFArray?
+    guard AXUIElementCopyActionNames(element, &value) == .success,
+          let actions = value as? [String]
+    else {
+        return []
+    }
+    return actions
+}
+
+private func showMenu(on element: AXUIElement) -> AXError {
+    let actions = supportedActions(of: element)
+    if actions.contains(kAXShowMenuAction as String) {
+        let result = AXUIElementPerformAction(element, kAXShowMenuAction as CFString)
+        if result == .success {
+            return result
+        }
+    }
+    if actions.contains(kAXPressAction as String) {
+        return AXUIElementPerformAction(element, kAXPressAction as CFString)
+    }
+    return AXUIElementPerformAction(element, kAXShowMenuAction as CFString)
 }
 
 private func runningApplication(for request: Request) throws -> NSRunningApplication {
@@ -189,7 +223,12 @@ private func perform(_ request: Request) throws -> Response {
         var target: AXUIElement?
         repeat {
             target = descendants(of: root).first {
-                matches($0, labels: request.labels, roles: request.roles)
+                matches(
+                    $0,
+                    labels: request.labels,
+                    roles: request.roles,
+                    subroles: request.subroles
+                )
             }
             if target == nil {
                 Thread.sleep(forTimeInterval: 0.2)
@@ -206,7 +245,7 @@ private func perform(_ request: Request) throws -> Response {
         case "press":
             result = AXUIElementPerformAction(target, kAXPressAction as CFString)
         case "show_menu":
-            result = AXUIElementPerformAction(target, kAXShowMenuAction as CFString)
+            result = showMenu(on: target)
         case "set_value":
             guard let value = request.value else {
                 throw DriverError.actionFailed("set_value requires value")

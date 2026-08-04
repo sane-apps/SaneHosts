@@ -2,6 +2,7 @@
 --allman false
 --semicolons never
 --trimwhitespace always
+--trailingcommas never
 --header strip
---disable fileHeader
+--disable fileHeader,wrapMultilineStatementBraces
 --exclude Pods,Carthage,DerivedData,SaneHostsPackage/.build,build,outputs,Scripts
