@@ -277,7 +277,8 @@ private func perform(_ request: Request) throws -> Response {
         default:
             throw DriverError.actionFailed("unsupported action \(request.action)")
         }
-        guard result == .success else {
+        let menuOpenedWithoutSynchronousCompletion = request.action == "show_menu" && result == .cannotComplete
+        guard result == .success || menuOpenedWithoutSynchronousCompletion else {
             throw DriverError.actionFailed("\(request.action) returned \(result.rawValue)")
         }
     }

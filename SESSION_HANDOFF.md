@@ -54,10 +54,16 @@
   proved the ordinary `AXChildren` walk does not expose the extra; Apple
   provides it through the application-level `kAXExtrasMenuBarAttribute`.
   Control lookup and post-action readback now traverse explicit app-menu and
-  extras-menu roots as well as the normal tree. Focused tests pass 15 runs / 179
-  assertions and the Swift driver type-checks. The circuit breaker remains in
-  force until this documented root fix is committed; one fresh clean-checkout
-  live run is still required before release preflight can pass.
+  extras-menu roots as well as the normal tree. Raw Mini read-back then proved
+  the stable item identity is the SF Symbol title prefix `network`, not the
+  lossy System Events description `status menu`. Pressing that exact item can
+  return documented `kAXErrorCannotComplete` while successfully opening its
+  modal menu, so bounded post-action readback is now authoritative. A targeted
+  patched-driver proof passed against the live candidate: it matched control
+  `network.badge.shield.half.filled` and read back both `Open SaneHosts` and
+  `Quit SaneHosts`. Focused tests pass 15 runs / 181 assertions and the Swift
+  driver type-checks. One full clean-checkout live run is still required before
+  release preflight can pass.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

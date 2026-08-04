@@ -58,7 +58,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
   def test_status_menu_targets_the_menu_extra_instead_of_the_application_menu
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'menu-bar-profile-actions' }
 
-    assert_equal ['status menu'], action.fetch(:controls).first
+    assert_equal ['network', 'status menu'], action.fetch(:controls).first
     assert_equal ['AXMenuBarItem'], action.fetch(:roles).first
     assert_equal ['AXMenuExtra'], action.fetch(:subroles).first
   end
@@ -69,6 +69,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'AXUIElementCopyActionNames'
     assert_includes source, 'actions.contains(kAXShowMenuAction as String)'
     assert_includes source, 'actions.contains(kAXPressAction as String)'
+    assert_includes source, 'result == .cannotComplete'
     assert_operator source.index('actions.contains(kAXShowMenuAction as String)'), :<,
                     source.index('actions.contains(kAXPressAction as String)')
   end
