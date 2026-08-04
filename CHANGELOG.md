@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Restores the main window close control when cached license state replaces the
   expired-trial gate with the normal workspace.
 - Records a DNS refresh only after both cache commands complete successfully.
+- Prevents concurrent first-run loading from creating duplicate Essentials and
+  Existing Entries profiles.
 
 ## [1.1.24] - 2026-07-27
 
