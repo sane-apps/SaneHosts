@@ -50,9 +50,14 @@
   real SwiftUI menu extra is an `AXMenuExtra` exposed as `status menu` and
   advertises only `AXPress`. The executor now targets role + subrole + exposed
   description, queries supported AX actions, and falls back from supported
-  `AXShowMenu` to supported `AXPress`. Its focused tests pass 14 runs / 173
-  assertions and the Swift driver type-checks. A fresh clean-checkout live run
-  is still required before release preflight can pass.
+  `AXShowMenu` to supported `AXPress`. The first corrected-selector run then
+  proved the ordinary `AXChildren` walk does not expose the extra; Apple
+  provides it through the application-level `kAXExtrasMenuBarAttribute`.
+  Control lookup and post-action readback now traverse explicit app-menu and
+  extras-menu roots as well as the normal tree. Focused tests pass 15 runs / 179
+  assertions and the Swift driver type-checks. The circuit breaker remains in
+  force until this documented root fix is committed; one fresh clean-checkout
+  live run is still required before release preflight can pass.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
