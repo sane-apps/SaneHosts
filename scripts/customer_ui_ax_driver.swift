@@ -123,6 +123,29 @@ private func descendants(of root: AXUIElement, limit: Int = 8000) -> [AXUIElemen
     return result
 }
 
+private func axElementAttribute(_ element: AXUIElement, _ attribute: String) -> AXUIElement? {
+    var value: CFTypeRef?
+    guard AXUIElementCopyAttributeValue(element, attribute as CFString, &value) == .success,
+          let value,
+          CFGetTypeID(value) == AXUIElementGetTypeID()
+    else {
+        return nil
+    }
+    return unsafeDowncast(value as AnyObject, to: AXUIElement.self)
+}
+
+private func searchableElements(of application: AXUIElement) -> [AXUIElement] {
+    let roots = [
+        application,
+        axElementAttribute(application, kAXMenuBarAttribute as String),
+        axElementAttribute(application, kAXExtrasMenuBarAttribute as String)
+    ].compactMap { $0 }
+    var seen = Set<CFHashCode>()
+    return roots.flatMap { descendants(of: $0) }.filter { element in
+        seen.insert(CFHash(element)).inserted
+    }
+}
+
 private func matches(
     _ element: AXUIElement,
     labels: [String],
@@ -190,7 +213,7 @@ private func waitForElements(
 ) throws -> [String] {
     let deadline = Date().addingTimeInterval(timeout)
     repeat {
-        let elements = descendants(of: root)
+        let elements = searchableElements(of: root)
         let matchedLabels = groups.compactMap { group -> String? in
             for label in group where elements.contains(where: { matches($0, labels: [label], roles: nil) }) {
                 return label
@@ -222,7 +245,7 @@ private func perform(_ request: Request) throws -> Response {
         let deadline = Date().addingTimeInterval(timeout)
         var target: AXUIElement?
         repeat {
-            target = descendants(of: root).first {
+            target = searchableElements(of: root).first {
                 matches(
                     $0,
                     labels: request.labels,
