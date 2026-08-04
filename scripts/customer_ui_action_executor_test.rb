@@ -66,7 +66,23 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
   def test_onboarding_targets_a_button_instead_of_an_unrelated_next_menu_item
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'onboarding-and-tutorial-entry' }
 
-    assert_equal ['AXButton'], action.fetch(:roles).first
+    assert_equal Array.new(7, ['AXButton']), action.fetch(:roles).first(7)
+    assert_equal Array.new(6, ['Next']), action.fetch(:controls).first(6)
+    assert_equal ['Continue Trial', 'Start Using SaneHosts'], action.fetch(:controls).fetch(6)
+    assert_includes action.fetch(:readbacks).flatten, 'One quick walkthrough.'
+    assert_includes action.fetch(:readbacks).flatten, "One click, then you're protected."
+    assert_includes action.fetch(:readbacks).flatten, 'Privacy First'
+    assert_includes action.fetch(:readbacks).flatten, '14-Day Trial'
+    assert_includes action.fetch(:readbacks).flatten, "You're all set"
+  end
+
+  def test_fixture_uses_a_process_only_app_override_instead_of_defaults_writes
+    source = File.read(File.expand_path('customer_ui_action_executor.rb', __dir__))
+
+    assert_includes source, "capture_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE')"
+    assert_includes source, "system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')"
+    assert_includes source, "restore_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE', @old_customer_ui_fixture)"
+    refute_includes source, "system!('/usr/bin/defaults', 'write'"
   end
 
   def test_ax_driver_queries_supported_actions_and_falls_back_to_press

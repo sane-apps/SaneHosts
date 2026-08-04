@@ -85,6 +85,24 @@ struct MainViewGatePolicyTests {
         #expect(window.standardWindowButton(.closeButton)?.isEnabled == true)
     }
 
+    @Test("Customer UI fixture is process-only and does not rewrite user preferences")
+    func customerUIFixtureIsProcessOnly() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let appRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let appSource = try String(contentsOf: appRoot.appendingPathComponent("SaneHosts/SaneHostsApp.swift"))
+        let executorSource = try String(contentsOf: appRoot.appendingPathComponent("scripts/customer_ui_action_executor.rb"))
+
+        #expect(appSource.contains("static let customerUIFixtureKey = \"SANEHOSTS_CUSTOMER_UI_FIXTURE\""))
+        #expect(appSource.contains("@State private var customerUIWelcomeGatePresented"))
+        #expect(appSource.contains(".sheet(isPresented: welcomeGatePresentation)"))
+        #expect(appSource.contains("isCustomerUIFixture ? true : !hideDockIcon"))
+        #expect(!executorSource.contains("system!('/usr/bin/defaults', 'write'"))
+    }
+
     @Test("Active profile detail and quick action render the truthful protection copy")
     func activeProtectionCopyIsWiredIntoUI() throws {
         let testURL = URL(fileURLWithPath: #filePath)

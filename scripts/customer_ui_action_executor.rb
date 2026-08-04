@@ -139,9 +139,15 @@ class SaneHostsUIActionExecutor
   def build_plans
     {
       'onboarding-and-tutorial-entry' => [
-        step(%w[Continue Get\ Started Next] + ['Continue Trial', 'Start Using SaneHosts'], action: 'press',
-             roles: 'AXButton',
-             expected: [['QUICK ACTIONS', 'Next', 'Continue Trial', 'Start Using SaneHosts']]),
+        step('Next', action: 'press', roles: 'AXButton', expected: ['One quick walkthrough.']),
+        step('Next', action: 'press', roles: 'AXButton', expected: ["One click, then you're protected."]),
+        step('Next', action: 'press', roles: 'AXButton',
+             expected: ['Try every feature for 14 days. Buy once if it works for you.']),
+        step('Next', action: 'press', roles: 'AXButton', expected: ['Our Sane Philosophy']),
+        step('Next', action: 'press', roles: 'AXButton', expected: ['Privacy First']),
+        step('Next', action: 'press', roles: 'AXButton', expected: ['14-Day Trial', "You're all set"]),
+        step(['Continue Trial', 'Start Using SaneHosts'], action: 'press', roles: 'AXButton',
+             expected: ['QUICK ACTIONS']),
         step('Help', action: 'press', roles: 'AXMenuBarItem', expected: ['Show Tutorial']),
         step('Show Tutorial', action: 'press', expected: [['Next step', 'Skip tutorial']]),
         step('Next step', action: 'press', expected: ['Finish tutorial']),
@@ -276,12 +282,12 @@ class SaneHostsUIActionExecutor
   def prepare_isolated_fixture!
     @old_fixed_home = capture_launchctl_env('CFFIXED_USER_HOME')
     @old_disable_keychain = capture_launchctl_env('SANEAPPS_DISABLE_KEYCHAIN')
+    @old_customer_ui_fixture = capture_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE')
     @old_process_fixed_home = ENV['CFFIXED_USER_HOME']
     ENV['CFFIXED_USER_HOME'] = @fixture_home
     system!('launchctl', 'setenv', 'CFFIXED_USER_HOME', @fixture_home)
     system!('launchctl', 'setenv', 'SANEAPPS_DISABLE_KEYCHAIN', '1')
-    system!('/usr/bin/defaults', 'write', APP_BUNDLE_ID, 'hideDockIcon', '-bool', 'false')
-    system!('/usr/bin/defaults', 'write', APP_BUNDLE_ID, 'hasAnsweredLaunchAtLoginDefaultPrompt', '-bool', 'true')
+    system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')
     hosts = File.join(@run_dir, 'isolated-hosts')
     File.write(hosts, "127.0.0.1 localhost\n0.0.0.0 #{FIXTURE_HOST}\n")
     @fixture_rel = relative(File.join(@run_dir, 'fixture-state.json'))
@@ -289,6 +295,7 @@ class SaneHostsUIActionExecutor
       status: 'established',
       actions: @actions.map { |action| action.fetch('id') },
       isolation: 'CFFIXED_USER_HOME',
+      app_fixture_override: 'SANEHOSTS_CUSTOMER_UI_FIXTURE',
       fixture_home: relative(@fixture_home),
       hosts_fixture: relative(hosts),
       hosts_sha256: Digest::SHA256.file(hosts).hexdigest,
@@ -499,6 +506,7 @@ class SaneHostsUIActionExecutor
 
     restore_launchctl_env('CFFIXED_USER_HOME', @old_fixed_home)
     restore_launchctl_env('SANEAPPS_DISABLE_KEYCHAIN', @old_disable_keychain)
+    restore_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE', @old_customer_ui_fixture)
     if @old_process_fixed_home
       ENV['CFFIXED_USER_HOME'] = @old_process_fixed_home
     else
