@@ -86,6 +86,17 @@
   created a real merged profile through the `AXButton`; focused coverage is
   green at 17 runs / 201 assertions and the driver type-checks. The remaining
   gate is one clean full 11-action Release sweep.
+- The next exact-Release sweep passed onboarding and the status-menu group,
+  then the visual guard rejected the Dock/app-menu screenshot because ChatGPT
+  had become frontmost. All Dock/app-menu AX mutations had passed and executor
+  cleanup was green; this was evidence-capture focus drift, not a product
+  failure. A targeted test proved AppKit activation was accepted without
+  actually transferring focus, while the canonical System Events path keyed
+  by bundle ID moved Finder -> SaneHosts. The executor now bounds that command
+  at the process level, verifies the frontmost result, and repeats the final AX
+  state readback before every screenshot. Integrated live proof passed
+  (`before=Finder`, AX `QUICK ACTIONS`, `after=SaneHosts`); focused tests are
+  green at 19 runs / 216 assertions. One clean full sweep is still required.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

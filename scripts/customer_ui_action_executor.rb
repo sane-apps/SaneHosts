@@ -358,6 +358,8 @@ class SaneHostsUIActionExecutor
     end
     raise "#{id}: action has no executed AX mutations" if observations.none? { |item| item.fetch('action') != 'read' }
 
+    activate_for_screenshot!(id, observations.length, @plans.fetch(id).last.fetch(:expected))
+
     screenshot_rel = "#{@run_rel}/visual/#{id}.png"
     screenshot = File.join(ROOT, screenshot_rel)
     system!(*screenshot_command(screenshot))
@@ -426,6 +428,25 @@ class SaneHostsUIActionExecutor
     payload = JSON.parse(out)
     raise "#{action_id}: AX driver did not return passed" unless payload['status'] == 'passed'
     payload
+  end
+
+  def activate_for_screenshot!(action_id, index, expected)
+    script = <<~APPLESCRIPT
+      tell application "System Events"
+        set candidateProcess to first application process whose bundle identifier is "#{APP_BUNDLE_ID}"
+        set frontmost of candidateProcess to true
+        repeat 40 times
+          if frontmost of candidateProcess then return name of candidateProcess
+          delay 0.1
+        end repeat
+        error "SaneHosts did not become frontmost"
+      end tell
+    APPLESCRIPT
+    out, err, status = capture_with_timeout('/usr/bin/osascript', '-e', script, timeout: 6)
+    raise "#{action_id}: could not make SaneHosts frontmost: #{out}#{err}" unless status.success? && out.strip == 'SaneHosts'
+
+    request = step([], action: 'read', expected: expected)
+    execute_ax_request!(action_id, index, request)
   end
 
   def write_execution_evidence!
@@ -599,6 +620,22 @@ class SaneHostsUIActionExecutor
     options[:chdir] = chdir if chdir
     success = system(*command, **options)
     raise "Command failed: #{command.join(' ')}" unless success
+  end
+
+  def capture_with_timeout(*command, timeout:)
+    output = error = status = nil
+    Open3.popen3(*command) do |stdin, stdout, stderr, wait_thread|
+      stdin.close
+      unless wait_thread.join(timeout)
+        Process.kill('TERM', wait_thread.pid)
+        wait_thread.join(1) || Process.kill('KILL', wait_thread.pid)
+        raise "Command timed out after #{timeout}s: #{command.join(' ')}"
+      end
+      output = stdout.read
+      error = stderr.read
+      status = wait_thread.value
+    end
+    [output, error, status]
   end
 
   def evidence(type, detail, path)

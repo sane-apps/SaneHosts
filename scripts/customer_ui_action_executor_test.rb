@@ -113,6 +113,29 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'capture-mini-screenshot.sh'
     assert_includes source, "'--app', 'SaneHosts', '--mode', 'temp', '--path'"
     assert_includes source, "'customer_ui_sweep', '--execution-evidence'"
+    assert_operator source.index('activate_for_screenshot!'), :<, source.index('system!(*screenshot_command')
+  end
+
+  def test_executor_reasserts_frontmost_state_before_screenshot_capture
+    source = File.read(File.expand_path('customer_ui_action_executor.rb', __dir__))
+
+    assert_includes source, 'set frontmost of candidateProcess to true'
+    assert_includes source, 'bundle identifier is "#{APP_BUNDLE_ID}"'
+    assert_includes source, "step([], action: 'read', expected: expected)"
+    assert_includes source, "capture_with_timeout('/usr/bin/osascript'"
+  end
+
+  def test_bounded_frontmost_command_returns_output_and_terminates_hangs
+    output, error, status = @executor.send(
+      :capture_with_timeout, RbConfig.ruby, '-e', 'puts "SaneHosts"', timeout: 2
+    )
+    assert status.success?, error
+    assert_equal "SaneHosts\n", output
+
+    timeout = assert_raises(RuntimeError) do
+      @executor.send(:capture_with_timeout, RbConfig.ruby, '-e', 'sleep 5', timeout: 0.1)
+    end
+    assert_includes timeout.message, 'Command timed out'
   end
 
   def test_screenshot_command_routes_locally_through_canonical_mini_wrapper
