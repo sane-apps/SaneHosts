@@ -25,6 +25,7 @@ class SaneHostsUIActionExecutor
   FIXTURE_MERGED_SUMMARY = "#{FIXTURE_MERGED}, inactive"
   FIXTURE_HOST = 'proof.invalid'
   PROCESS_EXIT_TIMEOUT = 8
+  MIN_SCREENSHOT_BYTES = 10_000
 
   SAFE_BOUNDARIES = {
     'menu-bar-profile-actions' => [
@@ -362,7 +363,7 @@ class SaneHostsUIActionExecutor
 
     screenshot_rel = "#{@run_rel}/visual/#{id}.png"
     screenshot = File.join(ROOT, screenshot_rel)
-    system!(*screenshot_command(screenshot))
+    capture_screenshot!(screenshot)
     raise "#{id}: canonical screenshot missing" unless File.size?(screenshot)
     raise "#{id}: screenshot path was reused" if @screenshots.include?(screenshot_rel)
 
@@ -490,6 +491,30 @@ class SaneHostsUIActionExecutor
 
   def screenshot_command(path)
     [SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', path]
+  end
+
+  def capture_screenshot!(path)
+    out, err, status = Open3.capture3(*screenshot_command(path))
+    $stdout.write(out)
+    $stderr.write(err)
+    raise "Screenshot command failed: #{out}#{err}" unless status.success?
+    return path if File.size?(path)
+
+    extension = File.extname(path)
+    stem = path.delete_suffix(extension)
+    candidates = Dir.glob("#{stem}-w*#{extension}").select { |candidate| File.file?(candidate) }
+    substantial = candidates.select { |candidate| File.size(candidate) >= MIN_SCREENSHOT_BYTES }
+    unique_substantial = substantial.group_by { |candidate| Digest::SHA256.file(candidate).hexdigest }.values.map(&:first)
+    unless unique_substantial.one?
+      details = candidates.map do |candidate|
+        digest = Digest::SHA256.file(candidate).hexdigest[0, 12]
+        "#{File.basename(candidate)}=#{File.size(candidate)}:#{digest}"
+      end.join(', ')
+      raise "Expected one unique substantial screenshot for #{File.basename(path)}; found #{details}"
+    end
+
+    FileUtils.mv(unique_substantial.first, path)
+    path
   end
 
   def cleanup_after_execution
