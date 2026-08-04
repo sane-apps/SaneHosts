@@ -113,7 +113,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'capture-mini-screenshot.sh'
     assert_includes source, "'--app', 'SaneHosts', '--mode', 'temp', '--path'"
     assert_includes source, "'customer_ui_sweep', '--execution-evidence'"
-    assert_operator source.index('activate_for_screenshot!'), :<, source.index('system!(*screenshot_command')
+    assert_operator source.index('activate_for_screenshot!'), :<, source.index('capture_screenshot!(screenshot)')
   end
 
   def test_executor_reasserts_frontmost_state_before_screenshot_capture
@@ -146,6 +146,32 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal ['--app', 'SaneHosts', '--mode', 'temp', '--path', destination], command.drop(1)
     refute_includes command, 'ssh'
     refute command.any? { |argument| argument.include?('/usr/sbin/screencapture') }
+  end
+
+  def test_multi_window_capture_normalizes_one_substantial_window_and_rejects_ambiguity
+    Dir.mktmpdir do |directory|
+      canonical = File.join(directory, 'proof.png')
+      meaningful = File.join(directory, 'proof-w100.png')
+      duplicate = File.join(directory, 'proof-w102.png')
+      auxiliary = File.join(directory, 'proof-w101.png')
+      File.binwrite(meaningful, 'a' * (SaneHostsUIActionExecutor::MIN_SCREENSHOT_BYTES + 1))
+      File.binwrite(duplicate, File.binread(meaningful))
+      File.binwrite(auxiliary, 'b' * 100)
+      @executor.define_singleton_method(:screenshot_command) { |_path| [RbConfig.ruby, '-e', 'exit 0'] }
+
+      assert_equal canonical, @executor.send(:capture_screenshot!, canonical)
+      assert File.size?(canonical)
+      refute File.exist?(meaningful)
+
+      second = File.join(directory, 'ambiguous-w102.png')
+      third = File.join(directory, 'ambiguous-w103.png')
+      File.binwrite(second, 'c' * (SaneHostsUIActionExecutor::MIN_SCREENSHOT_BYTES + 1))
+      File.binwrite(third, 'd' * (SaneHostsUIActionExecutor::MIN_SCREENSHOT_BYTES + 1))
+      error = assert_raises(RuntimeError) do
+        @executor.send(:capture_screenshot!, File.join(directory, 'ambiguous.png'))
+      end
+      assert_includes error.message, 'Expected one unique substantial screenshot'
+    end
   end
 
   def test_screenshot_route_preflight_requires_wrapper_runner_and_helpers

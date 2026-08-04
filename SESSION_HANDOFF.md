@@ -97,6 +97,18 @@
   state readback before every screenshot. Integrated live proof passed
   (`before=Finder`, AX `QUICK ACTIONS`, `after=SaneHosts`); focused tests are
   green at 19 runs / 216 assertions. One clean full sweep is still required.
+- With focus fixed, the next sweep also captured Dock/app-menu actions but the
+  paid-gate state exposed multiple SaneHosts window IDs, so the screenshot
+  helper emitted suffixed paths and the executor correctly refused the missing
+  canonical path. Visual inspection proved the meaningful image contained the
+  Merge sheet while a tiny auxiliary image was blank. A second live dialog
+  replay produced two substantial but byte-identical warning captures. The
+  executor now keeps strict app-scoped all-window capture, filters tiny
+  auxiliary surfaces, deduplicates by SHA-256, and normalizes only when exactly
+  one unique substantial image remains; distinct real windows still fail
+  closed. Targeted SHA normalization produced the canonical 257 KB dialog image
+  (`58f3f1be8c922ab9fa822c61299d0792b72dc884ee244cbc7336f85e42cdf5cf`).
+  Focused tests are green at 20 runs / 222 assertions; full sweep remains pending.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
