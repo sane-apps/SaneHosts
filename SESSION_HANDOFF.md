@@ -126,6 +126,16 @@
   pairs an AX responsiveness readback with a bounded exact persisted-name and
   two-source assertion. That assertion passes on the real failed-run fixture;
   focused coverage is green at 21 tests / 227 assertions. Full sweep remains pending.
+- The following sweep passed exact merge persistence and export, then exposed
+  two exact `Delete` menu items: the first disabled and the second enabled.
+  Action targeting now excludes disabled controls and uses `AXPick` for profile
+  context menu commands, which opened the real confirmation and read the strict
+  `This action cannot be undone` text. The native alert's enabled Cancel button
+  advertises Press but returns `kAXErrorAttributeUnsupported`; the driver uses
+  a role-constrained System Events click for that one malformed control and
+  retains AX post-action readback as authority. Targeted Delete -> confirmation
+  -> Cancel passed with the profile preserved. Focused tests are green at
+  22 runs / 240 assertions; full sweep remains pending.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
