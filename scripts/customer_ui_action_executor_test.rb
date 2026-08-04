@@ -91,6 +91,8 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'let exactCandidates = candidates.filter'
     assert_includes source, 'let orderedCandidates = exactCandidates + candidates.filter'
     assert_includes source, 'let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]'
+    assert_includes source, 'kAXPickAction'
+    assert_includes source, 'axBool($0, kAXEnabledAttribute as String) != false'
   end
 
   def test_profile_lifecycle_preserves_the_preselected_duplicate_and_requires_the_exact_merge
@@ -127,6 +129,21 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
       end
       assert_includes error.message, 'Exact two-source merged profile did not persist'
     end
+  end
+
+  def test_profile_delete_waits_for_confirmation_text_before_cancel
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
+    delete_index = action.fetch(:controls).index(['Delete'])
+
+    assert_equal [['This action cannot be undone']], action.fetch(:readbacks).fetch(delete_index)
+    assert_equal ['AXMenuItem'], action.fetch(:roles).fetch(delete_index)
+    assert_equal 'pick', action.fetch(:ax_actions).fetch(delete_index)
+    cancel_index = action.fetch(:controls).rindex(['Cancel'])
+    assert_equal ['AXButton'], action.fetch(:roles).fetch(cancel_index)
+    assert_equal 'system_click', action.fetch(:ax_actions).fetch(cancel_index)
+    source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
+    assert_includes source, 'NSAppleScript(source: script)'
+    assert_includes source, 'first button of sheet 1 of window 1 whose description is'
   end
 
   def test_command_construction_uses_canonical_launch_log_and_capture_paths

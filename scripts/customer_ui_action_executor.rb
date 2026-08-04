@@ -171,17 +171,17 @@ class SaneHostsUIActionExecutor
         step('My Profile', action: 'set_value', value: FIXTURE_PROFILE, expected: [FIXTURE_PROFILE]),
         step('Create', action: 'press', expected: [FIXTURE_PROFILE]),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: [['Duplicate'], ['Export'], ['Delete']]),
-        step('Duplicate', action: 'press', expected: [FIXTURE_DUPLICATE]),
+        step('Duplicate', action: 'pick', roles: 'AXMenuItem', expected: [FIXTURE_DUPLICATE]),
         step('Merge Profiles', action: 'press',
              expected: [['Merge Profiles'], ["Select #{FIXTURE_PROFILE}"], ["Deselect #{FIXTURE_DUPLICATE}"]]),
         step("Select #{FIXTURE_PROFILE}", action: 'press', expected: ["Deselect #{FIXTURE_PROFILE}"]),
         step('Merge', action: 'press', expected: ['Add new host entry']),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: ['Export']),
-        step('Export', action: 'press', expected: [['Save'], ['Cancel']]),
+        step('Export', action: 'pick', roles: 'AXMenuItem', expected: [['Save'], ['Cancel']]),
         step('Cancel', action: 'press', expected: [FIXTURE_PROFILE]),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: ['Delete']),
-        step('Delete', action: 'press', expected: [['This action cannot be undone', 'Delete']]),
-        step('Cancel', action: 'press', expected: [FIXTURE_PROFILE])
+        step('Delete', action: 'pick', roles: 'AXMenuItem', expected: ['This action cannot be undone']),
+        step('Cancel', action: 'system_click', roles: 'AXButton', expected: [FIXTURE_PROFILE])
       ],
       'preset-template-import-actions' => [
         step('Family Safe protection level', action: 'press', expected: ['Add Family Safe']),

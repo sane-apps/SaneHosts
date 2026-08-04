@@ -193,6 +193,28 @@ private func showMenu(on element: AXUIElement) -> AXError {
     return AXUIElementPerformAction(element, kAXShowMenuAction as CFString)
 }
 
+private func appleScriptLiteral(_ value: String) -> String {
+    value
+        .replacingOccurrences(of: "\\", with: "\\\\")
+        .replacingOccurrences(of: "\"", with: "\\\"")
+}
+
+private func systemClick(request: Request) -> AXError {
+    guard let bundleID = request.bundleID, let label = request.labels.first else {
+        return .illegalArgument
+    }
+    let script = """
+    tell application "System Events"
+      set appProcess to first application process whose bundle identifier is "\(appleScriptLiteral(bundleID))"
+      tell appProcess to click first button of sheet 1 of window 1 whose description is "\(appleScriptLiteral(label))"
+    end tell
+    """
+    var error: NSDictionary?
+    guard let appleScript = NSAppleScript(source: script) else { return .failure }
+    appleScript.executeAndReturnError(&error)
+    return error == nil ? .success : .failure
+}
+
 private func targetElement(for request: Request, in elements: [AXUIElement]) -> AXUIElement? {
     let candidates = elements.filter {
         matches(
@@ -200,7 +222,7 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
             labels: request.labels,
             roles: request.roles,
             subroles: request.subroles
-        )
+        ) && axBool($0, kAXEnabledAttribute as String) != false
     }
     let exactCandidates = candidates.filter { element in
         let identities = identityStrings(element)
@@ -211,14 +233,15 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
     let orderedCandidates = exactCandidates + candidates.filter { candidate in
         !exactCandidates.contains { CFEqual($0, candidate) }
     }
-    if request.action == "press" {
-        let pressCandidates = orderedCandidates.filter {
-            supportedActions(of: $0).contains(kAXPressAction as String)
+    if request.action == "press" || request.action == "pick" || request.action == "system_click" {
+        let requestedAction = request.action == "pick" ? kAXPickAction as String : kAXPressAction as String
+        let actionCandidates = orderedCandidates.filter {
+            supportedActions(of: $0).contains(requestedAction)
         }
         let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]
-        return pressCandidates.first(where: {
+        return actionCandidates.first(where: {
             semanticRoles.contains(axString($0, kAXRoleAttribute as String))
-        }) ?? pressCandidates.first ?? orderedCandidates.first
+        }) ?? actionCandidates.first ?? orderedCandidates.first
     }
     guard request.action == "show_menu" else {
         return orderedCandidates.first
@@ -302,6 +325,10 @@ private func perform(_ request: Request) throws -> Response {
         switch request.action {
         case "press":
             result = AXUIElementPerformAction(target, kAXPressAction as CFString)
+        case "pick":
+            result = AXUIElementPerformAction(target, kAXPickAction as CFString)
+        case "system_click":
+            result = systemClick(request: request)
         case "show_menu":
             result = showMenu(on: target)
         case "set_value":
