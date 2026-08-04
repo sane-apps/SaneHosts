@@ -126,6 +126,24 @@ struct MainViewGatePolicyTests {
         #expect(!layoutSource.localizedCaseInsensitiveContains("original hosts file"))
     }
 
+    @Test("Protection-level rows expose their tap behavior to accessibility")
+    func protectionLevelRowsExposeAccessibilityAction() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let layoutSource = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Layout.swift")
+        )
+
+        #expect(layoutSource.contains(".accessibilityLabel(\"\\(preset.displayName) protection level\")"))
+        #expect(layoutSource.contains(".accessibilityAddTraits(.isButton)"))
+        #expect(layoutSource.contains(".accessibilityAction {"))
+        #expect(layoutSource.components(separatedBy: "selectedPreset = preset").count - 1 == 2)
+        #expect(layoutSource.components(separatedBy: "showPresetUpsell(for: preset)").count - 1 == 3)
+    }
+
     @Test("User-cancelled authentication is quiet while real failures stay contextual")
     func userCancellationIsQuiet() {
         let cancelledMessage = HostsServiceError.actionErrorMessage(

@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Records a DNS refresh only after both cache commands complete successfully.
 - Prevents concurrent first-run loading from creating duplicate Essentials and
   Existing Entries profiles.
+- Makes protection-level rows activate correctly through VoiceOver and other
+  macOS Accessibility controls.
 
 ## [1.1.24] - 2026-07-27
 

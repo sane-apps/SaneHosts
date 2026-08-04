@@ -86,6 +86,24 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     refute_includes source, "system!('/usr/bin/defaults', 'write'"
   end
 
+  def test_sidebar_virtualization_is_handled_with_accessibility_scroll_state
+    preset = @report.fetch(:actions).find { |item| item.fetch(:id) == 'preset-template-import-actions' }
+    activation = @report.fetch(:actions).find { |item| item.fetch(:id) == 'activation-deactivation-hosts-write' }
+    driver = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
+
+    assert_equal ['PROFILES'], preset.fetch(:controls).first
+    assert_equal 'scroll_vertical', preset.fetch(:ax_actions).first
+    assert_equal ['Family Safe protection level'], preset.fetch(:readbacks).first.flatten
+    assert_equal ['PROTECTION LEVELS'], preset.fetch(:controls).fetch(2)
+    assert_equal 'scroll_vertical', preset.fetch(:ax_actions).fetch(2)
+    assert_equal ['From Template'], preset.fetch(:readbacks).fetch(2).flatten
+    assert_equal ['PROFILES'], activation.fetch(:controls).first
+    assert_equal 'scroll_vertical', activation.fetch(:ax_actions).first
+    assert_equal ['Essentials'], activation.fetch(:readbacks).first.flatten
+    assert_includes driver, 'kAXVerticalScrollBarAttribute'
+    assert_includes driver, 'NSNumber(value: value)'
+  end
+
   def test_ax_driver_queries_supported_actions_and_falls_back_to_press
     source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
 
