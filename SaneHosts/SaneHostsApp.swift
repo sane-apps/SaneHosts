@@ -77,6 +77,14 @@ final class SettingsActionStorage {
     }
 }
 
+enum SaneHostsRuntimeEnvironment {
+    static let customerUIFixtureKey = "SANEHOSTS_CUSTOMER_UI_FIXTURE"
+
+    static var isCustomerUIFixture: Bool {
+        ProcessInfo.processInfo.environment[customerUIFixtureKey] == "1"
+    }
+}
+
 @MainActor
 private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
     func writeHostsFile(content: String) async throws -> HostsPrivilegedWriteResult {
@@ -154,6 +162,7 @@ struct SaneHostsApp: App {
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("hasSeenWelcomeGate") private var hasSeenWelcomeGate = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
+    @State private var customerUIWelcomeGatePresented = SaneHostsRuntimeEnvironment.isCustomerUIFixture
     @State private var licenseService = LicenseService(
         appName: "SaneHosts",
         checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),
@@ -178,6 +187,25 @@ struct SaneHostsApp: App {
         UserDefaults.standard.set(300, forKey: "NSInitialToolTipDelay")
     }
 
+    private var welcomeGatePresentation: Binding<Bool> {
+        Binding(
+            get: {
+                if SaneHostsRuntimeEnvironment.isCustomerUIFixture {
+                    return customerUIWelcomeGatePresented
+                }
+                return !hasSeenWelcomeGate
+            },
+            set: { isPresented in
+                if SaneHostsRuntimeEnvironment.isCustomerUIFixture {
+                    customerUIWelcomeGatePresented = isPresented
+                } else if !isPresented {
+                    hasSeenWelcomeGate = true
+                    hasSeenWelcome = true
+                }
+            }
+        )
+    }
+
     var body: some Scene {
         WindowGroup(id: "main") {
             Group {
@@ -197,15 +225,7 @@ struct SaneHostsApp: App {
                             }
                         }
                         .preferredColorScheme(.dark)
-                        .sheet(isPresented: Binding(
-                            get: { !hasSeenWelcomeGate },
-                            set: {
-                                if !$0 {
-                                    hasSeenWelcomeGate = true
-                                    hasSeenWelcome = true
-                                }
-                            }
-                        )) {
+                        .sheet(isPresented: welcomeGatePresentation) {
                             WelcomeGateView(
                                 appName: "SaneHosts",
                                 appIcon: "network.badge.shield.half.filled",
@@ -400,7 +420,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         HostsPrivilegedWriteFallbackRegistry.install(AppleScriptHostsWriteFallback())
 
         let hideDockIcon = UserDefaults.standard.object(forKey: "hideDockIcon") as? Bool ?? !SaneBackgroundAppDefaults.showDockIcon
-        SaneActivationPolicy.applyInitialPolicy(showDockIcon: !hideDockIcon)
+        let showDockIcon = SaneHostsRuntimeEnvironment.isCustomerUIFixture ? true : !hideDockIcon
+        SaneActivationPolicy.applyInitialPolicy(showDockIcon: showDockIcon)
 
         // Register the privileged helper daemon for XPC + Touch ID support.
         registerHelperDaemon()

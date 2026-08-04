@@ -147,6 +147,20 @@
   macOS `Show Next Tab` menu item from satisfying `Next`. Focused coverage is
   green at 23 tests / 243 assertions; driver type-check and diff check pass.
   One full clean 11-action sweep remains the release-evidence gate.
+- The next clean Release sweep proved the remaining onboarding failure was a
+  fixture-state bug, not target selection. Its failed fixture immediately read
+  `QUICK ACTIONS` but exposed no welcome button: `CFFIXED_USER_HOME` isolated
+  files and DerivedData while the launched app still read the user's completed
+  onboarding state through `cfprefsd`. The executor's `defaults write` calls
+  could also touch the real preference domain. They are removed. A process-only
+  `SANEHOSTS_CUSTOMER_UI_FIXTURE` override now presents the welcome sheet from
+  local state, forces Dock visibility in memory, and is restored during cleanup.
+  The action plan clicks all six `Next` buttons with page-specific readbacks,
+  then `Continue Trial` or `Start Using SaneHosts`; it no longer substitutes an
+  unrelated main-window button for onboarding. Focused coverage passes 24 tests
+  / 263 assertions. Canonical Mini verification passes 120 tests with receipt
+  `865f2e961661b89157b0945aa6c26ef0`; lint receipt
+  `eac57d2159bb87f1d2e7403cb0cecd3f`. A clean full Release sweep remains.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
