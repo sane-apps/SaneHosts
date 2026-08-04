@@ -20,6 +20,9 @@ class SaneHostsUIActionExecutor
   APP_BUNDLE_ID = 'com.mrsane.SaneHosts'
   APP_EXECUTABLE = '/Applications/SaneHosts.app/Contents/MacOS/SaneHosts'
   FIXTURE_PROFILE = 'UI Proof Profile'
+  FIXTURE_DUPLICATE = "#{FIXTURE_PROFILE} 1"
+  FIXTURE_MERGED = "#{FIXTURE_PROFILE} + #{FIXTURE_DUPLICATE}"
+  FIXTURE_MERGED_SUMMARY = "#{FIXTURE_MERGED}, inactive"
   FIXTURE_HOST = 'proof.invalid'
   PROCESS_EXIT_TIMEOUT = 8
 
@@ -168,10 +171,11 @@ class SaneHostsUIActionExecutor
         step('My Profile', action: 'set_value', value: FIXTURE_PROFILE, expected: [FIXTURE_PROFILE]),
         step('Create', action: 'press', expected: [FIXTURE_PROFILE]),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: [['Duplicate'], ['Export'], ['Delete']]),
-        step('Duplicate', action: 'press', expected: ["#{FIXTURE_PROFILE} 1"]),
-        step('Merge Profiles', action: 'press', expected: [['Merge Profiles'], ["Select #{FIXTURE_PROFILE}"]]),
+        step('Duplicate', action: 'press', expected: [FIXTURE_DUPLICATE]),
+        step('Merge Profiles', action: 'press',
+             expected: [['Merge Profiles'], ["Select #{FIXTURE_PROFILE}"], ["Deselect #{FIXTURE_DUPLICATE}"]]),
         step("Select #{FIXTURE_PROFILE}", action: 'press', expected: ["Deselect #{FIXTURE_PROFILE}"]),
-        step('Merge', action: 'press', expected: [['Profiles', 'Merged']]),
+        step('Merge', action: 'press', expected: [FIXTURE_MERGED_SUMMARY]),
         step(FIXTURE_PROFILE, action: 'show_menu', expected: ['Export']),
         step('Export', action: 'press', expected: [['Save'], ['Cancel']]),
         step('Cancel', action: 'press', expected: [FIXTURE_PROFILE]),

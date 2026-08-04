@@ -88,6 +88,22 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'supportedActions(of: $0).contains(kAXShowMenuAction as String)'
     assert_includes source, 'request.subroles?.contains("AXMenuExtra") == true'
     assert_includes source, 'supportedActions(of: $0).contains(kAXPressAction as String)'
+    assert_includes source, 'let exactCandidates = candidates.filter'
+    assert_includes source, 'let orderedCandidates = exactCandidates + candidates.filter'
+    assert_includes source, 'let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]'
+  end
+
+  def test_profile_lifecycle_preserves_the_preselected_duplicate_and_requires_the_exact_merge
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
+    controls = action.fetch(:controls).flatten
+    readbacks = action.fetch(:readbacks).flatten
+
+    first_profile = controls.index("Select #{SaneHostsUIActionExecutor::FIXTURE_PROFILE}")
+    merge = controls.index('Merge')
+    assert_operator first_profile, :<, merge
+    refute_includes controls, "Select #{SaneHostsUIActionExecutor::FIXTURE_DUPLICATE}"
+    assert_includes readbacks, "Deselect #{SaneHostsUIActionExecutor::FIXTURE_DUPLICATE}"
+    assert_includes readbacks, SaneHostsUIActionExecutor::FIXTURE_MERGED_SUMMARY
   end
 
   def test_command_construction_uses_canonical_launch_log_and_capture_paths

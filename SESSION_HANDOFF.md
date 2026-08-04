@@ -75,6 +75,17 @@
   sidebar profile, matching `Essentials, inactive, 0 entries` and reading back
   `Duplicate`, `Export`, and `Delete`. Focused tests now pass 16 runs / 187
   assertions. One fresh clean-checkout full sweep remains required.
+- The following clean sweep reached the merge workflow and exposed two more
+  proof defects. Substring matching could choose `Merge Profiles` or a child
+  `AXImage` instead of the real `Merge` button, and the lifecycle plan toggled
+  the duplicate off even though duplication had already selected it. The AX
+  driver now ranks exact identity matches, then semantic press controls that
+  advertise `AXPress`. The plan asserts the duplicate's inherited `Deselect`
+  state, selects only the original, and requires the exact merged sidebar
+  summary rather than text already present in the sheet. A targeted replay
+  created a real merged profile through the `AXButton`; focused coverage is
+  green at 17 runs / 201 assertions and the driver type-checks. The remaining
+  gate is one clean full 11-action Release sweep.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
