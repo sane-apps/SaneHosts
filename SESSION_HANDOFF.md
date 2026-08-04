@@ -64,6 +64,17 @@
   `Quit SaneHosts`. Focused tests pass 15 runs / 181 assertions and the Swift
   driver type-checks. One full clean-checkout live run is still required before
   release preflight can pass.
+- The full `cd81e0a` sweep then passed its first four action groups (onboarding,
+  status-menu profile actions, Dock/app-menu commands, and paid-access gates)
+  before a distinct `profile-lifecycle-actions` context-menu failure. Raw AX
+  inspection proved the generic selector chose a matching menu-bar profile
+  command (`AXMenuItem` with Press/Pick) ahead of the visible sidebar summary
+  (`AXStaticText` with `AXShowMenu`). Ordinary context-menu requests now prefer
+  candidates that advertise `AXShowMenu`; Press fallback remains restricted to
+  the explicitly constrained `AXMenuExtra`. A targeted live proof passed on a
+  sidebar profile, matching `Essentials, inactive, 0 entries` and reading back
+  `Duplicate`, `Export`, and `Delete`. Focused tests now pass 16 runs / 187
+  assertions. One fresh clean-checkout full sweep remains required.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

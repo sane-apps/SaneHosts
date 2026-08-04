@@ -193,6 +193,30 @@ private func showMenu(on element: AXUIElement) -> AXError {
     return AXUIElementPerformAction(element, kAXShowMenuAction as CFString)
 }
 
+private func targetElement(for request: Request, in elements: [AXUIElement]) -> AXUIElement? {
+    let candidates = elements.filter {
+        matches(
+            $0,
+            labels: request.labels,
+            roles: request.roles,
+            subroles: request.subroles
+        )
+    }
+    guard request.action == "show_menu" else {
+        return candidates.first
+    }
+    if let showMenuCandidate = candidates.first(where: {
+        supportedActions(of: $0).contains(kAXShowMenuAction as String)
+    }) {
+        return showMenuCandidate
+    }
+    let allowsPressFallback = request.subroles?.contains("AXMenuExtra") == true
+    guard allowsPressFallback else { return nil }
+    return candidates.first(where: {
+        supportedActions(of: $0).contains(kAXPressAction as String)
+    })
+}
+
 private func runningApplication(for request: Request) throws -> NSRunningApplication {
     if let bundleID = request.bundleID,
        let app = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).first {
@@ -245,14 +269,7 @@ private func perform(_ request: Request) throws -> Response {
         let deadline = Date().addingTimeInterval(timeout)
         var target: AXUIElement?
         repeat {
-            target = searchableElements(of: root).first {
-                matches(
-                    $0,
-                    labels: request.labels,
-                    roles: request.roles,
-                    subroles: request.subroles
-                )
-            }
+            target = targetElement(for: request, in: searchableElements(of: root))
             if target == nil {
                 Thread.sleep(forTimeInterval: 0.2)
             }

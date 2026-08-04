@@ -82,6 +82,14 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_operator source.scan('searchableElements(of: root)').length, :>=, 2
   end
 
+  def test_ax_driver_prefers_show_menu_candidates_and_limits_press_fallback
+    source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
+
+    assert_includes source, 'supportedActions(of: $0).contains(kAXShowMenuAction as String)'
+    assert_includes source, 'request.subroles?.contains("AXMenuExtra") == true'
+    assert_includes source, 'supportedActions(of: $0).contains(kAXPressAction as String)'
+  end
+
   def test_command_construction_uses_canonical_launch_log_and_capture_paths
     source = File.read(File.expand_path('customer_ui_action_executor.rb', __dir__))
     assert_includes source, "'test_mode', '--release', '--no-logs'"
