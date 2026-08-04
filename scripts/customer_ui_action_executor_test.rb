@@ -103,7 +103,30 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_operator first_profile, :<, merge
     refute_includes controls, "Select #{SaneHostsUIActionExecutor::FIXTURE_DUPLICATE}"
     assert_includes readbacks, "Deselect #{SaneHostsUIActionExecutor::FIXTURE_DUPLICATE}"
-    assert_includes readbacks, SaneHostsUIActionExecutor::FIXTURE_MERGED_SUMMARY
+    assert_includes readbacks, 'Add new host entry'
+  end
+
+  def test_profile_lifecycle_requires_exact_two_source_merged_fixture
+    Dir.mktmpdir do |fixture_home|
+      profiles_directory = File.join(fixture_home, 'Library', 'Application Support', 'SaneHosts', 'Profiles')
+      FileUtils.mkdir_p(profiles_directory)
+      payload = {
+        name: SaneHostsUIActionExecutor::FIXTURE_MERGED,
+        source: { merged: { sourceCount: 2 } }
+      }
+      File.write(File.join(profiles_directory, 'merged.json'), JSON.generate(payload))
+      @executor.instance_variable_set(:@fixture_home, fixture_home)
+
+      assertion = @executor.send(:verify_merged_profile_fixture!, timeout: 0.1)
+      assert_includes assertion, 'exactly 2 merged sources'
+
+      payload[:source][:merged][:sourceCount] = 3
+      File.write(File.join(profiles_directory, 'merged.json'), JSON.generate(payload))
+      error = assert_raises(RuntimeError) do
+        @executor.send(:verify_merged_profile_fixture!, timeout: 0.1)
+      end
+      assert_includes error.message, 'Exact two-source merged profile did not persist'
+    end
   end
 
   def test_command_construction_uses_canonical_launch_log_and_capture_paths
