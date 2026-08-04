@@ -38,12 +38,12 @@ public final class DNSService {
                 return process.terminationStatus
             }.value
 
-            if exitCode == 0 {
-                lastFlushDate = Date()
-                try await killMDNSResponder()
-            } else {
+            if exitCode != 0 {
                 throw DNSServiceError.flushFailed("dscacheutil exited with code \(exitCode)")
             }
+
+            try await killMDNSResponder()
+            lastFlushDate = Date()
         } catch let error as DNSServiceError {
             throw error
         } catch {

@@ -8,7 +8,9 @@ import UniformTypeIdentifiers
 struct FetchProgressOverlay: View {
     let onCancel: () -> Void
 
-    var syncService: RemoteSyncService { RemoteSyncService.shared }
+    var syncService: RemoteSyncService {
+        RemoteSyncService.shared
+    }
 
     var body: some View {
         ZStack {

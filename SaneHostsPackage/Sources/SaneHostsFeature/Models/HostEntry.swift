@@ -150,16 +150,16 @@ public enum HostsLine: Identifiable, Codable, Equatable, Hashable, Sendable {
 
     public var id: String {
         switch self {
-        case .entry(let entry): return entry.id.uuidString
-        case .comment(let comment): return comment.id.uuidString
+        case let .entry(entry): return entry.id.uuidString
+        case let .comment(comment): return comment.id.uuidString
         case .blank: return UUID().uuidString
         }
     }
 
     public var hostsFileLine: String {
         switch self {
-        case .entry(let entry): return entry.hostsFileLine
-        case .comment(let comment): return comment.hostsFileLine
+        case let .entry(entry): return entry.hostsFileLine
+        case let .comment(comment): return comment.hostsFileLine
         case .blank: return ""
         }
     }

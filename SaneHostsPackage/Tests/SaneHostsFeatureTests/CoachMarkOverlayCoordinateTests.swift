@@ -1,6 +1,6 @@
 import CoreGraphics
-import Testing
 @testable import SaneHostsFeature
+import Testing
 
 @Suite("Coach Mark Overlay Coordinates")
 @MainActor

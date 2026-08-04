@@ -104,7 +104,7 @@ private func identityStrings(_ element: AXUIElement) -> [String] {
     ].filter { !$0.isEmpty }
 }
 
-private func descendants(of root: AXUIElement, limit: Int = 8_000) -> [AXUIElement] {
+private func descendants(of root: AXUIElement, limit: Int = 8000) -> [AXUIElement] {
     var queue = [root]
     var result: [AXUIElement] = []
     while !queue.isEmpty, result.count < limit {
@@ -246,7 +246,7 @@ do {
     }
     let data = try Data(contentsOf: URL(fileURLWithPath: CommandLine.arguments[1]))
     let request = try JSONDecoder().decode(Request.self, from: data)
-    emit(try perform(request))
+    try emit(perform(request))
 } catch {
     emit(Response(
         status: "failed",

@@ -5,17 +5,17 @@ import CoreGraphics
 import UniformTypeIdentifiers
 
 // Brand colors
-let bgColorTop = NSColor(red: 0x1a/255.0, green: 0x27/255.0, blue: 0x44/255.0, alpha: 1.0)
-let bgColorBottom = NSColor(red: 0x0d/255.0, green: 0x15/255.0, blue: 0x25/255.0, alpha: 1.0)
-let iconColor = NSColor(red: 0x5f/255.0, green: 0xa8/255.0, blue: 0xd3/255.0, alpha: 1.0)
+let bgColorTop = NSColor(red: 0x1A / 255.0, green: 0x27 / 255.0, blue: 0x44 / 255.0, alpha: 1.0)
+let bgColorBottom = NSColor(red: 0x0D / 255.0, green: 0x15 / 255.0, blue: 0x25 / 255.0, alpha: 1.0)
+let iconColor = NSColor(red: 0x5F / 255.0, green: 0xA8 / 255.0, blue: 0xD3 / 255.0, alpha: 1.0)
 
-// SF Symbol name
+/// SF Symbol name
 let symbolName = "network.badge.shield.half.filled"
 
-// Output directory
+/// Output directory
 let outputDir = "SaneHosts/Assets.xcassets/AppIcon.appiconset"
 
-// Required sizes: (filename, size in pixels)
+/// Required sizes: (filename, size in pixels)
 let sizes: [(String, Int)] = [
     ("icon_16x16.png", 16),
     ("icon_16x16@2x.png", 32),
@@ -26,7 +26,7 @@ let sizes: [(String, Int)] = [
     ("icon_256x256.png", 256),
     ("icon_256x256@2x.png", 512),
     ("icon_512x512.png", 512),
-    ("icon_512x512@2x.png", 1024),
+    ("icon_512x512@2x.png", 1024)
 ]
 
 func createIcon(px: Int) -> Data? {
@@ -58,7 +58,6 @@ func createIcon(px: Int) -> Data? {
     // Get SF Symbol
     let config = NSImage.SymbolConfiguration(pointSize: CGFloat(px) * 0.55, weight: .regular)
     if let symbolImage = NSImage(systemSymbolName: symbolName, accessibilityDescription: nil)?.withSymbolConfiguration(config) {
-
         // Create colored version using a temporary bitmap at 1x
         let symSize = symbolImage.size
         let colorRep = NSBitmapImageRep(
@@ -91,9 +90,9 @@ func createIcon(px: Int) -> Data? {
         let y = (CGFloat(px) - symSize.height) / 2
 
         coloredImage.draw(in: NSRect(x: x, y: y, width: symSize.width, height: symSize.height),
-                         from: NSRect(origin: .zero, size: symSize),
-                         operation: .sourceOver,
-                         fraction: 1.0)
+                          from: NSRect(origin: .zero, size: symSize),
+                          operation: .sourceOver,
+                          fraction: 1.0)
     }
 
     NSGraphicsContext.restoreGraphicsState()
@@ -107,7 +106,7 @@ func createIcon(px: Int) -> Data? {
     ) else { return nil }
 
     // Fill with background base color, then composite rendered icon on top
-    opaqueCtx.setFillColor(CGColor(red: 0x1a/255.0, green: 0x27/255.0, blue: 0x44/255.0, alpha: 1.0))
+    opaqueCtx.setFillColor(CGColor(red: 0x1A / 255.0, green: 0x27 / 255.0, blue: 0x44 / 255.0, alpha: 1.0))
     opaqueCtx.fill(CGRect(x: 0, y: 0, width: px, height: px))
     if let cgImg = rep.cgImage {
         // NSBitmapImageRep is flipped (y=0 at top), CGContext is not (y=0 at bottom)

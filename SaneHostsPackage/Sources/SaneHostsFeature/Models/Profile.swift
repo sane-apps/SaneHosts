@@ -117,7 +117,7 @@ public struct Profile: Identifiable, Codable, Equatable, Hashable, Sendable {
         return (enabled, disabled)
     }
 
-    // Custom decoder to handle missing sortOrder in existing profiles
+    /// Custom decoder to handle missing sortOrder in existing profiles
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         id = try container.decode(UUID.self, forKey: .id)
@@ -152,18 +152,22 @@ public enum ProfileSource: Codable, Equatable, Hashable, Sendable {
         switch self {
         case .local: return "Local"
         case .remote: return "Remote"
-        case .merged(let count): return "Merged (\(count) sources)"
+        case let .merged(count): return "Merged (\(count) sources)"
         case .system: return "System"
         }
     }
 
     public var isRemote: Bool {
-        if case .remote = self { return true }
+        if case .remote = self {
+            return true
+        }
         return false
     }
 
     public var isMerged: Bool {
-        if case .merged = self { return true }
+        if case .merged = self {
+            return true
+        }
         return false
     }
 

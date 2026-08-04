@@ -12,7 +12,7 @@
 
 SaneHosts is a native macOS app that makes managing your `/etc/hosts` file simple and intuitive. Choose a protection level, activate it, done. No Terminal. No commands. If something breaks, turn off protection.
 
-**Current direct release: 1.1.23.** The Mac app starts with a free 14-day trial. Buy SaneHosts once to keep using all features after the trial.
+**Current direct release: 1.1.24. Version 1.1.25 is the current release candidate.** The Mac app starts with a free 14-day trial. Buy SaneHosts once to keep using all features after the trial.
 
 ## Features
 

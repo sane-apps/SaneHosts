@@ -8,7 +8,7 @@ enum MainViewGatePolicy {
         isPro
     }
 
-    static func allowsUseAfterTrial(hasExpiredProTrial: Bool) -> Bool {
+    static func allowsUseAfterTrial(hasExpiredProTrial _: Bool) -> Bool {
         false
     }
 
@@ -50,6 +50,16 @@ public enum ProtectionUXCopy {
     public static let authenticationRequirement = "Turning it off or switching profiles requires Touch ID or your Mac account password."
     public static let deactivationImpact = "Turning it off removes this profile’s rules while leaving standard hosts entries."
     public static let quickDeactivationImpact = "Removes profile rules; keeps standard hosts entries"
+}
+
+@MainActor
+public enum SaneHostsWindowPolicy {
+    /// The shared license gate temporarily removes `.closable`. Cached license
+    /// restoration can replace that gate before its one-shot callback runs, so
+    /// the normal workspace must reassert its own window contract on entry.
+    public static func restoreCloseControl(for window: NSWindow?) {
+        window?.styleMask.insert(.closable)
+    }
 }
 
 /// Main view with sidebar navigation - SaneClip design language

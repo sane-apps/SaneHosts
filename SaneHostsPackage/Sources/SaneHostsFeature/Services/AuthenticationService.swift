@@ -11,7 +11,6 @@ private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "Auth")
 @MainActor
 @Observable
 public final class AuthenticationService {
-
     // MARK: - Properties
 
     /// Whether Touch ID is available on this device
@@ -47,9 +46,9 @@ public final class AuthenticationService {
     // MARK: - Debug Mode
 
     #if DEBUG
-    /// In debug mode, skip authentication for testing
-    /// Use nonisolated(unsafe) since this is only modified at app startup
-    public nonisolated(unsafe) static var debugBypassEnabled = false
+        /// In debug mode, skip authentication for testing
+        /// Use nonisolated(unsafe) since this is only modified at app startup
+        public nonisolated(unsafe) static var debugBypassEnabled = false
     #endif
 
     // MARK: - Initialization
@@ -63,10 +62,10 @@ public final class AuthenticationService {
     /// - Returns: True if authentication succeeded
     public func authenticate(reason: String) async -> Bool {
         #if DEBUG
-        if Self.debugBypassEnabled {
-            logger.debug(" Bypassing authentication")
-            return true
-        }
+            if Self.debugBypassEnabled {
+                logger.debug(" Bypassing authentication")
+                return true
+            }
         #endif
 
         isAuthenticating = true
@@ -132,8 +131,7 @@ public final class AuthenticationService {
         let context = LAContext()
 
         do {
-            let success = try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
-            return success
+            return try await context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason)
         } catch {
             lastError = .failed(error.localizedDescription)
             return false
@@ -189,7 +187,7 @@ public enum AuthError: LocalizedError {
             return "Touch ID is locked due to too many failed attempts. Please use your password."
         case .passcodeNotSet:
             return "No password is set on this device"
-        case .failed(let message):
+        case let .failed(message):
             return message
         }
     }

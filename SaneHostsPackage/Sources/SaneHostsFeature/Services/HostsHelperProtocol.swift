@@ -3,9 +3,17 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsHelper")
 
+public struct HostsPrivilegedWriteResult: Equatable, Sendable {
+    public let didRefreshDNSCache: Bool
+
+    public init(didRefreshDNSCache: Bool) {
+        self.didRefreshDNSCache = didRefreshDNSCache
+    }
+}
+
 @MainActor
 public protocol HostsPrivilegedWriteFallback {
-    func writeHostsFile(content: String) async throws
+    func writeHostsFile(content: String) async throws -> HostsPrivilegedWriteResult
 }
 
 @MainActor
@@ -100,7 +108,9 @@ public final class HostsHelperConnection: @unchecked Sendable {
     private func getOrCreateConnection() throws -> NSXPCConnection {
         lock.lock()
         defer { lock.unlock() }
-        if let existing = connection { return existing }
+        if let existing = connection {
+            return existing
+        }
 
         let conn = NSXPCConnection(
             machServiceName: HostsHelperConstants.machServiceName,

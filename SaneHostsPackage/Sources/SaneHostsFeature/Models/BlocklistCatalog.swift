@@ -81,10 +81,10 @@ public enum BlocklistCategory: String, CaseIterable, Sendable {
 
 /// Curated catalog of popular blocklists
 public enum BlocklistCatalog {
-
     /// All available blocklists organized by category
     public static let all: [BlocklistSource] = [
         // MARK: - Recommended (Balanced defaults for most users)
+
         BlocklistSource(
             id: "steven-black-unified",
             name: "Steven Black Unified",
@@ -117,6 +117,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Ads & Trackers
+
         BlocklistSource(
             id: "adaway",
             name: "AdAway Default",
@@ -173,6 +174,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Malware & Security
+
         BlocklistSource(
             id: "malware-domains",
             name: "Malware Domain List",
@@ -220,6 +222,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Privacy
+
         BlocklistSource(
             id: "easyprivacy",
             name: "EasyPrivacy (Hosts)",
@@ -267,6 +270,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Social Media
+
         BlocklistSource(
             id: "steven-black-social",
             name: "Social Media Block",
@@ -296,6 +300,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Gambling
+
         BlocklistSource(
             id: "steven-black-gambling",
             name: "Gambling Sites",
@@ -316,6 +321,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Fake News
+
         BlocklistSource(
             id: "steven-black-fakenews",
             name: "Fake News Sites",
@@ -336,6 +342,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Adult Content
+
         BlocklistSource(
             id: "steven-black-porn",
             name: "Adult Content Block",
@@ -365,6 +372,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Annoyances
+
         BlocklistSource(
             id: "fanboy-annoyances",
             name: "Fanboy Annoyances",
@@ -385,6 +393,7 @@ public enum BlocklistCatalog {
         ),
 
         // MARK: - Regional
+
         BlocklistSource(
             id: "no-google",
             name: "No Google",
@@ -393,7 +402,7 @@ public enum BlocklistCatalog {
             category: .regional,
             estimatedEntries: "3K",
             maintainer: "nickspaargaren"
-        ),
+        )
     ]
 
     /// Get sources by category

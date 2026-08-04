@@ -1,30 +1,29 @@
-import Foundation
 import Darwin
+import Foundation
 import os
 
-/// SaneHostsHelper - Privileged helper daemon for SaneHosts
-///
-/// This helper runs as a LaunchDaemon with root privileges.
-/// It handles operations that require elevated permissions:
-/// - Writing to /etc/hosts
-/// - Flushing DNS cache
-///
-/// Communication happens via XPC from the main SaneHosts app.
-/// Registered via SMAppService.daemon on macOS 14+.
+// SaneHostsHelper - Privileged helper daemon for SaneHosts
+//
+// This helper runs as a LaunchDaemon with root privileges.
+// It handles operations that require elevated permissions:
+// - Writing to /etc/hosts
+// - Flushing DNS cache
+//
+// Communication happens via XPC from the main SaneHosts app.
+// Registered via SMAppService.daemon on macOS 14+.
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHostsHelper", category: "Helper")
 
 // MARK: - XPC Listener Delegate
 
 class HelperDelegate: NSObject, NSXPCListenerDelegate {
-
     /// Team identifier that must match the connecting app's code signature.
     /// WARNING: This MUST match the DEVELOPMENT_TEAM in Helper.xcconfig.
     private let requiredTeamID = "M78L6FXD48"
     /// Bundle identifier for valid connecting app
     private let requiredBundleID = "com.mrsane.SaneHosts"
 
-    func listener(_ listener: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
+    func listener(_: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
         // Validate the connection is from our main app via code signing
         guard validateConnection(newConnection) else {
             logger.error("Rejected connection: code signing validation failed")
@@ -55,7 +54,8 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
         var code: SecCode?
         let attrs = [kSecGuestAttributePid: pid] as CFDictionary
         guard SecCodeCopyGuestWithAttributes(nil, attrs, [], &code) == errSecSuccess,
-              let secCode = code else {
+              let secCode = code
+        else {
             logger.error("Failed to get SecCode for PID \(pid)")
             return false
         }
@@ -64,7 +64,8 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
         let requirement = "anchor apple generic and certificate leaf[subject.OU] = \"\(requiredTeamID)\" and identifier \"\(requiredBundleID)\""
         var secRequirement: SecRequirement?
         guard SecRequirementCreateWithString(requirement as CFString, [], &secRequirement) == errSecSuccess,
-              let req = secRequirement else {
+              let req = secRequirement
+        else {
             logger.error("Failed to create security requirement")
             return false
         }
@@ -83,7 +84,6 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
 // MARK: - Helper Service Implementation
 
 class HostsHelperService: NSObject, HostsHelperProtocol {
-
     private let hostsPath = "/etc/hosts"
     private let maxHostsFileBytes = 25 * 1024 * 1024
 
@@ -95,7 +95,7 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
 
             // Create backup ONLY if it doesn't exist (preserve original system state)
             let backupPath = "/etc/hosts.sanehosts.backup"
-            if !FileManager.default.fileExists(atPath: backupPath) && FileManager.default.fileExists(atPath: hostsPath) {
+            if !FileManager.default.fileExists(atPath: backupPath), FileManager.default.fileExists(atPath: hostsPath) {
                 try? FileManager.default.copyItem(atPath: hostsPath, toPath: backupPath)
                 logger.info("Created pristine system backup at \(backupPath)")
             }
@@ -236,13 +236,14 @@ enum HostsHelperError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidContent(let reason):
+        case let .invalidContent(reason):
             "Refusing to write invalid hosts content: \(reason)"
         }
     }
 }
 
 // MARK: - Protocol (duplicated for standalone compilation)
+
 // This must match HostsHelperProtocol in the main app's SaneHostsFeature package.
 
 @objc(HostsHelperProtocol)

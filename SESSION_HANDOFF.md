@@ -1,6 +1,46 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-07-30
+**Last updated:** 2026-08-04
+
+## IN PROGRESS: DNS fallback + disabled close-control patch (2026-08-04)
+
+- Customer report reproduced from the exact warning and screenshot. The direct
+  AppleScript fallback elevated only the `/etc/hosts` copy, then ordinary-user
+  `DNSService` tried `/usr/bin/killall -HUP mDNSResponder` and deterministically
+  received exit 1. Source now performs the copy, `dscacheutil -flushcache`, and
+  `mDNSResponder` HUP inside the same existing administrator-authorized command,
+  returns DNS success separately, and preserves truthful partial-success warnings.
+- The disabled red close control was a second bug. The shared license gate can
+  remove `.closable`, then cached license restoration can replace the gate before
+  its timing-sensitive restore runs. Normal SaneHosts workspace entry now
+  reasserts the close-control contract on the next main-loop turn. An actual
+  `NSWindow` regression test covers disabled-to-enabled restoration.
+- `DNSService.lastFlushDate` now updates only after both cache operations pass.
+  Package/test SourceKit diagnostics are clean and `git diff --check` passes.
+- The next controlled AgentMemory gate passed: the one permitted canonical
+  installer attempt restored Mini `livez`, and CLI status reports connected,
+  healthy version 0.9.28. Canonical Mini verification then passed 118 tests,
+  including the new privileged-DNS and real-`NSWindow` close-control regressions,
+  with receipt `fe64b8833692a68b8907b2a127a3ab05`.
+- Version is now 1.1.25 (build 1125), but no public release has happened yet.
+  Canonical lint is green (`96e48cb5c3d8070eeb8b770940df1890`), and the
+  post-format/split Mini suite is green at 118 tests
+  (`f96d1557b74bc8ff835743c5e20751aa`). The lint repair adds the first project
+  SwiftFormat baseline, excludes generated outputs/checkouts, and moves the
+  entry-row/sheet helpers out of the former 1,002-line `ProfileDetailView`.
+- The exact signed Release app was built, staged, and launched from
+  `/Applications/SaneHosts.app` as 1.1.25/1125
+  (`31f5f3b45a6bb6d9d37de0bbf9bb2be6`). AX read-back reported the close control
+  enabled; pressing it left the menu-bar process alive with zero windows; Open
+  SaneHosts restored one window with the close control enabled; Quit SaneHosts
+  terminated the process. Strict code-sign verification passed. Clean visual
+  smoke passed (`d8962c25730b05a70538a49ac56363ad`).
+- The Mini has no installed `com.mrsane.SaneHostsHelper`, so a real profile
+  switch correctly targets the fixed AppleScript fallback but still requires a
+  human macOS administrator approval. The exact privileged copy-plus-DNS command
+  is regression-covered; post-approval live activation remains the only
+  unattended runtime proof gap. The full `/ship` checkpoint and mandatory user
+  release gate remain required.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 

@@ -21,16 +21,17 @@ final class WindowActionStorage {
     static let shared = WindowActionStorage()
     var openWindow: OpenWindowAction?
 
-    /// Bring existing main window to front, or create one if none exists
-    @MainActor func showMainWindow(using overrideAction: OpenWindowAction? = nil) {
-        // Find an existing main window (SwiftUI WindowGroup id: "main")
-        let mainWindow = NSApp.windows.first(where: {
+    private func mainWindow() -> NSWindow? {
+        NSApp.windows.first(where: {
             $0.canBecomeMain &&
                 $0.contentView != nil &&
                 $0.identifier?.rawValue.contains("main") == true
         })
+    }
 
-        if let window = mainWindow {
+    /// Bring existing main window to front, or create one if none exists
+    @MainActor func showMainWindow(using overrideAction: OpenWindowAction? = nil) {
+        if let window = mainWindow() {
             if window.isMiniaturized {
                 window.deminiaturize(nil)
             }
@@ -39,6 +40,12 @@ final class WindowActionStorage {
             (overrideAction ?? openWindow)?(id: "main")
         }
         NSApp.activate(ignoringOtherApps: true)
+    }
+
+    /// Undo a close-button lock left behind when cached license state replaces
+    /// the shared license gate with the normal SaneHosts workspace.
+    @MainActor func restoreMainWindowCloseControl() {
+        SaneHostsWindowPolicy.restoreCloseControl(for: mainWindow())
     }
 }
 
@@ -72,7 +79,7 @@ final class SettingsActionStorage {
 
 @MainActor
 private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
-    func writeHostsFile(content: String) async throws {
+    func writeHostsFile(content: String) async throws -> HostsPrivilegedWriteResult {
         do {
             try HostsContentValidator.validate(content)
         } catch {
@@ -102,7 +109,8 @@ private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
             .replacingOccurrences(of: "\"", with: "\\\"")
 
         let script = """
-        do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts" with administrator privileges
+        set applyResult to do shell script "cp " & quoted form of "\(escapedPath)" & " /etc/hosts && if /usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder; then /usr/bin/printf dns-refreshed; else /usr/bin/printf dns-refresh-failed; fi" with administrator privileges
+        return applyResult
         """
 
         let result = await runAppleScript(script)
@@ -111,20 +119,25 @@ private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
         if !result.success {
             throw HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
         }
+
+        return HostsPrivilegedWriteResult(didRefreshDNSCache: result.output == "dns-refreshed")
     }
 
-    private func runAppleScript(_ script: String) async -> (success: Bool, error: String?) {
+    private func runAppleScript(_ script: String) async -> (success: Bool, output: String?, error: String?) {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 var error: NSDictionary?
-                let appleScript = NSAppleScript(source: script)
-                appleScript?.executeAndReturnError(&error)
+                guard let appleScript = NSAppleScript(source: script) else {
+                    continuation.resume(returning: (false, nil, "Could not prepare privileged operation"))
+                    return
+                }
+                let descriptor = appleScript.executeAndReturnError(&error)
 
                 if let error {
                     let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
-                    continuation.resume(returning: (false, errorMessage))
+                    continuation.resume(returning: (false, nil, errorMessage))
                 } else {
-                    continuation.resume(returning: (true, nil))
+                    continuation.resume(returning: (true, descriptor.stringValue, nil))
                 }
             }
         }
@@ -176,6 +189,13 @@ struct SaneHostsApp: App {
                         .modifier(SettingsLauncher())
                         .modifier(SettingsActionCapture())
                         .modifier(WindowActionCapture())
+                        .onAppear {
+                            // LicenseGateView locks the close control asynchronously.
+                            // Restore it after normal content wins the next main-loop turn.
+                            DispatchQueue.main.async {
+                                WindowActionStorage.shared.restoreMainWindowCloseControl()
+                            }
+                        }
                         .preferredColorScheme(.dark)
                         .sheet(isPresented: Binding(
                             get: { !hasSeenWelcomeGate },
