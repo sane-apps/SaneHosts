@@ -63,6 +63,12 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal ['AXMenuExtra'], action.fetch(:subroles).first
   end
 
+  def test_onboarding_targets_a_button_instead_of_an_unrelated_next_menu_item
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'onboarding-and-tutorial-entry' }
+
+    assert_equal ['AXButton'], action.fetch(:roles).first
+  end
+
   def test_ax_driver_queries_supported_actions_and_falls_back_to_press
     source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
 
@@ -92,7 +98,8 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'let orderedCandidates = exactCandidates + candidates.filter'
     assert_includes source, 'let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]'
     assert_includes source, 'kAXPickAction'
-    assert_includes source, 'axBool($0, kAXEnabledAttribute as String) != false'
+    assert_includes source, 'let enabledCandidates = orderedCandidates.filter'
+    assert_includes source, 'let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates'
   end
 
   def test_profile_lifecycle_preserves_the_preselected_duplicate_and_requires_the_exact_merge

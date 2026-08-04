@@ -222,7 +222,7 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
             labels: request.labels,
             roles: request.roles,
             subroles: request.subroles
-        ) && axBool($0, kAXEnabledAttribute as String) != false
+        )
     }
     let exactCandidates = candidates.filter { element in
         let identities = identityStrings(element)
@@ -233,27 +233,31 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
     let orderedCandidates = exactCandidates + candidates.filter { candidate in
         !exactCandidates.contains { CFEqual($0, candidate) }
     }
+    let enabledCandidates = orderedCandidates.filter {
+        axBool($0, kAXEnabledAttribute as String) != false
+    }
+    let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates
     if request.action == "press" || request.action == "pick" || request.action == "system_click" {
         let requestedAction = request.action == "pick" ? kAXPickAction as String : kAXPressAction as String
-        let actionCandidates = orderedCandidates.filter {
+        let actionCandidates = actionableCandidates.filter {
             supportedActions(of: $0).contains(requestedAction)
         }
         let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]
         return actionCandidates.first(where: {
             semanticRoles.contains(axString($0, kAXRoleAttribute as String))
-        }) ?? actionCandidates.first ?? orderedCandidates.first
+        }) ?? actionCandidates.first ?? actionableCandidates.first
     }
     guard request.action == "show_menu" else {
-        return orderedCandidates.first
+        return actionableCandidates.first
     }
-    if let showMenuCandidate = orderedCandidates.first(where: {
+    if let showMenuCandidate = actionableCandidates.first(where: {
         supportedActions(of: $0).contains(kAXShowMenuAction as String)
     }) {
         return showMenuCandidate
     }
     let allowsPressFallback = request.subroles?.contains("AXMenuExtra") == true
     guard allowsPressFallback else { return nil }
-    return orderedCandidates.first(where: {
+    return actionableCandidates.first(where: {
         supportedActions(of: $0).contains(kAXPressAction as String)
     })
 }

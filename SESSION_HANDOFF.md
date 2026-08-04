@@ -136,6 +136,17 @@
   retains AX post-action readback as authority. Targeted Delete -> confirmation
   -> Cancel passed with the profile preserved. Focused tests are green at
   22 runs / 240 assertions; full sweep remains pending.
+- Globally excluding `AXEnabled == false` fixed Delete selection but regressed
+  the first onboarding request because the only first-run button can report a
+  disabled accessibility state while still being the actionable surface. The
+  driver now prefers enabled matches whenever any exist, then falls back to the
+  matched set only when none are enabled. This keeps the enabled Delete item
+  authoritative without losing onboarding. A brand-new isolated-home Release
+  replay selected a real SaneHosts `AXButton` and read back `QUICK ACTIONS`.
+  The onboarding plan now requires role `AXButton`, preventing an unrelated
+  macOS `Show Next Tab` menu item from satisfying `Next`. Focused coverage is
+  green at 23 tests / 243 assertions; driver type-check and diff check pass.
+  One full clean 11-action sweep remains the release-evidence gate.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
