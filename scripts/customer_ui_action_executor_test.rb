@@ -74,6 +74,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes action.fetch(:readbacks).flatten, 'Privacy First'
     assert_includes action.fetch(:readbacks).flatten, '14-Day Trial'
     assert_includes action.fetch(:readbacks).flatten, "You're all set"
+    assert_equal [['14-Day Trial', "You're all set"]], action.fetch(:readbacks).fetch(5)
   end
 
   def test_fixture_uses_a_process_only_app_override_instead_of_defaults_writes

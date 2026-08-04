@@ -161,6 +161,14 @@
   / 263 assertions. Canonical Mini verification passes 120 tests with receipt
   `865f2e961661b89157b0945aa6c26ef0`; lint receipt
   `eac57d2159bb87f1d2e7403cb0cecd3f`. A clean full Release sweep remains.
+- The first deterministic-welcome sweep traversed all six `Next` pages, then
+  stopped because its final-page alternatives were encoded as two required
+  groups (`14-Day Trial` AND `You're all set`) instead of one OR group. Cleanup
+  passed with zero processes and all environment values restored. The corrected
+  nested OR contract has a regression assertion (24 tests / 264 assertions).
+  A targeted signed-Release replay then matched, in order, every welcome page,
+  `You're all set`, `Start Using SaneHosts`, and final `QUICK ACTIONS`, using
+  only real `AXButton` controls. The remaining gate is the complete sweep.
 
 ## SHIPPED: 1.1.24 direct release — execution proof refresh pending
 
