@@ -202,17 +202,35 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
             subroles: request.subroles
         )
     }
-    guard request.action == "show_menu" else {
-        return candidates.first
+    let exactCandidates = candidates.filter { element in
+        let identities = identityStrings(element)
+        return request.labels.contains { wanted in
+            identities.contains { $0.caseInsensitiveCompare(wanted) == .orderedSame }
+        }
     }
-    if let showMenuCandidate = candidates.first(where: {
+    let orderedCandidates = exactCandidates + candidates.filter { candidate in
+        !exactCandidates.contains { CFEqual($0, candidate) }
+    }
+    if request.action == "press" {
+        let pressCandidates = orderedCandidates.filter {
+            supportedActions(of: $0).contains(kAXPressAction as String)
+        }
+        let semanticRoles = ["AXButton", "AXMenuItem", "AXCheckBox", "AXRadioButton", "AXPopUpButton"]
+        return pressCandidates.first(where: {
+            semanticRoles.contains(axString($0, kAXRoleAttribute as String))
+        }) ?? pressCandidates.first ?? orderedCandidates.first
+    }
+    guard request.action == "show_menu" else {
+        return orderedCandidates.first
+    }
+    if let showMenuCandidate = orderedCandidates.first(where: {
         supportedActions(of: $0).contains(kAXShowMenuAction as String)
     }) {
         return showMenuCandidate
     }
     let allowsPressFallback = request.subroles?.contains("AXMenuExtra") == true
     guard allowsPressFallback else { return nil }
-    return candidates.first(where: {
+    return orderedCandidates.first(where: {
         supportedActions(of: $0).contains(kAXPressAction as String)
     })
 }
