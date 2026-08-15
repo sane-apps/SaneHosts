@@ -1,6 +1,15 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-14 14:40 EDT
+**Last updated:** 2026-08-14 22:53 EDT
+
+## 2026-08-14 empty Essentials
+
+Live Mini Essentials was a 0-entry stub from first launch (no bundled
+lists, local-only load, empty profile saved forever). Source now refills
+an empty Essentials from cache/network and will not persist another
+blank stub. Signed Release relaunch refilled **99,061** entries.
+Visual: `outputs/visual-audit-20260814-essentials/`. Mini verify 122
+tests, receipt `f203ce9590cfd05eb2c1d4f47157ace5`.
 
 ## 2026-08-14 1.1.25 publish attempt
 
