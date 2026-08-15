@@ -1,6 +1,13 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-04
+**Last updated:** 2026-08-14 14:40 EDT
+
+## 2026-08-14 1.1.25 publish attempt
+
+- 1.1.25 (build 1125) is on `origin/main` at `08cd61a`. Live Sparkle is still 1.1.24.
+- Did not ship. `release_preflight` failed: stale customer-UI receipt (2026-07-27 artifacts missing) and no upgrade-path proof.
+- Mini `customer_ui_action_executor.rb --execute` built and launched, then failed on onboarding: `No visible AX control matched: Next`.
+- Left the uncommitted `shouldShowExpiredTrialGate` edit uncommitted; current SaneUI pin `7f87b04` does not have that API.
 
 ## IN PROGRESS: DNS fallback + disabled close-control patch (2026-08-04)
 
