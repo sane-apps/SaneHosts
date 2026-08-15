@@ -137,6 +137,24 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates'
   end
 
+  def test_custom_url_https_warning_is_typed_into_the_labeled_field
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'preset-template-import-actions' }
+    index = action.fetch(:ax_actions).index('type_value')
+
+    refute_nil index
+    assert_equal ['Custom blocklist URL', 'custom-blocklist-url'], action.fetch(:controls).fetch(index)
+    assert_equal [['Only HTTPS URLs are supported']], action.fetch(:readbacks).fetch(index)
+    source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
+    assert_includes source, 'case "type_value":'
+    assert_includes source, 'keystroke "a" using command down'
+    catalog = File.read(File.expand_path(
+      '../SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift',
+      __dir__
+    ))
+    assert_includes catalog, 'accessibilityLabel("Custom blocklist URL")'
+    assert_includes catalog, 'accessibilityIdentifier("custom-blocklist-url")'
+  end
+
   def test_profile_lifecycle_dismisses_merge_sheet_and_targets_the_sidebar_row
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
     controls = action.fetch(:controls)

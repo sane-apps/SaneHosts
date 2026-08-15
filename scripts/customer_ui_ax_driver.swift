@@ -220,6 +220,26 @@ private func appleScriptLiteral(_ value: String) -> String {
         .replacingOccurrences(of: "\"", with: "\\\"")
 }
 
+private func typeValue(request: Request) -> AXError {
+    guard let bundleID = request.bundleID, let value = request.value else {
+        return .illegalArgument
+    }
+    let script = """
+    tell application "System Events"
+      set appProcess to first application process whose bundle identifier is "\(appleScriptLiteral(bundleID))"
+      set frontmost of appProcess to true
+      delay 0.1
+      keystroke "a" using command down
+      delay 0.05
+      keystroke "\(appleScriptLiteral(value))"
+    end tell
+    """
+    var error: NSDictionary?
+    guard let appleScript = NSAppleScript(source: script) else { return .failure }
+    appleScript.executeAndReturnError(&error)
+    return error == nil ? .success : .failure
+}
+
 private func systemClick(request: Request) -> AXError {
     guard let bundleID = request.bundleID, let label = request.labels.first else {
         return .illegalArgument
@@ -258,6 +278,13 @@ private func targetElement(for request: Request, in elements: [AXUIElement]) -> 
         axBool($0, kAXEnabledAttribute as String) != false
     }
     let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates
+    if request.action == "type_value" {
+        let textFields = actionableCandidates.filter {
+            axString($0, kAXRoleAttribute as String) == "AXTextField" ||
+                axString($0, kAXRoleAttribute as String) == "AXTextArea"
+        }
+        return textFields.first ?? actionableCandidates.first
+    }
     if request.action == "press" || request.action == "pick" || request.action == "system_click" {
         let requestedAction = request.action == "pick" ? kAXPickAction as String : kAXPressAction as String
         let actionCandidates = actionableCandidates.filter {
@@ -361,6 +388,12 @@ private func perform(_ request: Request) throws -> Response {
                 throw DriverError.actionFailed("set_value requires value")
             }
             result = AXUIElementSetAttributeValue(target, kAXValueAttribute as CFString, value as CFTypeRef)
+        case "type_value":
+            guard request.value != nil else {
+                throw DriverError.actionFailed("type_value requires value")
+            }
+            _ = AXUIElementPerformAction(target, kAXPressAction as CFString)
+            result = typeValue(request: request)
         case "scroll_vertical":
             result = setVerticalScrollPosition(from: target, rawValue: request.value)
         default:
