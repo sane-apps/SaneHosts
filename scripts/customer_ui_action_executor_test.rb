@@ -137,6 +137,14 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates'
   end
 
+  def test_entry_crud_scrolls_to_the_sidebar_profile_before_adding
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'entry-crud-search-toggle-actions' }
+    assert_equal ['PROFILES'], action.fetch(:controls).fetch(0)
+    assert_equal 'scroll_vertical', action.fetch(:ax_actions).fetch(0)
+    assert_equal [SaneHostsUIActionExecutor::FIXTURE_PROFILE_SIDEBAR], action.fetch(:controls).fetch(1)
+    assert_equal [['Add new host entry']], action.fetch(:readbacks).fetch(1)
+  end
+
   def test_custom_url_https_warning_is_typed_into_the_labeled_field
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'preset-template-import-actions' }
     index = action.fetch(:ax_actions).index('type_value')

@@ -138,8 +138,10 @@ struct MainViewGatePolicyTests {
         )
 
         #expect(layoutSource.contains(".accessibilityLabel(\"\\(preset.displayName) protection level\")"))
-        #expect(layoutSource.contains(".accessibilityAddTraits(.isButton)"))
+        #expect(layoutSource.contains(".accessibilityLabel(\"\\(profile.name), \\(profile.isActive ? \"active\" : \"inactive\"), \\(profile.entryCount) entries\")"))
+        #expect(layoutSource.components(separatedBy: ".accessibilityAddTraits(.isButton)").count - 1 >= 2)
         #expect(layoutSource.contains(".accessibilityAction {"))
+        #expect(layoutSource.contains("selectedProfileIDs = [profile.id]"))
         #expect(layoutSource.components(separatedBy: "selectedPreset = preset").count - 1 == 2)
         #expect(layoutSource.components(separatedBy: "showPresetUpsell(for: preset)").count - 1 == 3)
     }
