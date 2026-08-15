@@ -24,6 +24,7 @@ class SaneHostsUIActionExecutor
   FIXTURE_MERGED = "#{FIXTURE_PROFILE} + #{FIXTURE_DUPLICATE}"
   FIXTURE_PROFILE_SIDEBAR = "#{FIXTURE_PROFILE}, inactive, 0 entries"
   FIXTURE_HOST = 'proof.invalid'
+  FIXTURE_ENTRY_ROW = "127.0.0.1 #{FIXTURE_HOST}, enabled"
   PROCESS_EXIT_TIMEOUT = 8
   MIN_SCREENSHOT_BYTES = 10_000
 
@@ -213,10 +214,11 @@ class SaneHostsUIActionExecutor
         step('PROFILES', action: 'scroll_vertical', value: '1', expected: [FIXTURE_PROFILE]),
         step(FIXTURE_PROFILE_SIDEBAR, action: 'press', expected: ['Add new host entry']),
         step('Add new host entry', action: 'press', expected: [['Add Entry'], ['example.local']]),
-        step('example.local', action: 'set_value', value: FIXTURE_HOST, expected: [FIXTURE_HOST]),
-        step('Add Entry', action: 'press', expected: [FIXTURE_HOST]),
-        step(FIXTURE_HOST, action: 'show_menu', expected: [['Edit'], ['Duplicate'], ['Delete']]),
-        step('Duplicate', action: 'press', expected: [FIXTURE_HOST]),
+        step(['Hostname', 'add-entry-hostname', 'example.local'], action: 'type_value',
+             value: FIXTURE_HOST, expected: [FIXTURE_HOST]),
+        step('Add Entry', action: 'press', roles: 'AXButton', expected: [FIXTURE_ENTRY_ROW]),
+        step(FIXTURE_ENTRY_ROW, action: 'show_menu', expected: [['Edit'], ['Duplicate'], ['Delete']]),
+        step('Duplicate', action: 'pick', roles: 'AXMenuItem', expected: [FIXTURE_HOST]),
         step("Disable #{FIXTURE_HOST}", action: 'press', expected: ["Enable #{FIXTURE_HOST}"]),
         step('Filter entries', action: 'set_value', value: FIXTURE_HOST, expected: [FIXTURE_HOST])
       ],

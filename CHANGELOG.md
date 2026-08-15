@@ -5,8 +5,11 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.1.25] - 2026-08-04
+## [1.1.25] - 2026-08-15
 
+- Refills an empty first-run Essentials profile instead of saving a blank stub.
+- After you allow SaneHosts in Login Items once, switching profiles does not
+  ask for your password each time.
 - Fixes DNS refresh after an administrator-authorized fallback hosts write by
   keeping the cache commands inside the same privileged operation.
 - Restores the main window close control when cached license state replaces the
@@ -14,8 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Records a DNS refresh only after both cache commands complete successfully.
 - Prevents concurrent first-run loading from creating duplicate Essentials and
   Existing Entries profiles.
-- Makes protection-level rows activate correctly through VoiceOver and other
-  macOS Accessibility controls.
+- Makes protection-level rows, sidebar profiles, and host entries work with
+  VoiceOver and other macOS Accessibility controls.
 
 ## [1.1.24] - 2026-07-27
 
