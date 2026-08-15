@@ -1,6 +1,15 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-14 22:53 EDT
+**Last updated:** 2026-08-14 23:05 EDT
+
+## 2026-08-14 sticky helper writes
+
+`com.mrsane.SaneHostsHelper` is SMAppService **enabled** on the Mini.
+Writes through that helper no longer add a LocalAuthentication password
+on every activate (the helper already runs as root and checks the
+signed app). AppleScript fallback still asks if the helper is down.
+Launch opens Login Items only when status is `requiresApproval`.
+Verify: 123 tests, receipt `3dcf615fe92bf8818dd6418ed76fa45e`.
 
 ## 2026-08-14 empty Essentials
 

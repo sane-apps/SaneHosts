@@ -435,6 +435,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             return
         case .requiresApproval:
             logger.info("Helper daemon requires user approval in System Settings")
+            SMAppService.openSystemSettingsLoginItems()
             return
         default:
             break
@@ -442,6 +443,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         do {
             try daemon.register()
             logger.info("Helper daemon registered successfully")
+            if daemon.status == .requiresApproval {
+                SMAppService.openSystemSettingsLoginItems()
+            }
         } catch {
             logger.warning("Failed to register helper daemon: \(error.localizedDescription)")
         }

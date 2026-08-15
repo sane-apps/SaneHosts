@@ -29,7 +29,6 @@ public final class HostsService {
     private let hostsPath = "/etc/hosts"
     private let parser = HostsParser()
     private let helperConnection = HostsHelperConnection()
-    private let authService = AuthenticationService()
 
     public init() {}
 
@@ -114,32 +113,19 @@ public final class HostsService {
         }
     }
 
-    // MARK: - XPC Helper Path (Touch ID)
+    // MARK: - XPC Helper Path
 
-    /// Write using the privileged helper daemon with Touch ID authentication.
+    /// Write using the privileged helper daemon.
     ///
-    /// Checks that the daemon is actually running BEFORE prompting for Touch ID.
-    /// This avoids asking the user to authenticate only to discover the daemon
-    /// is unavailable and falling back to a second password dialog.
+    /// The helper already runs as root and checks the caller is signed
+    /// SaneHosts. LocalAuthentication is not repeated on this path.
     private func writeViaHelper(content: String) async throws {
-        // Verify the helper daemon is running before asking for Touch ID
+        // Verify the helper daemon is running before writing. Do not add a
+        // second password/Touch ID prompt here — the helper already runs as
+        // root and validates the signed SaneHosts caller.
         let helperAvailable = await helperConnection.isHelperRunning()
         guard helperAvailable else {
             throw HostsHelperError.connectionFailed
-        }
-
-        // Authenticate with Touch ID / biometrics
-        let authenticated = await authService.authenticate(
-            reason: "SaneHosts needs to update your hosts file"
-        )
-
-        guard authenticated else {
-            if case .cancelled = authService.lastError {
-                throw HostsServiceError.userCancelled
-            }
-            throw HostsServiceError.authenticationFailed(
-                authService.lastError?.localizedDescription ?? "Authentication failed"
-            )
         }
 
         // Send write command to privileged helper via XPC

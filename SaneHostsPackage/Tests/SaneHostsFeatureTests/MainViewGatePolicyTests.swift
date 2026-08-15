@@ -294,6 +294,15 @@ struct ProfileStoreEssentialsPolicyTests {
     }
 }
 
+@Suite("Hosts Write Auth Policy Tests")
+struct HostsWriteAuthPolicyTests {
+    @Test("Running helper does not ask for a password on every write")
+    func helperWriteDoesNotPromptAgain() {
+        #expect(HostsWriteAuthPolicy.requiresLocalAuthentication(helperRunning: true) == false)
+        #expect(HostsWriteAuthPolicy.requiresLocalAuthentication(helperRunning: false) == true)
+    }
+}
+
 @Suite("Entry Row Layout Policy Tests")
 struct EntryRowLayoutPolicyTests {
     @Test("IPv4 addresses stay on one line in the entry table")
