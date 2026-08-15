@@ -145,6 +145,16 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal [['Add new host entry']], action.fetch(:readbacks).fetch(1)
   end
 
+  def test_settings_opens_from_the_app_menu_item
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'settings-license-about-update-support' }
+    settings_index = action.fetch(:controls).index { |labels| labels.include?('Settings') }
+
+    refute_nil settings_index
+    assert_equal 'AXMenuItem', action.fetch(:roles).fetch(settings_index).first
+    assert_includes action.fetch(:readbacks).fetch(settings_index).flatten, 'General'
+    assert_includes action.fetch(:readbacks).fetch(settings_index).flatten, 'Software Updates'
+  end
+
   def test_bulk_entry_actions_leave_selection_mode_after_disable
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'bulk-entry-actions' }
     disable_index = action.fetch(:controls).index(['Disable selected entries'])
