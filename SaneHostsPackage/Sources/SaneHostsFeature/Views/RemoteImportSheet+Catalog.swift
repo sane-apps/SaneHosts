@@ -357,6 +357,7 @@ extension RemoteImportSheet {
                             Text("Only HTTPS URLs are supported.")
                                 .font(.system(size: 13, weight: .medium))
                                 .foregroundColor(.white)
+                                .accessibilityIdentifier("https-url-warning")
                         }
                     }
                 }
