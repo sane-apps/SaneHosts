@@ -67,7 +67,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'onboarding-and-tutorial-entry' }
 
     assert_equal Array.new(7, ['AXButton']), action.fetch(:roles).first(7)
-    assert_equal Array.new(6, ['Next']), action.fetch(:controls).first(6)
+    assert_equal Array.new(6, ['Next', 'welcome-next']), action.fetch(:controls).first(6)
     assert_equal ['Continue Trial', 'Start Using SaneHosts'], action.fetch(:controls).fetch(6)
     assert_includes action.fetch(:readbacks).flatten, 'One quick walkthrough.'
     assert_includes action.fetch(:readbacks).flatten, "One click, then you're protected."
