@@ -210,7 +210,8 @@ class SaneHostsUIActionExecutor
         step('Essentials', action: 'show_menu', expected: [['Activate'], ['Export']])
       ],
       'entry-crud-search-toggle-actions' => [
-        step(FIXTURE_PROFILE, action: 'press', expected: ['Add new host entry']),
+        step('PROFILES', action: 'scroll_vertical', value: '1', expected: [FIXTURE_PROFILE]),
+        step(FIXTURE_PROFILE_SIDEBAR, action: 'press', expected: ['Add new host entry']),
         step('Add new host entry', action: 'press', expected: [['Add Entry'], ['example.local']]),
         step('example.local', action: 'set_value', value: FIXTURE_HOST, expected: [FIXTURE_HOST]),
         step('Add Entry', action: 'press', expected: [FIXTURE_HOST]),

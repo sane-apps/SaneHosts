@@ -153,6 +153,11 @@ extension MainView {
                         .tag(profile.id)
                         .essentialsProfileAnchor(enabled: index == 0)
                         .accessibilityLabel("\(profile.name), \(profile.isActive ? "active" : "inactive"), \(profile.entryCount) entries")
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityAction {
+                            selectedPreset = nil
+                            selectedProfileIDs = [profile.id]
+                        }
                         .contextMenu {
                             profileContextMenu(for: profile)
                         }
