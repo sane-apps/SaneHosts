@@ -96,8 +96,10 @@ struct EntryRow: View {
         .contentShape(Rectangle())
         .background(isHovering ? Color.primary.opacity(0.03) : Color.clear)
         .onHover { isHovering = $0 }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .contain)
         .accessibilityLabel("\(entry.ipAddress) \(entry.hostnames.joined(separator: ", ")), \(entry.isEnabled ? "enabled" : "disabled")")
+        .accessibilityIdentifier("entry-row-\(entry.hostnames.first ?? "entry")")
+        .accessibilityAddTraits(.isButton)
     }
 }
 
@@ -139,6 +141,8 @@ struct AddEntrySheet: View {
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
+                        .accessibilityLabel("Hostname")
+                        .accessibilityIdentifier("add-entry-hostname")
                 }
 
                 CompactSection("Comment (optional)", icon: "text.quote", iconColor: .saneAccent) {
@@ -255,6 +259,8 @@ struct EditEntrySheet: View {
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
+                        .accessibilityLabel("Hostname")
+                        .accessibilityIdentifier("edit-entry-hostname")
                 }
 
                 CompactSection("Comment (optional)", icon: "text.quote", iconColor: .saneAccent) {

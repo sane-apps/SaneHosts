@@ -145,6 +145,27 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal [['Add new host entry']], action.fetch(:readbacks).fetch(1)
   end
 
+  def test_entry_crud_types_the_host_and_opens_the_row_menu
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'entry-crud-search-toggle-actions' }
+    row = SaneHostsUIActionExecutor::FIXTURE_ENTRY_ROW
+    type_index = action.fetch(:ax_actions).index('type_value')
+    show_index = action.fetch(:controls).index([row])
+
+    refute_nil type_index
+    refute_nil show_index
+    assert_equal ['Hostname', 'add-entry-hostname', 'example.local'], action.fetch(:controls).fetch(type_index)
+    assert_equal [[row]], action.fetch(:readbacks).fetch(type_index + 1)
+    assert_equal 'show_menu', action.fetch(:ax_actions).fetch(show_index)
+    assert_equal [['Edit'], ['Duplicate'], ['Delete']], action.fetch(:readbacks).fetch(show_index)
+    source = File.read(File.expand_path(
+      '../SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift',
+      __dir__
+    ))
+    assert_includes source, 'accessibilityIdentifier("add-entry-hostname")'
+    assert_includes source, 'accessibilityIdentifier("entry-row-\\(entry.hostnames.first ?? "entry")")'
+    assert_includes source, '.accessibilityElement(children: .contain)'
+  end
+
   def test_custom_url_https_warning_is_typed_into_the_labeled_field
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'preset-template-import-actions' }
     index = action.fetch(:ax_actions).index('type_value')

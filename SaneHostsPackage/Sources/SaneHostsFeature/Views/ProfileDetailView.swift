@@ -484,13 +484,13 @@ struct ProfileDetailView: View {
                                 toggleSelection(entry)
                             }
                         }
-                    }
-                    .background(selectedEntries.contains(entry.id) ? Color.blue.opacity(0.1) : Color.clear)
-                    .contextMenu {
-                        if !isSelectionMode {
-                            entryContextMenu(for: entry)
+                        .contextMenu {
+                            if !isSelectionMode {
+                                entryContextMenu(for: entry)
+                            }
                         }
                     }
+                    .background(selectedEntries.contains(entry.id) ? Color.blue.opacity(0.1) : Color.clear)
                     .contentShape(Rectangle())
                     .onTapGesture {
                         if isSelectionMode {
