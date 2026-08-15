@@ -280,6 +280,18 @@ struct ProfileStoreEssentialsPolicyTests {
 
         #expect(ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: [essentials]) == false)
     }
+
+    @Test("Empty Essentials stub is detected for refill")
+    func emptyEssentialsStubNeedsRefill() {
+        let empty = Profile(name: "Essentials")
+        let populated = Profile(
+            name: "Essentials",
+            entries: [HostEntry(ipAddress: "0.0.0.0", hostnames: ["ads.example"])]
+        )
+
+        #expect(ProfileStoreEssentialsPolicy.emptyEssentialsProfile(in: [empty])?.id == empty.id)
+        #expect(ProfileStoreEssentialsPolicy.emptyEssentialsProfile(in: [populated]) == nil)
+    }
 }
 
 @Suite("Entry Row Layout Policy Tests")

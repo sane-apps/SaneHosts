@@ -19,6 +19,15 @@ public enum ProfileStoreEssentialsPolicy {
     public static func needsEssentialsProfile(profiles: [Profile]) -> Bool {
         !profiles.contains { $0.name.caseInsensitiveCompare(ProfilePreset.essentials.displayName) == .orderedSame }
     }
+
+    /// First-run used to persist a zero-entry Essentials stub when bundled
+    /// lists were missing. That stub must be refilled, not treated as done.
+    public static func emptyEssentialsProfile(in profiles: [Profile]) -> Profile? {
+        profiles.first { profile in
+            profile.name.caseInsensitiveCompare(ProfilePreset.essentials.displayName) == .orderedSame
+                && profile.entryCount == 0
+        }
+    }
 }
 
 /// Manages profile storage and persistence
@@ -160,6 +169,9 @@ public final class ProfileStore {
             if ProfileStoreEssentialsPolicy.needsEssentialsProfile(profiles: profiles) {
                 logger.debug(" Essentials profile missing, creating Essentials preset...")
                 await createEssentialsProfile()
+            } else if let emptyEssentials = ProfileStoreEssentialsPolicy.emptyEssentialsProfile(in: profiles) {
+                logger.debug(" Essentials profile is empty, refilling preset lists...")
+                await refillEssentialsProfile(emptyEssentials)
             }
         } catch {
             logger.debug(" ERROR: \(error.localizedDescription)")
@@ -193,28 +205,44 @@ public final class ProfileStore {
         logger.debug("Creating Essentials preset profile...")
 
         do {
-            // First launch is local-first: use cached or bundled entries only.
-            let entries = try await PresetManager.shared.loadEntries(for: .essentials, allowNetworkFetch: false)
-            logger.debug("Loaded \(entries.count) entries for Essentials")
+            let entries = try await loadEssentialsEntries()
+            guard !entries.isEmpty else {
+                logger.debug("Skipping empty Essentials create; lists were not available")
+                return
+            }
 
             let essentialsProfile = ProfilePreset.essentials.createProfile(with: entries)
             profiles.append(essentialsProfile)
             try await save(profile: essentialsProfile)
-
             logger.debug("Essentials profile created with \(entries.count) entries")
         } catch {
             logger.debug("Failed to load Essentials preset: \(error.localizedDescription)")
-            // Fallback: create empty profile so app doesn't crash
-            let fallbackProfile = Profile(
-                name: "Essentials",
-                entries: [],
-                isActive: false,
-                colorTag: .blue
-            )
-            profiles.append(fallbackProfile)
-            try? await save(profile: fallbackProfile)
-            logger.debug("Created empty fallback Essentials profile")
         }
+    }
+
+    private func refillEssentialsProfile(_ profile: Profile) async {
+        do {
+            let entries = try await loadEssentialsEntries()
+            guard !entries.isEmpty else {
+                logger.debug("Essentials refill found no lists yet")
+                return
+            }
+            var updated = profile
+            updated.entries = entries
+            updated.colorTag = ProfilePreset.essentials.colorTag
+            try await save(profile: updated)
+            logger.debug("Refilled Essentials with \(entries.count) entries")
+        } catch {
+            logger.debug("Failed to refill Essentials: \(error.localizedDescription)")
+        }
+    }
+
+    private func loadEssentialsEntries() async throws -> [HostEntry] {
+        let local = try await PresetManager.shared.loadEntries(for: .essentials, allowNetworkFetch: false)
+        if !local.isEmpty {
+            return local
+        }
+        return try await PresetManager.shared.loadEntries(for: .essentials, allowNetworkFetch: true)
     }
 
     /// Create a profile from a preset
