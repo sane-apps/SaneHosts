@@ -24,7 +24,9 @@ class SaneHostsUIActionExecutor
   FIXTURE_MERGED = "#{FIXTURE_PROFILE} + #{FIXTURE_DUPLICATE}"
   FIXTURE_PROFILE_SIDEBAR = "#{FIXTURE_PROFILE}, inactive, 0 entries"
   FIXTURE_HOST = 'proof.invalid'
-  FIXTURE_ENTRY_ROW = "127.0.0.1 #{FIXTURE_HOST}, enabled"
+  FIXTURE_ENTRY_IP = '127.0.0.1'
+  FIXTURE_ENTRY_ROW = "#{FIXTURE_ENTRY_IP} #{FIXTURE_HOST}, enabled"
+  FIXTURE_ENTRY_ROW_DISABLED = "#{FIXTURE_ENTRY_IP} #{FIXTURE_HOST}, disabled"
   PROCESS_EXIT_TIMEOUT = 8
   MIN_SCREENSHOT_BYTES = 10_000
 
@@ -225,9 +227,12 @@ class SaneHostsUIActionExecutor
       'bulk-entry-actions' => [
         step('Enter selection mode', action: 'press', expected: [['Select all entries'], ['Done selecting']]),
         step("Select #{FIXTURE_HOST}", action: 'press', expected: ["Deselect #{FIXTURE_HOST}"]),
-        step('Disable selected entries', action: 'press', expected: ['Enable selected entries']),
-        step('Enable selected entries', action: 'press', expected: ['Disable selected entries']),
-        step('Done selecting', action: 'press', expected: [FIXTURE_HOST])
+        step('Disable selected entries', action: 'press',
+             expected: [['Enter selection mode'], [FIXTURE_ENTRY_ROW_DISABLED]]),
+        step('Enter selection mode', action: 'press', expected: ['Enable selected entries']),
+        step("Select #{FIXTURE_HOST}", action: 'press', expected: ["Deselect #{FIXTURE_HOST}"]),
+        step('Enable selected entries', action: 'press',
+             expected: [['Enter selection mode'], [FIXTURE_ENTRY_ROW]])
       ],
       'settings-license-about-update-support' => [
         step('SaneHosts', action: 'press', roles: 'AXMenuBarItem', expected: ['Settings']),

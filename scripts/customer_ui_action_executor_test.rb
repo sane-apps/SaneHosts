@@ -145,6 +145,24 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal [['Add new host entry']], action.fetch(:readbacks).fetch(1)
   end
 
+  def test_bulk_entry_actions_leave_selection_mode_after_disable
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'bulk-entry-actions' }
+    disable_index = action.fetch(:controls).index(['Disable selected entries'])
+    enable_index = action.fetch(:controls).rindex(['Enable selected entries'])
+
+    refute_nil disable_index
+    refute_nil enable_index
+    assert_operator disable_index, :<, enable_index
+    assert_equal(
+      [['Enter selection mode'], [SaneHostsUIActionExecutor::FIXTURE_ENTRY_ROW_DISABLED]],
+      action.fetch(:readbacks).fetch(disable_index)
+    )
+    assert_equal(
+      [['Enter selection mode'], [SaneHostsUIActionExecutor::FIXTURE_ENTRY_ROW]],
+      action.fetch(:readbacks).fetch(enable_index)
+    )
+  end
+
   def test_entry_crud_types_the_host_and_opens_the_row_menu
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'entry-crud-search-toggle-actions' }
     row = SaneHostsUIActionExecutor::FIXTURE_ENTRY_ROW
