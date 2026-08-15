@@ -22,6 +22,7 @@ class SaneHostsUIActionExecutor
   FIXTURE_PROFILE = 'UI Proof Profile'
   FIXTURE_DUPLICATE = "#{FIXTURE_PROFILE} 1"
   FIXTURE_MERGED = "#{FIXTURE_PROFILE} + #{FIXTURE_DUPLICATE}"
+  FIXTURE_PROFILE_SIDEBAR = "#{FIXTURE_PROFILE}, inactive, 0 entries"
   FIXTURE_HOST = 'proof.invalid'
   PROCESS_EXIT_TIMEOUT = 8
   MIN_SCREENSHOT_BYTES = 10_000
@@ -174,10 +175,11 @@ class SaneHostsUIActionExecutor
              expected: [['Create or import a second profile', 'Merge Profiles']])
       ],
       'profile-lifecycle-actions' => [
+        step('Cancel', action: 'press', expected: ['New Empty Profile']),
         step('New Empty Profile', action: 'press', expected: [['New Profile'], ['My Profile']]),
         step('My Profile', action: 'set_value', value: FIXTURE_PROFILE, expected: [FIXTURE_PROFILE]),
-        step('Create', action: 'press', expected: [FIXTURE_PROFILE]),
-        step(FIXTURE_PROFILE, action: 'show_menu', expected: [['Duplicate'], ['Export'], ['Delete']]),
+        step('Create', action: 'press', expected: [FIXTURE_PROFILE_SIDEBAR]),
+        step(FIXTURE_PROFILE_SIDEBAR, action: 'show_menu', expected: [['Duplicate'], ['Export'], ['Delete']]),
         step('Duplicate', action: 'pick', roles: 'AXMenuItem', expected: [FIXTURE_DUPLICATE]),
         step('Merge Profiles', action: 'press',
              expected: [['Merge Profiles'], ["Select #{FIXTURE_PROFILE}"], ["Deselect #{FIXTURE_DUPLICATE}"]]),
