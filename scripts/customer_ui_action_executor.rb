@@ -238,7 +238,8 @@ class SaneHostsUIActionExecutor
         step('SaneHosts', action: 'press', roles: 'AXMenuBarItem', expected: ['Settings']),
         step(['Settings', 'Settings…', 'Settings...'], action: 'press', roles: 'AXMenuItem',
              expected: [['General', 'Software Updates'], ['License'], ['About']]),
-        step('License', action: 'press', expected: [['License Key', 'Buy Full Access']]),
+        step('License', action: 'press', roles: 'AXButton',
+             expected: [['Enter License Key', 'saneui-license-enter-key', 'Buy Once', 'Not Licensed', 'Status']]),
         step('About', action: 'press', expected: [['Report a Bug'], ['Sparkle']])
       ],
       'persistence-security-and-release-surfaces' => [
