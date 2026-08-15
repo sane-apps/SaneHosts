@@ -1,6 +1,29 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-14 23:05 EDT
+**Last updated:** 2026-08-15 00:56 EDT
+
+## 2026-08-15 customer-UI sweep (1.1.25 still not published)
+
+Product and harness fixes are on local `main`, 6 commits ahead of
+`origin/main`. Do not push unless asked. Live Sparkle is still 1.1.24.
+
+Latest executed sweep: `outputs/customer-ui/sweep-20260815T044555Z/`.
+It passed onboarding, status menu, Dock/app menu, paid-access, profile
+lifecycle, preset/import (including the HTTPS custom-URL warning), and
+activation. It stopped in `entry-crud-search-toggle-actions` after the
+fixture profile was selected and a host was added: `show_menu` on
+`proof.invalid` never read back Edit / Duplicate / Delete.
+
+Sidebar profile rows now expose a button trait plus an accessibility
+action (same pattern as protection levels). The custom URL field has a
+stable label/identifier; the executor pastes `http://proof.invalid/hosts`
+and looks for `Only HTTPS URLs are supported`.
+
+Next: give the entry row the same show-menu identity the sidebar got,
+rerun `ruby scripts/customer_ui_action_executor.rb --execute`, ingest a
+green receipt, then `release_preflight`. Do not publish without a green
+full sweep and owner approval. Hide Terminal before capture; the visual
+guard fails if this TUI is visible.
 
 ## 2026-08-14 sticky helper writes
 
