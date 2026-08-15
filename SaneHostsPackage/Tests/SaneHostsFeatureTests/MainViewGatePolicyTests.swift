@@ -63,7 +63,7 @@ struct MainViewGatePolicyTests {
     func protectionCopyIsTruthful() {
         #expect(ProtectionUXCopy.turnOffActionTitle == "Turn Off Protection…")
         #expect(ProtectionUXCopy.activePersistence == "Protection stays active when SaneHosts is closed or quit.")
-        #expect(ProtectionUXCopy.authenticationRequirement == "Turning it off or switching profiles requires Touch ID or your Mac account password.")
+        #expect(ProtectionUXCopy.authenticationRequirement == "Allow SaneHosts in Login Items once. After that, switching profiles does not ask for your password each time.")
         #expect(ProtectionUXCopy.deactivationImpact == "Turning it off removes this profile’s rules while leaving standard hosts entries.")
         #expect(!ProtectionUXCopy.deactivationImpact.localizedCaseInsensitiveContains("original hosts file"))
     }
