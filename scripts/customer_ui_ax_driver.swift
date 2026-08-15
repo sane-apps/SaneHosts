@@ -270,14 +270,13 @@ private func typeValue(into element: AXUIElement, value: String) -> AXError {
     postKey(virtualKey: 0, flags: .maskCommand, down: true)
     postKey(virtualKey: 0, flags: .maskCommand, down: false)
     Thread.sleep(forTimeInterval: 0.05)
-    guard let typed = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true) else {
+    let board = NSPasteboard.general
+    board.clearContents()
+    guard board.setString(value, forType: .string) else {
         return .failure
     }
-    let units = Array(value.utf16)
-    typed.keyboardSetUnicodeString(stringLength: units.count, unicodeString: units)
-    typed.post(tap: .cghidEventTap)
-    let typedUp = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: false)
-    typedUp?.post(tap: .cghidEventTap)
+    postKey(virtualKey: 9, flags: .maskCommand, down: true)
+    postKey(virtualKey: 9, flags: .maskCommand, down: false)
     return .success
 }
 

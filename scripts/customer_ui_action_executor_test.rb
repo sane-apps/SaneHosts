@@ -143,11 +143,11 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
 
     refute_nil index
     assert_equal ['Custom blocklist URL', 'custom-blocklist-url'], action.fetch(:controls).fetch(index)
-    assert_equal [['Only HTTPS URLs are supported']], action.fetch(:readbacks).fetch(index)
+    assert_equal [['Only HTTPS URLs are supported', 'https-url-warning']], action.fetch(:readbacks).fetch(index)
     source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
     assert_includes source, 'case "type_value":'
     assert_includes source, 'func typeValue(into element: AXUIElement, value: String)'
-    assert_includes source, 'keyboardSetUnicodeString'
+    assert_includes source, 'setString(value, forType: .string)'
     catalog = File.read(File.expand_path(
       '../SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift',
       __dir__

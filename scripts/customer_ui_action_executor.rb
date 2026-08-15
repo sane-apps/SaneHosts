@@ -201,7 +201,8 @@ class SaneHostsUIActionExecutor
         step('Import Blocklist', action: 'press', expected: ['Import Blocklists']),
         step('Show custom URL input', action: 'press', expected: ['Custom URL']),
         step(['Custom blocklist URL', 'custom-blocklist-url'], action: 'type_value',
-             value: 'http://proof.invalid/hosts', expected: ['Only HTTPS URLs are supported']),
+             value: 'http://proof.invalid/hosts',
+             expected: [['Only HTTPS URLs are supported', 'https-url-warning']]),
         step('Cancel', action: 'press', expected: ['ADVANCED TOOLS'])
       ],
       'activation-deactivation-hosts-write' => [
