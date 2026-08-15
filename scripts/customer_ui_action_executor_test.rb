@@ -137,6 +137,24 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, 'let actionableCandidates = enabledCandidates.isEmpty ? orderedCandidates : enabledCandidates'
   end
 
+  def test_profile_lifecycle_dismisses_merge_sheet_and_targets_the_sidebar_row
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
+    controls = action.fetch(:controls)
+    readbacks = action.fetch(:readbacks)
+    sidebar = SaneHostsUIActionExecutor::FIXTURE_PROFILE_SIDEBAR
+
+    assert_equal ['Cancel'], controls.fetch(0)
+    assert_equal [['New Empty Profile']], readbacks.fetch(0)
+    create_index = controls.index(['Create'])
+    show_menu_index = controls.index([sidebar])
+    refute_nil create_index
+    refute_nil show_menu_index
+    assert_operator create_index, :<, show_menu_index
+    assert_equal [[sidebar]], readbacks.fetch(create_index)
+    assert_equal 'show_menu', action.fetch(:ax_actions).fetch(show_menu_index)
+    assert_equal [['Duplicate'], ['Export'], ['Delete']], readbacks.fetch(show_menu_index)
+  end
+
   def test_profile_lifecycle_preserves_the_preselected_duplicate_and_requires_the_exact_merge
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
     controls = action.fetch(:controls).flatten
