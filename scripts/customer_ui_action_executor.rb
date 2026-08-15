@@ -236,7 +236,8 @@ class SaneHostsUIActionExecutor
       ],
       'settings-license-about-update-support' => [
         step('SaneHosts', action: 'press', roles: 'AXMenuBarItem', expected: ['Settings']),
-        step('Settings', action: 'press', expected: [['General'], ['License'], ['About']]),
+        step(['Settings', 'Settings…', 'Settings...'], action: 'press', roles: 'AXMenuItem',
+             expected: [['General', 'Software Updates'], ['License'], ['About']]),
         step('License', action: 'press', expected: [['License Key', 'Buy Full Access']]),
         step('About', action: 'press', expected: [['Report a Bug'], ['Sparkle']])
       ],
