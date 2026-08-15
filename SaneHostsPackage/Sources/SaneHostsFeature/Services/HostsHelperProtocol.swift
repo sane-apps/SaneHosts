@@ -74,6 +74,16 @@ public enum HostsHelperConstants {
     public static let daemonPlistName = "com.mrsane.SaneHostsHelper.plist"
 }
 
+/// Once the privileged helper is running it already writes as root and
+/// checks that the caller is the signed SaneHosts app. Extra
+/// LocalAuthentication would ask for a password on every write on Macs
+/// without Touch ID.
+public enum HostsWriteAuthPolicy {
+    public static func requiresLocalAuthentication(helperRunning: Bool) -> Bool {
+        !helperRunning
+    }
+}
+
 // MARK: - XPC Continuation Guard
 
 /// Thread-safe one-shot flag to prevent double-resume of continuations.
