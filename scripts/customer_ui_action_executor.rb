@@ -139,13 +139,13 @@ class SaneHostsUIActionExecutor
   def build_plans
     {
       'onboarding-and-tutorial-entry' => [
-        step('Next', action: 'press', roles: 'AXButton', expected: ['One quick walkthrough.']),
-        step('Next', action: 'press', roles: 'AXButton', expected: ["One click, then you're protected."]),
-        step('Next', action: 'press', roles: 'AXButton',
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['One quick walkthrough.']),
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ["One click, then you're protected."]),
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton',
              expected: ['Try every feature for 14 days. Buy once if it works for you.']),
-        step('Next', action: 'press', roles: 'AXButton', expected: ['Our Sane Philosophy']),
-        step('Next', action: 'press', roles: 'AXButton', expected: ['Privacy First']),
-        step('Next', action: 'press', roles: 'AXButton', expected: [['14-Day Trial', "You're all set"]]),
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['Our Sane Philosophy']),
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['Privacy First']),
+        step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: [['14-Day Trial', "You're all set"]]),
         step(['Continue Trial', 'Start Using SaneHosts'], action: 'press', roles: 'AXButton',
              expected: ['QUICK ACTIONS']),
         step('Help', action: 'press', roles: 'AXMenuBarItem', expected: ['Show Tutorial']),
