@@ -147,6 +147,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
     assert_includes source, 'case "type_value":'
     assert_includes source, 'keystroke "a" using command down'
+    assert_includes source, 'No text field matched'
     catalog = File.read(File.expand_path(
       '../SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift',
       __dir__

@@ -221,17 +221,45 @@ private func appleScriptLiteral(_ value: String) -> String {
 }
 
 private func typeValue(request: Request) -> AXError {
-    guard let bundleID = request.bundleID, let value = request.value else {
+    guard let bundleID = request.bundleID, let value = request.value, let label = request.labels.first else {
         return .illegalArgument
     }
+    let wanted = request.labels.map { appleScriptLiteral($0) }
+    let labelList = wanted.map { "\"\($0)\"" }.joined(separator: ", ")
     let script = """
     tell application "System Events"
       set appProcess to first application process whose bundle identifier is "\(appleScriptLiteral(bundleID))"
       set frontmost of appProcess to true
-      delay 0.1
-      keystroke "a" using command down
-      delay 0.05
-      keystroke "\(appleScriptLiteral(value))"
+      tell appProcess
+        set wanted to {\(labelList)}
+        set target to missing value
+        repeat with tf in every text field
+          set bits to {}
+          try
+            set end of bits to description of tf
+          end try
+          try
+            set end of bits to name of tf
+          end try
+          try
+            set end of bits to value of attribute "AXIdentifier" of tf
+          end try
+          repeat with bit in bits
+            repeat with label in wanted
+              if (bit as string) is label or (bit as string) contains label then
+                set target to tf
+              end if
+            end repeat
+          end repeat
+        end repeat
+        if target is missing value then error "No text field matched \(appleScriptLiteral(label))"
+        set focused of target to true
+        click target
+        delay 0.15
+        keystroke "a" using command down
+        delay 0.05
+        keystroke "\(appleScriptLiteral(value))"
+      end tell
     end tell
     """
     var error: NSDictionary?
@@ -392,6 +420,7 @@ private func perform(_ request: Request) throws -> Response {
             guard request.value != nil else {
                 throw DriverError.actionFailed("type_value requires value")
             }
+            _ = AXUIElementSetAttributeValue(target, kAXFocusedAttribute as CFString, kCFBooleanTrue)
             _ = AXUIElementPerformAction(target, kAXPressAction as CFString)
             result = typeValue(request: request)
         case "scroll_vertical":
