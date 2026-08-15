@@ -220,52 +220,65 @@ private func appleScriptLiteral(_ value: String) -> String {
         .replacingOccurrences(of: "\"", with: "\\\"")
 }
 
-private func typeValue(request: Request) -> AXError {
-    guard let bundleID = request.bundleID, let value = request.value, let label = request.labels.first else {
-        return .illegalArgument
+private func axCGPoint(_ element: AXUIElement, _ attribute: String) -> CGPoint? {
+    var value: CFTypeRef?
+    guard AXUIElementCopyAttributeValue(element, attribute as CFString, &value) == .success,
+          let axValue = value
+    else {
+        return nil
     }
-    let wanted = request.labels.map { appleScriptLiteral($0) }
-    let labelList = wanted.map { "\"\($0)\"" }.joined(separator: ", ")
-    let script = """
-    tell application "System Events"
-      set appProcess to first application process whose bundle identifier is "\(appleScriptLiteral(bundleID))"
-      set frontmost of appProcess to true
-      tell appProcess
-        set wanted to {\(labelList)}
-        set target to missing value
-        repeat with tf in every text field
-          set bits to {}
-          try
-            set end of bits to description of tf
-          end try
-          try
-            set end of bits to name of tf
-          end try
-          try
-            set end of bits to value of attribute "AXIdentifier" of tf
-          end try
-          repeat with bit in bits
-            repeat with label in wanted
-              if (bit as string) is label or (bit as string) contains label then
-                set target to tf
-              end if
-            end repeat
-          end repeat
-        end repeat
-        if target is missing value then error "No text field matched \(appleScriptLiteral(label))"
-        set focused of target to true
-        click target
-        delay 0.15
-        keystroke "a" using command down
-        delay 0.05
-        keystroke "\(appleScriptLiteral(value))"
-      end tell
-    end tell
-    """
-    var error: NSDictionary?
-    guard let appleScript = NSAppleScript(source: script) else { return .failure }
-    appleScript.executeAndReturnError(&error)
-    return error == nil ? .success : .failure
+    var point = CGPoint.zero
+    guard AXValueGetValue(axValue as! AXValue, .cgPoint, &point) else {
+        return nil
+    }
+    return point
+}
+
+private func axCGSize(_ element: AXUIElement) -> CGSize? {
+    var value: CFTypeRef?
+    guard AXUIElementCopyAttributeValue(element, kAXSizeAttribute as CFString, &value) == .success,
+          let axValue = value
+    else {
+        return nil
+    }
+    var size = CGSize.zero
+    guard AXValueGetValue(axValue as! AXValue, .cgSize, &size) else {
+        return nil
+    }
+    return size
+}
+
+private func postKey(virtualKey: CGKeyCode, flags: CGEventFlags = [], down: Bool) {
+    let event = CGEvent(keyboardEventSource: nil, virtualKey: virtualKey, keyDown: down)
+    event?.flags = flags
+    event?.post(tap: .cghidEventTap)
+}
+
+private func typeValue(into element: AXUIElement, value: String) -> AXError {
+    guard let origin = axCGPoint(element, kAXPositionAttribute as String),
+          let size = axCGSize(element),
+          size.width > 1, size.height > 1
+    else {
+        return .cannotComplete
+    }
+    let point = CGPoint(x: origin.x + size.width / 2, y: origin.y + size.height / 2)
+    let down = CGEvent(mouseEventSource: nil, mouseType: .leftMouseDown, mouseCursorPosition: point, mouseButton: .left)
+    let up = CGEvent(mouseEventSource: nil, mouseType: .leftMouseUp, mouseCursorPosition: point, mouseButton: .left)
+    down?.post(tap: .cghidEventTap)
+    up?.post(tap: .cghidEventTap)
+    Thread.sleep(forTimeInterval: 0.15)
+    postKey(virtualKey: 0, flags: .maskCommand, down: true)
+    postKey(virtualKey: 0, flags: .maskCommand, down: false)
+    Thread.sleep(forTimeInterval: 0.05)
+    guard let typed = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: true) else {
+        return .failure
+    }
+    let units = Array(value.utf16)
+    typed.keyboardSetUnicodeString(stringLength: units.count, unicodeString: units)
+    typed.post(tap: .cghidEventTap)
+    let typedUp = CGEvent(keyboardEventSource: nil, virtualKey: 0, keyDown: false)
+    typedUp?.post(tap: .cghidEventTap)
+    return .success
 }
 
 private func systemClick(request: Request) -> AXError {
@@ -422,7 +435,7 @@ private func perform(_ request: Request) throws -> Response {
             }
             _ = AXUIElementSetAttributeValue(target, kAXFocusedAttribute as CFString, kCFBooleanTrue)
             _ = AXUIElementPerformAction(target, kAXPressAction as CFString)
-            result = typeValue(request: request)
+            result = typeValue(into: target, value: request.value ?? "")
         case "scroll_vertical":
             result = setVerticalScrollPosition(from: target, rawValue: request.value)
         default:

@@ -146,8 +146,8 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal [['Only HTTPS URLs are supported']], action.fetch(:readbacks).fetch(index)
     source = File.read(File.expand_path('customer_ui_ax_driver.swift', __dir__))
     assert_includes source, 'case "type_value":'
-    assert_includes source, 'keystroke "a" using command down'
-    assert_includes source, 'No text field matched'
+    assert_includes source, 'func typeValue(into element: AXUIElement, value: String)'
+    assert_includes source, 'keyboardSetUnicodeString'
     catalog = File.read(File.expand_path(
       '../SaneHostsPackage/Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift',
       __dir__
