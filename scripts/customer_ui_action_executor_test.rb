@@ -153,6 +153,9 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_equal 'AXMenuItem', action.fetch(:roles).fetch(settings_index).first
     assert_includes action.fetch(:readbacks).fetch(settings_index).flatten, 'General'
     assert_includes action.fetch(:readbacks).fetch(settings_index).flatten, 'Software Updates'
+    license_index = action.fetch(:controls).index(['License'])
+    refute_nil license_index
+    assert_includes action.fetch(:readbacks).fetch(license_index).flatten, 'Enter License Key'
   end
 
   def test_bulk_entry_actions_leave_selection_mode_after_disable
