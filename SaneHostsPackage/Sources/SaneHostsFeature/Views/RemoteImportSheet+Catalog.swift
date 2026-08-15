@@ -344,6 +344,8 @@ extension RemoteImportSheet {
                             .padding(8)
                             .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
                             .cornerRadius(6)
+                            .accessibilityLabel("Custom blocklist URL")
+                            .accessibilityIdentifier("custom-blocklist-url")
                     }
 
                     // HTTPS requirement
