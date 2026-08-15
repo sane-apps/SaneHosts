@@ -175,10 +175,10 @@ class SaneHostsUIActionExecutor
         step('Import Blocklist', action: 'press', expected: ['Import Blocklists']),
         step('Cancel', action: 'press', expected: ['ADVANCED TOOLS']),
         step('Merge Profiles', action: 'press',
-             expected: [['Create or import a second profile', 'Merge Profiles']])
+             expected: [['Create or import a second profile', 'Merge Profiles']]),
+        step('Cancel', action: 'press', expected: ['ADVANCED TOOLS'])
       ],
       'profile-lifecycle-actions' => [
-        step('Cancel', action: 'press', expected: ['New Empty Profile']),
         step('New Empty Profile', action: 'press', expected: [['New Profile'], ['My Profile']]),
         step('My Profile', action: 'set_value', value: FIXTURE_PROFILE, expected: [FIXTURE_PROFILE]),
         step('Create', action: 'press', expected: [FIXTURE_PROFILE_SIDEBAR]),

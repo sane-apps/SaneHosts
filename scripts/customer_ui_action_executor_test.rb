@@ -213,14 +213,19 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes catalog, 'accessibilityIdentifier("custom-blocklist-url")'
   end
 
+  def test_paid_access_closes_the_merge_sheet_before_screenshot
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'quick-actions-and-paid-access-gates' }
+    assert_equal ['Cancel'], action.fetch(:controls).last
+    assert_equal [['ADVANCED TOOLS']], action.fetch(:readbacks).last
+  end
+
   def test_profile_lifecycle_dismisses_merge_sheet_and_targets_the_sidebar_row
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'profile-lifecycle-actions' }
     controls = action.fetch(:controls)
     readbacks = action.fetch(:readbacks)
     sidebar = SaneHostsUIActionExecutor::FIXTURE_PROFILE_SIDEBAR
 
-    assert_equal ['Cancel'], controls.fetch(0)
-    assert_equal [['New Empty Profile']], readbacks.fetch(0)
+    assert_equal ['New Empty Profile'], controls.fetch(0)
     create_index = controls.index(['Create'])
     show_menu_index = controls.index([sidebar])
     refute_nil create_index
