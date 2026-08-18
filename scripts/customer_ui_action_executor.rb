@@ -168,7 +168,8 @@ class SaneHostsUIActionExecutor
              roles: 'AXDockItem', expected: [['Open SaneHosts'], ['Settings']]),
         step('File', action: 'press', roles: 'AXMenuBarItem',
              expected: [['New Profile'], ['Import Blocklist']]),
-        step('New Profile', action: 'press', expected: [['New Profile'], ['Create']]),
+        step('New Profile', action: 'press', roles: 'AXMenuItem',
+             expected: [['Profile Name'], ['Color Tag'], ['Create']]),
         step('Cancel', action: 'press', expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']])
       ],
       'quick-actions-and-paid-access-gates' => [
@@ -241,11 +242,12 @@ class SaneHostsUIActionExecutor
              expected: [['General', 'Software Updates'], ['License'], ['About']]),
         step('License', action: 'press', roles: 'AXButton',
              expected: [['Enter License Key', 'saneui-license-enter-key', 'Buy Once', 'Not Licensed', 'Status']]),
-        step('About', action: 'press', expected: [['Report a Bug'], ['Sparkle']])
+        step('About', action: 'press', expected: [['Report a Bug', 'Licenses', 'GitHub']])
       ],
       'persistence-security-and-release-surfaces' => [
         step('General', action: 'press', expected: [['Software Updates'], ['Startup']]),
-        step('Open Essentials', action: 'press', expected: [['Profile status', 'Essentials']])
+        step('License', action: 'press', roles: 'AXButton',
+             expected: [['Status', 'Licensed', 'Enter License Key', 'Buy Once']])
       ]
     }
   end
@@ -406,6 +408,7 @@ class SaneHostsUIActionExecutor
       'SANEHOSTS_CUSTOMER_UI_FIXTURE' => '1',
       'SANEHOSTS_FIXTURE_STORAGE' => @fixture_home,
       'SANEAPPS_DISABLE_KEYCHAIN' => '1',
+      'SANEAPPS_FORCE_PRO_MODE' => '1',
       'CFFIXED_USER_HOME' => @fixture_home,
       'SANEMASTER_FORCE_LOCAL' => '1'
     )
@@ -515,6 +518,11 @@ class SaneHostsUIActionExecutor
 
   def execute_ax_request!(action_id, index, request)
     ensure_app_running!(action_id)
+    if action_id == 'persistence-security-and-release-surfaces' &&
+       request.fetch(:labels).include?('Open Essentials')
+      close_front_window!
+      focus_main_workspace!
+    end
     request_path = File.join(@run_dir, format('%s-%02d-request.json', action_id, index + 1))
     write_json(request_path, {
       appName: request.fetch(:app_name), bundleID: request.fetch(:bundle_id),
@@ -531,7 +539,7 @@ class SaneHostsUIActionExecutor
   end
 
   def action_fixture_assertions!(action_id)
-    return [] unless action_id == 'profile-lifecycle-actions'
+    return [] unless %w[profile-lifecycle-actions persistence-security-and-release-surfaces].include?(action_id)
 
     [verify_merged_profile_fixture!]
   end
@@ -643,6 +651,37 @@ class SaneHostsUIActionExecutor
     raise "#{context}: workspace readback failed after relaunch" unless payload['status'] == 'passed'
   end
 
+  def close_front_window!
+    capture_with_timeout(
+      '/usr/bin/osascript',
+      '-e', 'tell application "System Events" to keystroke "w" using command down',
+      timeout: 3
+    )
+    sleep 0.4
+  rescue StandardError
+    nil
+  end
+
+  def focus_main_workspace!
+    script = <<~APPLESCRIPT
+      tell application "System Events"
+        tell process "SaneHosts"
+          set frontmost to true
+          repeat with candidate in windows
+            try
+              perform action "AXRaise" of candidate
+              if exists (static text "QUICK ACTIONS" of candidate) then return "workspace"
+            end try
+          end repeat
+        end tell
+      end tell
+    APPLESCRIPT
+    capture_with_timeout('/usr/bin/osascript', '-e', script, timeout: 4)
+    sleep 0.3
+  rescue StandardError
+    nil
+  end
+
   def dismiss_transient_ui!
     capture_with_timeout(
       '/usr/bin/osascript',
@@ -720,7 +759,7 @@ class SaneHostsUIActionExecutor
     helper = File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
     preflight = File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh')
     if owner_approved_air?
-      ['bash', '-lc', "bash #{preflight.shellescape} && python3 #{helper.shellescape} --app SaneHosts --path #{path.shellescape}"]
+      ['bash', '-lc', "bash #{preflight.shellescape} && python3 #{helper.shellescape} --app SaneHosts --active-window --path #{path.shellescape}"]
     else
       [SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', path]
     end

@@ -55,6 +55,17 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_operator bounded.length, :>=, 8
   end
 
+  def test_file_new_profile_opens_the_sheet_not_the_sidebar_copy
+    action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'dock-and-app-menu-commands' }
+    new_profile_index = action.fetch(:controls).index(['New Profile'])
+
+    refute_nil new_profile_index
+    assert_equal 'AXMenuItem', action.fetch(:roles).fetch(new_profile_index).first
+    assert_includes action.fetch(:readbacks).fetch(new_profile_index).flatten, 'Profile Name'
+    assert_includes action.fetch(:readbacks).fetch(new_profile_index).flatten, 'Color Tag'
+    refute_includes action.fetch(:readbacks).fetch(new_profile_index).flatten, 'Create a custom profile'
+  end
+
   def test_status_menu_targets_the_menu_extra_instead_of_the_application_menu
     action = @report.fetch(:actions).find { |item| item.fetch(:id) == 'menu-bar-profile-actions' }
 
@@ -84,8 +95,12 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, "system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')"
     assert_includes source, "restore_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE', @old_customer_ui_fixture)"
     assert_includes source, "'SANEHOSTS_CUSTOMER_UI_WELCOME'"
+    assert_includes source, "'SANEAPPS_FORCE_PRO_MODE'"
     assert_includes source, 'ensure_app_running!'
     assert_includes source, 'dismiss_transient_ui!'
+    assert_includes source, '--active-window'
+    assert_includes source, 'focus_main_workspace!'
+    assert_includes source, 'close_front_window!'
     refute_includes source, "'HOME' => @fixture_home"
     refute_includes source, "system!('/usr/bin/defaults', 'write'"
   end
