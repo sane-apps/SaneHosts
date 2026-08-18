@@ -17,7 +17,8 @@ public struct ContentView: View {
             }
             .onAppear {
                 windowFrame = geometry.frame(in: .global)
-                if !TutorialState.hasCompletedTutorial {
+                let isCustomerUIFixture = ProcessInfo.processInfo.environment["SANEHOSTS_CUSTOMER_UI_FIXTURE"] == "1"
+                if !TutorialState.hasCompletedTutorial, !isCustomerUIFixture {
                     tutorial.startTutorial()
                 }
             }
