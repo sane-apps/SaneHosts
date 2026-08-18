@@ -284,7 +284,7 @@ class CustomerUIActionSweep
       source: [
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct QuickActionButton'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'struct TrialCountdownCard'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'allowsUseAfterTrial(hasExpiredProTrial: Bool)'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView.swift', 'allowsUseAfterTrial(hasExpiredProTrial'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'title: "Open Essentials"'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Layout.swift', 'licenseService.proTrialDaysRemaining'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainViewComponents.swift', 'Text("Paid")'],
@@ -371,13 +371,13 @@ class CustomerUIActionSweep
     },
     'entry-crud-search-toggle-actions' => {
       source: [
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'struct AddEntrySheet'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'struct EditEntrySheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift', 'struct AddEntrySheet'],
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift', 'struct EditEntrySheet'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'searchable(text: $searchText'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'private func entryContextMenu'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'duplicateEntry(_ entry: HostEntry)'],
         ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'deleteEntry(_ entry: HostEntry)'],
-        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailView.swift', 'EntryStatusIcon(isEnabled: entry.isEnabled)']
+        ['SaneHostsPackage/Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift', 'EntryStatusIcon(isEnabled: entry.isEnabled)']
       ],
       tests: [
         ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'validIPv4'],
