@@ -151,7 +151,7 @@ class SaneHostsUIActionExecutor
         step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['Our Sane Philosophy']),
         step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['Privacy First']),
         step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: [['14-Day Trial', "You're all set"]]),
-        step(['Continue Trial', 'Start Using SaneHosts'], action: 'press', roles: 'AXButton',
+        step(['Continue Trial', 'Start Using SaneHosts', 'Get Started'], action: 'press', roles: 'AXButton',
              expected: ['QUICK ACTIONS']),
         step('Help', action: 'press', roles: 'AXMenuBarItem', expected: ['Show Tutorial']),
         step('Show Tutorial', action: 'press', expected: [['Next step', 'Skip tutorial']]),
