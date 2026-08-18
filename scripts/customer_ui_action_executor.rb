@@ -610,12 +610,12 @@ class SaneHostsUIActionExecutor
   def focus_sanehosts_gui!
     return if owner_approved_air?
 
-    system(
-      MINI_GUI_RUNNER,
+    command = [
       '/usr/bin/osascript',
       '-e', 'tell application "System Events" to set visible of process "Brave Browser" to false',
       '-e', 'tell application "SaneHosts" to activate'
-    )
+    ].shelljoin
+    system(MINI_GUI_RUNNER, '--', command)
     sleep 0.5
   end
 
