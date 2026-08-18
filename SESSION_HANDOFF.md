@@ -4,11 +4,13 @@
 
 ## 2026-08-18 release finish
 
-Shipping 1.1.25 from origin plus the customer-UI fixture harness:
-isolated ProfileStore storage, fixture Welcome as window content with
-`autoDismissOnPro: false`. Do not fold uncommitted SaneUI keychain or
-window-sync work into this version. Live Sparkle is still 1.1.24 until
-one green Mini 11-action executor run.
+Shipping 1.1.25. Live Sparkle is still 1.1.24.
+
+Farthest Mini executor: `outputs/customer-ui/sweep-20260818T175021Z/`
+passed onboarding, menu-bar, and dock (3 of 11). Failed on the next
+screenshot because Brave was frontmost. Do not publish until one green
+11-action run. Do not fold uncommitted SaneUI keychain/window-sync into
+this version.
 
 
 

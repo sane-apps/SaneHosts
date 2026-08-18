@@ -607,6 +607,18 @@ class SaneHostsUIActionExecutor
     raise "Canonical screenshot route is incomplete: #{missing.join(', ')}" unless missing.empty?
   end
 
+  def focus_sanehosts_gui!
+    return if owner_approved_air?
+
+    system(
+      MINI_GUI_RUNNER,
+      '/usr/bin/osascript',
+      '-e', 'tell application "System Events" to set visible of process "Brave Browser" to false',
+      '-e', 'tell application "SaneHosts" to activate'
+    )
+    sleep 0.5
+  end
+
   def screenshot_command(path)
     helper = File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
     preflight = File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh')
@@ -618,8 +630,7 @@ class SaneHostsUIActionExecutor
   end
 
   def capture_screenshot!(path)
-    system('osascript', '-e', 'tell application "SaneHosts" to activate')
-    sleep 0.4
+    focus_sanehosts_gui!
     out, err, status = Open3.capture3(*screenshot_command(path))
     $stdout.write(out)
     $stderr.write(err)
