@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.1.25] - 2026-08-15
 
+- Fits the first-run Welcome window to its canvas so the card is not
+  sitting inside leftover workspace chrome.
 - Refills an empty first-run Essentials profile instead of saving a blank stub.
 - After you allow SaneHosts in Login Items once, switching profiles does not
   ask for your password each time.

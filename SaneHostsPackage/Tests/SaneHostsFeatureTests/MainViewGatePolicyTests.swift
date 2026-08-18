@@ -103,6 +103,7 @@ struct MainViewGatePolicyTests {
         #expect(appSource.contains("autoDismissOnPro: false"))
         #expect(appSource.contains(".sheet(isPresented: welcomeGatePresentation)"))
         #expect(appSource.contains("isCustomerUIFixture ? true : !hideDockIcon"))
+        #expect(appSource.contains(".saneWindowContentSize(CGSize(width: 900, height: 650), hugging: false)"))
         #expect(!executorSource.contains("system!('/usr/bin/defaults', 'write'"))
     }
 

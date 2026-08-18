@@ -1,10 +1,17 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-18 15:10 EDT
+**Last updated:** 2026-08-18 15:45 EDT
+
+## 2026-08-18 Welcome hug verified on Air
+
+SaneUI `cc66702` hugs Welcome to 700x552. Air screenshots:
+`outputs/visual-audit-20260818-welcome-hug/`. Gradient fills chrome.
+Fixture last-page button is `Continue`. Do not fold SaneUI keychain
+changes into this pin.
 
 ## 2026-08-18 release finish
 
-Shipping 1.1.25. Live Sparkle is still 1.1.24. Click live is still 1.3.2.
+Shipping 1.1.25 from the Air. Live Sparkle is still 1.1.24. Click live is still 1.3.2.
 
 Farthest Mini executor: `outputs/customer-ui/sweep-20260818T182510Z/`
 completed 7/11, then `SaneHosts is not running` on
