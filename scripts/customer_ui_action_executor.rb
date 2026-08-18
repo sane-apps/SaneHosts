@@ -311,6 +311,8 @@ class SaneHostsUIActionExecutor
     @old_fixture_storage = capture_launchctl_env('SANEHOSTS_FIXTURE_STORAGE')
     @old_process_fixed_home = ENV['CFFIXED_USER_HOME']
     ENV['CFFIXED_USER_HOME'] = @fixture_home
+    ENV['SANEHOSTS_CUSTOMER_UI_FIXTURE'] = '1'
+    ENV['SANEHOSTS_FIXTURE_STORAGE'] = @fixture_home
     system!('launchctl', 'setenv', 'CFFIXED_USER_HOME', @fixture_home)
     system!('launchctl', 'setenv', 'SANEAPPS_DISABLE_KEYCHAIN', '1')
     system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')
@@ -350,11 +352,11 @@ class SaneHostsUIActionExecutor
 
     launch_error = nil
     begin
-      if owner_approved_air?
-        launch_app_air!
-      else
+      unless owner_approved_air?
         system!('./scripts/SaneMaster.rb', 'test_mode', '--release', '--no-logs', chdir: ROOT)
+        terminate_hosts_processes!
       end
+      launch_app_with_fixture!
     rescue StandardError => e
       launch_error = e
     end
@@ -379,7 +381,22 @@ class SaneHostsUIActionExecutor
     raise 'Live log was not attached before launch' unless @log_started_at
   end
 
-  def launch_app_air!
+  def terminate_hosts_processes!
+    process_pids('SaneHosts').each do |pid|
+      Process.kill('TERM', pid)
+    rescue Errno::ESRCH
+      next
+    end
+    deadline = Time.now + PROCESS_EXIT_TIMEOUT
+    sleep 0.2 until process_pids('SaneHosts').empty? || Time.now >= deadline
+    process_pids('SaneHosts').each do |pid|
+      Process.kill('KILL', pid)
+    rescue Errno::ESRCH
+      next
+    end
+  end
+
+  def launch_app_with_fixture!
     raise 'Air fixture home missing' if @fixture_home.nil? || @fixture_home.empty?
     raise "SaneHosts executable missing: #{APP_EXECUTABLE}" unless File.executable?(APP_EXECUTABLE)
 
@@ -568,6 +585,8 @@ class SaneHostsUIActionExecutor
     else
       ENV.delete('CFFIXED_USER_HOME')
     end
+    ENV.delete('SANEHOSTS_CUSTOMER_UI_FIXTURE')
+    ENV.delete('SANEHOSTS_FIXTURE_STORAGE')
   end
 
   def validate_screenshot_route!
