@@ -519,7 +519,7 @@ class SaneHostsUIActionExecutor
   end
 
   def verify_merged_profile_fixture!(timeout: 12)
-    profiles_directory = File.join(@fixture_home, 'Library', 'Application Support', 'SaneHosts', 'Profiles')
+    profiles_directory = File.join(@fixture_home, 'Profiles')
     deadline = Time.now + timeout
     loop do
       profiles = Dir.glob(File.join(profiles_directory, '*.json')).filter_map do |path|
