@@ -152,16 +152,16 @@ class SaneHostsUIActionExecutor
         step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: ['Privacy First']),
         step(['Next', 'welcome-next'], action: 'press', roles: 'AXButton', expected: [['14-Day Trial', "You're all set"]]),
         step(['Continue Trial', 'Start Using SaneHosts', 'Get Started'], action: 'press', roles: 'AXButton',
-             expected: ['QUICK ACTIONS']),
+             expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']]),
         step('Help', action: 'press', roles: 'AXMenuBarItem', expected: ['Show Tutorial']),
         step('Show Tutorial', action: 'press', expected: [['Next step', 'Skip tutorial']]),
         step('Next step', action: 'press', expected: ['Finish tutorial']),
-        step('Finish tutorial', action: 'press', expected: ['QUICK ACTIONS'])
+        step('Finish tutorial', action: 'press', expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']])
       ],
       'menu-bar-profile-actions' => [
         step(%w[network status\ menu], action: 'show_menu', roles: 'AXMenuBarItem', subroles: 'AXMenuExtra',
              expected: [['Open SaneHosts'], ['Quit SaneHosts']]),
-        step('Open SaneHosts', action: 'press', expected: ['QUICK ACTIONS'])
+        step('Open SaneHosts', action: 'press', expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']])
       ],
       'dock-and-app-menu-commands' => [
         step('SaneHosts', action: 'show_menu', app_name: 'Dock', bundle_id: 'com.apple.dock',
@@ -169,7 +169,7 @@ class SaneHostsUIActionExecutor
         step('File', action: 'press', roles: 'AXMenuBarItem',
              expected: [['New Profile'], ['Import Blocklist']]),
         step('New Profile', action: 'press', expected: [['New Profile'], ['Create']]),
-        step('Cancel', action: 'press', expected: ['QUICK ACTIONS'])
+        step('Cancel', action: 'press', expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']])
       ],
       'quick-actions-and-paid-access-gates' => [
         step('Open Essentials', action: 'press', expected: ['Essentials']),
