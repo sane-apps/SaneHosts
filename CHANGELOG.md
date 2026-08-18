@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fits the first-run Welcome window to its canvas so the card is not
   sitting inside leftover workspace chrome.
+- Keeps every feature available for 14 days, then turns protection off
+  and asks to buy once. There is no free forever mode.
 - Refills an empty first-run Essentials profile instead of saving a blank stub.
 - After you allow SaneHosts in Login Items once, switching profiles does not
   ask for your password each time.

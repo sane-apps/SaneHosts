@@ -50,6 +50,24 @@ struct MainViewGatePolicyTests {
 
         #expect(appSource.contains("Task { await store.activateProfile(profile) }"))
         #expect(appSource.contains("if licenseService.hasExpiredProTrial {\n                            WindowActionStorage.shared.showMainWindow(using: openWindow)\n                        } else {\n                            Task { await store.activateProfile(profile) }\n                        }"))
+        #expect(appSource.contains("Protection is off. Buy once to turn it back on."))
+        #expect(appSource.contains("TrialExpiryProtection.deactivateIfNeeded"))
+    }
+
+    @Test("Expired trial deactivation skips the customer-UI fixture and requires an active profile")
+    func expiredTrialDeactivationSkipsFixture() throws {
+        let testURL = URL(fileURLWithPath: #filePath)
+        let packageRoot = testURL
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let source = try String(
+            contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/TrialExpiryProtection.swift")
+        )
+
+        #expect(source.contains("SANEHOSTS_CUSTOMER_UI_FIXTURE"))
+        #expect(source.contains("hasExpiredProTrial"))
+        #expect(source.contains("deactivateProfile()"))
     }
 
     @Test("Trial countdown copy is short and tactful")

@@ -93,7 +93,7 @@ struct TrialCountdownCard: View {
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.white)
 
-            Text("Buy once to keep using all features after the trial.")
+            Text("Buy once before the trial ends or SaneHosts stops.")
                 .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.white)
 

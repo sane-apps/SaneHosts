@@ -241,8 +241,18 @@ struct SaneHostsApp: App {
                     )
                     .preferredColorScheme(.dark)
                 } else if licenseService.hasExpiredProTrial {
-                    LicenseGateView(licenseService: licenseService, appIcon: "network.badge.shield.half.filled")
-                        .preferredColorScheme(.dark)
+                    LicenseGateView(
+                        licenseService: licenseService,
+                        appIcon: "network.badge.shield.half.filled",
+                        expiredDetail: "Protection is off. Buy once to turn it back on."
+                    )
+                    .preferredColorScheme(.dark)
+                    .task {
+                        await TrialExpiryProtection.deactivateIfNeeded(
+                            licenseService: licenseService,
+                            store: ProfileStore.shared
+                        )
+                    }
                 } else {
                     ContentView(licenseService: licenseService)
                         .modifier(SettingsLauncher())
