@@ -68,7 +68,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
 
     assert_equal Array.new(7, ['AXButton']), action.fetch(:roles).first(7)
     assert_equal Array.new(6, ['Next', 'welcome-next']), action.fetch(:controls).first(6)
-    assert_equal ['Continue Trial', 'Start Using SaneHosts'], action.fetch(:controls).fetch(6)
+    assert_equal ['Continue Trial', 'Start Using SaneHosts', 'Get Started'], action.fetch(:controls).fetch(6)
     assert_includes action.fetch(:readbacks).flatten, 'One quick walkthrough.'
     assert_includes action.fetch(:readbacks).flatten, "One click, then you're protected."
     assert_includes action.fetch(:readbacks).flatten, 'Privacy First'
@@ -83,6 +83,10 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
     assert_includes source, "capture_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE')"
     assert_includes source, "system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')"
     assert_includes source, "restore_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE', @old_customer_ui_fixture)"
+    assert_includes source, "'SANEHOSTS_CUSTOMER_UI_WELCOME'"
+    assert_includes source, 'ensure_app_running!'
+    assert_includes source, 'dismiss_transient_ui!'
+    refute_includes source, "'HOME' => @fixture_home"
     refute_includes source, "system!('/usr/bin/defaults', 'write'"
   end
 
@@ -254,7 +258,7 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
 
   def test_profile_lifecycle_requires_exact_two_source_merged_fixture
     Dir.mktmpdir do |fixture_home|
-      profiles_directory = File.join(fixture_home, 'Library', 'Application Support', 'SaneHosts', 'Profiles')
+      profiles_directory = File.join(fixture_home, 'Profiles')
       FileUtils.mkdir_p(profiles_directory)
       payload = {
         name: SaneHostsUIActionExecutor::FIXTURE_MERGED,
@@ -305,8 +309,17 @@ class SaneHostsUIActionExecutorTest < Minitest::Test
 
     assert_includes source, 'set frontmost of candidateProcess to true'
     assert_includes source, 'bundle identifier is "#{APP_BUNDLE_ID}"'
-    assert_includes source, "step([], action: 'read', expected: expected)"
+    assert_includes source, 'flexible_screenshot_expected(expected)'
     assert_includes source, "capture_with_timeout('/usr/bin/osascript'"
+  end
+
+  def test_screenshot_readback_accepts_workspace_after_a_relaunch
+    expected = @executor.send(:flexible_screenshot_expected, [['Activate'], ['Export']])
+
+    assert_includes expected.first, 'Activate'
+    assert_includes expected.first, 'QUICK ACTIONS'
+    assert_includes expected.last, 'Export'
+    assert_includes expected.last, 'Essentials'
   end
 
   def test_bounded_frontmost_command_returns_output_and_terminates_hangs

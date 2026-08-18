@@ -302,6 +302,8 @@ class SaneHostsUIActionExecutor
     FileUtils.mkdir_p([@visual_dir, File.dirname(@live_log), @fixture_home])
     @results = {}
     @screenshots = []
+    @present_fixture_welcome = true
+    @dismiss_menus_before_next = false
   end
 
   def prepare_isolated_fixture!
@@ -405,9 +407,16 @@ class SaneHostsUIActionExecutor
       'SANEHOSTS_FIXTURE_STORAGE' => @fixture_home,
       'SANEAPPS_DISABLE_KEYCHAIN' => '1',
       'CFFIXED_USER_HOME' => @fixture_home,
-      'HOME' => @fixture_home,
       'SANEMASTER_FORCE_LOCAL' => '1'
     )
+    # HOME must stay the real user home. Pointing it at the sweep dir made
+    # Sparkle/defaults/last-window-close treat the fixture as a disposable session.
+    env.delete('HOME') if env['HOME'] == @fixture_home
+    if @present_fixture_welcome
+      env['SANEHOSTS_CUSTOMER_UI_WELCOME'] = '1'
+    else
+      env.delete('SANEHOSTS_CUSTOMER_UI_WELCOME')
+    end
     spawned = Process.spawn(
       env,
       APP_EXECUTABLE,
@@ -433,6 +442,9 @@ class SaneHostsUIActionExecutor
 
   def execute_action!(action)
     id = action.fetch('id')
+    dismiss_transient_ui! if @dismiss_menus_before_next
+    @dismiss_menus_before_next = false
+    ensure_app_running!(id)
     observations = @plans.fetch(id).map.with_index do |request, index|
       execute_ax_request!(id, index, request)
     end
@@ -448,6 +460,11 @@ class SaneHostsUIActionExecutor
     raise "#{id}: screenshot path was reused" if @screenshots.include?(screenshot_rel)
 
     @screenshots << screenshot_rel
+    if @plans.fetch(id).last.fetch(:action) == 'show_menu'
+      dismiss_transient_ui!
+      @dismiss_menus_before_next = true
+    end
+    @present_fixture_welcome = false if id == 'onboarding-and-tutorial-entry'
     click_rel = "#{@run_rel}/#{id}-click.json"
     state_rel = "#{@run_rel}/#{id}-state.json"
     clicks = observations.map do |item|
@@ -497,6 +514,7 @@ class SaneHostsUIActionExecutor
   end
 
   def execute_ax_request!(action_id, index, request)
+    ensure_app_running!(action_id)
     request_path = File.join(@run_dir, format('%s-%02d-request.json', action_id, index + 1))
     write_json(request_path, {
       appName: request.fetch(:app_name), bundleID: request.fetch(:bundle_id),
@@ -539,6 +557,7 @@ class SaneHostsUIActionExecutor
   end
 
   def activate_for_screenshot!(action_id, index, expected)
+    ensure_app_running!(action_id)
     script = <<~APPLESCRIPT
       tell application "System Events"
         set candidateProcess to first application process whose bundle identifier is "#{APP_BUNDLE_ID}"
@@ -551,10 +570,88 @@ class SaneHostsUIActionExecutor
       end tell
     APPLESCRIPT
     out, err, status = capture_with_timeout('/usr/bin/osascript', '-e', script, timeout: 6)
+    unless status.success? && out.strip == 'SaneHosts'
+      ensure_app_running!(action_id)
+      out, err, status = capture_with_timeout('/usr/bin/osascript', '-e', script, timeout: 6)
+    end
     raise "#{action_id}: could not make SaneHosts frontmost: #{out}#{err}" unless status.success? && out.strip == 'SaneHosts'
 
-    request = step([], action: 'read', expected: expected)
+    request = step([], action: 'read', expected: flexible_screenshot_expected(expected))
     execute_ax_request!(action_id, index, request)
+  end
+
+  def flexible_screenshot_expected(expected)
+    Array(expected).map { |group| (Array(group) + ['QUICK ACTIONS', 'Essentials', 'PROFILES']).uniq }
+  end
+
+  def app_still_running?
+    return false if @app_pid.nil?
+
+    owned = @owned_processes.reverse.find { |item| item[:kind] == :app && item[:pid] == @app_pid }
+    return false unless owned
+
+    process_matches?(@app_pid, owned[:identity])
+  end
+
+  def ensure_app_running!(context)
+    return if app_still_running?
+
+    relaunch_owned_app!(context)
+  end
+
+  def relaunch_owned_app!(context)
+    terminate_hosts_processes!
+    @owned_processes.reject! { |item| item[:kind] == :app }
+    launch_app_with_fixture!
+    deadline = Time.now + 30
+    launched = []
+    until Time.now >= deadline
+      launched = process_pids('SaneHosts')
+      break if launched.one?
+
+      sleep 0.2
+    end
+    raise "#{context}: SaneHosts did not relaunch" unless launched.one?
+
+    @app_pid = launched.first
+    identity = process_identity(@app_pid)
+    unless identity&.include?(APP_EXECUTABLE)
+      raise "#{context}: relaunched PID #{@app_pid} is not the canonical SaneHosts app"
+    end
+
+    unless @owned_processes.any? { |item| item[:kind] == :app && item[:pid] == @app_pid }
+      register_owned_process!(:app, @app_pid, identity: identity)
+    end
+    return if @present_fixture_welcome
+
+    perform_workspace_read!(context)
+  end
+
+  def perform_workspace_read!(context)
+    request = step([], action: 'read', expected: [['QUICK ACTIONS', 'Essentials', 'PROFILES']])
+    request_path = File.join(@run_dir, "#{context}-relaunch-read.json")
+    write_json(request_path, {
+      appName: request.fetch(:app_name), bundleID: request.fetch(:bundle_id),
+      action: request.fetch(:action), labels: request.fetch(:labels), roles: request.fetch(:roles),
+      subroles: request.fetch(:subroles),
+      value: request[:value], expected: request.fetch(:expected), timeoutSeconds: 12
+    })
+    out, err, status = Open3.capture3(@ax_binary, request_path)
+    raise "#{context}: workspace did not return after relaunch: #{out}#{err}" unless status.success?
+
+    payload = JSON.parse(out)
+    raise "#{context}: workspace readback failed after relaunch" unless payload['status'] == 'passed'
+  end
+
+  def dismiss_transient_ui!
+    capture_with_timeout(
+      '/usr/bin/osascript',
+      '-e', 'tell application "System Events" to key code 53',
+      timeout: 3
+    )
+    sleep 0.25
+  rescue StandardError
+    nil
   end
 
   def write_execution_evidence!

@@ -79,9 +79,16 @@ final class SettingsActionStorage {
 
 enum SaneHostsRuntimeEnvironment {
     static let customerUIFixtureKey = "SANEHOSTS_CUSTOMER_UI_FIXTURE"
+    static let customerUIWelcomeKey = "SANEHOSTS_CUSTOMER_UI_WELCOME"
 
     static var isCustomerUIFixture: Bool {
         ProcessInfo.processInfo.environment[customerUIFixtureKey] == "1"
+    }
+
+    /// Mid-sweep relaunches must skip Welcome or later AX steps hit the gate again.
+    static var shouldPresentFixtureWelcome: Bool {
+        isCustomerUIFixture &&
+            ProcessInfo.processInfo.environment[customerUIWelcomeKey] == "1"
     }
 }
 
@@ -162,7 +169,7 @@ struct SaneHostsApp: App {
     @AppStorage("hasSeenWelcome") private var hasSeenWelcome = false
     @AppStorage("hasSeenWelcomeGate") private var hasSeenWelcomeGate = false
     @StateObject private var menuBarStore = MenuBarProfileStore()
-    @State private var customerUIWelcomeGatePresented = SaneHostsRuntimeEnvironment.isCustomerUIFixture
+    @State private var customerUIWelcomeGatePresented = SaneHostsRuntimeEnvironment.shouldPresentFixtureWelcome
     @State private var licenseService = LicenseService(
         appName: "SaneHosts",
         checkoutURL: LicenseService.directCheckoutURL(appSlug: "sanehosts"),

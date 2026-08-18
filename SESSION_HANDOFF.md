@@ -1,16 +1,20 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-18 13:10 EDT
+**Last updated:** 2026-08-18 15:10 EDT
 
 ## 2026-08-18 release finish
 
-Shipping 1.1.25. Live Sparkle is still 1.1.24.
+Shipping 1.1.25. Live Sparkle is still 1.1.24. Click live is still 1.3.2.
 
-Farthest Mini executor: `outputs/customer-ui/sweep-20260818T175021Z/`
-passed onboarding, menu-bar, and dock (3 of 11). Failed on the next
-screenshot because Brave was frontmost. Do not publish until one green
-11-action run. Do not fold uncommitted SaneUI keychain/window-sync into
-this version.
+Farthest Mini executor: `outputs/customer-ui/sweep-20260818T182510Z/`
+completed 7/11, then `SaneHosts is not running` on
+`entry-crud-search-toggle-actions` after the activation context menu
+was left open. Keep-alive now: skip fixture Welcome on relaunch
+(`SANEHOSTS_CUSTOMER_UI_WELCOME`), relaunch if the app dies, Escape
+leftover menus, and do not set `HOME` to the fixture dir.
+
+Do not publish until one green 11-action run. Do not fold uncommitted
+SaneUI keychain/window-sync into this version.
 
 
 
