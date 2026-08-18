@@ -248,6 +248,7 @@ struct SaneHostsApp: App {
                         .modifier(SettingsLauncher())
                         .modifier(SettingsActionCapture())
                         .modifier(WindowActionCapture())
+                        .saneWindowContentSize(CGSize(width: 900, height: 650), hugging: false)
                         .onAppear {
                             // LicenseGateView locks the close control asynchronously.
                             // Restore it after normal content wins the next main-loop turn.
