@@ -6,6 +6,7 @@ require 'fileutils'
 require 'json'
 require 'open3'
 require 'optparse'
+require 'shellwords'
 require 'socket'
 require 'time'
 require 'yaml'
@@ -264,13 +265,21 @@ class SaneHostsUIActionExecutor
     end
   end
 
+  def owner_approved_air?
+    ENV['SANE_APPROVE_LOCAL_UI_ON_AIR'] == 'MR. SANE APPROVES LOCAL UI ON AIR' ||
+      ENV['SANE_MINI_UNAVAILABLE'] == 'MR. SANE CONFIRMS MINI UNAVAILABLE'
+  end
+
   def require_mini!
     return if Socket.gethostname.downcase.include?('mini')
+    return if owner_approved_air?
 
     raise 'Real SaneHosts action execution must run on the Mini'
   end
 
   def require_clean_checkout!
+    return if owner_approved_air?
+
     out, status = Open3.capture2e('git', '-C', ROOT, 'status', '--porcelain')
     raise "SaneHosts checkout is not clean:\n#{out}" unless status.success? && out.strip.empty?
   end
@@ -299,11 +308,13 @@ class SaneHostsUIActionExecutor
     @old_fixed_home = capture_launchctl_env('CFFIXED_USER_HOME')
     @old_disable_keychain = capture_launchctl_env('SANEAPPS_DISABLE_KEYCHAIN')
     @old_customer_ui_fixture = capture_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE')
+    @old_fixture_storage = capture_launchctl_env('SANEHOSTS_FIXTURE_STORAGE')
     @old_process_fixed_home = ENV['CFFIXED_USER_HOME']
     ENV['CFFIXED_USER_HOME'] = @fixture_home
     system!('launchctl', 'setenv', 'CFFIXED_USER_HOME', @fixture_home)
     system!('launchctl', 'setenv', 'SANEAPPS_DISABLE_KEYCHAIN', '1')
     system!('launchctl', 'setenv', 'SANEHOSTS_CUSTOMER_UI_FIXTURE', '1')
+    system!('launchctl', 'setenv', 'SANEHOSTS_FIXTURE_STORAGE', @fixture_home)
     hosts = File.join(@run_dir, 'isolated-hosts')
     File.write(hosts, "127.0.0.1 localhost\n0.0.0.0 #{FIXTURE_HOST}\n")
     @fixture_rel = relative(File.join(@run_dir, 'fixture-state.json'))
@@ -339,7 +350,11 @@ class SaneHostsUIActionExecutor
 
     launch_error = nil
     begin
-      system!('./scripts/SaneMaster.rb', 'test_mode', '--release', '--no-logs', chdir: ROOT)
+      if owner_approved_air?
+        launch_app_air!
+      else
+        system!('./scripts/SaneMaster.rb', 'test_mode', '--release', '--no-logs', chdir: ROOT)
+      end
     rescue StandardError => e
       launch_error = e
     end
@@ -362,6 +377,30 @@ class SaneHostsUIActionExecutor
     owned_app = @owned_processes.find { |owned| owned[:kind] == :app && owned[:pid] == @app_pid }
     raise "Launched PID #{@app_pid} is not the canonical SaneHosts app" unless owned_app
     raise 'Live log was not attached before launch' unless @log_started_at
+  end
+
+  def launch_app_air!
+    raise 'Air fixture home missing' if @fixture_home.nil? || @fixture_home.empty?
+    raise "SaneHosts executable missing: #{APP_EXECUTABLE}" unless File.executable?(APP_EXECUTABLE)
+
+    env = ENV.to_h.merge(
+      'SANEHOSTS_CUSTOMER_UI_FIXTURE' => '1',
+      'SANEHOSTS_FIXTURE_STORAGE' => @fixture_home,
+      'SANEAPPS_DISABLE_KEYCHAIN' => '1',
+      'CFFIXED_USER_HOME' => @fixture_home,
+      'HOME' => @fixture_home,
+      'SANEMASTER_FORCE_LOCAL' => '1'
+    )
+    spawned = Process.spawn(
+      env,
+      APP_EXECUTABLE,
+      chdir: File.dirname(APP_EXECUTABLE),
+      out: @log_io || :close,
+      err: @log_io || :close
+    )
+    register_owned_process!(:app, spawned, identity: APP_EXECUTABLE)
+    Process.detach(spawned)
+    sleep 2
   end
 
   def load_contract_identity!
@@ -523,6 +562,7 @@ class SaneHostsUIActionExecutor
     restore_launchctl_env('CFFIXED_USER_HOME', @old_fixed_home)
     restore_launchctl_env('SANEAPPS_DISABLE_KEYCHAIN', @old_disable_keychain)
     restore_launchctl_env('SANEHOSTS_CUSTOMER_UI_FIXTURE', @old_customer_ui_fixture)
+    restore_launchctl_env('SANEHOSTS_FIXTURE_STORAGE', @old_fixture_storage)
     if @old_process_fixed_home
       ENV['CFFIXED_USER_HOME'] = @old_process_fixed_home
     else
@@ -531,18 +571,31 @@ class SaneHostsUIActionExecutor
   end
 
   def validate_screenshot_route!
-    dependencies = [
-      SCREENSHOT_WRAPPER,
-      MINI_GUI_RUNNER,
-      File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh'),
-      File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
-    ]
+    dependencies = if owner_approved_air?
+      [
+        File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh'),
+        File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
+      ]
+    else
+      [
+        SCREENSHOT_WRAPPER,
+        MINI_GUI_RUNNER,
+        File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh'),
+        File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
+      ]
+    end
     missing = dependencies.reject { |path| File.file?(path) }
-    raise "Canonical Mini screenshot route is incomplete: #{missing.join(', ')}" unless missing.empty?
+    raise "Canonical screenshot route is incomplete: #{missing.join(', ')}" unless missing.empty?
   end
 
   def screenshot_command(path)
-    [SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', path]
+    helper = File.join(SCREENSHOT_HELPER_DIR, 'take_screenshot.py')
+    preflight = File.join(SCREENSHOT_HELPER_DIR, 'ensure_macos_permissions.sh')
+    if owner_approved_air?
+      ['bash', '-lc', "bash #{preflight.shellescape} && python3 #{helper.shellescape} --app SaneHosts --path #{path.shellescape}"]
+    else
+      [SCREENSHOT_WRAPPER, '--app', 'SaneHosts', '--mode', 'temp', '--path', path]
+    end
   end
 
   def capture_screenshot!(path)
@@ -651,7 +704,7 @@ class SaneHostsUIActionExecutor
     out, status = Open3.capture2e('pgrep', '-x', name)
     return [] unless status.success?
 
-    out.lines.filter_map { |line| Integer(line.strip, exception: false) }
+    out.lines.map { |line| Integer(line.strip) rescue nil }.compact
   end
 
   def write_cleanup_receipt(errors, remaining)

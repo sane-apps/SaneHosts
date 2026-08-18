@@ -209,7 +209,31 @@ struct SaneHostsApp: App {
     var body: some Scene {
         WindowGroup(id: "main") {
             Group {
-                if licenseService.hasExpiredProTrial {
+                if SaneHostsRuntimeEnvironment.isCustomerUIFixture, customerUIWelcomeGatePresented {
+                    WelcomeGateView(
+                        appName: "SaneHosts",
+                        appIcon: "network.badge.shield.half.filled",
+                        freeFeatures: [
+                            ("shield.fill", "1 Essentials profile"),
+                            ("plus.circle", "Add/edit/delete host entries"),
+                            ("arrow.triangle.2.circlepath", "Toggle entries on/off"),
+                            ("network", "DNS cache flush")
+                        ],
+                        proFeatures: [
+                            ("checkmark", "Use all features for 14 days"),
+                            ("doc.on.doc", "Unlimited profiles"),
+                            ("arrow.down.circle", "Downloadable presets"),
+                            ("arrow.triangle.merge", "Merge profiles"),
+                            ("checklist", "Bulk enable/disable"),
+                            ("square.and.arrow.down", "Import from file/URL"),
+                            ("plus.square.on.square", "Duplicate profiles")
+                        ],
+                        licenseService: licenseService,
+                        autoDismissOnPro: false,
+                        onComplete: { customerUIWelcomeGatePresented = false }
+                    )
+                    .preferredColorScheme(.dark)
+                } else if licenseService.hasExpiredProTrial {
                     LicenseGateView(licenseService: licenseService, appIcon: "network.badge.shield.half.filled")
                         .preferredColorScheme(.dark)
                 } else {

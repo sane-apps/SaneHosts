@@ -1,6 +1,37 @@
 # Session Handoff — SaneHosts
 
-**Last updated:** 2026-08-15 02:26 EDT
+**Last updated:** 2026-08-18 13:10 EDT
+
+## 2026-08-18 release finish
+
+Shipping 1.1.25 from origin plus the customer-UI fixture harness:
+isolated ProfileStore storage, fixture Welcome as window content with
+`autoDismissOnPro: false`. Do not fold uncommitted SaneUI keychain or
+window-sync work into this version. Live Sparkle is still 1.1.24 until
+one green Mini 11-action executor run.
+
+
+
+## 2026-08-18 Welcome window size
+
+Owner rejected the Air fixture Welcome: gray workspace chrome around a
+smaller gradient card. Shared SaneUI now hugs the Welcome/license window
+to its canvas. Hosts uses `SaneHostsWindowLayoutPolicy` (workspace
+900x650, Welcome from `WelcomeGateLayoutPolicy`) and releases the hug
+when `ContentView` appears.
+
+Visual proof (Air, 2026-08-18): window 700x552, gradient fills chrome.
+AX Next worked on pages 1-3. Receipt:
+`outputs/visual-audit-20260818-welcome-size/`.
+
+## 2026-08-18 00:10 — Air publish attempt, 2am job cancelled
+
+Owner approved Air visual/release. 2am Grok task archived.
+1.1.25 still not published. Air customer-UI cannot show Welcome: fixture
+env/HOME isolation still loads the real 244K Family Safe workspace.
+See `~/SaneApps/outputs/release-2am-2026-08-18-result.md`.
+
+## 2026-08-15 02:26 EDT
 
 ## 2026-08-15 customer-UI sweep (1.1.25 still not published)
 

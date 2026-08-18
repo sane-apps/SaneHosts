@@ -98,6 +98,7 @@ struct MainViewGatePolicyTests {
 
         #expect(appSource.contains("static let customerUIFixtureKey = \"SANEHOSTS_CUSTOMER_UI_FIXTURE\""))
         #expect(appSource.contains("@State private var customerUIWelcomeGatePresented"))
+        #expect(appSource.contains("autoDismissOnPro: false"))
         #expect(appSource.contains(".sheet(isPresented: welcomeGatePresentation)"))
         #expect(appSource.contains("isCustomerUIFixture ? true : !hideDockIcon"))
         #expect(!executorSource.contains("system!('/usr/bin/defaults', 'write'"))

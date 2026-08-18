@@ -305,3 +305,16 @@ private struct StorageFixture {
         try? fileManager.removeItem(at: rootURL)
     }
 }
+
+struct ProfileStoreFixtureIsolationTests {
+    @Test("Customer-UI fixture env redirects storage off the real Application Support tree")
+    func fixtureEnvSelectsExplicitStorageRoot() {
+        let root = URL(fileURLWithPath: "/tmp/sanehosts-fixture-proof", isDirectory: true)
+        let resolved = ProfileStore.fixtureStorageRoot(environment: [
+            "SANEHOSTS_CUSTOMER_UI_FIXTURE": "1",
+            "SANEHOSTS_FIXTURE_STORAGE": root.path
+        ])
+        #expect(resolved?.standardizedFileURL.path == root.standardizedFileURL.path)
+        #expect(ProfileStore.fixtureStorageRoot(environment: [:]) == nil)
+    }
+}
