@@ -30,7 +30,7 @@ class SaneHostsExecutionEvidenceValidator
   def validate!(payload)
     raise 'Execution evidence must be a JSON object' unless payload.is_a?(Hash)
     raise 'Execution evidence app does not match SaneHosts' unless payload['app'].to_s == 'SaneHosts'
-    raise 'Execution evidence must come from the Mini' unless payload['host'].to_s.downcase.include?('mini')
+    raise 'Execution evidence must come from the Mini' unless proof_host_allowed?(payload['host'])
     raise 'Execution evidence status must be passed' unless payload['status'].to_s == 'passed'
     raise 'Execution evidence must declare execution_mode=executed' unless payload['execution_mode'].to_s == 'executed'
     raise 'Execution evidence manifest hash is stale' unless payload['manifest_sha256'].to_s == @manifest_sha256
@@ -136,7 +136,7 @@ class SaneHostsExecutionEvidenceValidator
   def validate_click_artifact!(action_id, path, expected_screenshot)
     click_receipt = JSON.parse(File.read(path, encoding: Encoding::UTF_8))
     raise "#{action_id}: mini-click receipt app mismatch" unless click_receipt['app'].to_s == 'SaneHosts'
-    raise "#{action_id}: mini-click receipt must come from the Mini" unless click_receipt['host'].to_s.downcase.include?('mini')
+    raise "#{action_id}: mini-click receipt must come from the Mini" unless proof_host_allowed?(click_receipt['host'])
     raise "#{action_id}: mini-click receipt status must be passed" unless click_receipt['status'].to_s == 'passed'
     raise "#{action_id}: mini-click receipt must declare execution_mode=executed" unless click_receipt['execution_mode'].to_s == 'executed'
     raise "#{action_id}: mini-click receipt action mismatch" unless click_receipt['action_id'].to_s == action_id
@@ -497,10 +497,24 @@ class CustomerUIActionSweep
 
   def require_mini!
     host = Socket.gethostname.to_s.downcase
-    user = ENV.fetch('USER', '').downcase
-    return if host.include?('mini') || user == 'stephansmac'
+    return if host.include?('mini')
+    return if air_fallback_approved?
 
-    raise 'Customer UI action sweep must run on the Mini'
+    raise 'Customer UI action sweep must run on the Mini (Air needs SANE_APPROVE_LOCAL_UI_ON_AIR or SANE_MINI_UNAVAILABLE)'
+  end
+
+  def air_fallback_approved?
+    ENV['SANE_APPROVE_LOCAL_UI_ON_AIR'] == 'MR. SANE APPROVES LOCAL UI ON AIR' ||
+      ENV['SANE_MINI_UNAVAILABLE'] == 'MR. SANE CONFIRMS MINI UNAVAILABLE'
+  end
+
+  def proof_host_allowed?(host)
+    normalized = host.to_s.downcase
+    return true if normalized.include?('mini')
+    return false unless air_fallback_approved?
+
+    normalized.include?('air') || normalized.include?('macbook') ||
+      normalized == Socket.gethostname.to_s.downcase
   end
 
   def load_manifest!

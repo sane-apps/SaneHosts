@@ -37,7 +37,25 @@ public final class ProfileStore {
     // MARK: - Shared Instance
 
     /// Shared instance for app-wide access
-    public static let shared = ProfileStore()
+    public static let shared: ProfileStore = {
+        if let root = fixtureStorageRoot() {
+            return ProfileStore(storageRootURL: root, systemHostsURL: URL(fileURLWithPath: "/etc/hosts"))
+        }
+        return ProfileStore()
+    }()
+
+    /// Customer-UI fixture must not read the real Application Support tree.
+    /// macOS 26 ignores HOME / CFFIXED_USER_HOME for FileManager user-domain URLs.
+    nonisolated static func fixtureStorageRoot(
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> URL? {
+        guard environment["SANEHOSTS_CUSTOMER_UI_FIXTURE"] == "1" else { return nil }
+        if let path = environment["SANEHOSTS_FIXTURE_STORAGE"]?.trimmingCharacters(in: .whitespacesAndNewlines),
+           !path.isEmpty {
+            return URL(fileURLWithPath: path, isDirectory: true)
+        }
+        return FileManager.default.temporaryDirectory.appendingPathComponent("sanehosts-customer-ui", isDirectory: true)
+    }
 
     /// Posts notification when data changes (for ObservableObject bridges)
     private func notifyChange() {
