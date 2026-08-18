@@ -618,6 +618,8 @@ class SaneHostsUIActionExecutor
   end
 
   def capture_screenshot!(path)
+    system('osascript', '-e', 'tell application "SaneHosts" to activate')
+    sleep 0.4
     out, err, status = Open3.capture3(*screenshot_command(path))
     $stdout.write(out)
     $stderr.write(err)
