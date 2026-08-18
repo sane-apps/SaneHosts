@@ -97,6 +97,8 @@ struct MainViewGatePolicyTests {
         let executorSource = try String(contentsOf: appRoot.appendingPathComponent("scripts/customer_ui_action_executor.rb"))
 
         #expect(appSource.contains("static let customerUIFixtureKey = \"SANEHOSTS_CUSTOMER_UI_FIXTURE\""))
+        #expect(appSource.contains("static let customerUIWelcomeKey = \"SANEHOSTS_CUSTOMER_UI_WELCOME\""))
+        #expect(appSource.contains("shouldPresentFixtureWelcome"))
         #expect(appSource.contains("@State private var customerUIWelcomeGatePresented"))
         #expect(appSource.contains("autoDismissOnPro: false"))
         #expect(appSource.contains(".sheet(isPresented: welcomeGatePresentation)"))
