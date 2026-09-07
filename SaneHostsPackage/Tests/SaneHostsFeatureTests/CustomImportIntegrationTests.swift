@@ -13,7 +13,9 @@ final class CustomImportIntegrationTests: XCTestCase {
         127.0.0.1   tracker.io  analytics.io
         """
 
-        let temporaryDirectory = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true)
+        let temporaryDirectory = FileManager.default.temporaryDirectory
+            .appendingPathComponent("SaneHosts-ImportTest-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: temporaryDirectory, withIntermediateDirectories: true)
         let fixtureURL = temporaryDirectory.appendingPathComponent("custom-hosts-test")
             .appendingPathExtension("txt")
         try fixtureText
@@ -21,7 +23,7 @@ final class CustomImportIntegrationTests: XCTestCase {
             .write(to: fixtureURL, atomically: true, encoding: .utf8)
 
         defer {
-            try? FileManager.default.removeItem(at: fixtureURL)
+            try? FileManager.default.removeItem(at: temporaryDirectory)
         }
 
         let service = RemoteSyncService(session: .shared)
@@ -36,10 +38,12 @@ final class CustomImportIntegrationTests: XCTestCase {
         XCTAssertTrue(hostnames.contains("analytics.io"))
 
         // Test saving to ProfileStore
-        let store = ProfileStore()
+        let store = ProfileStore(storageRootURL: temporaryDirectory, systemHostsURL: fixtureURL)
         let profileName = "Test Custom Import \(UUID().uuidString)"
         let profile = try await store.createRemote(name: profileName, url: fixtureURL, entries: result.entries)
 
+        let profileURL = temporaryDirectory.appendingPathComponent("Profiles/\(profile.id.uuidString).json")
+        XCTAssertTrue(FileManager.default.fileExists(atPath: profileURL.path), "Imported profile must stay in isolated storage")
         XCTAssertEqual(profile.name, profileName)
         XCTAssertEqual(profile.entries.count, 3)
         if case let .remote(sourceUrl, _) = profile.source {
@@ -50,6 +54,11 @@ final class CustomImportIntegrationTests: XCTestCase {
 
         // Cleanup profile
         try await store.delete(profile: profile)
+        XCTAssertFalse(FileManager.default.fileExists(atPath: profileURL.path))
+        let backups = try FileManager.default.contentsOfDirectory(
+            at: temporaryDirectory.appendingPathComponent("Backups"), includingPropertiesForKeys: nil
+        )
+        XCTAssertEqual(backups.count, 1, "Deletion backup must stay in isolated storage")
     }
 
     @MainActor
