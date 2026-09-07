@@ -412,13 +412,13 @@ public final class ProfileStore {
     }
 
     /// Create a new profile
-    public func create(name: String, from template: ProfileTemplate? = nil) async throws -> Profile {
+    public func create(name: String, from template: ProfileTemplate? = nil, colorTag: ProfileColor? = nil) async throws -> Profile {
         let safeName = try sanitizedName(name)
         let profile = Profile(
             name: safeName,
             entries: template?.entries ?? [],
             isActive: false,
-            colorTag: template?.colorTag ?? .gray,
+            colorTag: colorTag ?? template?.colorTag ?? .gray,
             sortOrder: nextSortOrder
         )
 

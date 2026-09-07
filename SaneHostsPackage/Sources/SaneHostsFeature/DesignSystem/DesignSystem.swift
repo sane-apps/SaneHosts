@@ -227,22 +227,9 @@ struct ProfileColorDot: View {
 
     var body: some View {
         Circle()
-            .fill(swiftUIColor)
+            .fill(color.uiColor)
             .frame(width: 10, height: 10)
             .accessibilityLabel("\(color.rawValue) color tag")
-    }
-
-    private var swiftUIColor: Color {
-        switch color {
-        case .gray: return .gray
-        case .red: return .red
-        case .orange: return .orange
-        case .yellow: return .yellow
-        case .green: return .green
-        case .blue: return .blue
-        case .purple: return .purple
-        case .pink: return .pink
-        }
     }
 }
 
@@ -415,21 +402,21 @@ public extension ProfileColor {
     var uiColor: Color {
         switch self {
         case .gray:
-            return .white
+            return .gray
         case .red:
-            return .saneError
+            return .red
         case .orange:
-            return .saneWarning
+            return .orange
         case .yellow:
             return .yellow
         case .green:
-            return .saneSuccess
+            return .green
         case .blue:
-            return .saneAccent
+            return .blue
         case .purple:
-            return .indigo
+            return .purple
         case .pink:
-            return .mint
+            return .pink
         }
     }
 }
