@@ -8,6 +8,37 @@ struct ProfileStoreLargeProfileTests {
     private static let alternateProfileID = UUID(uuidString: "BDB7C9C8-10EF-4072-AE89-937C68F1EC95")!
     private static let baselineProfileID = UUID(uuidString: "F84F947E-1DD8-4F82-AC87-B9557C68A032")!
 
+    @Test("New profile color survives save and reload", arguments: ProfileColor.allCases)
+    @MainActor
+    func createdProfileRetainsSelectedColor(color: ProfileColor) async throws {
+        let fixture = try StorageFixture()
+        defer { fixture.remove() }
+        let store = fixture.makeStore()
+        let created = try await store.create(name: "Color choice", colorTag: color)
+        #expect(created.colorTag == color)
+        let persisted = try JSONDecoder().decode(Profile.self, from: Data(contentsOf: fixture.profileURL(for: created.id)))
+        #expect(persisted.colorTag == color)
+
+        let reloaded = fixture.makeStore()
+        await reloaded.load()
+        #expect(reloaded.profiles.first(where: { $0.id == created.id })?.colorTag == color)
+        #expect(try String(contentsOf: fixture.systemHostsURL, encoding: .utf8) == "127.0.0.1 localhost\n::1 localhost\n")
+    }
+
+    @Test("Profile creation preserves default and template colors without an explicit choice")
+    @MainActor
+    func createdProfilePreservesDefaultColors() async throws {
+        let fixture = try StorageFixture()
+        defer { fixture.remove() }
+        let store = fixture.makeStore()
+        let plain = try await store.create(name: "Plain")
+        #expect(plain.colorTag == .gray)
+        for template in ProfileTemplate.allCases {
+            let profile = try await store.create(name: template.name, from: template)
+            #expect(profile.colorTag == template.colorTag)
+        }
+    }
+
     @Test("Concurrent loads share one first-run initialization")
     @MainActor
     func concurrentLoadsShareOneFirstRunInitialization() async throws {

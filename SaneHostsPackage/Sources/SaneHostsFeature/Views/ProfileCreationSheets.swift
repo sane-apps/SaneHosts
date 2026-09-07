@@ -71,7 +71,7 @@ struct NewProfileSheet: View {
 
                 Button("Create") {
                     Task {
-                        if let profile = try? await store.create(name: name) {
+                        if let profile = try? await store.create(name: name, colorTag: selectedColor) {
                             onCreated(profile)
                             dismiss()
                         }

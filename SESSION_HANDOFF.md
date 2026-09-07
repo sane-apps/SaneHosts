@@ -1,5 +1,13 @@
 # Session Handoff — SaneHosts
 
+## 2026-09-07 — Profile color selection fixed and verified
+
+- Actual UI reproduced blue selection saving gray: NewProfileSheet discarded selectedColor. Existing create now accepts optional colorTag, passed from the dialog; default/template callers retain their colors. Picker and ProfileColorDot now share the existing palette with native named colors; pink is pink rather than mint. No storage schema change.
+- Canonical package127 tests passed; eight matched ProfileStore suite tests include all eight color arguments surviving returned value, JSON save and reload, plus default/template colors. Workflowe4b1e3b621acfef62680a93f71030137. First method-selector receipt failed matching because parameter signature was omitted; extracted xcresult proved tests passed and corrected suite rerun is green.
+- Rebuilt signed app: real pink selection/Create saved pink, normal Quit/relaunch retained the pink tag. Real delete Cancel preserved the profile; confirmed Delete removed both temporary profiles. Original two owner profiles and /etc/hosts match baseline. No activation/deactivation or OS permission change. Final runtime567fe91f2700fc043c9c8c86f4abf86c stopped08:52:07Z/app_exited.
+- Evidence outputs/customer-ui/portfolio-20260907/profile-color-proof.json includes hashes, before/after JSON, AX/click receipts, stopped live logs and six clean inspected screenshots04:33:10,04:34:56,04:44:00,04:47:01,04:48:44,04:51:36. Scope is English and the existing paid offline-grace license. Local1.1.25/1125 only; bump before any public release.
+- Full eleven-action workflow remains open: entry CRUD/search/invalid input/bulk work, rename/duplicate/import/export, entitlement states, activation isolation and remaining settings routes. The legacy executor remains blocked. First AgentMemory bug-save timed out after300s; stable Mini livez stayed healthy. Final resolved-status save pending its tool result.
+
 ## 2026-09-07 — Legacy customer workflow evidence revoked
 
 - Confirmed executor defect: activation only opens a context menu; entry plan omits edit/delete/invalid input; bulk omits delete; persistence only opens General/License. The writer nevertheless copied all manifest steps, expected outputs and required proof level into passed results. Fixture launch also forces Pro and compiles a fresh AX helper; no isolated HostsService target connection has been proven.
