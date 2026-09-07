@@ -77,6 +77,8 @@ class SaneHostsUIActionExecutor
   def run
     return puts(JSON.pretty_generate(plan_report)) unless @execute
 
+    raise 'Incomplete workflow coverage: this executor copies manifest claims without completing profile/entry CRUD, entitlement states, or isolated hosts writes; it cannot produce release evidence.'
+
     require_mini!
     require_clean_checkout!
     refuse_competing_gui!

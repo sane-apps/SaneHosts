@@ -1,5 +1,35 @@
 # Session Handoff — SaneHosts
 
+## 2026-09-07 — Legacy customer workflow evidence revoked
+
+- Confirmed executor defect: activation only opens a context menu; entry plan omits edit/delete/invalid input; bulk omits delete; persistence only opens General/License. The writer nevertheless copied all manifest steps, expected outputs and required proof level into passed results. Fixture launch also forces Pro and compiles a fresh AX helper; no isolated HostsService target connection has been proven.
+- Execution now fails closed before host checks, fixture writes, helper compilation or GUI setup. Read-only --plan still returns all11 actions. Shared release consumer rejects legacy SaneHosts/SaneClick executor receipts, including pre-existing receipts. This is containment, not completed eleven-action coverage. Independent scoped settings/profile proof above remains valid.
+- Mini regression:9/12 before (three expected failures),12/12 after. Logs infra/SaneProcess/outputs/portfolio-review-20260906/hosts-executor-before.log and hosts-executor-after.log. No app launched, no permission or system hosts changes. Full honest workflow runner/proof remains required before release.
+
+## 2026-09-06 21:40 ET SaneHosts settings and profile proof
+
+- SaneHosts shared60176f3 settings General, paid License and About top/bottom are visually inspected at720x600. Profile readability fix removes repeated Login Items instructions from the active summary and attaches them to both protection action buttons; remaining explanation is13pt and wraps. Actual rebuilt profile900x702 inspected21:29:11; active action AXHelp contains the intended setup instructions. No protection action clicked.
+- Final canonical package monitor3af462f0698806827ebb6134a1b4432b passed125/125, selected18 MainViewGatePolicyTests, with continuous log capture. Signed native workflow3c01e9eada956616815e8e415b1ad372 logged before launch and ended by normal Quit01:37:35.039557Z/app_exited. Source/test changes match Air/Mini; four shared-pin files match exactly and package-lock originHash stays host-specific. System hosts hash matches baseline6a3d6fabff8d8a510a11a2d9364aac6e9cde15c6794fe93b7c95e7efa3718056.
+- Five-image scoped receipt on both hosts: infra/SaneProcess/outputs/portfolio-review-20260906/hosts-settings-visual/settings-visual-verification.json. Startup log confirmed helper already enabled and paid license valid; no new authorization or permission mutation. Earlier launchctl/sfltool uncertainty is superseded for this actual enabled-helper startup.
+- No Hosts test app/log remains. This is local modified1.1.25/1125, not a public release; bump before publishing. Full eleven-action workflow remains open. Portfolio goal remains active; next native lane is SaneClick, then remaining app/iPad and process/release gaps in this handoff. No retry of quota-blocked agents.
+
+## 2026-09-06 21:10 ET shared UI update prepared and tested
+
+- Five scoped files now select SaneUI60176f3 on Air and Mini: Package.swift, three Package.resolved files and NavigationSourceTests.swift. Existing No spying literal guard was obsolete after the reviewed website copy; it now checks No personal-content upload. Unrelated website work preserved. Backups/manifests: infra/SaneProcess/outputs/portfolio-review-20260906/hosts-settings-visual. Package.resolved originHash remains host-specific; dependency pins match.
+- Canonical package monitor workflow97fa1ae9c76f322c60145ccb39631837 passed125/125, including six selected NavigationSourceTests. Receipt outputs/monitor-tests/20260907T010306.515057Z-79784-3309e5ce/receipt.json. This supersedes the old123-test No spying failure below. No dedicated unified-log stream accompanied this package run; do not call it full live GUI proof.
+- Signed native launch is pending through canonical GUI wrapper; log hosts-settings-visual/signed-launch.log. Actual settings/main/license UI is still unverified on this revision. No public release.
+- Helper preflight: launchctl did not find system/com.mrsane.SaneHostsHelper. Read-only sfltool dumpbtm required administrator authorization and stopped(-60007); no elevation/retry/permission changes. Desktop21:01:10 showed no OS prompt. Exact SMAppService approval status remains unknown; startup registerHelperDaemon may open Login Items. Inspect before further actions and keep any required native approval visible.
+
+## 2026-09-06 package lockfile correction (focused test passed; package blocker)
+
+- Reconciled SaneHostsPackage/Package.resolved from stale SaneUI 6101a747 to 387e291, matching Package.swift and both existing Xcode/workspace lockfiles. The stale revision removed the expired gate's close control; the selected revision keeps it closable.
+- No package upgrade beyond the app's existing pin, shared source changes, or changes to dirty website files.
+- Canonical package monitor resolved the intended 387e291 and ran 123 tests. Selected normalWorkspaceRestoresMainWindowCloseControl passed in 0.121s; overall run failed one unrelated NavigationSourceTests.swift:74 assertion requiring literal "No spying" in current docs/site copy. Existing dirty website files and test remain unchanged; package suite is NOT green.
+- Receipt: outputs/monitor-tests/20260906T064734.905781Z-40312-a47e14e5/receipt.json; test result/log beside it. Workflow receipt 5ec5b48bcddacbc7e4e63733ce66ab95. Live log attached before tests: outputs/trial-close/20260906T064734Z-hosts-package-live.log.
+- No SaneHosts app launched; after suite no Sync/Hosts/xctest/xcodebuild process remained, and owner's SaneClip PID31120 was preserved. No clean visual proof claimed.
+- Next: resolve the unrelated copy-contract mismatch with its existing owner, and capture clean expired-gate close and Quit runtime proof when the GUI is usable.
+
+
 **Last updated:** 2026-08-18 15:45 EDT
 
 ## 2026-08-18 Welcome hug verified on Air
