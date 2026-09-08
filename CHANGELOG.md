@@ -5,6 +5,10 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.26] - 2026-09-08
+
+- Keeps a paid unlock in place after an update, so you do not have to enter your license key again.
+
 ## [1.1.25] - 2026-08-15
 
 - Fits the first-run Welcome window to its canvas so the card is not
