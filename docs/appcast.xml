@@ -5,7 +5,27 @@
     <link>https://sanehosts.com/appcast.xml</link>
     <description>Most recent changes with links to updates.</description>
     <language>en</language>
-                                        <item>
+                                                <item>
+            <title>1.1.26</title>
+            <link>https://sanehosts.com/download</link>
+            <pubDate>Wed, 09 Sep 2026 11:30:48 -0400</pubDate>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <description>
+                <![CDATA[
+                <h2>What's New</h2>
+                <ul>
+                <li>Keeps a paid unlock in place after an update, so you do not have to enter your license key again.</li>
+                </ul>
+                ]]>
+            </description>
+            <enclosure url="https://dist.sanehosts.com/updates/SaneHosts-1.1.26.zip"
+                       sparkle:version="1126"
+                       sparkle:shortVersionString="1.1.26"
+                       length="5019236"
+                       type="application/octet-stream"
+                       sparkle:edSignature="d/7R+iDrk5UpmxzaPXOsTbrnHUZlUBSc24VIlZ/wL7OjwC7HqpYGARfigVKTO6lXsurtG9VLEsCxGO03mzjSCw=="/>
+        </item>
+<item>
             <title>1.1.25</title>
             <link>https://sanehosts.com/download</link>
             <pubDate>Tue, 18 Aug 2026 17:24:06 -0400</pubDate>
