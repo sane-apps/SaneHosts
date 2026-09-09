@@ -26,9 +26,10 @@ actions:
   - MainView selection policy tests
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
+  - log
   historical_failure_classes:
   - duplicate_or_stale_menu_item
   - menu_entry_missing
@@ -47,7 +48,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Launch the release-like app on the Mini.
   - Verify the welcome gate explains the 14-day trial and one-time purchase.
@@ -82,7 +83,7 @@ actions:
   - Safe-surface blocker notes for admin and external flows
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
   - log
@@ -104,7 +105,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Open the SaneHosts menu bar extra on the Mini.
   - Verify active and inactive states render.
@@ -137,7 +138,7 @@ actions:
   - Safe-surface blocker notes for update/deactivation completion
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
   - log
@@ -159,7 +160,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Open the Dock menu and app commands from the Mini.
   - Exercise Open SaneHosts, New Profile, Import Blocklist, Show Tutorial, Settings,
@@ -196,9 +197,10 @@ actions:
   - App Store screenshot proof of primary surfaces
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
+  - log
   historical_failure_classes:
   - data_loss_or_unexpected_mutation
   - persistence_or_relaunch_reset
@@ -212,7 +214,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Verify Enable Protection or Turn Off Protection appears for the selected profile.
   - Verify active-trial users can use all features and see the trial countdown.
@@ -249,7 +251,7 @@ actions:
   - Safe-surface blocker note for filesystem export destination
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
   - log
@@ -272,7 +274,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Create a new profile from the sheet.
   - Duplicate and merge representative profiles in an isolated store fixture.
@@ -309,9 +311,10 @@ actions:
   - Safe-surface blocker note for external network completion
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
+  - log
   historical_failure_classes:
   - data_loss_or_unexpected_mutation
   - layout_visual_regression
@@ -326,7 +329,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Select each preset and verify the Add/download surface.
   - Open Create from Template and verify all template rows.
@@ -362,9 +365,10 @@ actions:
   - Safe-surface blocker note for admin auth and /etc/hosts mutation
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
+  - log
   historical_failure_classes:
   - context_menu_extension_missing
   - duplicate_or_stale_menu_item
@@ -380,7 +384,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Verify every activation/deactivation control reaches HostsService or MenuBarProfileStore.
   - Validate generated hosts content through isolated tests.
@@ -415,7 +419,7 @@ actions:
   - Parser, model, and generation tests
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
   - log
@@ -437,7 +441,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Add a valid hosts entry in an isolated profile fixture.
   - Edit IP, hostnames, and comment.
@@ -467,9 +471,11 @@ actions:
   - Safe-surface blocker note for destructive delete outside isolated fixtures
   required_proof_level: fixture_completion
   required_evidence_types:
+  - mini_runtime
   - screenshot
   - fixture
   - state_receipt
+  - log
   historical_failure_classes:
   - install_update_packaging
   - data_loss_or_unexpected_mutation
@@ -483,7 +489,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Enter selection mode with paid access or trigger the purchase gate when unpaid.
   - Select and deselect entries.
@@ -517,8 +523,10 @@ actions:
   - Safe-surface blocker notes for update and support sends
   required_proof_level: safe_first_surface
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
+  - fixture
+  - log
   historical_failure_classes:
   - duplicate_or_stale_menu_item
   - menu_entry_missing
@@ -537,7 +545,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Open Settings, License, and About from every customer access point.
   - Verify startup, login item, Dock icon, update controls, license, licenses list,
@@ -572,7 +580,7 @@ actions:
   - Safe-surface blocker note for privileged writes
   required_proof_level: full_runtime_completion
   required_evidence_types:
-  - mini_click
+  - mini_runtime
   - screenshot
   - fixture
   - log
@@ -591,7 +599,7 @@ actions:
     - Use an isolated temporary hosts file on the Mini.
     - Seed domain rows and backup files before import/export/reset/recovery actions.
     fixture_paths:
-    - Tests/Fixtures/customer-ui/hosts-workspace/
+    - outputs/customer-ui/portfolio-20260907/
   user_inputs:
   - Verify profile files, backups, and generated hosts content use safe validation.
   - Verify helper fallback validates content before any privileged copy.
