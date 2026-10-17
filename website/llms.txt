@@ -32,6 +32,7 @@
 - Home: https://sanehosts.com/
 - Hosts file managers compared (SaneHosts, Gas Mask, SwitchHosts, Terminal): https://sanehosts.com/mac-hosts-file-manager-compared.html
 - Gas Mask alternative: https://sanehosts.com/gas-mask-alternative.html
+- AdGuard for Mac vs SaneHosts: https://sanehosts.com/adguard-alternative-mac.html
 - Block ads system-wide on Mac (methods compared): https://sanehosts.com/how-to-block-ads-on-mac.html
 - Block ads without an app (Steven Black hosts in Terminal): https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html
 - Edit the hosts file on Mac: https://sanehosts.com/how-to-edit-hosts-file-mac.html
