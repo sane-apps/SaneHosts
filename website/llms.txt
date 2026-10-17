@@ -1,0 +1,41 @@
+# SaneHosts
+
+> SaneHosts is a Mac app that blocks ads, trackers, malware and distracting sites system-wide by managing the Mac's built-in hosts file. No VPN, no cloud account, no subscription. Pick one of five protection levels or build profiles from 200+ curated blocklists; macOS asks for Touch ID or your password before each change. $14.99 once after a 14-day trial (no credit card). macOS 14 Sonoma or later. Made by SaneApps.
+
+## Facts
+- Current version: 1.1.26 (direct download)
+- Price: $14.99 one-time after a 14-day trial with every feature, no card. Also in the SaneApps Bundle ($49.99 once).
+- Install: direct download from sanehosts.com, or Homebrew `brew install --cask sane-apps/tap/sanehosts`. It's a direct download, not Mac App Store, because writing the system hosts file needs local system access.
+- Requirements: macOS 14.0 Sonoma or later
+- Privacy: hosts data stays on your Mac. No cloud account, no personal-content upload.
+- Listed in the StevenBlack/hosts README (third-party tools). Source code public on GitHub (github.com/sane-apps/SaneHosts), PolyForm Shield licence.
+
+## Protection levels
+- Essentials (~170K entries): ads, trackers, malware
+- Family Safe (~400K): Essentials + adult content and gambling
+- Focus Mode (~580K): Family Safe + social media
+- Privacy Shield (~600K): Focus Mode + telemetry and advanced trackers
+- Kitchen Sink (~700K): everything available
+
+## Features
+- 200+ curated blocklists (Steven Black, Hagezi, AdGuard and more), import from files and URLs
+- Unlimited profiles (work, family, focus); merge, duplicate, switch from the menu bar
+- Works in every app (Safari, Chrome, Slack, games), not just browsers
+- Automatic DNS cache flush on every change; automatic backups and rollback
+- No Terminal needed
+
+## Limits (honest)
+- Hosts blocking works by domain: it can't block ads served from the same domain as the content, and it doesn't hide empty ad boxes inside web pages.
+- Mac only.
+
+## Pages
+- Home: https://sanehosts.com/
+- Hosts file managers compared (SaneHosts, Gas Mask, SwitchHosts, Terminal): https://sanehosts.com/mac-hosts-file-manager-compared.html
+- Gas Mask alternative: https://sanehosts.com/gas-mask-alternative.html
+- Block ads system-wide on Mac (methods compared): https://sanehosts.com/how-to-block-ads-on-mac.html
+- Block ads without an app (Steven Black hosts in Terminal): https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html
+- Edit the hosts file on Mac: https://sanehosts.com/how-to-edit-hosts-file-mac.html
+- Block social media / YouTube / porn / gambling / telemetry / Adobe / malware: https://sanehosts.com/guides.html
+- Privacy: https://sanehosts.com/privacy.html
+- Source: https://github.com/sane-apps/SaneHosts
+- Contact: hi@saneapps.com

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Block Ads System-Wide on Mac Without an App (Steven Black Hosts)</title>
+    <meta name="description" content="Block ads and malware in every Mac app with no app installed: install Steven Black&#x27;s unified hosts file from Terminal, flush DNS, update it and undo it. Plus the one-click version.">
+    <link rel="canonical" href="https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="How to Block Ads System-Wide on Mac Without an App (Steven Black Hosts)">
+  <meta property="og:description" content="Block ads and malware in every Mac app with no app installed: install Steven Black&#x27;s unified hosts file from Terminal, flush DNS, update it and undo it. Plus the one-click version.">
+  <meta property="og:url" content="https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html">
+  <meta property="og:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="SaneHosts preview card for local Mac hosts file control">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How to Block Ads System-Wide on Mac Without an App (Steven Black Hosts)">
+  <meta name="twitter:description" content="Block ads and malware in every Mac app with no app installed: install Steven Black&#x27;s unified hosts file from Terminal, flush DNS, update it and undo it. Plus the one-click version.">
+  <meta name="twitter:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
+  <meta name="twitter:site" content="@MrSaneApps">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "How to Block Ads System-Wide on Mac Without an App (Steven Black Hosts)",
+  "description": "Block ads and malware in every Mac app with no app installed: install Steven Black's unified hosts file from Terminal, flush DNS, update it and undo it. Plus the one-click version.",
+  "url": "https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html",
+  "image": "https://sanehosts.com/og-image.png?v=20260616-card",
+  "datePublished": "2026-10-17",
+  "dateModified": "2026-10-17",
+  "author": {
+    "@type": "Person",
+    "name": "Mr. Sane"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "SaneApps",
+    "url": "https://saneapps.com"
+  },
+  "mainEntityOfPage": "https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html",
+  "about": {
+    "@type": "SoftwareApplication",
+    "name": "SaneHosts",
+    "operatingSystem": "macOS"
+  }
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How do I block ads system-wide on a Mac without installing an app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Replace your /etc/hosts file with a blocklist hosts file such as Steven Black's unified hosts (adware + malware, about 73,600 entries), then flush the DNS cache. Every app on the Mac then skips those domains. The Terminal steps are on this page."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Where is the hosts file on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It's at /etc/hosts. On current macOS, /etc points to /private/etc, so the real file is /private/etc/hosts. Editing either path changes the same file."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I flush the DNS cache on a Mac?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Run: sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I undo it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Copy your backup back over the file (sudo cp /etc/hosts.backup /etc/hosts) and flush DNS again. That's why the first step on this page is making a backup."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I keep the blocklist up to date?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Steven Black's lists are rebuilt often. By hand, you repeat the download step. SaneHosts can import the same lists by URL and offers them as one-click protection levels."
+      }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": "Block ads system-wide on Mac with Steven Black's hosts file",
+  "totalTime": "PT5M",
+  "tool": [
+    {
+      "@type": "HowToTool",
+      "name": "Terminal"
+    }
+  ],
+  "step": [
+    {
+      "@type": "HowToStep",
+      "name": "Back up your hosts file",
+      "text": "sudo cp /etc/hosts /etc/hosts.backup"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Download the unified hosts file",
+      "text": "curl -fsSL https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -o ~/Downloads/hosts-stevenblack"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Install it",
+      "text": "sudo cp ~/Downloads/hosts-stevenblack /etc/hosts"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Flush the DNS cache",
+      "text": "sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder"
+    },
+    {
+      "@type": "HowToStep",
+      "name": "Test",
+      "text": "Open a site you know shows ads, or run: ping -c1 doubleclick.net (it should resolve to 0.0.0.0)"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "SaneHosts",
+      "item": "https://sanehosts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Guides",
+      "item": "https://sanehosts.com/guides.html"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Block ads without an app",
+      "item": "https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html"
+    }
+  ]
+}
+  </script>
+    <style>
+        /* Strict Brand Colors */
+        :root {
+            --bg-primary: #08080c;
+            --bg-secondary: #0f0f16;
+            --bg-card: #16161f;
+            --accent: #4f8ffa; /* SaneHosts Blue */
+            --accent-soft: #3b7ce8;
+            --accent-glow: rgba(79, 143, 250, 0.25);
+            --text-primary: #f5f5f8;
+            --text-secondary: #ffffff;
+            --text-muted: #ffffff;
+            --success: #34d399;
+            --border: #252530;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+
+        .gradient-bg {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(ellipse at 15% 10%, rgba(95, 168, 211, 0.12) 0%, transparent 45%),
+                        radial-gradient(ellipse at 85% 90%, rgba(244, 162, 97, 0.08) 0%, transparent 45%),
+                        radial-gradient(ellipse at 50% 50%, rgba(20, 20, 30, 1) 0%, var(--bg-primary) 100%);
+            z-index: -1;
+        }
+
+        .container { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+
+        nav { padding: 20px 0; border-bottom: 1px solid var(--border); margin-bottom: 60px; }
+        .nav-content { display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 600; text-decoration: none; color: var(--text-primary); display: flex; align-items: center; gap: 10px; }
+        .logo img { width: 32px; border-radius: 8px; }
+        .nav-cta { color: var(--accent); text-decoration: none; font-weight: 500; }
+
+        article h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            line-height: 1.2;
+            margin-bottom: 24px;
+        }
+
+        article h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin: 48px 0 24px;
+            color: var(--text-primary);
+        }
+
+        article h3 {
+            font-size: 1.25rem;
+            margin: 32px 0 16px;
+            color: var(--text-primary);
+        }
+
+        p { margin-bottom: 24px; color: var(--text-secondary); font-size: 1.1rem; }
+
+        /* Comparison Cards */
+        .option-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .option-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .option-title { font-size: 1.4rem; font-weight: 600; color: var(--text-primary); }
+        .option-badge { font-size: 0.85rem; padding: 4px 12px; border-radius: 100px; font-weight: 600; }
+
+        .badge-legacy { background: rgba(255, 255, 255, 0.1); color: var(--text-muted); }
+        .badge-sane { background: rgba(79, 143, 250, 0.15); color: var(--accent); }
+
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+        .pc-list { list-style: none; padding: 0; margin: 0; }
+
+        .pc-list li {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .icon-check, .icon-cross {
+            flex-shrink: 0;
+            width: 18px;
+            margin-top: 2px;
+        }
+
+        .icon-check { color: var(--success); }
+        .icon-cross { color: #ef4444; }
+
+        /* The Winner Card */
+        .winner-card {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-soft) 100%);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 24px;
+            transition: transform 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+        .btn:hover { transform: translateY(-2px); }
+
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 0;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 80px;
+        }
+    @view-transition{navigation:auto}
+/* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
+@keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+
+        .quick-answer { background: var(--bg-card); border: 1px solid var(--accent); border-radius: 16px; padding: 24px 28px; margin: 0 0 32px; }
+        .quick-answer ul { margin: 8px 0 0 20px; color: var(--text-secondary); }
+        .quick-answer li { margin-bottom: 8px; }
+        .cmp-wrap { overflow-x: auto; margin: 0 0 16px; }
+        table.cmp { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 640px; }
+        table.cmp th, table.cmp td { border-bottom: 1px solid var(--border); padding: 10px 8px; text-align: left; vertical-align: top; color: var(--text-secondary); }
+        table.cmp th { color: var(--text-primary); font-weight: 600; }
+        .src { font-size: 0.85rem; color: var(--text-secondary); opacity: 0.85; }
+        .faq h3 { font-size: 1.1rem; margin: 24px 0 8px; color: var(--text-primary); }
+        code { background: var(--bg-card); padding: 2px 6px; border-radius: 6px; font-size: 0.9em; }
+        pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow-x: auto; margin: 0 0 24px; font-size: 0.85rem; color: var(--text-primary); }
+        ul.plain { margin: 0 0 24px 20px; color: var(--text-secondary); }
+        ul.plain li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <nav>
+        <div class="container nav-content">
+            <a href="/" class="logo"><img src="favicon.png" alt="SaneHosts Icon"> SaneHosts</a>
+            <a href="guides.html" class="nav-cta">All Guides &rarr;</a>
+        </div>
+    </nav>
+    <article class="container">
+        <h1>How to Block Ads System-Wide on Mac Without an App</h1>
+        <p>You don't need an app to block ads in every program on your Mac. The hosts file, built into macOS, can send known ad, tracker and malware domains nowhere. The most widely used list is <a href="https://github.com/StevenBlack/hosts">Steven Black's unified hosts file</a> (free, MIT licence; the adware + malware version listed about 73,600 entries on 17 Oct 2026). Here's how to install it by hand in about five minutes, and how to undo it.</p>
+
+        <div class="option-card">
+            <div class="option-header"><div class="option-title">The Terminal way</div><span class="option-badge badge-legacy">Free · 5 minutes</span></div>
+            <h3>1. Back up your current hosts file</h3>
+            <pre>sudo cp /etc/hosts /etc/hosts.backup</pre>
+            <h3>2. Download the unified hosts file</h3>
+            <pre>curl -fsSL https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts -o ~/Downloads/hosts-stevenblack</pre>
+            <p>Open it in a text editor and skim it first. It's plain text: one <code>0.0.0.0 domain</code> per line. If you had custom lines in your old file (local dev domains, for example), paste them at the top.</p>
+            <h3>3. Install it</h3>
+            <pre>sudo cp ~/Downloads/hosts-stevenblack /etc/hosts</pre>
+            <h3>4. Flush the DNS cache</h3>
+            <pre>sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</pre>
+            <h3>5. Check it worked</h3>
+            <pre>ping -c1 doubleclick.net</pre>
+            <p>It should show <code>0.0.0.0</code>. To undo everything: <code>sudo cp /etc/hosts.backup /etc/hosts</code>, then flush DNS again.</p>
+            <div class="pros-cons">
+                <div><strong>Pros</strong><ul class="pc-list">
+                    <li><span class="icon-check">✓</span> <div>Free, nothing installed</div></li>
+                    <li><span class="icon-check">✓</span> <div>Works in every app, not just browsers</div></li>
+                    <li><span class="icon-check">✓</span> <div>Works on any network, with no hardware</div></li></ul></div>
+                <div><strong>Cons</strong><ul class="pc-list">
+                    <li><span class="icon-cross">✗</span> <div>Updating means repeating the steps</div></li>
+                    <li><span class="icon-cross">✗</span> <div>One list at a time; mixing lists is manual</div></li>
+                    <li><span class="icon-cross">✗</span> <div>A bad edit can break name resolution</div></li></ul></div>
+            </div>
+        </div>
+
+        <h2>What hosts blocking can't do</h2>
+        <ul class="plain">
+            <li>It can't block ads served from the same domain as the content you want, as some video sites do.</li>
+            <li>It doesn't hide empty ad boxes on web pages. A browser extension like uBlock Origin does that inside the browser.</li>
+        </ul>
+
+        <div class="option-card winner-card">
+            <div class="option-header"><div class="option-title">The one-click way: SaneHosts</div><span class="option-badge badge-sane">$14.99 One-Time</span></div>
+            <p>The same lists, with no Terminal. SaneHosts includes Steven Black's lists alongside Hagezi, AdGuard and 200+ others, grouped into five protection levels. It adds profiles, Touch ID or password approval for each change, automatic backups and automatic DNS flush. SaneHosts is listed in the Steven Black README's third-party tools.</p>
+            <a href="https://sanehosts.com/download" class="btn">Start the 14-day trial</a>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">macOS 14 (Sonoma) or later. No credit card for the trial.</p>
+        </div>
+
+        <section class="faq">
+<h2>Questions people ask</h2>
+<h3>How do I block ads system-wide on a Mac without installing an app?</h3>
+<p>Replace your /etc/hosts file with a blocklist hosts file such as Steven Black's unified hosts (adware + malware, about 73,600 entries), then flush the DNS cache. Every app on the Mac then skips those domains. The Terminal steps are on this page.</p>
+<h3>Where is the hosts file on a Mac?</h3>
+<p>It's at /etc/hosts. On current macOS, /etc points to /private/etc, so the real file is /private/etc/hosts. Editing either path changes the same file.</p>
+<h3>How do I flush the DNS cache on a Mac?</h3>
+<p>Run: sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</p>
+<h3>How do I undo it?</h3>
+<p>Copy your backup back over the file (sudo cp /etc/hosts.backup /etc/hosts) and flush DNS again. That's why the first step on this page is making a backup.</p>
+<h3>How do I keep the blocklist up to date?</h3>
+<p>Steven Black's lists are rebuilt often. By hand, you repeat the download step. SaneHosts can import the same lists by URL and offers them as one-click protection levels.</p>
+</section>
+    </article>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="guides.html" style="color: var(--text-muted);">All Guides</a> • <a href="privacy.html" style="color: var(--text-muted);">Privacy</a></p>
+        </div>
+    </footer>
+    <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
