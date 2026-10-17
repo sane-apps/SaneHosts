@@ -1819,6 +1819,94 @@
         </div>
     </section>
 
+    <!-- FAQ (visible copy and FAQPage JSON-LD come from one list; keep them in sync) -->
+    <style>
+.home-faq { padding: 72px 0; }
+.home-faq .faq-list { max-width: 760px; margin: 0 auto; }
+.home-faq .faq-item { border: 1px solid var(--border-subtle); border-radius: 10px; background: rgba(255,255,255,0.02); padding: 14px 18px; margin-bottom: 12px; text-align: left; }
+.home-faq .faq-item summary { cursor: pointer; color: var(--text-primary); font-weight: 600; }
+.home-faq .faq-item p { margin: 10px 0 0; color: var(--text-secondary); line-height: 1.6; }
+.home-faq .faq-item a { color: var(--accent); }
+</style>
+    <section class="home-faq" id="faq">
+        <div class="container">
+            <h2 class="section-title">Questions</h2>
+            <div class="faq-list">
+            <details class="faq-item"><summary>How much does SaneHosts cost?</summary><p>$14.99 once after a 14-day trial with every feature and no credit card. There's no subscription. It's also in the $49.99 SaneApps Bundle.</p></details>
+            <details class="faq-item"><summary>How does SaneHosts block ads in every app?</summary><p>It manages your Mac's built-in hosts file, which apps check before asking DNS. Domains on your chosen blocklists point nowhere, so Safari, Chrome, Slack and games all skip them. No VPN and no proxy.</p></details>
+            <details class="faq-item"><summary>Will it slow down my internet?</summary><p>Hosts lookups happen on your Mac before any network request, and there's no VPN or proxy in the path, so your traffic isn't routed anywhere else.</p></details>
+            <details class="faq-item"><summary>Is it safe? Can I undo it?</summary><p>macOS asks for Touch ID or your password before every hosts change. SaneHosts keeps automatic backups you can roll back to and flushes the DNS cache for you, and Turn Off Protection switches blocking off at any time.</p></details>
+            <details class="faq-item"><summary>What can't hosts blocking do?</summary><p>It blocks by domain, so it can't stop ads served from the same domain as the content, and it doesn't hide empty ad boxes inside web pages. A browser extension can cover that part.</p></details>
+            <details class="faq-item"><summary>Is SaneHosts a Gas Mask alternative?</summary><p>Yes. Gas Mask's last release (0.8.6) was in February 2020 and is Intel-only. SaneHosts is native on Apple silicon, with 200+ curated blocklists and five protection levels. <a href="mac-hosts-file-manager-compared.html">Compare hosts managers</a>.</p></details>
+            <details class="faq-item"><summary>What do I need?</summary><p>macOS 14 Sonoma or later. SaneHosts is a direct download (or <code>brew install --cask sane-apps/tap/sanehosts</code>), because writing the system hosts file needs local system access.</p></details>
+            </div>
+        </div>
+    </section>
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "How much does SaneHosts cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "$14.99 once after a 14-day trial with every feature and no credit card. There's no subscription. It's also in the $49.99 SaneApps Bundle."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How does SaneHosts block ads in every app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It manages your Mac's built-in hosts file, which apps check before asking DNS. Domains on your chosen blocklists point nowhere, so Safari, Chrome, Slack and games all skip them. No VPN and no proxy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will it slow down my internet?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Hosts lookups happen on your Mac before any network request, and there's no VPN or proxy in the path, so your traffic isn't routed anywhere else."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is it safe? Can I undo it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS asks for Touch ID or your password before every hosts change. SaneHosts keeps automatic backups you can roll back to and flushes the DNS cache for you, and Turn Off Protection switches blocking off at any time."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What can't hosts blocking do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It blocks by domain, so it can't stop ads served from the same domain as the content, and it doesn't hide empty ad boxes inside web pages. A browser extension can cover that part."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is SaneHosts a Gas Mask alternative?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Gas Mask's last release (0.8.6) was in February 2020 and is Intel-only. SaneHosts is native on Apple silicon, with 200+ curated blocklists and five protection levels. <a href=\"mac-hosts-file-manager-compared.html\">Compare hosts managers<\/a>."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do I need?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "macOS 14 Sonoma or later. SaneHosts is a direct download (or <code>brew install --cask sane-apps/tap/sanehosts<\/code>), because writing the system hosts file needs local system access."
+      }
+    }
+  ]
+}
+    </script>
+
     <!-- More Apps -->
     <section class="more-apps">
         <div class="container">
