@@ -9,7 +9,14 @@ app accepts, or when its estimatedEntries label is far from the real count.
 Usage:
   python3 -I scripts/check_blocklist_catalog.py            # check the catalog
   python3 -I scripts/check_blocklist_catalog.py --json out.json
+  python3 -I scripts/check_blocklist_catalog.py --alert ~/SaneApps/outputs/agent-alerts/sanehosts-blocklist-catalog.md
+  python3 -I scripts/check_blocklist_catalog.py --catalog other.swift
   python3 -I scripts/check_blocklist_catalog.py --self-test
+
+Exit codes: 0 all lists healthy, or problems found and written to --alert;
+1 problems found and no --alert given; 2 the check itself could not run.
+The weekly Mini job (com.saneapps.sanehosts-catalog-check) uses --alert so a
+stale list becomes an agent alert, not a failed job.
 """
 
 import datetime
@@ -18,6 +25,7 @@ import ipaddress
 import json
 import pathlib
 import re
+import shutil
 import subprocess
 import sys
 import urllib.request
@@ -94,14 +102,24 @@ def parse_estimate(label):
     return int(value * {"": 1, "k": 1_000, "m": 1_000_000}[match.group(2).lower()])
 
 
+def gh_binary():
+    for candidate in (shutil.which("gh"), "/opt/homebrew/bin/gh", "/usr/local/bin/gh"):
+        if candidate and pathlib.Path(candidate).exists():
+            return candidate
+    return None
+
+
 def github_last_change(url):
     match = re.match(r"https://raw\.githubusercontent\.com/([^/]+)/([^/]+)/([^/]+)/(.+)", url)
     if not match:
         return None
     owner, repo, branch, path = match.groups()
+    gh = gh_binary()
+    if gh is None:
+        return None
     try:
         out = subprocess.run(
-            ["gh", "api", f"repos/{owner}/{repo}/commits?path={path}&sha={branch}&per_page=1",
+            [gh, "api", f"repos/{owner}/{repo}/commits?path={path}&sha={branch}&per_page=1",
              "--jq", ".[0].commit.committer.date"],
             capture_output=True, text=True, timeout=30,
         ).stdout.strip()
@@ -134,7 +152,9 @@ def check(item, today):
             updated = email.utils.parsedate_to_datetime(last_modified).date()
         except (TypeError, ValueError):
             updated = None
-    if updated is not None and (today - updated).days > MAX_AGE_DAYS:
+    if updated is None:
+        problems.append("could not tell when the list last changed")
+    elif (today - updated).days > MAX_AGE_DAYS:
         problems.append(f"not updated since {updated}")
 
     estimate = parse_estimate(item["estimatedEntries"])
@@ -166,21 +186,65 @@ def self_test():
     print(f"self-test ok ({len(items)} catalog entries parsed)")
 
 
+def option(argv, name):
+    if name in argv and argv.index(name) + 1 < len(argv):
+        return argv[argv.index(name) + 1]
+    return None
+
+
+def write_alert(path, results, catalog):
+    bad = [r for r in results if r["problems"]]
+    stamp = datetime.datetime.now().strftime("%-d %B %Y, %-I:%M %p")
+    lines = [
+        "# SaneHosts blocklist catalog needs attention",
+        "",
+        f"- Seen: {stamp}, weekly job `com.saneapps.sanehosts-catalog-check` on the Mini.",
+        f"- {len(bad)} of {len(results)} lists in `{catalog}` have problems:",
+        "",
+    ]
+    lines += [f"  - `{r['id']}` ({r['name']}): {'; '.join(r['problems'])}" for r in bad]
+    lines += [
+        "",
+        "- Fix: replace dead or stale lists with maintained ones (hosts format, under 500K entries,",
+        "  updated within a year), correct size labels, update ProfilePresets if an id changes,",
+        "  then run `python3 -I scripts/check_blocklist_catalog.py` until it reports 0 problems,",
+        "  run `SaneMaster verify`, and move this file to `done/`.",
+    ]
+    pathlib.Path(path).expanduser().write_text("\n".join(lines) + "\n")
+
+
 def main(argv):
     if "--self-test" in argv:
         self_test()
         return 0
+    catalog = pathlib.Path(option(argv, "--catalog") or CATALOG)
+    items = parse_catalog(catalog)
+    if not items:
+        print(f"no BlocklistSource entries found in {catalog}")
+        return 2
     today = datetime.date.today()
-    results = [check(item, today) for item in parse_catalog(CATALOG)]
+    results = [check(item, today) for item in items]
     failures = 0
     for r in results:
         status = "FAIL" if r["problems"] else "ok"
         failures += bool(r["problems"])
         print(f"{status:4} {r['category']:15} {r['id']:24} label={r['estimatedEntries']:>5} "
               f"real={r['real']:>7} updated={r['updated']}  {'; '.join(r['problems'])}")
-    if "--json" in argv:
-        pathlib.Path(argv[argv.index("--json") + 1]).write_text(json.dumps(results, indent=1))
+    if option(argv, "--json"):
+        pathlib.Path(option(argv, "--json")).write_text(json.dumps(results, indent=1))
     print(f"\n{len(results)} lists, {failures} with problems")
+    alert = option(argv, "--alert")
+    if alert:
+        alert_path = pathlib.Path(alert).expanduser()
+        if failures:
+            write_alert(alert_path, results, catalog)
+            print(f"alert written: {alert_path}")
+        elif alert_path.exists():
+            done = alert_path.parent / "done"
+            done.mkdir(exist_ok=True)
+            alert_path.rename(done / alert_path.name)
+            print(f"alert cleared: moved to {done / alert_path.name}")
+        return 0
     return 1 if failures else 0
 
 
