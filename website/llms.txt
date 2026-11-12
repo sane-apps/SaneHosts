@@ -40,9 +40,9 @@
 - Block ads system-wide on Mac (methods compared): https://sanehosts.com/how-to-block-ads-on-mac.html
 - Block ads without an app (Steven Black hosts in Terminal): https://sanehosts.com/how-to-install-stevenblack-hosts-mac.html
 - Edit the hosts file on Mac: https://sanehosts.com/how-to-edit-hosts-file-mac.html
-- Unblock one site without turning off the blocklist (Allowed Sites): https://sanehosts.com/allow-site-hosts-blocklist-mac.html
-- Keep hosts blocklists up to date (Update Now, weekly updates): https://sanehosts.com/update-hosts-blocklist-automatically-mac.html
-- Lock the blocklist with Touch ID (Protection Lock): https://sanehosts.com/lock-hosts-file-touch-id-mac.html
+- Unblock one site without turning off the blocklist (Allowed Sites): https://sanehosts.com/how-to-allow-site-hosts-blocklist-mac.html
+- Keep hosts blocklists up to date (Update Now, weekly updates): https://sanehosts.com/how-to-update-hosts-blocklists-mac.html
+- Lock the blocklist with Touch ID (Protection Lock): https://sanehosts.com/how-to-lock-hosts-file-touch-id-mac.html
 - Block social media / YouTube / porn / gambling / telemetry / Adobe / malware: https://sanehosts.com/guides.html
 - Privacy: https://sanehosts.com/privacy.html
 - Source: https://github.com/sane-apps/SaneHosts
