@@ -199,7 +199,7 @@ struct MainViewGatePolicyTests {
 
         let mainWindowMappings = actionsSource.components(separatedBy: "HostsServiceError.actionErrorMessage(").count - 1
         let appAndMenuMappings = appSource.components(separatedBy: "HostsServiceError.actionErrorMessage(").count - 1
-        #expect(mainWindowMappings == 2)
+        #expect(mainWindowMappings == 3)
         #expect(appAndMenuMappings == 3)
         #expect(!actionsSource.contains("activationError = error.localizedDescription"))
         #expect(!appSource.contains("lastError = \"Failed to activate:"))
@@ -362,7 +362,8 @@ struct DarkModeReadabilityPolicyTests {
             "Sources/SaneHostsFeature/Views/MainViewComponents.swift",
             "Sources/SaneHostsFeature/Views/ProfileCreationSheets.swift",
             "Sources/SaneHostsFeature/Views/PresetViews.swift",
-            "Sources/SaneHostsFeature/Views/FetchProgressOverlay.swift",
+            "Sources/SaneHostsFeature/Views/AllowlistSheet.swift",
+            "Sources/SaneHostsFeature/Views/ProfileDetailComponents.swift",
             "Sources/SaneHostsFeature/Views/MergeProfilesSheet.swift",
             "Sources/SaneHostsFeature/Views/RemoteImportSheet.swift",
             "Sources/SaneHostsFeature/Views/RemoteImportSheet+Catalog.swift",
@@ -476,10 +477,14 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
         let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Actions.swift"))
+        let controllerSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProtectionController.swift"))
 
         #expect(mainSource.contains("guard !isActivating else { return }"))
         #expect(mainSource.contains("defer { isActivating = false }"))
-        #expect(mainSource.contains("try? await store.deactivate()"))
+        #expect(mainSource.contains("ProtectionController.activate(profile)"))
+        #expect(mainSource.contains("ProtectionController.deactivate()"))
+        #expect(controllerSource.contains("do {\n            try await store.deactivate()\n        } catch {\n            try await store.deactivate()\n        }"))
+        #expect(controllerSource.contains("do {\n            try await store.markAsActive(profile: profile)\n        } catch {\n            try await store.markAsActive(profile: profile)\n        }"))
     }
 
     @Test("Large profile summaries keep full entry counts without eagerly loading every entry")
@@ -507,10 +512,11 @@ struct RuntimeResourcePolicyTests {
             .deletingLastPathComponent()
             .deletingLastPathComponent()
         let mainSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Views/MainView+Actions.swift"))
+        let controllerSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProtectionController.swift"))
         let storeSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProfileStore.swift"))
 
-        #expect(mainSource.contains("let fullProfile = try await store.fullProfile(for: profile)"))
-        #expect(mainSource.contains("HostsService.shared.activateProfile(fullProfile"))
+        #expect(controllerSource.contains("let fullProfile = try await store.fullProfile(for: profile)"))
+        #expect(controllerSource.contains("try await hosts.activateProfile(\n            fullProfile,"))
         #expect(mainSource.contains("let fullProfile = try await store.fullProfile(for: profile)\n                    let content = store.exportProfile(fullProfile)"))
         #expect(storeSource.contains("let sourceProfile = try await fullProfile(for: profile)"))
         #expect(storeSource.contains("let fullProfile = try await fullProfile(for: profile)"))
@@ -552,7 +558,9 @@ struct RuntimeResourcePolicyTests {
         let hostsSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/HostsService.swift"))
         let helperSource = try String(contentsOf: repoRoot.appendingPathComponent("SaneHostsHelper/main.swift"))
 
-        #expect(appSource.contains("let warning = try await HostsService.shared.deactivateProfile()"))
+        let controllerSource = try String(contentsOf: packageRoot.appendingPathComponent("Sources/SaneHostsFeature/Services/ProtectionController.swift"))
+        #expect(controllerSource.contains("let warning = try await hosts.deactivateProfile()"))
+        #expect(appSource.contains("try await ProtectionController.deactivate()"))
         #expect(!appSource.contains("try? await HostsService.shared.deactivateProfile()"))
         #expect(appSource.contains("/usr/bin/dscacheutil -flushcache && /usr/bin/killall -HUP mDNSResponder"))
         #expect(appSource.contains("with administrator privileges"))

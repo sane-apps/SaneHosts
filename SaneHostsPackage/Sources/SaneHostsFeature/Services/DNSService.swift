@@ -3,7 +3,6 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "DNS")
 
-/// Service for DNS cache operations
 @MainActor
 @Observable
 public final class DNSService {
@@ -72,7 +71,6 @@ public final class DNSService {
         }
     }
 
-    /// Check if DNS cache was recently flushed
     public var wasRecentlyFlushed: Bool {
         guard let lastFlush = lastFlushDate else { return false }
         return Date().timeIntervalSince(lastFlush) < 60 // Within last minute

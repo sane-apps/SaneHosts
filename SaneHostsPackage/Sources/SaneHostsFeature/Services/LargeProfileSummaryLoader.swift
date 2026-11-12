@@ -40,6 +40,8 @@ enum LargeProfileSummaryLoader {
             source: decodeValue(ProfileSource.self, key: "source", in: data) ?? .local,
             colorTag: decodeValue(ProfileColor.self, key: "colorTag", in: data) ?? .gray,
             sortOrder: decodeValue(Int.self, key: "sortOrder", in: data) ?? 0,
+            sourceURLs: decodeValue([URL].self, key: "sourceURLs", in: data),
+            listsUpdatedAt: decodeValue(Date.self, key: "listsUpdatedAt", in: data),
             entryCountOverride: entryCount,
             enabledCountOverride: enabledCount,
             disabledCountOverride: disabledCount

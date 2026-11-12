@@ -32,9 +32,7 @@ extension MainView {
                 }
             }
 
-            // Golden-ratio oriented sidebar: immediate protection path first.
             Section {
-                // Primary path: one-click protection with Essentials selected by default.
                 if let primaryProfile = selectedProfile ?? store.profiles.first {
                     QuickActionButton(
                         title: primaryProfile.isActive ? ProtectionUXCopy.turnOffActionTitle : "Enable Protection",
@@ -62,6 +60,16 @@ extension MainView {
                         selectedPreset = nil
                     }
                 }
+
+                let allowedCount = AllowlistStore.shared.allowlist.domains.count
+                QuickActionButton(
+                    title: allowedCount == 0 ? "Allowed Sites" : "Allowed Sites (\(allowedCount))",
+                    subtitle: allowedCount == 0 ? "Unblock a site a list breaks" : "Never blocked, on every profile",
+                    icon: "checkmark.shield.fill",
+                    color: .green
+                ) {
+                    showingAllowlist = true
+                }
             } header: {
                 HStack(spacing: 6) {
                     Image(systemName: "bolt.fill")
@@ -73,7 +81,6 @@ extension MainView {
             }
 
             Section {
-                // Pro action: import curated blocklists.
                 QuickActionButton(
                     title: "Import Blocklist",
                     subtitle: "Block ads and trackers",
@@ -88,7 +95,6 @@ extension MainView {
                     }
                 }
 
-                // Create custom profile (always visible, Pro gated).
                 QuickActionButton(
                     title: "New Empty Profile",
                     subtitle: "Create a custom profile",
@@ -103,7 +109,6 @@ extension MainView {
                     }
                 }
 
-                // Start from a built-in template (always visible, Pro gated).
                 QuickActionButton(
                     title: "From Template",
                     subtitle: "Start with a preset",
@@ -118,7 +123,6 @@ extension MainView {
                     }
                 }
 
-                // Merge is always visible; execution requires 2+ profiles.
                 let canMerge = store.profiles.count >= 2
                 QuickActionButton(
                     title: "Merge Profiles",
@@ -177,7 +181,6 @@ extension MainView {
                 .foregroundColor(.white)
             }
 
-            // Protection Levels - presets not yet downloaded (Pro feature)
             if !availablePresets.isEmpty {
                 Section {
                     ForEach(availablePresets) { preset in
@@ -250,7 +253,6 @@ extension MainView {
     @ViewBuilder
     var detail: some View {
         if let preset = selectedPreset {
-            // Preset selected - show info and download
             PresetDetailView(
                 preset: preset,
                 isDownloading: isDownloadingPreset
@@ -258,7 +260,6 @@ extension MainView {
                 downloadPreset(preset)
             }
         } else if selectedProfileIDs.count > 1 {
-            // Multiple selection - show batch actions
             MultiSelectDetailView(
                 profiles: selectedProfiles,
                 onMerge: {
@@ -272,7 +273,6 @@ extension MainView {
                 onDelete: { deleteWithConfirmation() }
             )
         } else if let profile = selectedProfile {
-            // Single selection - show detail
             ProfileDetailView(
                 profile: profile,
                 store: store,
@@ -281,7 +281,6 @@ extension MainView {
                 licenseService: licenseService
             )
         } else {
-            // No selection
             SaneEmptyState(
                 icon: SaneIcons.hosts,
                 title: "No Profile Selected",

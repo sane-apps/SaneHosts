@@ -1,13 +1,19 @@
 import Darwin
 import Foundation
 
-/// Parses and generates hosts file content
 public struct HostsParser: Sendable {
     public init() {}
 
+    /// Names that appear in the header of most published hosts files. They
+    /// describe the machine itself, so a blocklist import must never block them.
+    static let reservedHostnames: Set<String> = [
+        "localhost", "localhost.localdomain", "local", "broadcasthost",
+        "ip6-localhost", "ip6-loopback", "ip6-localnet", "ip6-mcastprefix",
+        "ip6-allnodes", "ip6-allrouters", "ip6-allhosts", "0.0.0.0"
+    ]
+
     // MARK: - Parsing
 
-    /// Parse a hosts file string into entries
     public func parse(_ content: String) -> [HostsLine] {
         var lines: [HostsLine] = []
         let rawLines = content.components(separatedBy: .newlines)
@@ -20,13 +26,12 @@ public struct HostsParser: Sendable {
                 continue
             }
 
-            if let entry = parseEntry(line, lineNumber: index + 1) {
+            if let entry = parseEntryLine(line, lineNumber: index + 1) {
                 lines.append(.entry(entry))
             } else if trimmed.hasPrefix("#") {
                 let commentText = String(trimmed.dropFirst()).trimmingCharacters(in: .whitespaces)
                 lines.append(.comment(HostComment(text: commentText, lineNumber: index + 1)))
             } else {
-                // Invalid line - treat as comment
                 lines.append(.comment(HostComment(text: "INVALID: \(line)", lineNumber: index + 1)))
             }
         }
@@ -34,26 +39,23 @@ public struct HostsParser: Sendable {
         return lines
     }
 
-    /// Parse a single line into a HostEntry
-    /// Supports both standard hosts format (IP hostname) and domain-only format (just hostname)
-    private func parseEntry(_ line: String, lineNumber: Int) -> HostEntry? {
+    /// Parses one hosts line. Accepts `IP host [host ...]`, a bare domain
+    /// (common in blocklists, mapped to 0.0.0.0), and `# IP host` as a
+    /// disabled entry. Inline `# comments` are split off before hostnames
+    /// are read, so comment words never become hostnames.
+    public func parseEntryLine(_ line: String, lineNumber: Int? = nil) -> HostEntry? {
         var workingLine = line.trimmingCharacters(in: .whitespaces)
         var isEnabled = true
 
-        // Check for commented-out entry (disabled)
         if workingLine.hasPrefix("#") {
             let uncommented = String(workingLine.dropFirst()).trimmingCharacters(in: .whitespaces)
-            // Check if this looks like a disabled entry (starts with IP after #)
-            if looksLikeIPAddress(String(uncommented.prefix(while: { !$0.isWhitespace }))) {
-                workingLine = uncommented
-                isEnabled = false
-            } else {
-                // This is a comment, not a disabled entry
+            guard looksLikeIPAddress(String(uncommented.prefix(while: { !$0.isWhitespace }))) else {
                 return nil
             }
+            workingLine = uncommented
+            isEnabled = false
         }
 
-        // Extract inline comment
         var comment: String?
         if let commentIndex = workingLine.firstIndex(of: "#") {
             let afterHash = workingLine.index(after: commentIndex)
@@ -63,53 +65,65 @@ public struct HostsParser: Sendable {
             workingLine = String(workingLine[..<commentIndex]).trimmingCharacters(in: .whitespaces)
         }
 
-        // Split by whitespace
         let parts = workingLine.split { $0.isWhitespace }.map(String.init)
         guard !parts.isEmpty else { return nil }
 
-        // Handle domain-only format (single hostname per line, no IP)
         if parts.count == 1 {
             let potentialDomain = parts[0]
-            // Must look like a domain (contains a dot, valid hostname chars)
-            if potentialDomain.contains("."), isValidHostname(potentialDomain) {
-                return HostEntry(
-                    ipAddress: "0.0.0.0",
-                    hostnames: [potentialDomain],
-                    comment: comment,
-                    isEnabled: isEnabled,
-                    lineNumber: lineNumber
-                )
-            }
-            return nil
+            guard potentialDomain.contains("."), isValidHostname(potentialDomain) else { return nil }
+            return HostEntry(
+                ipAddress: "0.0.0.0",
+                hostnames: [potentialDomain],
+                comment: comment,
+                isEnabled: isEnabled,
+                lineNumber: lineNumber
+            )
         }
 
-        // Standard hosts format: IP hostname [hostname2 ...]
         let ipAddress = parts[0]
-        let hostnames = Array(parts.dropFirst())
-
-        // Validate IP address format
         guard isValidIPAddress(ipAddress) else { return nil }
 
-        // Validate hostnames
-        let validHostnames = hostnames.filter { isValidHostname($0) }
+        let validHostnames = parts.dropFirst().filter { isValidHostname($0) }
         guard !validHostnames.isEmpty else { return nil }
 
         return HostEntry(
             ipAddress: ipAddress,
-            hostnames: validHostnames,
+            hostnames: Array(validHostnames),
             comment: comment,
             isEnabled: isEnabled,
             lineNumber: lineNumber
         )
     }
 
+    /// Parses one line of a downloaded blocklist. Skips commented-out lines
+    /// and the machine's own names, and drops list comments.
+    public func parseBlocklistLine(_ line: String, lineNumber: Int? = nil) -> HostEntry? {
+        let trimmed = line.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty, !trimmed.hasPrefix("#"), !trimmed.hasPrefix("!"), var entry = parseEntryLine(trimmed, lineNumber: lineNumber) else { return nil }
+        entry.hostnames.removeAll { Self.reservedHostnames.contains($0.lowercased()) }
+        guard !entry.hostnames.isEmpty else { return nil }
+        entry.comment = nil
+        return entry
+    }
+
+    public func parseBlocklist(_ content: String) -> [HostEntry] {
+        var entries: [HostEntry] = []
+        var lineNumber = 0
+        content.enumerateLines { line, _ in
+            lineNumber += 1
+            if let entry = parseBlocklistLine(line, lineNumber: lineNumber) {
+                entries.append(entry)
+            }
+        }
+        return entries
+    }
+
     // MARK: - Generation
 
-    /// Generate hosts file content from entries
     public func generate(from entries: [HostEntry], header: String? = nil) -> String {
         var lines: [String] = []
 
-        if let header = header {
+        if let header {
             lines.append(header)
             lines.append("")
         }
@@ -121,31 +135,19 @@ public struct HostsParser: Sendable {
         return lines.joined(separator: "\n")
     }
 
-    /// Generate content from mixed lines (preserves comments and blanks)
     public func generate(from lines: [HostsLine]) -> String {
         lines.map(\.hostsFileLine).joined(separator: "\n")
     }
 
     // MARK: - Validation
 
-    /// Check if a string looks like it could be an IP address
     private func looksLikeIPAddress(_ string: String) -> Bool {
-        // Quick check: starts with digit or colon (IPv6)
         guard let first = string.first else { return false }
         return first.isNumber || first == ":"
     }
 
-    /// Validate IPv4 or IPv6 address format
     public func isValidIPAddress(_ string: String) -> Bool {
-        // IPv4
-        if isValidIPv4(string) {
-            return true
-        }
-        // IPv6
-        if isValidIPv6(string) {
-            return true
-        }
-        return false
+        isValidIPv4(string) || isValidIPv6(string)
     }
 
     private func isValidIPv4(_ string: String) -> Bool {
@@ -158,16 +160,11 @@ public struct HostsParser: Sendable {
         return string.withCString { inet_pton(AF_INET6, $0, &address) == 1 }
     }
 
-    /// Validate hostname format
     public func isValidHostname(_ string: String) -> Bool {
         guard !string.isEmpty, string.count <= 253 else { return false }
 
-        let labels = string.split(separator: ".")
-
-        for label in labels {
-            guard label.count <= 63 else { return false }
-            guard let first = label.first, first.isLetter || first.isNumber else { return false }
-            guard label.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" }) else { return false }
+        for label in string.split(separator: ".") {
+            guard label.count <= 63, let first = label.first, first.isLetter || first.isNumber, label.allSatisfy({ $0.isLetter || $0.isNumber || $0 == "-" }) else { return false }
         }
 
         return true
@@ -175,7 +172,6 @@ public struct HostsParser: Sendable {
 
     // MARK: - Extraction
 
-    /// Extract only the entries from parsed lines
     public func extractEntries(from lines: [HostsLine]) -> [HostEntry] {
         lines.compactMap { line in
             if case let .entry(entry) = line {
@@ -185,23 +181,21 @@ public struct HostsParser: Sendable {
         }
     }
 
-    /// Extract system entries (localhost, etc.)
     public func extractSystemEntries(from entries: [HostEntry]) -> [HostEntry] {
         entries.filter(\.isSystemEntry)
     }
 
-    /// Extract user entries (non-system)
     public func extractUserEntries(from entries: [HostEntry]) -> [HostEntry] {
         entries.filter { !$0.isSystemEntry }
     }
 
     // MARK: - Merging
 
-    /// Merge profile entries with system hosts, preserving system entries
-    public func merge(profile: Profile, systemEntries: [HostEntry]) -> String {
+    /// Builds the full /etc/hosts text for a profile. System entries stay
+    /// first; allowed sites are taken out of blocking entries.
+    public func merge(profile: Profile, systemEntries: [HostEntry], allowlist: HostAllowlist = HostAllowlist()) -> String {
         var lines: [String] = []
 
-        // Header
         let safeProfileName = HostsSanitizer.comment(profile.name)
         lines.append("##")
         lines.append("# Host Database")
@@ -215,15 +209,13 @@ public struct HostsParser: Sendable {
         lines.append("##")
         lines.append("")
 
-        // System entries
         for entry in systemEntries {
             lines.append(entry.hostsFileLine)
         }
         lines.append("")
 
-        // Profile entries
         lines.append("# ---- Profile: \(safeProfileName) ----")
-        for entry in profile.entries where !entry.isSystemEntry {
+        for entry in allowlist.apply(to: profile.entries) where !entry.isSystemEntry {
             lines.append(entry.hostsFileLine)
         }
         lines.append("# ---- End Profile ----")

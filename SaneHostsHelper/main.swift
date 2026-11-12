@@ -20,7 +20,6 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
     /// Team identifier that must match the connecting app's code signature.
     /// WARNING: This MUST match the DEVELOPMENT_TEAM in Helper.xcconfig.
     private let requiredTeamID = "M78L6FXD48"
-    /// Bundle identifier for valid connecting app
     private let requiredBundleID = "com.mrsane.SaneHosts"
 
     func listener(_: NSXPCListener, shouldAcceptNewConnection newConnection: NSXPCConnection) -> Bool {
@@ -50,7 +49,6 @@ class HelperDelegate: NSObject, NSXPCListenerDelegate {
     private func validateConnection(_ connection: NSXPCConnection) -> Bool {
         let pid = connection.processIdentifier
 
-        // Get the code object for the connecting process
         var code: SecCode?
         let attrs = [kSecGuestAttributePid: pid] as CFDictionary
         guard SecCodeCopyGuestWithAttributes(nil, attrs, [], &code) == errSecSuccess,
@@ -100,10 +98,8 @@ class HostsHelperService: NSObject, HostsHelperProtocol {
                 logger.info("Created pristine system backup at \(backupPath)")
             }
 
-            // Write new content
             try content.write(toFile: hostsPath, atomically: true, encoding: .utf8)
 
-            // Set proper permissions (644)
             try FileManager.default.setAttributes([
                 .posixPermissions: 0o644,
                 .ownerAccountName: "root",

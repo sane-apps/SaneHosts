@@ -10,7 +10,7 @@ SaneHosts is a macOS app for managing the `/etc/hosts` file through profiles:
 
 - Choose from 5 **Protection Levels** (Essentials → Kitchen Sink) with curated preset blocklists
 - Create and manage host blocking profiles
-- Import from 200+ curated blocklists across 10+ categories
+- Import from 30 curated blocklists across 8 categories
 - Activate/deactivate profiles with admin authentication
 - Flush DNS cache automatically
 - First-run **coach mark tutorial** guides new users through activation
@@ -54,7 +54,7 @@ Admin operations: look for `do shell script` with `administrator privileges`.
 | `RemoteSyncService` | Imports hosts from remote URLs |
 | `HostsParser` | Parses hosts file format |
 | `ProfilePresets` | 5-tier protection level definitions with curated blocklist bundles |
-| `BlocklistCatalog` | 200+ curated blocklist sources across 10+ categories |
+| `BlocklistCatalog` | 30 curated blocklist sources across 8 categories |
 
 ## Security Considerations
 

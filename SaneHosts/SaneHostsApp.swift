@@ -132,27 +132,33 @@ private struct AppleScriptHostsWriteFallback: HostsPrivilegedWriteFallback {
         try? FileManager.default.removeItem(at: tempURL)
 
         if !result.success {
+            // -128 is AppleScript's "User canceled": the person closed the
+            // password prompt, which must stay quiet like any other cancel.
+            if result.errorNumber == -128 {
+                throw HostsServiceError.userCancelled
+            }
             throw HostsServiceError.writePermissionDenied(result.error ?? "Unknown error")
         }
 
         return HostsPrivilegedWriteResult(didRefreshDNSCache: result.output == "dns-refreshed")
     }
 
-    private func runAppleScript(_ script: String) async -> (success: Bool, output: String?, error: String?) {
+    private func runAppleScript(_ script: String) async -> (success: Bool, output: String?, error: String?, errorNumber: Int?) {
         await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 var error: NSDictionary?
                 guard let appleScript = NSAppleScript(source: script) else {
-                    continuation.resume(returning: (false, nil, "Could not prepare privileged operation"))
+                    continuation.resume(returning: (false, nil, "Could not prepare privileged operation", nil))
                     return
                 }
                 let descriptor = appleScript.executeAndReturnError(&error)
 
                 if let error {
                     let errorMessage = error[NSAppleScript.errorMessage] as? String ?? "Unknown error"
-                    continuation.resume(returning: (false, nil, errorMessage))
+                    let errorNumber = (error[NSAppleScript.errorNumber] as? NSNumber)?.intValue
+                    continuation.resume(returning: (false, nil, errorMessage, errorNumber))
                 } else {
-                    continuation.resume(returning: (true, descriptor.stringValue, nil))
+                    continuation.resume(returning: (true, descriptor.stringValue, nil, nil))
                 }
             }
         }
@@ -376,9 +382,7 @@ struct SaneHostsAppCommands: Commands {
             Button(ProtectionUXCopy.turnOffActionTitle) {
                 Task { @MainActor in
                     do {
-                        let warning = try await HostsService.shared.deactivateProfile()
-                        try await ProfileStore.shared.deactivate()
-                        if let warning {
+                        if let warning = try await ProtectionController.deactivate() {
                             print(warning)
                         }
                     } catch {
@@ -465,8 +469,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let showDockIcon = SaneHostsRuntimeEnvironment.isCustomerUIFixture ? true : !hideDockIcon
         SaneActivationPolicy.applyInitialPolicy(showDockIcon: showDockIcon)
 
-        // Register the privileged helper daemon for XPC + Touch ID support.
         registerHelperDaemon()
+        BlocklistAutoUpdater.shared.start()
     }
 
     private func registerHelperDaemon() {
@@ -578,7 +582,6 @@ class MenuBarProfileStore: ObservableObject {
 
     init() {
         Task { await refresh() }
-        // Listen for ProfileStore changes instead of polling
         notificationObserver = NotificationCenter.default.addObserver(
             forName: .profileStoreDidChange,
             object: nil,
@@ -619,10 +622,7 @@ class MenuBarProfileStore: ObservableObject {
     func activateProfile(_ profile: Profile) async {
         do {
             lastError = nil
-            let systemEntries = ProfileStore.shared.systemEntries
-            let fullProfile = try await ProfileStore.shared.fullProfile(for: profile)
-            let warning = try await HostsService.shared.activateProfile(fullProfile, systemEntries: systemEntries)
-            try await ProfileStore.shared.markAsActive(profile: fullProfile)
+            let warning = try await ProtectionController.activate(profile)
             syncFromSharedStore()
             if let warning {
                 lastError = warning
@@ -648,8 +648,7 @@ class MenuBarProfileStore: ObservableObject {
     func deactivateProfile() async {
         do {
             lastError = nil
-            let warning = try await HostsService.shared.deactivateProfile()
-            try await ProfileStore.shared.deactivate()
+            let warning = try await ProtectionController.deactivate()
             syncFromSharedStore()
             if let warning {
                 lastError = warning

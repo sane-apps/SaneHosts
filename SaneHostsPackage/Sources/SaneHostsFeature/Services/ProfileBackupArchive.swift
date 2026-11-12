@@ -46,7 +46,6 @@ struct ProfileBackupArchive {
                     return date1 > date2
                 }
 
-            // Delete backups beyond the limit
             for backup in profileBackups.dropFirst(maxBackupsPerProfile) {
                 try? fileManager.removeItem(at: backup)
             }

@@ -17,7 +17,6 @@ extension MainView {
         Task {
             do {
                 try await store.createProfile(from: preset)
-                // Select the newly created profile
                 if let newProfile = store.profiles.first(where: { $0.name == preset.displayName }) {
                     selectedProfileIDs = [newProfile.id]
                     selectedPreset = nil
@@ -80,7 +79,6 @@ extension MainView {
         Divider()
 
         Button(role: .destructive) {
-            // If multiple profiles selected and this profile is in selection, delete all selected
             if selectedProfileIDs.count > 1, selectedProfileIDs.contains(profile.id) {
                 deleteWithConfirmation()
             } else {
@@ -88,7 +86,6 @@ extension MainView {
                 deleteWithConfirmation()
             }
         } label: {
-            // Show count if multiple selected and this profile is in selection
             if selectedProfileIDs.count > 1, selectedProfileIDs.contains(profile.id) {
                 Label("Delete \(selectedProfileIDs.count) Profiles", systemImage: SaneIcons.remove)
             } else {
@@ -108,28 +105,16 @@ extension MainView {
         Task {
             defer { isActivating = false }
             do {
-                let fullProfile = try await store.fullProfile(for: profile)
-                let warning = try await HostsService.shared.activateProfile(fullProfile, systemEntries: store.systemEntries)
-                // Mark as active only after successful hosts file write
-                try await store.markAsActive(profile: fullProfile)
-
-                if let warning {
+                if let warning = try await ProtectionController.activate(profile) {
                     activationWarning = warning
                 } else {
                     withAnimation { showingActivationSuccess = true }
                 }
             } catch {
-                guard let message = HostsServiceError.actionErrorMessage(
+                activationError = HostsServiceError.actionErrorMessage(
                     for: error,
                     action: "Couldn’t activate \(profile.name)"
-                ) else { return }
-
-                // If hosts write succeeded but markAsActive failed, the hosts file is
-                // already modified. Attempt to sync state so UI reflects reality.
-                if HostsService.shared.lastError == nil {
-                    try? await store.markAsActive(profile: try await store.fullProfile(for: profile))
-                }
-                activationError = message
+                )
             }
         }
     }
@@ -142,24 +127,35 @@ extension MainView {
         Task {
             defer { isActivating = false }
             do {
-                let warning = try await HostsService.shared.deactivateProfile()
-                try await store.deactivate()
-
-                if let warning {
-                    activationWarning = warning
-                }
+                activationWarning = try await ProtectionController.deactivate()
             } catch {
-                guard let message = HostsServiceError.actionErrorMessage(
+                activationError = HostsServiceError.actionErrorMessage(
                     for: error,
                     action: "Couldn’t turn off protection"
-                ) else { return }
+                )
+            }
+        }
+    }
 
-                // If hosts write succeeded but local state failed, retry the local
-                // state update so the UI does not keep showing protection active.
-                if HostsService.shared.lastError == nil {
-                    try? await store.deactivate()
-                }
-                activationError = message
+    /// Saves the allowlist and, when protection is on, writes it to the hosts file.
+    func saveAllowlist(_ allowlist: HostAllowlist) {
+        do {
+            try AllowlistStore.shared.replace(with: allowlist)
+        } catch {
+            activationError = "Couldn’t save allowed sites: \(error.localizedDescription)"
+            return
+        }
+        guard store.activeProfile != nil, !isActivating else { return }
+        isActivating = true
+        Task {
+            defer { isActivating = false }
+            do {
+                activationWarning = try await ProtectionController.reapplyActiveProfile()
+            } catch {
+                activationError = HostsServiceError.actionErrorMessage(
+                    for: error,
+                    action: "Allowed sites were saved, but couldn’t be applied"
+                )
             }
         }
     }
@@ -186,7 +182,6 @@ extension MainView {
 
     func deleteWithConfirmation() {
         guard !selectedProfileIDs.isEmpty else { return }
-        // Count deletable (non-active) profiles
         let deletableCount = selectedProfiles.filter { !$0.isActive }.count
         if deletableCount == 0 {
             activationError = "Cannot delete active profiles. Turn off protection first."
@@ -196,15 +191,12 @@ extension MainView {
     }
 
     func deleteSelectedProfiles() {
-        // Capture IDs of non-active profiles to delete
         let idsToDelete = selectedProfiles.filter { !$0.isActive }.map(\.id)
         guard !idsToDelete.isEmpty else { return }
 
-        // Clear selection and delete synchronously to avoid race conditions
         selectedProfileIDs = []
         store.deleteProfiles(ids: idsToDelete)
 
-        // Select first remaining profile
         if let first = store.profiles.first {
             selectedProfileIDs = [first.id]
         }
@@ -234,7 +226,6 @@ extension MainView {
             return
         }
 
-        // Multiple profiles - let user pick folder
         let panel = NSOpenPanel()
         panel.canChooseFiles = false
         panel.canChooseDirectories = true

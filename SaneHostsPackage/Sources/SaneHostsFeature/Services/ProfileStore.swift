@@ -4,7 +4,6 @@ import SwiftUI
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "ProfileStore")
 
-/// Notification posted when ProfileStore data changes
 public extension Notification.Name {
     static let profileStoreDidChange = Notification.Name("profileStoreDidChange")
 }
@@ -30,13 +29,11 @@ public enum ProfileStoreEssentialsPolicy {
     }
 }
 
-/// Manages profile storage and persistence
 @MainActor
 @Observable
 public final class ProfileStore {
     // MARK: - Shared Instance
 
-    /// Shared instance for app-wide access
     public static let shared: ProfileStore = {
         if let root = fixtureStorageRoot() {
             return ProfileStore(storageRootURL: root, systemHostsURL: URL(fileURLWithPath: "/etc/hosts"))
@@ -57,7 +54,6 @@ public final class ProfileStore {
         return FileManager.default.temporaryDirectory.appendingPathComponent("sanehosts-customer-ui", isDirectory: true)
     }
 
-    /// Posts notification when data changes (for ObservableObject bridges)
     private func notifyChange() {
         NotificationCenter.default.post(name: .profileStoreDidChange, object: nil)
     }
@@ -81,7 +77,6 @@ public final class ProfileStore {
     private let profilesDirectoryOverrideURL: URL?
     private let backupsDirectoryOverrideURL: URL?
 
-    /// URL for storing profiles
     private var profilesDirectoryURL: URL {
         if let profilesDirectoryOverrideURL {
             return profilesDirectoryOverrideURL
@@ -92,7 +87,6 @@ public final class ProfileStore {
         return appSupport.appendingPathComponent("SaneHosts/Profiles", isDirectory: true)
     }
 
-    /// URL for profile backups (crash resilience)
     private var backupsDirectoryURL: URL {
         if let backupsDirectoryOverrideURL {
             return backupsDirectoryOverrideURL
@@ -103,10 +97,8 @@ public final class ProfileStore {
         return appSupport.appendingPathComponent("SaneHosts/Backups", isDirectory: true)
     }
 
-    /// URL for the system hosts file
     private let systemHostsURL: URL
 
-    /// Maximum number of backups to keep per profile
     private let maxBackupsPerProfile = 3
     private let maxSystemHostsBytes: Int64 = 25 * 1024 * 1024
     private let largeProfilePreviewEntryLimit: Int
@@ -137,7 +129,6 @@ public final class ProfileStore {
 
     // MARK: - Loading
 
-    /// Load all profiles and system hosts
     public func load() async {
         if let loadTask {
             logger.debug("Joining in-flight profile load")
@@ -160,23 +151,19 @@ public final class ProfileStore {
         error = nil
 
         do {
-            // Ensure profiles directory exists
             logger.debug(" Creating profiles directory...")
             try createProfilesDirectoryIfNeeded()
 
-            // Load system hosts to extract system entries
             logger.debug("Loading system hosts...")
             try await loadSystemHosts()
             let sysCount = systemEntries.count
             logger.debug("System hosts loaded: \(sysCount) entries")
 
-            // Load saved profiles
             logger.debug("Loading profiles...")
             try await loadProfiles()
             let profCount = profiles.count
             logger.debug("Loaded \(profCount) profiles")
 
-            // First run: migrate existing user entries from /etc/hosts
             if profiles.isEmpty {
                 logger.debug(" First run - checking for existing user hosts entries...")
                 try await migrateExistingSystemHosts()
@@ -218,7 +205,6 @@ public final class ProfileStore {
 
     // MARK: - Preset Profiles
 
-    /// Create the Essentials preset profile on first launch
     private func createEssentialsProfile() async {
         logger.debug("Creating Essentials preset profile...")
 
@@ -263,7 +249,6 @@ public final class ProfileStore {
         return try await PresetManager.shared.loadEntries(for: .essentials, allowNetworkFetch: true)
     }
 
-    /// Create a profile from a preset
     public func createProfile(from preset: ProfilePreset) async throws {
         logger.debug("Creating profile from preset: \(preset.displayName)")
 
@@ -299,11 +284,9 @@ public final class ProfileStore {
         let entries = try await Task.detached(priority: .userInitiated) {
             let content = try String(contentsOf: url, encoding: .utf8)
 
-            // Extract only the header section before profile entries begin
             let headerContent: String = if let markerRange = content.range(of: "# ---- Profile:") {
                 String(content[content.startIndex ..< markerRange.lowerBound])
             } else {
-                // No managed section - parse the whole file (small /etc/hosts)
                 content
             }
 
@@ -336,7 +319,7 @@ public final class ProfileStore {
 
     public func fullProfile(for profile: Profile) async throws -> Profile {
         guard profile.hasPartialEntries else { return profile }
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
+        let fileURL = profileFileURL(for: profile.id)
         do {
             let fullProfile = try await Task.detached(priority: .userInitiated) {
                 let data = try Data(contentsOf: fileURL)
@@ -361,7 +344,6 @@ public final class ProfileStore {
         let parser = parser
         try validateSystemHostsSize()
 
-        // Read on background thread
         let userEntries = try await Task.detached(priority: .userInitiated) {
             let content = try String(contentsOf: url, encoding: .utf8)
             let lines = parser.parse(content)
@@ -392,12 +374,10 @@ public final class ProfileStore {
 
     // MARK: - CRUD Operations
 
-    /// Get the next available sort order
     private var nextSortOrder: Int {
         (profiles.map(\.sortOrder).max() ?? -1) + 1
     }
 
-    /// Sanitize and validate a profile name
     private func sanitizedName(_ name: String) throws -> String {
         let cleaned = HostsSanitizer.comment(name)
             .replacingOccurrences(of: "/", with: "-")
@@ -406,12 +386,10 @@ public final class ProfileStore {
         guard !cleaned.isEmpty else {
             throw ProfileStoreError.invalidName("Name cannot be empty")
         }
-        // Limit length to prevent filesystem issues
         let maxLength = 100
         return String(cleaned.prefix(maxLength))
     }
 
-    /// Create a new profile
     public func create(name: String, from template: ProfileTemplate? = nil, colorTag: ProfileColor? = nil) async throws -> Profile {
         let safeName = try sanitizedName(name)
         let profile = Profile(
@@ -425,68 +403,51 @@ public final class ProfileStore {
         return try await saveCreatedProfile(profile)
     }
 
-    /// Create a profile from a remote source
-    public func createRemote(name: String, url: URL, entries: [HostEntry], maxEntries: Int = 500_000) async throws -> Profile {
-        let safeName = try sanitizedName(name)
-        // Limit entries to prevent crashes with extremely large files
-        let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
-
-        let profile = Profile(
-            name: safeName,
-            entries: limitedEntries,
-            isActive: false,
+    public func createRemote(name: String, url: URL, entries: [HostEntry]) async throws -> Profile {
+        try await createImported(
+            name: name,
+            entries: entries,
             source: .remote(url: url, lastFetched: Date()),
             colorTag: .blue,
-            sortOrder: nextSortOrder
+            sourceURLs: nil
         )
-
-        try await saveImportedProfile(profile)
-        return profile
     }
 
-    /// Create a profile from merged sources
-    public func createMerged(name: String, entries: [HostEntry], sourceCount: Int, maxEntries: Int = 500_000) async throws -> Profile {
-        let safeName = try sanitizedName(name)
-        // Limit entries to prevent crashes with extremely large files
-        let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
-
-        let profile = Profile(
-            name: safeName,
-            entries: limitedEntries,
-            isActive: false,
+    public func createMerged(name: String, entries: [HostEntry], sourceCount: Int, sourceURLs: [URL]? = nil) async throws -> Profile {
+        try await createImported(
+            name: name,
+            entries: entries,
             source: .merged(sourceCount: sourceCount),
             colorTag: .purple,
-            sortOrder: nextSortOrder
+            sourceURLs: sourceURLs
         )
+    }
 
-        try await saveImportedProfile(profile)
-        return profile
+    private func createImported(
+        name: String,
+        entries: [HostEntry],
+        source: ProfileSource,
+        colorTag: ProfileColor,
+        sourceURLs: [URL]?
+    ) async throws -> Profile {
+        let profile = try Profile(
+            name: sanitizedName(name),
+            entries: Array(entries.prefix(BlocklistMerge.maxEntries)),
+            isActive: false,
+            source: source,
+            colorTag: colorTag,
+            sortOrder: nextSortOrder,
+            sourceURLs: sourceURLs,
+            listsUpdatedAt: Date()
+        )
+        return try await saveCreatedProfile(profile)
     }
 
     private func saveCreatedProfile(_ profile: Profile) async throws -> Profile {
+        try createProfilesDirectoryIfNeeded()
         try await save(profile: profile)
         insertProfile(profile)
         return profile
-    }
-
-    private func saveImportedProfile(_ profile: Profile) async throws {
-        try createProfilesDirectoryIfNeeded()
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
-        try await writeProfile(profile, to: fileURL)
-        insertProfile(profile)
-    }
-
-    private func writeProfile(_ profile: Profile, to fileURL: URL) async throws {
-        guard !profile.hasPartialEntries else {
-            throw ProfileStoreError.partialProfileRequiresHydration
-        }
-        try await Task.detached(priority: .userInitiated) {
-            var toEncode = profile
-            toEncode.modifiedAt = Date()
-            let data = try JSONEncoder().encode(toEncode)
-            try data.write(to: fileURL, options: .atomic)
-            try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
-        }.value
     }
 
     private func insertProfile(_ profile: Profile) {
@@ -501,7 +462,11 @@ public final class ProfileStore {
         }
     }
 
-    /// Save a profile to disk
+    private func profileFileURL(for id: UUID) -> URL {
+        profilesDirectoryURL.appendingPathComponent("\(id.uuidString).json")
+    }
+
+    /// Writes off the main thread; large profiles take a while to encode.
     public func save(profile: Profile) async throws {
         guard !profile.hasPartialEntries else {
             throw ProfileStoreError.partialProfileRequiresHydration
@@ -509,9 +474,8 @@ public final class ProfileStore {
         var updatedProfile = profile
         updatedProfile.modifiedAt = Date()
 
-        // Encode and write on background thread to avoid blocking UI for large profiles
         let profileToSave = updatedProfile
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
+        let fileURL = profileFileURL(for: profile.id)
 
         try await Task.detached(priority: .userInitiated) {
             let data = try JSONEncoder().encode(profileToSave)
@@ -519,51 +483,41 @@ public final class ProfileStore {
             try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: fileURL.path)
         }.value
 
-        // Update in-memory list
         if let index = profiles.firstIndex(where: { $0.id == profile.id }) {
             profiles[index] = updatedProfile
+        }
+        if activeProfile?.id == profile.id {
+            activeProfile = updatedProfile
         }
         notifyChange()
     }
 
-    /// Delete a profile
     public func delete(profile: Profile) async throws {
         guard !profile.isActive else {
             throw ProfileStoreError.cannotDeleteActive
         }
 
-        // Backup before delete for recovery
         backupArchive.backup(profile)
-
-        let fileURL = profilesDirectoryURL.appendingPathComponent("\(profile.id.uuidString).json")
-        try fileManager.removeItem(at: fileURL)
+        try fileManager.removeItem(at: profileFileURL(for: profile.id))
 
         profiles.removeAll { $0.id == profile.id }
         notifyChange()
     }
 
-    /// Batch delete multiple profiles by ID (skips active profiles)
-    /// Synchronous to avoid race conditions with UI updates
+    /// Skips active profiles. Synchronous to avoid races with UI updates.
     public func deleteProfiles(ids: [UUID]) {
-        let idsToRemove = Set(ids)
+        let deletable = profiles.filter { ids.contains($0.id) && !$0.isActive }
+        let idsToRemove = Set(deletable.map(\.id))
 
-        // Backup profiles before deletion
-        for profile in profiles where idsToRemove.contains(profile.id) && !profile.isActive {
+        for profile in deletable {
             backupArchive.backup(profile)
+            try? fileManager.removeItem(at: profileFileURL(for: profile.id))
         }
 
-        // Delete files
-        for id in idsToRemove {
-            let fileURL = profilesDirectoryURL.appendingPathComponent("\(id.uuidString).json")
-            try? fileManager.removeItem(at: fileURL)
-        }
-
-        // Remove from in-memory array in single operation
-        profiles.removeAll { idsToRemove.contains($0.id) && !$0.isActive }
+        profiles.removeAll { idsToRemove.contains($0.id) }
         notifyChange()
     }
 
-    /// Duplicate a profile
     public func duplicate(profile: Profile) async throws -> Profile {
         let sourceProfile = try await fullProfile(for: profile)
         let newProfile = Profile(
@@ -575,22 +529,21 @@ public final class ProfileStore {
             modifiedAt: Date(),
             source: sourceProfile.source,
             colorTag: sourceProfile.colorTag,
-            sortOrder: nextSortOrder
+            sortOrder: nextSortOrder,
+            sourceURLs: sourceProfile.sourceURLs,
+            listsUpdatedAt: sourceProfile.listsUpdatedAt
         )
 
         return try await saveCreatedProfile(newProfile)
     }
 
-    /// Generate a unique name like "Default 1", "Default 2", etc.
+    /// "Default" becomes "Default 1", "Default 2", and so on.
     private func generateUniqueName(baseName: String) -> String {
-        // Strip any existing " Copy" or " N" suffix to get clean base name
         let cleanBase = baseName
             .replacingOccurrences(of: #" Copy( Copy)*$"#, with: "", options: .regularExpression)
             .replacingOccurrences(of: #" \d+$"#, with: "", options: .regularExpression)
 
         let existingNames = Set(profiles.map(\.name))
-
-        // Find first available number
         var counter = 1
         var candidateName = "\(cleanBase) \(counter)"
         while existingNames.contains(candidateName) {
@@ -600,25 +553,15 @@ public final class ProfileStore {
         return candidateName
     }
 
-    /// Merge multiple profiles into a new combined profile
-    /// Deduplicates entries by hostname (keeps first occurrence)
+    /// Keeps the first entry for each set of hostnames.
     public func merge(profiles profilesToMerge: [Profile], name: String) async throws -> Profile {
         let safeName = try sanitizedName(name)
-        // Collect all entries, deduplicating by hostname
-        var seenHostnames: Set<String> = []
-        var mergedEntries: [HostEntry] = []
-
+        var allEntries: [HostEntry] = []
         for profile in profilesToMerge {
             let fullProfile = try await fullProfile(for: profile)
-            for entry in fullProfile.entries {
-                // Create a key from all hostnames
-                let hostnameKey = entry.hostnames.sorted().joined(separator: ",")
-                if !seenHostnames.contains(hostnameKey) {
-                    seenHostnames.insert(hostnameKey)
-                    mergedEntries.append(entry)
-                }
-            }
+            allEntries.append(contentsOf: fullProfile.entries)
         }
+        let mergedEntries = BlocklistMerge.deduplicated(allEntries, limit: .max)
 
         let newProfile = Profile(
             id: UUID(),
@@ -637,11 +580,8 @@ public final class ProfileStore {
 
     // MARK: - Reordering
 
-    /// Move profiles from source indices to destination index
     public func moveProfiles(from source: IndexSet, to destination: Int) async throws {
         profiles.move(fromOffsets: source, toOffset: destination)
-
-        // Reassign sort orders based on new positions
         for (index, profile) in profiles.enumerated() {
             if profile.sortOrder != index {
                 var updated = try await fullProfile(for: profile)
@@ -653,24 +593,16 @@ public final class ProfileStore {
 
     // MARK: - Activation
 
-    /// Activate a profile (writes to /etc/hosts via helper)
-    /// Returns the hosts content that should be written
-    public func prepareActivation(profile: Profile) -> String {
-        parser.merge(profile: profile, systemEntries: systemEntries)
-    }
-
-    /// Mark a profile as active (after successful write)
+    /// Call only after the hosts file was written.
     public func markAsActive(profile: Profile) async throws {
         let profile = try await fullProfile(for: profile)
 
-        // Deactivate current active profile
         if let current = activeProfile, current.id != profile.id {
             var deactivated = try await fullProfile(for: current)
             deactivated.isActive = false
             try await save(profile: deactivated)
         }
 
-        // Activate new profile
         var activated = profile
         activated.isActive = true
         try await save(profile: activated)
@@ -679,7 +611,6 @@ public final class ProfileStore {
         notifyChange()
     }
 
-    /// Deactivate the current profile
     public func deactivate() async throws {
         guard let current = activeProfile else { return }
 
@@ -693,7 +624,6 @@ public final class ProfileStore {
 
     // MARK: - Entry Management
 
-    /// Add an entry to a profile
     public func addEntry(_ entry: HostEntry, to profile: Profile) async throws {
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
@@ -703,30 +633,21 @@ public final class ProfileStore {
         try await save(profile: updated)
     }
 
-    /// Add multiple entries to a profile (batch operation)
-    /// Limits to maxEntries to prevent memory issues with extremely large hosts files
-    public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = 500_000) async throws {
+    public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = BlocklistMerge.maxEntries) async throws {
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
-        let current = try await fullProfile(for: currentSummary)
-
-        // Limit entries to prevent crashes with extremely large files
-        let limitedEntries = entries.count > maxEntries ? Array(entries.prefix(maxEntries)) : entries
-
-        var updated = current
-        updated.entries.append(contentsOf: limitedEntries)
+        var updated = try await fullProfile(for: currentSummary)
+        updated.entries.append(contentsOf: entries.prefix(maxEntries))
         try await save(profile: updated)
     }
 
-    /// Remove an entry from a profile
     public func removeEntry(_ entry: HostEntry, from profile: Profile) async throws {
         var updated = try await fullProfile(for: profile)
         updated.entries.removeAll { $0.id == entry.id }
         try await save(profile: updated)
     }
 
-    /// Update an entry in a profile
     public func updateEntry(_ entry: HostEntry, in profile: Profile) async throws {
         var updated = try await fullProfile(for: profile)
         if let index = updated.entries.firstIndex(where: { $0.id == entry.id }) {
@@ -735,18 +656,13 @@ public final class ProfileStore {
         }
     }
 
-    /// Toggle entry enabled state
     public func toggleEntry(_ entry: HostEntry, in profile: Profile) async throws {
         var updatedEntry = entry
         updatedEntry.isEnabled.toggle()
         try await updateEntry(updatedEntry, in: profile)
     }
 
-    /// Bulk update entries in a profile (single disk write)
-    /// - Parameters:
-    ///   - ids: Set of entry IDs to update
-    ///   - profile: The profile containing the entries
-    ///   - update: Closure that modifies each entry in-place
+    /// One disk write for the whole batch.
     public func bulkUpdateEntries(ids: Set<UUID>, in profile: Profile, update: (inout HostEntry) -> Void) async throws {
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
@@ -762,10 +678,7 @@ public final class ProfileStore {
         try await save(profile: updated)
     }
 
-    /// Bulk remove entries from a profile (single disk write)
-    /// - Parameters:
-    ///   - ids: Set of entry IDs to remove
-    ///   - profile: The profile to remove entries from
+    /// One disk write for the whole batch.
     public func bulkRemoveEntries(ids: Set<UUID>, from profile: Profile) async throws {
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
@@ -778,13 +691,6 @@ public final class ProfileStore {
 
     // MARK: - Import/Export
 
-    /// Import entries from a hosts file string
-    public func importEntries(from content: String) -> [HostEntry] {
-        let lines = parser.parse(content)
-        return parser.extractUserEntries(from: parser.extractEntries(from: lines))
-    }
-
-    /// Export a profile as hosts file content
     public func exportProfile(_ profile: Profile) -> String {
         parser.merge(profile: profile, systemEntries: systemEntries)
     }

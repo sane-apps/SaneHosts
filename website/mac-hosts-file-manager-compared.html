@@ -66,7 +66,7 @@
       "name": "What is a good Gas Mask alternative for Mac?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Gas Mask's last release (0.8.6) came out in February 2020, and its app binary is Intel-only, so it runs through Rosetta 2 on Apple silicon. Current options are SwitchHosts (free, open source, with Apple silicon builds) and SaneHosts ($14.99 once, native, with 200+ curated blocklists and five one-click protection levels)."
+        "text": "Gas Mask's last release (0.8.6) came out in February 2020, and its app binary is Intel-only, so it runs through Rosetta 2 on Apple silicon. Current options are SwitchHosts (free, open source, with Apple silicon builds) and SaneHosts ($14.99 once, native, with 30 curated blocklists and five one-click protection levels)."
       }
     },
     {
@@ -82,7 +82,7 @@
       "name": "Which hosts manager is best for blocking ads rather than switching dev environments?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "SwitchHosts and Gas Mask are built around switching between hosts setups, which developers use for staging and local domains. SaneHosts is built around blocking: it ships 200+ curated blocklists (Steven Black, Hagezi, AdGuard and more) and five protection levels from about 170K to about 700K entries."
+        "text": "SwitchHosts and Gas Mask are built around switching between hosts setups, which developers use for staging and local domains. SaneHosts is built around blocking: it ships 30 curated blocklists (Steven Black, Hagezi, AdGuard and more) and five protection levels from about 230K to about 500K entries."
       }
     },
     {
@@ -318,7 +318,7 @@
                 <tr><th>Latest release</th><td>1.1.26</td><td>5.0.2 (3 Sep 2026)</td><td>0.8.6 (29 Feb 2020)</td><td>n/a</td></tr>
                 <tr><th>Apple silicon</th><td>Native (macOS 14+)</td><td>Apple silicon and universal builds</td><td>Intel-only binary, runs under Rosetta 2</td><td>n/a</td></tr>
                 <tr><th>Built for</th><td>Blocking ads, trackers, adult, gambling, social</td><td>Switching hosts setups</td><td>Managing and switching hosts files</td><td>Anything, by hand</td></tr>
-                <tr><th>Curated blocklists</th><td>200+, five one-click levels</td><td>Remote hosts by URL</td><td>Remote hosts by URL</td><td>You find them</td></tr>
+                <tr><th>Curated blocklists</th><td>30, five one-click levels</td><td>Remote hosts by URL</td><td>Remote hosts by URL</td><td>You find them</td></tr>
                 <tr><th>DNS flush after changes</th><td>Automatic</td><td>Post-apply command option</td><td>—</td><td>Manual</td></tr>
                 <tr><th>Backups / undo</th><td>Automatic backups, roll back</td><td>Trash and restore entries</td><td>—</td><td>None</td></tr>
                 <tr><th>Source code</th><td>Public on GitHub (PolyForm Shield)</td><td>Open source (Apache-2.0)</td><td>Public on GitHub</td><td>n/a</td></tr>
@@ -343,7 +343,7 @@
         </div>
         <div class="option-card winner-card">
             <div class="option-header"><div class="option-title">SaneHosts</div><span class="option-badge badge-sane">$14.99 One-Time</span></div>
-            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~170K entries: ads, trackers, malware) up to Kitchen Sink (~700K), and click activate. You get 200+ curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, macOS Touch ID or password approval before every change, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
+            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. You get 30 curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, macOS Touch ID or password approval before every change, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
             <a href="https://sanehosts.com/#pricing" class="btn">Start the 14-day trial</a>
             <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">macOS 14 (Sonoma) or later. No credit card for the trial.</p>
         </div>
@@ -351,11 +351,11 @@
         <section class="faq">
 <h2>Questions people ask</h2>
 <h3>What is a good Gas Mask alternative for Mac?</h3>
-<p>Gas Mask's last release (0.8.6) came out in February 2020, and its app binary is Intel-only, so it runs through Rosetta 2 on Apple silicon. Current options are SwitchHosts (free, open source, with Apple silicon builds) and SaneHosts ($14.99 once, native, with 200+ curated blocklists and five one-click protection levels).</p>
+<p>Gas Mask's last release (0.8.6) came out in February 2020, and its app binary is Intel-only, so it runs through Rosetta 2 on Apple silicon. Current options are SwitchHosts (free, open source, with Apple silicon builds) and SaneHosts ($14.99 once, native, with 30 curated blocklists and five one-click protection levels).</p>
 <h3>Is there a free hosts file manager for Mac?</h3>
 <p>Yes. SwitchHosts is free and open source under Apache-2.0, and Gas Mask is free. You can also edit /etc/hosts in Terminal for free. SaneHosts is paid ($14.99 once) after a 14-day trial with no card.</p>
 <h3>Which hosts manager is best for blocking ads rather than switching dev environments?</h3>
-<p>SwitchHosts and Gas Mask are built around switching between hosts setups, which developers use for staging and local domains. SaneHosts is built around blocking: it ships 200+ curated blocklists (Steven Black, Hagezi, AdGuard and more) and five protection levels from about 170K to about 700K entries.</p>
+<p>SwitchHosts and Gas Mask are built around switching between hosts setups, which developers use for staging and local domains. SaneHosts is built around blocking: it ships 30 curated blocklists (Steven Black, Hagezi, AdGuard and more) and five protection levels from about 230K to about 500K entries.</p>
 <h3>Does editing the hosts file block ads in every app on a Mac?</h3>
 <p>Yes for any domain listed. The hosts file is checked before DNS for every app, not just browsers. It can't block ads served from the same domain as the content, and it doesn't hide empty ad boxes the way a browser extension can.</p>
 <h3>Is changing /etc/hosts safe?</h3>

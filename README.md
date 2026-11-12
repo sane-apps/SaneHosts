@@ -29,9 +29,11 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 
 ### Core Features
 - **Profile Management** - Create and manage multiple hosts configurations with color tagging
-- **200+ Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, OISD, and 10+ categories. SaneHosts is an **officially listed tool** in the upstream StevenBlack/hosts repository.
+- **30 Curated Blocklists** - Import from Steven Black, Hagezi, AdGuard, EasyList, Phishing Army and more, in 8 categories. SaneHosts is an **officially listed tool** in the upstream StevenBlack/hosts repository.
 - **Guided Setup** - Coach mark tutorial walks you through activation on first launch
-- **Remote Import** - Import curated sources or custom HTTPS blocklist URLs
+- **Remote Import** - Import curated sources, custom HTTPS blocklist URLs, or a hosts file from your Mac
+- **Allowed Sites** - Unblock a site a list breaks, in one place, on every profile (covers subdomains too)
+- **List Updates** - Update a profile's blocklists with one click, or let SaneHosts keep the active profile current every week
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles
 - **Menu Bar Access** - Quick profile switching from the menu bar
@@ -60,7 +62,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 ## How It Works
 
 1. **Choose a Protection Level** - Pick from Essentials to Kitchen Sink, or create a custom profile
-2. **Import Blocklists** - Use curated presets or import from 200+ sources
+2. **Import Blocklists** - Use curated presets or import from 30 curated sources
 3. **Activate** - Apply the profile to your `/etc/hosts` file (password required once)
 4. **Switch** - Change profiles as needed, DNS cache is flushed automatically
 
@@ -89,7 +91,7 @@ SaneHosts is designed with privacy in mind:
 - All data stored locally in `~/Library/Application Support/SaneHosts/`
 - No personal content uploaded to SaneApps servers
 - The app may send limited anonymous product events, like launch, license, version, OS, and trial/license status
-- Network access is limited to remote imports or protection levels you choose, update checks, those simple anonymous product events, checkout/license delivery when you choose to buy, and privacy-first aggregate website analytics on public pages
+- Network access is limited to remote imports or protection levels you choose, blocklist updates (weekly for the active profile, can be turned off), update checks, those simple anonymous product events, checkout/license delivery when you choose to buy, and privacy-first aggregate website analytics on public pages
 
 See [PRIVACY.md](PRIVACY.md) for details.
 

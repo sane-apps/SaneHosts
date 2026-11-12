@@ -26,13 +26,11 @@ struct MergeProfilesSheet: View {
         self.store = store
         self.preselectedIDs = preselectedIDs
         self.onCreate = onCreate
-        // Initialize state with preselected IDs
         _selectedProfiles = State(initialValue: preselectedIDs)
     }
 
     var body: some View {
         VStack(spacing: 24) {
-            // Header
             HStack {
                 Image(systemName: "arrow.triangle.merge")
                     .font(.title2)
@@ -46,7 +44,6 @@ struct MergeProfilesSheet: View {
                 .foregroundColor(.white)
                 .multilineTextAlignment(.center)
 
-            // Profile selection list
             ScrollView {
                 VStack(spacing: 8) {
                     ForEach(store.profiles) { profile in
@@ -85,7 +82,6 @@ struct MergeProfilesSheet: View {
             }
             .frame(height: 200)
 
-            // Merged profile name
             CompactSection("New Profile Name", icon: "textformat", iconColor: .purple) {
                 TextField(suggestedName, text: $mergedName)
                     .textFieldStyle(.plain)
@@ -101,7 +97,6 @@ struct MergeProfilesSheet: View {
                 }
             }
 
-            // Stats
             if selectedProfiles.count >= 2 {
                 let totalEntries = store.profiles.filter { selectedProfiles.contains($0.id) }.reduce(0) { $0 + $1.entryCount }
                 Text("Will combine ~\(totalEntries) entries (duplicates removed)")
@@ -115,7 +110,6 @@ struct MergeProfilesSheet: View {
                     .foregroundColor(.white)
             }
 
-            // Actions
             HStack(spacing: 12) {
                 Button("Cancel") {
                     dismiss()
@@ -192,7 +186,6 @@ struct MergeProfilesSheet: View {
         for removable in removables {
             shortened = shortened.replacingOccurrences(of: removable, with: "")
         }
-        // Trim and limit length
         shortened = shortened.trimmingCharacters(in: .whitespaces)
         if shortened.count > 20 {
             shortened = String(shortened.prefix(17)) + "..."

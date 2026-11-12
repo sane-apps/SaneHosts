@@ -5,6 +5,28 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+- Adds **Allowed Sites**: list sites that should never be blocked, even when a
+  blocklist includes them. Each site covers its subdomains, and the list applies
+  to every profile. Right-click any entry and choose **Always Allow** to add it.
+- Adds **Update Now** on list-based profiles, plus a weekly update for the
+  active profile (Settings > General > Blocklists). Updates keep entries you
+  turned off, keep your custom redirects, and change nothing if a list fails to
+  download. The weekly update only writes when it needs no password prompt.
+- Adds **Choose File…** to the import sheet for hosts files and one-domain-per-line lists.
+- Protection levels now download a fresh copy of a list once the saved copy is
+  a week old, instead of reusing the first download forever.
+- Refreshes the blocklist catalog: every list is now reachable, updated within the
+  last year and labeled with its real size. Replaces dead or abandoned lists
+  (NoTracking, GoodbyeAds, WindowsSpyBlocker, jmdugan TikTok/Facebook, CoinMiner,
+  marktron) with maintained ones, fixes mislabeled entries, and adds Hagezi Multi
+  plus Samsung, LG webOS and Amazon device tracking lists. 30 lists in 8 categories.
+- Fixes list imports turning words from inline `# comments` into blocked
+  hostnames, and skips machine names like `ip6-localhost` found in list headers.
+- The import sheet footer now says what will actually be imported when a custom
+  URL or file is set.
+
 ## [1.1.26] - 2026-09-08
 
 - Keeps a paid unlock in place after an update, so you do not have to enter your license key again.

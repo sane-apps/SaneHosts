@@ -11,7 +11,6 @@ extension RemoteImportSheet {
 
         isCheckingURLs = true
 
-        // Mark all as checking
         for source in BlocklistCatalog.all {
             urlStatus[source.id] = .checking
         }
@@ -90,7 +89,6 @@ extension RemoteImportSheet {
                     .fontWeight(.semibold)
                 Spacer()
 
-                // URL checking status
                 if isCheckingURLs {
                     HStack(spacing: 6) {
                         ProgressView()
@@ -135,7 +133,6 @@ extension RemoteImportSheet {
         let selectedInCategory = sources.filter { selectedSources.contains($0.id) }.count
 
         return VStack(spacing: 0) {
-            // Category header (clickable to expand/collapse)
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     if isExpanded {
@@ -180,7 +177,6 @@ extension RemoteImportSheet {
             .accessibilityLabel("\(isExpanded ? "Collapse" : "Expand") \(category.rawValue)")
             .accessibilityHint("\(sources.count) blocklists, \(selectedInCategory) selected")
 
-            // Blocklist items (when expanded)
             if isExpanded {
                 VStack(spacing: 0) {
                     ForEach(sources) { source in
@@ -222,12 +218,10 @@ extension RemoteImportSheet {
             }
         } label: {
             HStack(spacing: 12) {
-                // Checkbox
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .font(.title3)
                     .foregroundStyle(isSelected ? Color.blue : Color.white.opacity(isUnavailable ? 0.9 : 1))
 
-                // Info
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
                         Text(source.name)
@@ -255,7 +249,6 @@ extension RemoteImportSheet {
 
                 Spacer()
 
-                // Entry count estimate
                 Text(source.estimatedEntries)
                     .font(.system(size: 13, weight: .medium))
                     .foregroundColor(.white)
@@ -264,7 +257,6 @@ extension RemoteImportSheet {
                     .background(Color.saneAccent.opacity(0.28))
                     .clipShape(Capsule())
 
-                // URL status indicator
                 urlStatusBadge(for: status)
             }
             .padding(.horizontal, 12)
@@ -319,7 +311,7 @@ extension RemoteImportSheet {
                         .foregroundStyle(.blue)
                         .frame(width: 24)
 
-                    Text("Custom URL")
+                    Text("Custom URL or File")
                         .fontWeight(.medium)
                         .foregroundColor(.white)
 
@@ -334,21 +326,52 @@ extension RemoteImportSheet {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(showingCustomURL ? "Hide custom URL input" : "Show custom URL input")
+            .accessibilityLabel(showingCustomURL ? "Hide custom URL and file input" : "Show custom URL and file input")
 
             if showingCustomURL {
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        TextField("https://example.com/hosts.txt", text: $customURL)
-                            .textFieldStyle(.plain)
+                    HStack(spacing: 8) {
+                        if let chosenFileURL {
+                            HStack(spacing: 8) {
+                                Image(systemName: "doc.text")
+                                    .foregroundStyle(.blue)
+                                Text(chosenFileURL.lastPathComponent)
+                                    .foregroundColor(.white)
+                                    .lineLimit(1)
+                                    .truncationMode(.middle)
+                                    .help(chosenFileURL.path)
+                                Spacer(minLength: 4)
+                                Button {
+                                    clearChosenFile()
+                                } label: {
+                                    Image(systemName: "xmark.circle.fill")
+                                        .foregroundStyle(.white)
+                                }
+                                .buttonStyle(.plain)
+                                .help("Remove file")
+                                .accessibilityLabel("Remove chosen file")
+                            }
                             .padding(8)
                             .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
                             .cornerRadius(6)
-                            .accessibilityLabel("Custom blocklist URL")
-                            .accessibilityIdentifier("custom-blocklist-url")
+                        } else {
+                            TextField("https://example.com/hosts.txt", text: $customURL)
+                                .textFieldStyle(.plain)
+                                .padding(8)
+                                .background(colorScheme == .dark ? Color.black.opacity(0.2) : Color.white)
+                                .cornerRadius(6)
+                                .accessibilityLabel("Custom blocklist URL")
+                                .accessibilityIdentifier("custom-blocklist-url")
+                        }
+
+                        Button("Choose File…") {
+                            chooseFile()
+                        }
+                        .buttonStyle(SaneActionButtonStyle(compact: true))
+                        .help("Import a hosts file or a list with one domain per line")
+                        .accessibilityIdentifier("choose-blocklist-file")
                     }
 
-                    // HTTPS requirement
                     if customURL.lowercased().hasPrefix("http://") {
                         HStack(spacing: 4) {
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -375,6 +398,26 @@ extension RemoteImportSheet {
         )
     }
 
+    // MARK: - File Import
+
+    func chooseFile() {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.message = "Choose a hosts file or a blocklist with one domain per line"
+        panel.prompt = "Choose"
+        guard panel.runModal() == .OK, let url = panel.url else { return }
+        chosenFileURL = url
+        customURL = url.absoluteString
+        selectedSources.removeAll()
+    }
+
+    func clearChosenFile() {
+        chosenFileURL = nil
+        customURL = ""
+    }
+
     // MARK: - Helpers
 
     func categoryColor(_ category: BlocklistCategory) -> Color {
@@ -387,8 +430,6 @@ extension RemoteImportSheet {
         case .gambling: .yellow
         case .fakeNews: .brown
         case .adult: .gray
-        case .annoyances: .mint
-        case .regional: .cyan
         }
     }
 }

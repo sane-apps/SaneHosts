@@ -58,16 +58,12 @@ public protocol HostsHelperProtocol {
 // MARK: - Helper Constants
 
 public enum HostsHelperConstants {
-    /// Bundle identifier for the helper tool
     public static let helperBundleID = "com.mrsane.SaneHostsHelper"
 
-    /// Mach service name for XPC connection
     public static let machServiceName = "com.mrsane.SaneHostsHelper"
 
-    /// Path to /etc/hosts
     public static let hostsFilePath = "/etc/hosts"
 
-    /// Helper version
     public static let version = "1.0.0"
 
     /// LaunchDaemon plist filename (for SMAppService registration)
@@ -108,7 +104,6 @@ private final class ContinuationGuard: @unchecked Sendable {
 
 // MARK: - XPC Connection Manager
 
-/// Manages the XPC connection to the privileged helper daemon.
 public final class HostsHelperConnection: @unchecked Sendable {
     private var connection: NSXPCConnection?
     private let lock = NSLock()

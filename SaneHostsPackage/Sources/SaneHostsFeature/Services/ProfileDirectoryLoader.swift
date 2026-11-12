@@ -45,7 +45,6 @@ struct ProfileDirectoryLoader {
                         throw ProfileStoreError.invalidProfileIdentity("Profile filename is not a UUID")
                     }
 
-                    // Validate JSON structure before decoding
                     let values = try file.resourceValues(forKeys: [.fileSizeKey])
                     let fileSize = values.fileSize ?? 0
                     let profile: Profile
@@ -69,7 +68,6 @@ struct ProfileDirectoryLoader {
                         }
                     }
 
-                    // Basic validation: ensure profile has required data
                     guard !profile.name.isEmpty else {
                         logger.debug(" Invalid profile (empty name): \(file.lastPathComponent)")
                         corruptedFiles.append(file)
@@ -90,12 +88,10 @@ struct ProfileDirectoryLoader {
 
         // Phase 2: Handle corrupted files (Main Actor)
         for file in corruptedFiles {
-            // Attempt recovery from backup
             let filename = file.deletingPathExtension().lastPathComponent
             if let profileId = UUID(uuidString: filename),
                let recovered = archive.recover(id: profileId) {
                 loadedProfiles.append(recovered)
-                // Restore the recovered profile to the main directory
                 await saveRecovered(recovered)
             } else {
                 // Move corrupted files to a quarantine location instead of deleting

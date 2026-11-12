@@ -75,7 +75,7 @@ Features users requested:
 
 - [x] Bulk enable/disable entries (selection mode)
 - [x] Bulk delete entries
-- [ ] Import from text/csv file
+- [x] Import from a hosts or text file
 - [x] Export profile to shareable format
 - [x] Duplicate profile
 

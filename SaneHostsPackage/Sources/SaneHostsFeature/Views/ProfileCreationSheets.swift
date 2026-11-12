@@ -16,7 +16,6 @@ struct NewProfileSheet: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Header
             HStack {
                 Image(systemName: SaneIcons.add)
                     .font(.title2)
@@ -25,7 +24,6 @@ struct NewProfileSheet: View {
                     .font(.headline)
             }
 
-            // Form
             VStack(spacing: 16) {
                 CompactSection("Profile Name", icon: "textformat", iconColor: .blue) {
                     TextField("My Profile", text: $name)
@@ -61,7 +59,6 @@ struct NewProfileSheet: View {
                 }
             }
 
-            // Actions
             HStack(spacing: 12) {
                 Button("Cancel") {
                     dismiss()
@@ -102,7 +99,6 @@ struct TemplatePickerSheet: View {
 
     var body: some View {
         VStack(spacing: 24) {
-            // Header
             HStack {
                 Image(systemName: "doc.badge.plus")
                     .font(.title2)
@@ -111,7 +107,6 @@ struct TemplatePickerSheet: View {
                     .font(.headline)
             }
 
-            // Templates
             VStack(spacing: 12) {
                 ForEach(ProfileTemplate.allCases, id: \.name) { template in
                     TemplateRow(template: template) {

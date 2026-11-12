@@ -3,13 +3,9 @@ import OSLog
 
 private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "HostsService")
 
-/// Service for reading and writing to /etc/hosts
-///
-/// **Write Strategy (in order of preference):**
-/// 1. **XPC Helper + Touch ID** — Privileged helper daemon writes as root.
-///    User authenticates via Touch ID (LAContext). Best UX.
-/// 2. **Direct-build privileged fallback** — Optional fallback owned by the app target.
-///    The App Store build does not use a fallback path.
+/// Reads and writes /etc/hosts. Writes go through the privileged helper
+/// daemon; if it can't be reached, direct builds fall back to an
+/// administrator prompt owned by the app target.
 @MainActor
 @Observable
 public final class HostsService {
@@ -34,31 +30,26 @@ public final class HostsService {
 
     // MARK: - Reading
 
-    /// Read the current system hosts file
-    public func readSystemHosts() throws -> String {
-        try String(contentsOfFile: hostsPath, encoding: .utf8)
-    }
-
-    /// Parse the system hosts file into entries
-    public func parseSystemHosts() throws -> [HostEntry] {
-        let content = try readSystemHosts()
-        let lines = parser.parse(content)
-        return parser.extractEntries(from: lines)
-    }
-
-    /// Extract system-critical entries (localhost, etc.)
     public func getSystemEntries() throws -> [HostEntry] {
-        let entries = try parseSystemHosts()
-        return parser.extractSystemEntries(from: entries)
+        let content = try String(contentsOfFile: hostsPath, encoding: .utf8)
+        return parser.extractSystemEntries(from: parser.extractEntries(from: parser.parse(content)))
+    }
+
+    /// True when the helper daemon is running, so a write needs no password prompt.
+    public func canWriteWithoutPrompt() async -> Bool {
+        #if DEBUG
+            if AuthenticationService.debugBypassEnabled {
+                return true
+            }
+        #endif
+        return await helperConnection.isHelperRunning()
     }
 
     // MARK: - Writing
 
-    /// Write content to /etc/hosts.
-    ///
-    /// Tries the XPC helper (Touch ID) first. Direct builds may install an
-    /// app-owned privileged fallback if the helper is unavailable.
-    public func writeHostsFile(content: String) async throws {
+    /// With `interactive` false the write never falls back to a password
+    /// prompt; it fails with `helperUnavailable` instead.
+    public func writeHostsFile(content: String, interactive: Bool = true) async throws {
         guard !isWriting else {
             logger.warning("Write already in progress, skipping concurrent write")
             throw HostsServiceError.writeInProgress
@@ -80,7 +71,6 @@ public final class HostsService {
             }
         #endif
 
-        // Strategy 1: XPC helper with Touch ID
         do {
             try await writeViaHelper(content: content)
             lastWriteUsedHelper = true
@@ -94,7 +84,7 @@ public final class HostsService {
             // Only fall through to the app-owned fallback if the helper was
             // unreachable BEFORE any auth dialog was shown (connectionFailed).
             if case HostsHelperError.connectionFailed = error {
-                guard let fallbackWriter = HostsPrivilegedWriteFallbackRegistry.current() else {
+                guard interactive, let fallbackWriter = HostsPrivilegedWriteFallbackRegistry.current() else {
                     let serviceError = HostsServiceError.helperUnavailable
                     lastError = serviceError
                     throw serviceError
@@ -120,27 +110,27 @@ public final class HostsService {
     /// The helper already runs as root and checks the caller is signed
     /// SaneHosts. LocalAuthentication is not repeated on this path.
     private func writeViaHelper(content: String) async throws {
-        // Verify the helper daemon is running before writing. Do not add a
-        // second password/Touch ID prompt here — the helper already runs as
-        // root and validates the signed SaneHosts caller.
         let helperAvailable = await helperConnection.isHelperRunning()
         guard helperAvailable else {
             throw HostsHelperError.connectionFailed
         }
 
-        // Send write command to privileged helper via XPC
         try await helperConnection.writeHostsFile(content: content)
         logger.info("Hosts file written via XPC helper")
     }
 
     // MARK: - Profile Operations
 
-    /// Activate a profile by writing merged hosts content
-    /// - Returns: A warning message if DNS flush failed (hosts file was still written successfully)
+    /// - Returns: A warning when the hosts file was written but the DNS cache refresh failed.
     @discardableResult
-    public func activateProfile(_ profile: Profile, systemEntries: [HostEntry]) async throws -> String? {
-        let mergedContent = parser.merge(profile: profile, systemEntries: systemEntries)
-        try await writeHostsFile(content: mergedContent)
+    public func activateProfile(
+        _ profile: Profile,
+        systemEntries: [HostEntry],
+        allowlist: HostAllowlist = HostAllowlist(),
+        interactive: Bool = true
+    ) async throws -> String? {
+        let mergedContent = parser.merge(profile: profile, systemEntries: systemEntries, allowlist: allowlist)
+        try await writeHostsFile(content: mergedContent, interactive: interactive)
 
         // Flush DNS cache after successful write.
         // If flush fails, the hosts file was still updated — return warning instead of throwing.
@@ -154,8 +144,8 @@ public final class HostsService {
         return nil
     }
 
-    /// Restore hosts to system-only entries
-    /// - Returns: A warning message if DNS flush failed (hosts file was still restored successfully)
+    /// Restores hosts to system-only entries.
+    /// - Returns: A warning when the hosts file was written but the DNS cache refresh failed.
     @discardableResult
     public func deactivateProfile() async throws -> String? {
         let systemEntries = try getSystemEntries()
@@ -175,7 +165,6 @@ public final class HostsService {
         let content = lines.joined(separator: "\n") + "\n"
         try await writeHostsFile(content: content)
 
-        // Flush DNS cache after successful write
         do {
             try await flushDNSCache()
         } catch {

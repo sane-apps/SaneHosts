@@ -28,6 +28,7 @@ SaneHosts stores the following locally on your Mac:
 - **Profiles** in `~/Library/Application Support/SaneHosts/Profiles/`
 - **Backups** in `~/Library/Application Support/SaneHosts/Backups/`
 - **Blocklist cache** in `~/Library/Application Support/SaneHosts/BlocklistCache/`
+- **Allowed sites** in `~/Library/Application Support/SaneHosts/Allowlist.json`
 - **Preferences** in standard macOS defaults
 - **Hosts changes** written directly to `/etc/hosts`
 
@@ -39,6 +40,7 @@ SaneHosts uses the network only when:
 
 - You choose to import a blocklist from a URL
 - You choose a protection level or blocklist that has not already been cached or bundled locally
+- You click **Update Now** on a profile, or the weekly list update runs for your active profile (you can turn this off in Settings > General > Blocklists). It downloads the same blocklist URLs the profile was built from.
 - It checks for app updates, if update checks are enabled
 - It sends a few simple anonymous product events, such as trial launches and license activation
 
@@ -72,6 +74,7 @@ You can:
 - View your local SaneHosts data in Application Support
 - Delete profiles and backups
 - Turn off update checks
+- Turn off weekly blocklist updates
 - Uninstall the app and remove its local data
 
 ## Contact

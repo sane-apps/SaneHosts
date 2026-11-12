@@ -83,20 +83,19 @@ public struct MainView: View {
     @State var selectedPreset: ProfilePreset?
     @State var isDownloadingPreset = false
     @State var proUpsellFeature: ProFeature?
+    @State var showingAllowlist = false
 
-    /// Selected profiles (computed from IDs)
     var selectedProfiles: [Profile] {
         store.profiles.filter { selectedProfileIDs.contains($0.id) }
     }
 
-    /// Single selected profile (for detail view when one selected)
     var selectedProfile: Profile? {
         guard selectedProfileIDs.count == 1,
               let id = selectedProfileIDs.first else { return nil }
         return store.profiles.first { $0.id == id }
     }
 
-    /// Presets that haven't been downloaded yet (not in profiles by name)
+    /// Presets not yet downloaded, matched by name.
     var availablePresets: [ProfilePreset] {
         let existingNames = Set(store.profiles.map(\.name))
         return ProfilePreset.allCases.filter { !existingNames.contains($0.displayName) }
@@ -131,7 +130,6 @@ public struct MainView: View {
         }
         .groupBoxStyle(GlassGroupBoxStyle())
         .onChange(of: selectedProfileIDs) { _, newValue in
-            // Clear preset selection when a profile is selected
             if !newValue.isEmpty {
                 selectedPreset = nil
             }
@@ -259,6 +257,13 @@ public struct MainView: View {
         }
         .sheet(item: $proUpsellFeature) { feature in
             ProUpsellView(feature: feature, licenseService: licenseService)
+        }
+        .sheet(isPresented: $showingAllowlist) {
+            AllowlistSheet(
+                initial: AllowlistStore.shared.allowlist,
+                protectionIsActive: store.activeProfile != nil,
+                onSave: saveAllowlist
+            )
         }
     }
 }

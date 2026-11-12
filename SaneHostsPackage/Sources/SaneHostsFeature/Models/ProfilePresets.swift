@@ -20,45 +20,45 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
     public var description: String {
         switch self {
         case .essentials:
-            return "Ads, trackers, and malware. Safe for everyone."
+            "Ads, trackers, and malware. Safe for everyone."
         case .familySafe:
-            return "Essentials + adult content and gambling sites."
+            "Essentials + adult content and gambling sites."
         case .focusMode:
-            return "Family Safe + social media distractions."
+            "Family Safe + social media distractions."
         case .privacyShield:
-            return "Focus Mode + telemetry and advanced trackers."
+            "Focus Mode + telemetry and advanced trackers."
         case .kitchenSink:
-            return "Maximum protection. Blocks everything we can."
+            "Maximum protection. Blocks everything we can."
         }
     }
 
     public var tagline: String {
         switch self {
-        case .essentials: return "Just make it work"
-        case .familySafe: return "Protect the kids"
-        case .focusMode: return "Get stuff done"
-        case .privacyShield: return "Stop watching me"
-        case .kitchenSink: return "Block everything we can"
+        case .essentials: "Just make it work"
+        case .familySafe: "Protect the kids"
+        case .focusMode: "Get stuff done"
+        case .privacyShield: "Stop watching me"
+        case .kitchenSink: "Block everything we can"
         }
     }
 
     public var icon: String {
         switch self {
-        case .essentials: return "shield.checkered"
-        case .familySafe: return "figure.2.and.child.holdinghands"
-        case .focusMode: return "brain.head.profile"
-        case .privacyShield: return "eye.slash"
-        case .kitchenSink: return "flame.fill"
+        case .essentials: "shield.checkered"
+        case .familySafe: "figure.2.and.child.holdinghands"
+        case .focusMode: "brain.head.profile"
+        case .privacyShield: "eye.slash"
+        case .kitchenSink: "flame.fill"
         }
     }
 
     public var colorTag: ProfileColor {
         switch self {
-        case .essentials: return .blue
-        case .familySafe: return .green
-        case .focusMode: return .purple
-        case .privacyShield: return .pink
-        case .kitchenSink: return .red
+        case .essentials: .blue
+        case .familySafe: .green
+        case .focusMode: .purple
+        case .privacyShield: .pink
+        case .kitchenSink: .red
         }
     }
 
@@ -66,33 +66,33 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
     public var blocklistSourceIds: [String] {
         switch self {
         case .essentials:
-            return [
+            [
                 "steven-black-unified",
                 "hagezi-light",
                 "peter-lowe"
             ]
         case .familySafe:
-            return ProfilePreset.essentials.blocklistSourceIds + [
+            ProfilePreset.essentials.blocklistSourceIds + [
                 "steven-black-porn",
                 "steven-black-gambling"
             ]
         case .focusMode:
-            return ProfilePreset.familySafe.blocklistSourceIds + [
+            ProfilePreset.familySafe.blocklistSourceIds + [
                 "steven-black-social",
                 "tiktok-block"
             ]
         case .privacyShield:
-            return ProfilePreset.focusMode.blocklistSourceIds + [
+            ProfilePreset.focusMode.blocklistSourceIds + [
                 "easyprivacy",
                 "cname-cloaking",
                 "windows-telemetry",
                 "smart-tv"
             ]
         case .kitchenSink:
-            return ProfilePreset.privacyShield.blocklistSourceIds + [
+            ProfilePreset.privacyShield.blocklistSourceIds + [
                 "steven-black-fakenews",
-                "fanboy-annoyances",
-                "anudeep-coinminer",
+                "wally3k",
+                "crypto-jacking",
                 "phishing-army",
                 "urlhaus"
             ]
@@ -109,39 +109,47 @@ public enum ProfilePreset: String, CaseIterable, Identifiable, Sendable {
     /// Estimated total entries (rough, for display)
     public var estimatedEntries: String {
         switch self {
-        case .essentials: return "~170K"
-        case .familySafe: return "~400K"
-        case .focusMode: return "~580K"
-        case .privacyShield: return "~600K"
-        case .kitchenSink: return "~700K"
+        case .essentials: "~230K"
+        case .familySafe: "~315K"
+        case .focusMode: "~320K"
+        case .privacyShield: "~355K"
+        case .kitchenSink: "~500K"
         }
     }
 
-    /// Create a Profile from this preset with the given entries
     public func createProfile(with entries: [HostEntry]) -> Profile {
         Profile(
             name: displayName,
             entries: entries,
             isActive: false,
             source: .merged(sourceCount: blocklistSourceIds.count),
-            colorTag: colorTag
+            colorTag: colorTag,
+            sourceURLs: blocklistSources.map(\.url),
+            listsUpdatedAt: Date()
         )
+    }
+
+    public static func matching(_ profile: Profile) -> ProfilePreset? {
+        guard profile.source.isMerged else { return nil }
+        return allCases.first { $0.displayName.caseInsensitiveCompare(profile.name) == .orderedSame }
     }
 }
 
 // MARK: - Preset Manager
 
-/// Manages preset profiles and bundled blocklist data
+/// Loads the lists behind each preset from the local cache, the app bundle,
+/// or the network, in that order.
 public actor PresetManager {
     public static let shared = PresetManager()
     private static let maxBlocklistBytes = 25 * 1024 * 1024
 
-    /// Directory for bundled blocklist data
+    /// A cached list older than this is downloaded again when the network is allowed.
+    static let cacheMaxAge: TimeInterval = 7 * 24 * 60 * 60
+
     private var bundledDataURL: URL? {
         Bundle.main.url(forResource: "BundledBlocklists", withExtension: nil)
     }
 
-    /// Directory for cached/updated blocklist data
     private var cachedDataURL: URL {
         guard let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
             fatalError("Application Support directory unavailable")
@@ -149,7 +157,6 @@ public actor PresetManager {
         return appSupport.appendingPathComponent("SaneHosts/BlocklistCache", isDirectory: true)
     }
 
-    /// URLSession with reasonable timeout for blocklist fetches
     private let session: URLSession = {
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 15
@@ -159,7 +166,6 @@ public actor PresetManager {
 
     private init() {}
 
-    /// Load entries for a preset, using cached data if available, otherwise bundled.
     /// Network fetches are opt-in so first launch stays local-first.
     public func loadEntries(for preset: ProfilePreset, allowNetworkFetch: Bool = true) async throws -> [HostEntry] {
         var allEntries: [HostEntry] = []
@@ -170,76 +176,46 @@ public actor PresetManager {
             }
         }
 
-        // Deduplicate by hostname
-        return deduplicateEntries(allEntries)
+        return BlocklistMerge.deduplicated(allEntries)
     }
 
-    /// Load a single blocklist from cache or fetch from network
     private func loadBlocklist(source: BlocklistSource, allowNetworkFetch: Bool) async throws -> [HostEntry] {
         let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
         let parser = HostsParser()
+        let cachedContent = try? loadLocalBlocklist(at: cacheFile)
 
-        // Try cache first
-        if FileManager.default.fileExists(atPath: cacheFile.path) {
-            let content = try loadLocalBlocklist(at: cacheFile)
-            let lines = parser.parse(content)
-            return parser.extractEntries(from: lines)
+        if let cachedContent, !allowNetworkFetch || !isStale(cacheFile) {
+            return parser.parseBlocklist(cachedContent)
         }
 
-        // Try bundled data
-        if let bundledFile = bundledDataURL?.appendingPathComponent("\(source.id).txt"),
-           FileManager.default.fileExists(atPath: bundledFile.path) {
-            let content = try loadLocalBlocklist(at: bundledFile)
-            let lines = parser.parse(content)
-            return parser.extractEntries(from: lines)
-        }
+        let bundledFile = bundledDataURL?.appendingPathComponent("\(source.id).txt")
+        let fallbackContent = cachedContent ?? bundledFile.flatMap { try? loadLocalBlocklist(at: $0) }
 
         guard allowNetworkFetch else {
+            if let fallbackContent {
+                return parser.parseBlocklist(fallbackContent)
+            }
             throw PresetError.networkUnavailable
         }
 
-        // Fetch from network (with timeout)
-        let content = try await fetchBlocklistContent(from: source.url)
-
-        // Cache for future use
-        try? createPrivateCacheDirectoryIfNeeded()
-        try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
-        try? protectCacheFile(cacheFile)
-
-        let lines = parser.parse(content)
-        return parser.extractEntries(from: lines)
+        do {
+            let content = try await fetchBlocklistContent(from: source.url)
+            try? createPrivateCacheDirectoryIfNeeded()
+            try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
+            try? protectCacheFile(cacheFile)
+            return parser.parseBlocklist(content)
+        } catch {
+            if let fallbackContent {
+                return parser.parseBlocklist(fallbackContent)
+            }
+            throw error
+        }
     }
 
-    /// Remove duplicate hostnames, keeping first occurrence
-    private func deduplicateEntries(_ entries: [HostEntry]) -> [HostEntry] {
-        var seen = Set<String>()
-        var unique: [HostEntry] = []
-
-        for entry in entries {
-            let key = entry.hostnames.joined(separator: ",")
-            if !seen.contains(key) {
-                seen.insert(key)
-                unique.append(entry)
-            }
-        }
-
-        return unique
-    }
-
-    /// Update cached blocklists in background
-    public func updateCachedBlocklists() async {
-        for source in BlocklistCatalog.all {
-            do {
-                let content = try await fetchBlocklistContent(from: source.url)
-                let cacheFile = cachedDataURL.appendingPathComponent("\(source.id).txt")
-                try? createPrivateCacheDirectoryIfNeeded()
-                try? content.write(to: cacheFile, atomically: true, encoding: .utf8)
-                try? protectCacheFile(cacheFile)
-            } catch {
-                // Silently fail - we'll use cached/bundled data
-                continue
-            }
-        }
+    private func isStale(_ file: URL) -> Bool {
+        let modified = (try? FileManager.default.attributesOfItem(atPath: file.path))?[.modificationDate] as? Date
+        guard let modified else { return true }
+        return Date().timeIntervalSince(modified) > Self.cacheMaxAge
     }
 
     private func fetchBlocklistContent(from url: URL) async throws -> String {
@@ -249,10 +225,7 @@ public actor PresetManager {
         guard let httpResponse = response as? HTTPURLResponse else {
             throw PresetError.invalidData
         }
-        guard Self.isAllowedFinalURL(httpResponse.url) else {
-            throw PresetError.networkUnavailable
-        }
-        guard (200 ... 299).contains(httpResponse.statusCode) else {
+        guard Self.isAllowedFinalURL(httpResponse.url), (200 ... 299).contains(httpResponse.statusCode) else {
             throw PresetError.networkUnavailable
         }
         if httpResponse.expectedContentLength > Self.maxBlocklistBytes {
@@ -305,10 +278,10 @@ public enum PresetError: Error, LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .invalidData: return "Invalid blocklist data"
-        case .networkUnavailable: return "Network unavailable"
-        case .presetNotFound: return "Preset not found"
-        case .fileTooLarge: return "Blocklist file is too large"
+        case .invalidData: "Invalid blocklist data"
+        case .networkUnavailable: "Network unavailable"
+        case .presetNotFound: "Preset not found"
+        case .fileTooLarge: "Blocklist file is too large"
         }
     }
 }

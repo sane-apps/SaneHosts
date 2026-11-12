@@ -134,9 +134,8 @@ struct ProfileRowView: View {
                         .foregroundColor(.white)
                         .lineLimit(1)
 
-                    // Source indicator icon
-                    if profile.source.isRemote {
-                        Image(systemName: SaneIcons.profileRemote)
+                    if case let .remote(url, _) = profile.source {
+                        Image(systemName: url.isFileURL ? "doc" : SaneIcons.profileRemote)
                             .font(.subheadline)
                             .foregroundStyle(Color.saneAccent)
                     } else if profile.source.isMerged {
@@ -194,7 +193,6 @@ struct MultiSelectDetailView: View {
 
     var body: some View {
         VStack(spacing: 32) {
-            // Header with count
             VStack(spacing: 12) {
                 Image(systemName: "square.stack.3d.up.fill")
                     .font(.system(size: 56))
@@ -209,7 +207,6 @@ struct MultiSelectDetailView: View {
                     .foregroundColor(.white)
             }
 
-            // Selected profiles list
             VStack(alignment: .leading, spacing: 10) {
                 Text("Selected")
                     .font(.system(size: 13, weight: .semibold))
@@ -255,9 +252,7 @@ struct MultiSelectDetailView: View {
             }
             .frame(maxWidth: 400)
 
-            // Actions
             VStack(spacing: 12) {
-                // Primary action: Merge
                 Button(action: onMerge) {
                     HStack {
                         Image(systemName: "arrow.triangle.merge")
@@ -269,7 +264,6 @@ struct MultiSelectDetailView: View {
                 .accessibilityLabel("Merge into new profile")
 
                 HStack(spacing: 12) {
-                    // Export
                     Button(action: onExport) {
                         HStack {
                             Image(systemName: SaneIcons.export)
@@ -281,7 +275,6 @@ struct MultiSelectDetailView: View {
                     .accessibilityLabel("Export all selected profiles")
                 }
 
-                // Delete
                 Button(role: .destructive, action: onDelete) {
                     HStack {
                         Image(systemName: SaneIcons.remove)

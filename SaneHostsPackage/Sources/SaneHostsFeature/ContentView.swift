@@ -10,7 +10,6 @@ public struct ContentView: View {
             ZStack {
                 MainView(licenseService: licenseService)
 
-                // Tutorial overlay
                 if tutorial.isActive {
                     CoachMarkOverlay(tutorial: tutorial, windowFrame: windowFrame)
                 }

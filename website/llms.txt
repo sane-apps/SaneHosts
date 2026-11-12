@@ -1,6 +1,6 @@
 # SaneHosts
 
-> SaneHosts is a Mac app that blocks ads, trackers, malware and distracting sites system-wide by managing the Mac's built-in hosts file. No VPN, no cloud account, no subscription. Pick one of five protection levels or build profiles from 200+ curated blocklists; macOS asks for Touch ID or your password before each change. $14.99 once after a 14-day trial (no credit card). macOS 14 Sonoma or later. Made by SaneApps.
+> SaneHosts is a Mac app that blocks ads, trackers, malware and distracting sites system-wide by managing the Mac's built-in hosts file. No VPN, no cloud account, no subscription. Pick one of five protection levels or build profiles from 30 curated blocklists; macOS asks for Touch ID or your password before each change. $14.99 once after a 14-day trial (no credit card). macOS 14 Sonoma or later. Made by SaneApps.
 
 ## Facts
 - Current version: 1.1.26 (direct download)
@@ -11,14 +11,14 @@
 - Listed in the StevenBlack/hosts README (third-party tools). Source code public on GitHub (github.com/sane-apps/SaneHosts), PolyForm Shield licence.
 
 ## Protection levels
-- Essentials (~170K entries): ads, trackers, malware
-- Family Safe (~400K): Essentials + adult content and gambling
-- Focus Mode (~580K): Family Safe + social media
-- Privacy Shield (~600K): Focus Mode + telemetry and advanced trackers
-- Kitchen Sink (~700K): everything available
+- Essentials (~230K entries): ads, trackers, malware
+- Family Safe (~315K): Essentials + adult content and gambling
+- Focus Mode (~320K): Family Safe + social media
+- Privacy Shield (~355K): Focus Mode + telemetry and advanced trackers
+- Kitchen Sink (~500K): everything available
 
 ## Features
-- 200+ curated blocklists (Steven Black, Hagezi, AdGuard and more), import from files and URLs
+- 30 curated blocklists (Steven Black, Hagezi, AdGuard and more), import from files and URLs
 - Unlimited profiles (work, family, focus); merge, duplicate, switch from the menu bar
 - Works in every app (Safari, Chrome, Slack, games), not just browsers
 - Automatic DNS cache flush on every change; automatic backups and rollback

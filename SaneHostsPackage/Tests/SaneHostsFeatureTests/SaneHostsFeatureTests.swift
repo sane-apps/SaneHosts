@@ -545,32 +545,3 @@ struct RemoteSyncErrorTests {
         #expect(RemoteSyncError.timeout.errorDescription != nil)
     }
 }
-
-// MARK: - PopularHostsSource Tests
-
-@Suite("PopularHostsSource Tests")
-struct PopularHostsSourceTests {
-    @Test("All sources have valid URLs")
-    func validURLs() {
-        for source in PopularHostsSource.allCases {
-            #expect(source.url.scheme == "https")
-            #expect(source.url.host != nil)
-        }
-    }
-
-    @Test("All sources have names and descriptions")
-    func namesAndDescriptions() {
-        for source in PopularHostsSource.allCases {
-            #expect(!source.name.isEmpty)
-            #expect(!source.description.isEmpty)
-            #expect(!source.icon.isEmpty)
-        }
-    }
-
-    @Test("Steven Black URLs are from GitHub")
-    func stevenBlackURLs() {
-        #expect(PopularHostsSource.stevenBlackUnified.url.host?.contains("github") == true)
-        #expect(PopularHostsSource.stevenBlackFakenews.url.host?.contains("github") == true)
-        #expect(PopularHostsSource.stevenBlackGambling.url.host?.contains("github") == true)
-    }
-}

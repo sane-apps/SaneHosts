@@ -29,7 +29,6 @@ public class TutorialState {
     public func completeTutorial() {
         currentStep = .complete
         isActive = false
-        // Mark as completed in UserDefaults
         UserDefaults.standard.set(true, forKey: "hasCompletedTutorial")
     }
 
@@ -135,7 +134,6 @@ struct SpotlightBackground: View {
     var body: some View {
         GeometryReader { _ in
             Canvas { context, size in
-                // Fill entire area with semi-transparent black
                 context.fill(
                     Path(CGRect(origin: .zero, size: size)),
                     with: .color(.black.opacity(0.45))
@@ -166,18 +164,15 @@ struct CoachMarkTooltip: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            // Title
             Text(titleForStep)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundColor(.white)
 
-            // Description
             Text(descriptionForStep)
                 .font(.system(size: 15))
                 .foregroundColor(.white)
                 .fixedSize(horizontal: false, vertical: true)
 
-            // Buttons
             HStack(spacing: 12) {
                 Button("Skip Tutorial") {
                     onSkip()

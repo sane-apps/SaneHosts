@@ -55,6 +55,8 @@ struct SaneHostsSettingsView: View {
 
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
+    @AppStorage(BlocklistAutoUpdater.enabledKey) private var autoUpdateLists = true
+    @State private var lastListCheck: Date?
     let updater: SPUUpdater?
     let updateEligibility: SaneUpdateEligibility
     @State private var automaticallyChecksForUpdates = false
@@ -72,6 +74,20 @@ struct GeneralSettingsTab: View {
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                }
+
+                CompactSection("Blocklists", icon: "shield.lefthalf.filled", iconColor: .green) {
+                    CompactToggle(label: "Update lists every week", isOn: $autoUpdateLists)
+
+                    CompactDivider()
+
+                    Text(listCheckDescription)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                 }
@@ -110,11 +126,19 @@ struct GeneralSettingsTab: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .onAppear {
+            lastListCheck = BlocklistAutoUpdater.lastCheck()
             automaticallyChecksForUpdates = updater?.automaticallyChecksForUpdates ?? false
             let interval = updater?.updateCheckInterval ?? SaneSparkleCheckFrequency.daily.interval
             updateCheckFrequency = SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
             updater?.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: interval)
         }
+    }
+
+    private var listCheckDescription: String {
+        let checked = lastListCheck.map {
+            "Last checked: \($0.formatted(.dateTime.weekday(.wide).hour().minute()))."
+        } ?? "Not checked yet."
+        return "Keeps the active profile’s blocklists current while SaneHosts runs, without asking for your password. \(checked)"
     }
 
     private var showDockIconBinding: Binding<Bool> {

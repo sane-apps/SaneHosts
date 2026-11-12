@@ -13,21 +13,18 @@ private let logger = Logger(subsystem: "com.mrsane.SaneHosts", category: "Auth")
 public final class AuthenticationService {
     // MARK: - Properties
 
-    /// Whether Touch ID is available on this device
     public var isBiometricAvailable: Bool {
         let context = LAContext()
         var error: NSError?
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: &error)
     }
 
-    /// The type of biometric available (Touch ID on Mac)
     public var biometricType: LABiometryType {
         let context = LAContext()
         _ = context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
         return context.biometryType
     }
 
-    /// Human-readable name for the biometric type
     public var biometricName: String {
         switch biometricType {
         case .touchID: return "Touch ID"
@@ -37,10 +34,8 @@ public final class AuthenticationService {
         }
     }
 
-    /// Whether we're currently authenticating
     public private(set) var isAuthenticating = false
 
-    /// Last authentication error
     public private(set) var lastError: AuthError?
 
     // MARK: - Debug Mode
@@ -126,7 +121,6 @@ public final class AuthenticationService {
         }
     }
 
-    /// Authenticate with device password only (no biometrics)
     private func authenticateWithPassword(reason: String) async -> Bool {
         let context = LAContext()
 

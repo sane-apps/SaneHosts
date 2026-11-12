@@ -372,3 +372,83 @@ struct FreshnessIndicator: View {
         return "Stale"
     }
 }
+
+// MARK: - Detail Notice
+
+struct DetailNotice: Equatable {
+    enum Style: Equatable {
+        case success
+        case warning
+        case error
+    }
+
+    let id = UUID()
+    let style: Style
+    let text: String
+
+    static func success(_ text: String) -> DetailNotice {
+        DetailNotice(style: .success, text: text)
+    }
+
+    static func warning(_ text: String) -> DetailNotice {
+        DetailNotice(style: .warning, text: text)
+    }
+
+    static func error(_ text: String) -> DetailNotice {
+        DetailNotice(style: .error, text: text)
+    }
+}
+
+struct DetailNoticeBanner: View {
+    let notice: DetailNotice
+    let onDismiss: () -> Void
+
+    private var tint: Color {
+        switch notice.style {
+        case .success: .green
+        case .warning: .orange
+        case .error: .red
+        }
+    }
+
+    private var icon: String {
+        switch notice.style {
+        case .success: "checkmark.circle.fill"
+        case .warning: "exclamationmark.triangle.fill"
+        case .error: "xmark.octagon.fill"
+        }
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: icon)
+                .font(.body)
+                .foregroundStyle(tint)
+            Text(notice.text)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .textSelection(.enabled)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.white)
+            }
+            .buttonStyle(.plain)
+            .help("Dismiss")
+            .accessibilityLabel("Dismiss message")
+        }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 10)
+        .background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(tint.opacity(0.14))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 10)
+                .stroke(tint.opacity(0.45), lineWidth: 1)
+        )
+        .accessibilityElement(children: .contain)
+    }
+}

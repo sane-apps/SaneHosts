@@ -71,7 +71,6 @@ struct PresetDetailView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 32) {
-                // Header
                 VStack(spacing: 16) {
                     Image(systemName: preset.icon)
                         .font(.system(size: 64))
@@ -89,14 +88,12 @@ struct PresetDetailView: View {
                 }
                 .padding(.top, 40)
 
-                // Description
                 Text(preset.description)
                     .font(.body)
                     .foregroundColor(.white)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: 400)
 
-                // Stats
                 HStack(spacing: 32) {
                     VStack(spacing: 4) {
                         Text(preset.estimatedEntries)
@@ -119,7 +116,6 @@ struct PresetDetailView: View {
                     }
                 }
 
-                // Blocklist sources included
                 GroupBox {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Includes")
@@ -143,7 +139,6 @@ struct PresetDetailView: View {
                 }
                 .frame(maxWidth: 400)
 
-                // Download button
                 Button {
                     onDownload()
                 } label: {

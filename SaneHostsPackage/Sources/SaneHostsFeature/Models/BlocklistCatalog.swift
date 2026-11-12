@@ -1,6 +1,5 @@
 import Foundation
 
-/// A curated blocklist source
 public struct BlocklistSource: Identifiable, Hashable, Sendable {
     public let id: String
     public let name: String
@@ -35,7 +34,6 @@ public struct BlocklistSource: Identifiable, Hashable, Sendable {
     }
 }
 
-/// Categories for organizing blocklists
 public enum BlocklistCategory: String, CaseIterable, Sendable {
     case recommended = "Recommended"
     case adsTrackers = "Ads & Trackers"
@@ -45,8 +43,6 @@ public enum BlocklistCategory: String, CaseIterable, Sendable {
     case gambling = "Gambling"
     case fakeNews = "Fake News"
     case adult = "Adult Content"
-    case annoyances = "Annoyances"
-    case regional = "Regional"
 
     public var icon: String {
         switch self {
@@ -58,8 +54,6 @@ public enum BlocklistCategory: String, CaseIterable, Sendable {
         case .gambling: return "dice.fill"
         case .fakeNews: return "newspaper.fill"
         case .adult: return "exclamationmark.triangle.fill"
-        case .annoyances: return "bell.slash.fill"
-        case .regional: return "globe"
         }
     }
 
@@ -73,339 +67,289 @@ public enum BlocklistCategory: String, CaseIterable, Sendable {
         case .gambling: return "yellow"
         case .fakeNews: return "pink"
         case .adult: return "gray"
-        case .annoyances: return "cyan"
-        case .regional: return "indigo"
         }
     }
 }
 
-/// Curated catalog of popular blocklists
 public enum BlocklistCatalog {
-    /// All available blocklists organized by category
+    /// Every list is checked for liveness, size and freshness by
+    /// scripts/check_blocklist_catalog.py. Keep lists updated within the last year.
     public static let all: [BlocklistSource] = [
-        // MARK: - Recommended (Balanced defaults for most users)
-
         BlocklistSource(
             id: "steven-black-unified",
             name: "Steven Black Unified",
-            description: "Comprehensive ad & malware blocking. Best for most users.",
+            description: "Ads and malware from several trusted sources. Best for most users.",
             url: "https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts",
             category: .recommended,
-            estimatedEntries: "170K",
+            estimatedEntries: "78K",
             maintainer: "Steven Black",
             isRecommended: true
         ),
         BlocklistSource(
             id: "hagezi-light",
             name: "Hagezi Light",
-            description: "Balanced blocking with minimal false positives",
-            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists/main/hosts/light.txt",
+            description: "Ads, trackers and telemetry with very few false positives",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/light.txt",
             category: .recommended,
-            estimatedEntries: "70K",
+            estimatedEntries: "160K",
             maintainer: "Hagezi",
             isRecommended: true
         ),
         BlocklistSource(
             id: "peter-lowe",
             name: "Peter Lowe's List",
-            description: "Lightweight, well-maintained ad & tracker list",
+            description: "Small, long-running ad and tracker list",
             url: "https://pgl.yoyo.org/adservers/serverlist.php?hostformat=hosts&showintro=0",
             category: .recommended,
-            estimatedEntries: "3K",
+            estimatedEntries: "3.5K",
             maintainer: "Peter Lowe",
             isRecommended: true
         ),
-
-        // MARK: - Ads & Trackers
-
         BlocklistSource(
             id: "adaway",
             name: "AdAway Default",
-            description: "Popular Android ad blocking list, works everywhere",
+            description: "The AdAway app's ad list, works on any device",
             url: "https://adaway.org/hosts.txt",
             category: .adsTrackers,
-            estimatedEntries: "6K",
-            maintainer: "AdAway Team"
+            estimatedEntries: "6.5K",
+            maintainer: "AdAway"
         ),
         BlocklistSource(
             id: "anudeep-ads",
             name: "anudeepND Ads",
-            description: "Curated advertising domains, tested before adding",
+            description: "Ad servers, each tested before it is added",
             url: "https://raw.githubusercontent.com/anudeepND/blacklist/master/adservers.txt",
             category: .adsTrackers,
-            estimatedEntries: "45K",
+            estimatedEntries: "42K",
             maintainer: "anudeepND"
         ),
         BlocklistSource(
             id: "easylist-hosts",
             name: "EasyList (Hosts)",
-            description: "Classic EasyList converted to hosts format",
+            description: "EasyList ad rules converted to hosts format by Firebog",
             url: "https://v.firebog.net/hosts/Easylist.txt",
             category: .adsTrackers,
-            estimatedEntries: "25K",
-            maintainer: "EasyList Team"
+            estimatedEntries: "52K",
+            maintainer: "EasyList via Firebog"
         ),
         BlocklistSource(
             id: "adguard-dns",
             name: "AdGuard DNS Filter",
-            description: "AdGuard's DNS-level ad blocking list",
+            description: "AdGuard's DNS ad and tracker filter, converted by Firebog",
             url: "https://v.firebog.net/hosts/AdguardDNS.txt",
             category: .adsTrackers,
-            estimatedEntries: "50K",
-            maintainer: "AdGuard"
+            estimatedEntries: "190K",
+            maintainer: "AdGuard via Firebog"
         ),
         BlocklistSource(
-            id: "goodbye-ads",
-            name: "GoodbyeAds",
-            description: "Strict ad blocking, regularly updated",
-            url: "https://raw.githubusercontent.com/jerryn70/GoodbyeAds/master/Hosts/GoodbyeAds.txt",
+            id: "hagezi-multi",
+            name: "Hagezi Multi Normal",
+            description: "Broad ads, trackers, telemetry and badware blocking",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/multi.txt",
             category: .adsTrackers,
-            estimatedEntries: "200K",
-            maintainer: "jerryn70"
+            estimatedEntries: "430K",
+            maintainer: "Hagezi"
         ),
-        BlocklistSource(
-            id: "notracking-ads",
-            name: "NoTracking Ads",
-            description: "Optimized ad blocking, auto-updated",
-            url: "https://raw.githubusercontent.com/notracking/hosts-blocklists/master/hostnames.txt",
-            category: .adsTrackers,
-            estimatedEntries: "100K",
-            maintainer: "notracking"
-        ),
-
-        // MARK: - Malware & Security
-
         BlocklistSource(
             id: "malware-domains",
-            name: "Malware Domain List",
-            description: "Known malware distribution domains",
+            name: "UT1 Malware",
+            description: "Malware sites from the University of Toulouse blacklist",
             url: "https://v.firebog.net/hosts/Prigent-Malware.txt",
             category: .malwareSecurity,
-            estimatedEntries: "15K",
-            maintainer: "Fabrice Prigent"
+            estimatedEntries: "240K",
+            maintainer: "Fabrice Prigent (UT1)"
         ),
         BlocklistSource(
             id: "urlhaus",
             name: "URLhaus Malware",
-            description: "Real-time malware URL blocking from abuse.ch",
-            url: "https://urlhaus.abuse.ch/downloads/hostfile/",
+            description: "Active malware download sites reported to abuse.ch",
+            url: "https://malware-filter.gitlab.io/malware-filter/urlhaus-filter-hosts.txt",
             category: .malwareSecurity,
-            estimatedEntries: "10K",
-            maintainer: "abuse.ch"
+            estimatedEntries: "2K",
+            maintainer: "abuse.ch / malware-filter"
         ),
         BlocklistSource(
             id: "phishing-army",
             name: "Phishing Army",
-            description: "Phishing domains from multiple sources",
+            description: "Phishing domains gathered from several feeds",
             url: "https://phishing.army/download/phishing_army_blocklist_extended.txt",
             category: .malwareSecurity,
-            estimatedEntries: "90K",
+            estimatedEntries: "145K",
             maintainer: "Phishing Army"
         ),
         BlocklistSource(
-            id: "ransomware-tracker",
-            name: "Ransomware Tracker",
-            description: "Known ransomware C&C servers",
+            id: "crypto-jacking",
+            name: "UT1 Cryptojacking",
+            description: "Sites that mine cryptocurrency in your browser",
             url: "https://v.firebog.net/hosts/Prigent-Crypto.txt",
             category: .malwareSecurity,
-            estimatedEntries: "5K",
-            maintainer: "Fabrice Prigent"
+            estimatedEntries: "11K",
+            maintainer: "Fabrice Prigent (UT1)"
         ),
         BlocklistSource(
             id: "someonewhocares",
             name: "Dan Pollock's List",
-            description: "Classic hosts file, ads + malware + annoyances",
+            description: "Classic hosts file: ads, trackers and malware",
             url: "https://someonewhocares.org/hosts/hosts",
             category: .malwareSecurity,
-            estimatedEntries: "15K",
+            estimatedEntries: "13K",
             maintainer: "Dan Pollock"
         ),
-
-        // MARK: - Privacy
-
+        BlocklistSource(
+            id: "wally3k",
+            name: "WaLLy3K Blocklist",
+            description: "Hand-checked suspicious and malicious domains",
+            url: "https://v.firebog.net/hosts/static/w3kbl.txt",
+            category: .malwareSecurity,
+            estimatedEntries: "350",
+            maintainer: "WaLLy3K"
+        ),
         BlocklistSource(
             id: "easyprivacy",
             name: "EasyPrivacy (Hosts)",
-            description: "Tracker blocking from EasyPrivacy list",
+            description: "EasyPrivacy tracker rules converted to hosts format by Firebog",
             url: "https://v.firebog.net/hosts/Easyprivacy.txt",
             category: .privacy,
-            estimatedEntries: "20K",
-            maintainer: "EasyList Team"
+            estimatedEntries: "43K",
+            maintainer: "EasyList via Firebog"
         ),
         BlocklistSource(
             id: "cname-cloaking",
-            name: "CNAME Cloaking Block",
-            description: "Blocks CNAME-cloaked trackers that bypass normal blocking",
-            url: "https://raw.githubusercontent.com/nextdns/cname-cloaking-blocklist/master/domains",
+            name: "CNAME Cloaking Trackers",
+            description: "Tracker domains known for CNAME cloaking",
+            url: "https://raw.githubusercontent.com/AdguardTeam/cname-trackers/master/data/combined_original_trackers_justdomains.txt",
             category: .privacy,
-            estimatedEntries: "1K",
-            maintainer: "NextDNS"
+            estimatedEntries: "100",
+            maintainer: "AdGuard"
         ),
         BlocklistSource(
             id: "windows-telemetry",
-            name: "Windows Telemetry",
-            description: "Block Windows telemetry and tracking",
-            url: "https://raw.githubusercontent.com/crazy-max/WindowsSpyBlocker/master/data/hosts/spy.txt",
+            name: "Windows & Office Telemetry",
+            description: "Microsoft Windows and Office tracking",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/native.winoffice.txt",
             category: .privacy,
-            estimatedEntries: "400",
-            maintainer: "CrazyMax"
+            estimatedEntries: "700",
+            maintainer: "Hagezi"
         ),
         BlocklistSource(
             id: "smart-tv",
             name: "Smart TV Blocklist",
-            description: "Block smart TV telemetry & ads",
+            description: "Ads and tracking on smart TVs",
             url: "https://raw.githubusercontent.com/Perflyst/PiHoleBlocklist/master/SmartTV.txt",
             category: .privacy,
-            estimatedEntries: "700",
+            estimatedEntries: "500",
             maintainer: "Perflyst"
         ),
         BlocklistSource(
-            id: "anudeep-tracking",
-            name: "anudeepND Tracking",
-            description: "Comprehensive tracking domain list",
-            url: "https://raw.githubusercontent.com/anudeepND/blacklist/master/CoinMiner.txt",
+            id: "samsung-tracking",
+            name: "Samsung Tracking",
+            description: "Samsung phone and TV tracking",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/native.samsung.txt",
             category: .privacy,
-            estimatedEntries: "3K",
-            maintainer: "anudeepND"
+            estimatedEntries: "270",
+            maintainer: "Hagezi"
         ),
-
-        // MARK: - Social Media
-
+        BlocklistSource(
+            id: "lg-webos-tracking",
+            name: "LG webOS Tracking",
+            description: "LG smart TV tracking and ads",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/native.lgwebos.txt",
+            category: .privacy,
+            estimatedEntries: "2K",
+            maintainer: "Hagezi"
+        ),
+        BlocklistSource(
+            id: "amazon-tracking",
+            name: "Amazon Device Tracking",
+            description: "Amazon Echo, Fire TV and Kindle tracking",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/native.amazon.txt",
+            category: .privacy,
+            estimatedEntries: "740",
+            maintainer: "Hagezi"
+        ),
+        BlocklistSource(
+            id: "no-google",
+            name: "No Google",
+            description: "Google services, ads and tracking. Breaks Google sites.",
+            url: "https://raw.githubusercontent.com/nickspaargaren/no-google/master/pihole-google.txt",
+            category: .privacy,
+            estimatedEntries: "6.8K",
+            maintainer: "nickspaargaren"
+        ),
         BlocklistSource(
             id: "steven-black-social",
             name: "Social Media Block",
-            description: "Facebook, Twitter, Instagram, TikTok, etc.",
+            description: "Steven Black Unified plus Facebook, Instagram, TikTok, X and more",
             url: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/social/hosts",
             category: .socialMedia,
-            estimatedEntries: "175K",
+            estimatedEntries: "82K",
             maintainer: "Steven Black"
-        ),
-        BlocklistSource(
-            id: "facebook-zero",
-            name: "Facebook Zero",
-            description: "Complete Facebook/Meta blocking",
-            url: "https://raw.githubusercontent.com/jmdugan/blocklists/master/corporations/facebook/all",
-            category: .socialMedia,
-            estimatedEntries: "5K",
-            maintainer: "jmdugan"
         ),
         BlocklistSource(
             id: "tiktok-block",
             name: "TikTok Block",
-            description: "Block TikTok and ByteDance domains",
-            url: "https://raw.githubusercontent.com/jmdugan/blocklists/master/corporations/tiktok/all",
+            description: "TikTok and ByteDance domains",
+            url: "https://raw.githubusercontent.com/hagezi/dns-blocklists-legacy/main/hosts/native.tiktok.txt",
             category: .socialMedia,
-            estimatedEntries: "200",
-            maintainer: "jmdugan"
+            estimatedEntries: "550",
+            maintainer: "Hagezi"
         ),
-
-        // MARK: - Gambling
-
         BlocklistSource(
             id: "steven-black-gambling",
             name: "Gambling Sites",
-            description: "Block gambling and betting websites",
+            description: "Steven Black Unified plus gambling and betting sites",
             url: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/gambling/hosts",
             category: .gambling,
-            estimatedEntries: "175K",
+            estimatedEntries: "85K",
             maintainer: "Steven Black"
         ),
         BlocklistSource(
             id: "sinfonietta-gambling",
             name: "Sinfonietta Gambling",
-            description: "Curated gambling domain list",
+            description: "Hand-curated gambling sites",
             url: "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/gambling-hosts",
             category: .gambling,
-            estimatedEntries: "3K",
+            estimatedEntries: "2.7K",
             maintainer: "Sinfonietta"
         ),
-
-        // MARK: - Fake News
-
         BlocklistSource(
             id: "steven-black-fakenews",
             name: "Fake News Sites",
-            description: "Block known fake news and misinformation sources",
+            description: "Steven Black Unified plus known fake news sites",
             url: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews/hosts",
             category: .fakeNews,
-            estimatedEntries: "175K",
+            estimatedEntries: "81K",
             maintainer: "Steven Black"
         ),
         BlocklistSource(
-            id: "marktron-fakenews",
-            name: "Fake News Extended",
-            description: "Additional fake news sources",
-            url: "https://raw.githubusercontent.com/marktron/fakenews/master/fakenews",
-            category: .fakeNews,
-            estimatedEntries: "2K",
-            maintainer: "marktron"
-        ),
-
-        // MARK: - Adult Content
-
-        BlocklistSource(
             id: "steven-black-porn",
             name: "Adult Content Block",
-            description: "Block adult/NSFW websites",
+            description: "Steven Black Unified plus adult sites",
             url: "https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/porn/hosts",
             category: .adult,
-            estimatedEntries: "240K",
+            estimatedEntries: "155K",
             maintainer: "Steven Black"
         ),
         BlocklistSource(
             id: "antiporn-hosts",
             name: "Anti-Porn HOSTS",
-            description: "Comprehensive adult content blocking list",
+            description: "Large adult-site list",
             url: "https://raw.githubusercontent.com/4skinSkywalker/Anti-Porn-HOSTS-File/master/HOSTS.txt",
             category: .adult,
-            estimatedEntries: "400K",
+            estimatedEntries: "70K",
             maintainer: "4skinSkywalker"
         ),
         BlocklistSource(
             id: "sinfonietta-porn",
             name: "Sinfonietta Adult",
-            description: "Curated adult domain list",
+            description: "Hand-curated adult sites",
             url: "https://raw.githubusercontent.com/Sinfonietta/hostfiles/master/pornography-hosts",
             category: .adult,
-            estimatedEntries: "15K",
+            estimatedEntries: "61K",
             maintainer: "Sinfonietta"
-        ),
-
-        // MARK: - Annoyances
-
-        BlocklistSource(
-            id: "fanboy-annoyances",
-            name: "Fanboy Annoyances",
-            description: "Cookie notices, social widgets, newsletter popups",
-            url: "https://v.firebog.net/hosts/static/w3kbl.txt",
-            category: .annoyances,
-            estimatedEntries: "5K",
-            maintainer: "Fanboy"
-        ),
-        BlocklistSource(
-            id: "anudeep-coinminer",
-            name: "Crypto Miners",
-            description: "Block browser-based cryptocurrency miners",
-            url: "https://raw.githubusercontent.com/anudeepND/blacklist/master/CoinMiner.txt",
-            category: .annoyances,
-            estimatedEntries: "3K",
-            maintainer: "anudeepND"
-        ),
-
-        // MARK: - Regional
-
-        BlocklistSource(
-            id: "no-google",
-            name: "No Google",
-            description: "Block all Google services and tracking",
-            url: "https://raw.githubusercontent.com/nickspaargaren/no-google/master/pihole-google.txt",
-            category: .regional,
-            estimatedEntries: "3K",
-            maintainer: "nickspaargaren"
         )
     ]
 
-    /// Get sources by category
     public static func sources(for category: BlocklistCategory) -> [BlocklistSource] {
         all.filter { $0.category == category }
     }

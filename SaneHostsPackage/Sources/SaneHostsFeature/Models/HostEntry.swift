@@ -63,7 +63,6 @@ public enum HostsContentValidator {
     }
 }
 
-/// Represents a single entry in a hosts file
 public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID
     public var ipAddress: String
@@ -95,7 +94,6 @@ public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
         hostnames.first ?? ""
     }
 
-    /// Format as a hosts file line
     public var hostsFileLine: String {
         var line = ""
         if !isEnabled {
@@ -119,13 +117,11 @@ public struct HostEntry: Identifiable, Codable, Equatable, Hashable, Sendable {
         return hostnames.contains { systemHostnames.contains($0.lowercased()) }
     }
 
-    /// Check if this is a loopback address
     public var isLoopback: Bool {
         ipAddress == "127.0.0.1" || ipAddress == "::1"
     }
 }
 
-/// Represents a comment-only line in hosts file
 public struct HostComment: Identifiable, Codable, Equatable, Hashable, Sendable {
     public let id: UUID
     public var text: String
@@ -142,7 +138,6 @@ public struct HostComment: Identifiable, Codable, Equatable, Hashable, Sendable 
     }
 }
 
-/// A line in a hosts file - either an entry, comment, or blank
 public enum HostsLine: Identifiable, Codable, Equatable, Hashable, Sendable {
     case entry(HostEntry)
     case comment(HostComment)

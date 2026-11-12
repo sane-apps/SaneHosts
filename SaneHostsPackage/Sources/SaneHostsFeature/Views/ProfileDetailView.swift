@@ -1,7 +1,6 @@
 import SaneUI
 import SwiftUI
 
-/// Detail view for editing a profile - SaneClip design language
 struct ProfileDetailView: View {
     let profile: Profile
     let store: ProfileStore
@@ -15,28 +14,32 @@ struct ProfileDetailView: View {
     @State private var debouncedSearchText = ""
     @State private var searchDebounceTask: Task<Void, Never>?
 
-    // Bulk selection state
     @State private var isSelectionMode = false
     @State private var selectedEntries: Set<UUID> = []
     @State private var proUpsellFeature: ProFeature?
+    @State private var isUpdatingLists = false
+    @State private var notice: DetailNotice?
 
     @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                // Header card
                 profileHeaderCard
 
-                // Stats row
+                if let notice {
+                    DetailNoticeBanner(notice: notice) {
+                        withAnimation { self.notice = nil }
+                    }
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
+
                 statsRow
 
-                // Bulk actions bar (when in selection mode)
                 if isSelectionMode {
                     bulkActionsBar
                 }
 
-                // Entries section
                 if !profile.entries.isEmpty {
                     entriesSection
                 } else {
@@ -47,16 +50,11 @@ struct ProfileDetailView: View {
         }
         .searchable(text: $searchText, prompt: "Filter entries")
         .onChange(of: searchText) { _, newValue in
-            // Cancel previous debounce task
             searchDebounceTask?.cancel()
-
-            // If empty, update immediately
             if newValue.isEmpty {
                 debouncedSearchText = ""
                 return
             }
-
-            // Debounce: wait 300ms before filtering
             searchDebounceTask = Task {
                 try? await Task.sleep(for: .milliseconds(300))
                 if !Task.isCancelled {
@@ -73,12 +71,14 @@ struct ProfileDetailView: View {
         .sheet(item: $proUpsellFeature) { feature in
             ProUpsellView(feature: feature, licenseService: licenseService)
         }
+        .onChange(of: profile.id) { _, _ in
+            notice = nil
+        }
     }
 
     // MARK: - Computed
 
     private var filteredEntries: [HostEntry] {
-        // Use debounced text for filtering large datasets
         if debouncedSearchText.isEmpty {
             return profile.entries
         }
@@ -95,7 +95,6 @@ struct ProfileDetailView: View {
     private var profileHeaderCard: some View {
         CompactSection(profile.name, icon: SaneIcons.profiles, iconColor: .saneAccent) {
             VStack(spacing: 0) {
-                // Status row
                 HStack {
                     ProfileColorDot(color: profile.colorTag)
 
@@ -109,7 +108,6 @@ struct ProfileDetailView: View {
 
                     Spacer()
 
-                    // Action button
                     if profile.isActive {
                         Button {
                             onDeactivate()
@@ -125,7 +123,6 @@ struct ProfileDetailView: View {
                     } else {
                         Button {
                             onActivate()
-                            // Complete tutorial when user activates
                             if TutorialState.shared.currentStep == .activateProfile {
                                 TutorialState.shared.completeTutorial()
                             }
@@ -162,7 +159,6 @@ struct ProfileDetailView: View {
 
                 CompactDivider()
 
-                // Source info
                 CompactRow("Source", icon: sourceIcon, iconColor: .saneAccent) {
                     Text(profile.source.displayName)
                         .foregroundColor(.white)
@@ -170,44 +166,75 @@ struct ProfileDetailView: View {
 
                 CompactDivider()
 
-                // Modified date
                 CompactRow("Modified", icon: "clock", iconColor: .saneAccent) {
                     Text(profile.modifiedAt, style: .relative)
                         .foregroundColor(.white)
                 }
 
-                // Remote source freshness indicator
-                if case let .remote(url, lastFetched) = profile.source {
+                if case let .remote(url, _) = profile.source {
                     CompactDivider()
-                    CompactRow("Source URL", icon: "link", iconColor: .blue) {
-                        Text(url.host ?? url.absoluteString)
+                    CompactRow(url.isFileURL ? "Source File" : "Source URL", icon: url.isFileURL ? "doc" : "link", iconColor: .blue) {
+                        Text(url.isFileURL ? url.lastPathComponent : (url.host ?? url.absoluteString))
                             .font(.body)
                             .foregroundColor(.white)
                             .lineLimit(1)
+                            .truncationMode(.middle)
+                            .help(url.isFileURL ? url.path : url.absoluteString)
                     }
+                }
 
+                if BlocklistUpdater.canUpdate(profile) {
                     CompactDivider()
-                    CompactRow("Last Fetched", icon: freshnessIcon(for: lastFetched), iconColor: freshnessColor(for: lastFetched)) {
-                        HStack(spacing: 6) {
-                            if let lastFetched {
-                                Text(lastFetched, style: .relative)
-                                    .font(.body)
-                                    .foregroundColor(.white)
-                                FreshnessIndicator(date: lastFetched) // Colored badge shows status
-                            } else {
-                                Text("Never")
-                                    .font(.body)
-                                    .fontWeight(.medium)
-                                    .foregroundStyle(.orange)
-                            }
-                        }
-                    }
+                    listsRow
                 }
             }
         }
     }
 
-    // MARK: - Freshness Helpers
+    private var listsRow: some View {
+        let lastUpdated = BlocklistUpdater.lastUpdated(profile)
+        return HStack(spacing: 8) {
+            Image(systemName: isUpdatingLists ? "arrow.triangle.2.circlepath" : freshnessIcon(for: lastUpdated))
+                .font(.body)
+                .foregroundStyle(isUpdatingLists ? Color.saneAccent : freshnessColor(for: lastUpdated))
+                .frame(width: 20)
+            Text("Lists")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundColor(.white)
+
+            Spacer(minLength: 12)
+
+            Group {
+                if isUpdatingLists {
+                    ProgressView()
+                        .controlSize(.small)
+                    Text("Updating…")
+                } else if let lastUpdated {
+                    Text("Updated \(lastUpdated.formatted(.relative(presentation: .named)))")
+                    FreshnessIndicator(date: lastUpdated)
+                } else {
+                    Text("Not updated since import")
+                }
+            }
+            .font(.body)
+            .foregroundColor(.white)
+            .lineLimit(1)
+
+            Button {
+                updateLists()
+            } label: {
+                Label("Update Now", systemImage: "arrow.down.circle")
+            }
+            .buttonStyle(SaneActionButtonStyle(compact: true))
+            .disabled(isUpdatingLists)
+            .help("Download the latest version of this profile’s blocklists")
+            .accessibilityLabel("Update lists now")
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 10)
+    }
+
+    // MARK: - Freshness
 
     private func freshnessIcon(for date: Date?) -> String {
         guard let date else { return "exclamationmark.circle" }
@@ -236,7 +263,7 @@ struct ProfileDetailView: View {
     private var sourceIcon: String {
         switch profile.source {
         case .local: SaneIcons.profileLocal
-        case .remote: SaneIcons.profileRemote
+        case let .remote(url, _): url.isFileURL ? "doc" : SaneIcons.profileRemote
         case .merged: "arrow.triangle.merge"
         case .system: SaneIcons.profileSystem
         }
@@ -248,13 +275,8 @@ struct ProfileDetailView: View {
         n.formatted(.number.notation(.compactName))
     }
 
-    /// Cached entry counts - computed once per profile change
-    private var cachedEntryCounts: (enabled: Int, disabled: Int) {
-        profile.entryCounts
-    }
-
     private var statsRow: some View {
-        let counts = cachedEntryCounts // Compute once for this render
+        let counts = profile.entryCounts
         return HStack(spacing: 16) {
             StatCard(
                 title: "Total",
@@ -277,14 +299,13 @@ struct ProfileDetailView: View {
                 color: .saneWarning
             )
 
-            // Prominent Add Entry button - always visible
             Button {
                 showingAddEntry = true
             } label: {
                 VStack(spacing: 8) {
                     Image(systemName: "plus.circle.fill")
                         .font(.title)
-                        .foregroundStyle(.orange) // Orange for action - distinct from blue/teal
+                        .foregroundStyle(.orange)
                     Text("Add Entry")
                         .font(.system(size: 13, weight: .semibold))
                         .fontWeight(.medium)
@@ -311,7 +332,6 @@ struct ProfileDetailView: View {
 
     private var bulkActionsBar: some View {
         HStack(spacing: 12) {
-            // Selection count
             Text("\(selectedEntries.count) selected")
                 .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
@@ -319,7 +339,6 @@ struct ProfileDetailView: View {
 
             Spacer()
 
-            // Select All / Deselect All
             Button {
                 if selectedEntries.count == filteredEntries.count {
                     selectedEntries.removeAll()
@@ -335,7 +354,6 @@ struct ProfileDetailView: View {
             Divider()
                 .frame(height: 20)
 
-            // Bulk Enable
             Button {
                 bulkEnableSelected()
             } label: {
@@ -345,7 +363,6 @@ struct ProfileDetailView: View {
             .disabled(selectedEntries.isEmpty)
             .accessibilityLabel("Enable selected entries")
 
-            // Bulk Disable
             Button {
                 bulkDisableSelected()
             } label: {
@@ -355,7 +372,6 @@ struct ProfileDetailView: View {
             .disabled(selectedEntries.isEmpty)
             .accessibilityLabel("Disable selected entries")
 
-            // Bulk Delete
             Button(role: .destructive) {
                 bulkDeleteSelected()
             } label: {
@@ -368,7 +384,6 @@ struct ProfileDetailView: View {
             Divider()
                 .frame(height: 20)
 
-            // Done button
             Button("Done") {
                 isSelectionMode = false
                 selectedEntries.removeAll()
@@ -391,7 +406,7 @@ struct ProfileDetailView: View {
 
     // MARK: - Entries Section
 
-    /// Maximum entries to display before showing "Load More"
+    /// Rendering more rows than this freezes the UI on 100K+ entry profiles.
     private static let maxVisibleEntries = 100
 
     private var entriesSection: some View {
@@ -399,7 +414,6 @@ struct ProfileDetailView: View {
             let matchingEntries = filteredEntries
             let matchingCount = matchingEntries.count
             VStack(spacing: 0) {
-                // Header with count and selection toggle
                 HStack {
                     if profile.hasPartialEntries, debouncedSearchText.isEmpty {
                         Text("Showing \(compactNumber(profile.entries.count)) of \(compactNumber(profile.entryCount)) entries")
@@ -410,13 +424,12 @@ struct ProfileDetailView: View {
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.white)
                     } else {
-                        Text("\(compactNumber(matchingCount)) entries")
+                        Text(matchingCount == 1 ? "1 entry" : "\(compactNumber(matchingCount)) entries")
                             .font(.system(size: 13, weight: .medium))
                             .foregroundColor(.white)
                     }
                     Spacer()
 
-                    // Selection mode toggle (bulk operations = Pro)
                     if !profile.entries.isEmpty, !isSelectionMode {
                         Button {
                             if licenseService.isPro {
@@ -455,11 +468,9 @@ struct ProfileDetailView: View {
                     }
                 }
 
-                // Entries list - LIMITED to prevent UI freeze
                 let visibleEntries = Array(matchingEntries.prefix(Self.maxVisibleEntries))
                 ForEach(Array(visibleEntries.enumerated()), id: \.element.id) { index, entry in
                     HStack(spacing: 0) {
-                        // Selection checkbox (when in selection mode)
                         if isSelectionMode {
                             Button {
                                 toggleSelection(entry)
@@ -475,7 +486,6 @@ struct ProfileDetailView: View {
                         }
 
                         EntryRow(entry: entry, showToggle: !isSelectionMode) {
-                            // Toggle enabled (only when not in selection mode)
                             if !isSelectionMode {
                                 Task {
                                     try? await store.toggleEntry(entry, in: profile)
@@ -503,7 +513,6 @@ struct ProfileDetailView: View {
                     }
                 }
 
-                // Show message if entries are truncated
                 if matchingCount > Self.maxVisibleEntries {
                     HStack {
                         Spacer()
@@ -545,6 +554,23 @@ struct ProfileDetailView: View {
                   systemImage: entry.isEnabled ? SaneIcons.entryDisabled : SaneIcons.entryEnabled)
         }
 
+        let allowable = allowableHostnames(in: entry)
+        if allowable.count == 1, let hostname = allowable.first {
+            Button {
+                alwaysAllow(hostname)
+            } label: {
+                Label("Always Allow \(hostname)", systemImage: "checkmark.shield")
+            }
+        } else if allowable.count > 1 {
+            Menu {
+                ForEach(allowable, id: \.self) { hostname in
+                    Button(hostname) { alwaysAllow(hostname) }
+                }
+            } label: {
+                Label("Always Allow", systemImage: "checkmark.shield")
+            }
+        }
+
         Divider()
 
         Button(role: .destructive) {
@@ -583,6 +609,77 @@ struct ProfileDetailView: View {
     private func deleteEntry(_ entry: HostEntry) {
         Task {
             try? await store.removeEntry(entry, from: profile)
+        }
+    }
+
+    // MARK: - Allowlist and Lists
+
+    private func allowableHostnames(in entry: HostEntry) -> [String] {
+        guard HostAllowlist.blockingAddresses.contains(entry.ipAddress) else { return [] }
+        let allowlist = AllowlistStore.shared.allowlist
+        return entry.hostnames.filter { !allowlist.allows($0) }
+    }
+
+    private func alwaysAllow(_ hostname: String) {
+        var allowlist = AllowlistStore.shared.allowlist
+        guard allowlist.add(hostname) else { return }
+        do {
+            try AllowlistStore.shared.replace(with: allowlist)
+        } catch {
+            show(.error("Couldn’t save allowed sites: \(error.localizedDescription)"))
+            return
+        }
+        guard profile.isActive else {
+            show(.success("\(hostname) will stay unblocked when protection is on."))
+            return
+        }
+        Task {
+            do {
+                let warning = try await ProtectionController.reapplyActiveProfile()
+                show(warning.map(DetailNotice.warning) ?? .success("\(hostname) is no longer blocked."))
+            } catch {
+                if let message = HostsServiceError.actionErrorMessage(for: error, action: "\(hostname) was added to Allowed Sites, but couldn’t be applied") {
+                    show(.error(message))
+                }
+            }
+        }
+    }
+
+    private func updateLists() {
+        guard !isUpdatingLists else { return }
+        isUpdatingLists = true
+        notice = nil
+        let target = profile
+        Task {
+            defer { isUpdatingLists = false }
+            do {
+                let result = try await BlocklistUpdater.update(target, store: store)
+                if let warning = result.warning {
+                    show(.warning(warning))
+                } else if result.didChange {
+                    let delta = result.newCount - result.previousCount
+                    let change = delta == 0 ? "" : (delta > 0 ? " (\(delta.formatted()) added)" : " (\((-delta).formatted()) removed)")
+                    show(.success("Lists updated: \(result.newCount.formatted()) entries\(change)."))
+                } else {
+                    show(.success("Lists are already up to date."))
+                }
+            } catch {
+                if let message = HostsServiceError.actionErrorMessage(for: error, action: "Couldn’t update lists") {
+                    show(.error(message))
+                }
+            }
+        }
+    }
+
+    private func show(_ newNotice: DetailNotice) {
+        withAnimation { notice = newNotice }
+        guard newNotice.style == .success else { return }
+        let shown = newNotice
+        Task {
+            try? await Task.sleep(for: .seconds(6))
+            if notice == shown {
+                withAnimation { notice = nil }
+            }
         }
     }
 
