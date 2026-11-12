@@ -3,7 +3,7 @@
 ## 2026-11-12 about 5:05 PM ET: 1.1.27 released (Claude, Air -> Mini)
 - Shipped: Allowed Sites, Update Now + weekly list updates, optional Protection Lock (Touch ID / Mac password; off by default), Choose File import, 30-list catalog, bulk-bar wrap fix, no Always Allow on loopback names. release.sh --full --deploy: appcast, dist ZIP, Homebrew cask (550b78c), email webhook, GitHub, site all at 1.1.27 (verified by curl 5:00 PM).
 - Proof: verify 154/154; upgrade_path_proof from 1.1.26 passed (UpgradePathTests); customer_ui_sweep passed with 1.1.27 Mini shots (outputs/customer-ui/portfolio-20261112, visual-audit-20261112-lock/VERDICT.md, -allowlist/VERDICT.md); release_preflight exit 0.
-- OPEN: Lemon Squeezy hosted file still 1.1.26 (variant 1253740, product 794910). LS dashboard in Mini Brave is signed out; agent may not sign in. After the owner signs in: upload the staged ~/Desktop/LemonSqueezy-Uploads/SaneHosts-1.1.27.zip, verify, delete the 1.1.26 file, then run release.sh --project ~/SaneApps/apps/SaneHosts --version 1.1.27 --post-release-checks-only (export LEMONSQUEEZY_API_KEY via _sane_export_secret first).
+- DONE 5:10 PM: Lemon Squeezy now lists only SaneHosts-1.1.27.zip (signed in with Google, uploaded, API byte proof sha256 d01a1caf..., 1.1.26 deleted per owner). release.sh --post-release-checks-only passed. Sign-in steps now in SaneProcess RELEASE_SOP (7412caf).
 - Mini state: Protection Lock off, Existing Entries active, /etc/hosts 185,933 lines, SaneHosts 1.1.27 running.
 
 
