@@ -30,6 +30,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hostnames, and skips machine names like `ip6-localhost` found in list headers.
 - The import sheet footer now says what will actually be imported when a custom
   URL or file is set.
+- Fixes the bulk selection bar wrapping its count onto three lines.
+- Always Allow is no longer offered for loopback names such as ip6-localhost,
+  which would have removed a standard line from the hosts file.
 
 ## [1.1.26] - 2026-09-08
 
