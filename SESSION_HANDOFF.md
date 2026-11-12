@@ -1,5 +1,12 @@
 # Session Handoff — SaneHosts
 
+## 2026-11-12 about 5:05 PM ET: 1.1.27 released (Claude, Air -> Mini)
+- Shipped: Allowed Sites, Update Now + weekly list updates, optional Protection Lock (Touch ID / Mac password; off by default), Choose File import, 30-list catalog, bulk-bar wrap fix, no Always Allow on loopback names. release.sh --full --deploy: appcast, dist ZIP, Homebrew cask (550b78c), email webhook, GitHub, site all at 1.1.27 (verified by curl 5:00 PM).
+- Proof: verify 154/154; upgrade_path_proof from 1.1.26 passed (UpgradePathTests); customer_ui_sweep passed with 1.1.27 Mini shots (outputs/customer-ui/portfolio-20261112, visual-audit-20261112-lock/VERDICT.md, -allowlist/VERDICT.md); release_preflight exit 0.
+- OPEN: Lemon Squeezy hosted file still 1.1.26 (variant 1253740, product 794910). LS dashboard in Mini Brave is signed out; agent may not sign in. After the owner signs in: upload the staged ~/Desktop/LemonSqueezy-Uploads/SaneHosts-1.1.27.zip, verify, delete the 1.1.26 file, then run release.sh --project ~/SaneApps/apps/SaneHosts --version 1.1.27 --post-release-checks-only (export LEMONSQUEEZY_API_KEY via _sane_export_secret first).
+- Mini state: Protection Lock off, Existing Entries active, /etc/hosts 185,933 lines, SaneHosts 1.1.27 running.
+
+
 ## 2026-11-12 — Allowed Sites, list updates, file import (uncommitted on the Mini)
 
 - New: Allowed Sites (global allowlist, covers subdomains, blocking entries only; right-click "Always Allow"), Update Now on list-based profiles, weekly auto-update of the active profile (Settings > General > Blocklists; only writes when the helper needs no password), Choose File... in the import sheet. One write path: `ProtectionController` (main window, menu bar, allowlist, updates).
