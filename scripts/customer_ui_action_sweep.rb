@@ -14,6 +14,14 @@ require 'yaml'
 # Does NOT invent live click completion, hosts-file mutation, or admin auth.
 # Legacy scripts/customer_ui_action_executor.rb receipts are revoked by contract.
 class SaneHostsCustomerUIActionSweep
+  # The shared release check launches one SaneHosts before this sweep runs,
+  # so one instance is expected. Two or more means a stale or duplicate copy.
+  def self.competing_instance_error(count)
+    return nil if count <= 1
+
+    "#{count} SaneHosts instances running; quit the extra copies before customer UI sweep"
+  end
+
   PROJECT_ROOT = File.expand_path('..', __dir__)
   MANIFEST_PATH = File.join(PROJECT_ROOT, 'Tests', 'CustomerUIActions.yml')
   RECEIPT_PATH = File.join(PROJECT_ROOT, '.sane', 'customer_ui_action_receipt.json')
@@ -112,7 +120,7 @@ class SaneHostsCustomerUIActionSweep
       ['SaneHostsPackage/Sources/SaneHostsFeature/Views/MainView+Actions.swift', 'func deactivateProfile()'],
       ['SaneHosts/SaneHostsApp.swift', 'func activateProfile(_ profile: Profile) async'],
       ['SaneHosts/SaneHostsApp.swift', 'func deactivateProfile() async'],
-      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift', 'activateProfile(_ profile: Profile'],
+      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift', 'public func activateProfile('],
       ['SaneHostsPackage/Sources/SaneHostsFeature/Services/HostsService.swift', 'deactivateProfile()'],
       ['SaneHosts/SaneHostsApp.swift', 'AppleScriptHostsWriteFallback'],
       ['SaneHostsPackage/Tests/SaneHostsFeatureTests/SaneHostsFeatureTests.swift', 'hostsContentValidatorRejectsInjectedLines'],
@@ -160,8 +168,8 @@ class SaneHostsCustomerUIActionSweep
     ],
     'persistence-security-and-release-surfaces' => [
       ['SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift', 'private let maxBackups'],
-      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift', 'createRemote(name: String, url: URL, entries: [HostEntry], maxEntries: Int = 500_000)'],
-      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift', 'createMerged(name: String, entries: [HostEntry], sourceCount: Int, maxEntries: Int = 500_000)'],
+      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/ProfileStore.swift', 'entries: Array(entries.prefix(BlocklistMerge.maxEntries))'],
+      ['SaneHostsPackage/Sources/SaneHostsFeature/Services/BlocklistMerge.swift', 'public static let maxEntries = 500_000'],
       ['SaneHosts/SaneHostsApp.swift', 'HostsContentValidator.validate(content)'],
       ['SaneHostsHelper/main.swift', 'validateHostsContent(content)'],
       ['SaneHostsPackage/Sources/SaneHostsFeature/Models/ProfilePresets.swift', 'maxBlocklistBytes'],
@@ -185,18 +193,19 @@ class SaneHostsCustomerUIActionSweep
     'persistence-security-and-release-surfaces' => 'Privileged helper and fallback writes are represented by validation proof only; this sweep does not perform privileged copy to /etc/hosts.'
   }.freeze
 
+  # 1.1.27 Mini captures (12 Nov 2026). Each image shows the surface it covers.
   SCREENSHOT_BY_ACTION = {
-    'onboarding-and-tutorial-entry' => 'outputs/visual-audit-20260814-essentials/sanehosts-live-continue.png',
-    'menu-bar-profile-actions' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-33-10.png',
-    'dock-and-app-menu-commands' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-34-56.png',
-    'quick-actions-and-paid-access-gates' => 'outputs/visual-audit-20260814-essentials/sanehosts-after-refill.png',
-    'profile-lifecycle-actions' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-44-00.png',
-    'preset-template-import-actions' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-47-01.png',
-    'activation-deactivation-hosts-write' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-48-44.png',
-    'entry-crud-search-toggle-actions' => 'outputs/customer-ui/portfolio-20260907/codex-shot-2026-09-07_04-51-36.png',
-    'bulk-entry-actions' => 'outputs/visual-audit-20260814-essentials/sanehosts-essentials-selected.png',
-    'settings-license-about-update-support' => 'outputs/visual-audit-20260814-essentials/sanehosts-about-w6116.png',
-    'persistence-security-and-release-surfaces' => 'outputs/visual-audit-20260814-essentials/sanehosts-about-w6194.png'
+    'onboarding-and-tutorial-entry' => 'outputs/customer-ui/portfolio-20261112/onboarding-and-tutorial-entry.png',
+    'menu-bar-profile-actions' => 'outputs/customer-ui/portfolio-20261112/menu-bar-profile-actions.png',
+    'dock-and-app-menu-commands' => 'outputs/customer-ui/portfolio-20261112/dock-and-app-menu-commands.png',
+    'quick-actions-and-paid-access-gates' => 'outputs/visual-audit-20261112-allowlist/codex-shot-2026-11-12_12-42-53.png',
+    'profile-lifecycle-actions' => 'outputs/customer-ui/portfolio-20261112/profile-lifecycle-actions.png',
+    'preset-template-import-actions' => 'outputs/visual-audit-20261112-allowlist/codex-shot-2026-11-12_13-06-14.png',
+    'activation-deactivation-hosts-write' => 'outputs/visual-audit-20261112-lock/03-turn-off-asks.png',
+    'entry-crud-search-toggle-actions' => 'outputs/customer-ui/portfolio-20261112/entry-crud-search-toggle-actions.png',
+    'bulk-entry-actions' => 'outputs/customer-ui/portfolio-20261112/bulk-entry-actions.png',
+    'settings-license-about-update-support' => 'outputs/customer-ui/portfolio-20261112/settings-license-about-update-support.png',
+    'persistence-security-and-release-surfaces' => 'outputs/visual-audit-20261112-lock/01-settings-lock-section.png'
   }.freeze
 
   def initialize
@@ -247,7 +256,8 @@ class SaneHostsCustomerUIActionSweep
 
   def refuse_competing_instances!
     count = `pgrep -x SaneHosts 2>/dev/null`.lines.map(&:strip).reject(&:empty?).length
-    raise "SaneHosts already running (#{count}); stop it before customer UI sweep" if count.positive?
+    error = self.class.competing_instance_error(count)
+    raise error if error
   end
 
   def read_manifest
@@ -352,7 +362,7 @@ class SaneHostsCustomerUIActionSweep
       actions: @action_ids,
       status: 'established',
       state: 'established',
-      fixture_root: 'outputs/customer-ui/portfolio-20260907/',
+      fixture_root: 'outputs/customer-ui/portfolio-20261112/',
       proof_files: @screenshots.values
     )
 
@@ -571,10 +581,9 @@ class SaneHostsCustomerUIActionSweep
 
   def screenshot_pool
     roots = [
-      'outputs/customer-ui/portfolio-20260907',
-      'outputs/visual-audit-20260814-essentials',
-      'outputs/visual-audit-donate-pink-20260906',
-      'outputs/customer-ui'
+      'outputs/customer-ui/portfolio-20261112',
+      'outputs/visual-audit-20261112-allowlist',
+      'outputs/visual-audit-20261112-lock'
     ]
     paths = roots.flat_map { |root| Dir.glob(File.join(PROJECT_ROOT, root, '**', '*.png')) }
                  .select { |path| File.file?(path) }
@@ -589,7 +598,7 @@ class SaneHostsCustomerUIActionSweep
     paths = Array(action.dig('functional_state', 'fixture_paths')).map do |path|
       File.expand_path(path, PROJECT_ROOT)
     end
-    paths << File.join(PROJECT_ROOT, 'outputs', 'customer-ui', 'portfolio-20260907', 'codex-shot-2026-09-07_04-33-10.png')
+    paths << File.join(PROJECT_ROOT, 'outputs', 'customer-ui', 'portfolio-20261112', 'menu-bar-profile-actions.png')
     paths << File.join(PROJECT_ROOT, @artifacts.fetch(:fixture))
     paths.each do |path|
       return path if File.file?(path)
@@ -603,4 +612,4 @@ class SaneHostsCustomerUIActionSweep
   end
 end
 
-SaneHostsCustomerUIActionSweep.new.run
+SaneHostsCustomerUIActionSweep.new.run if File.expand_path($PROGRAM_NAME) == File.expand_path(__FILE__)

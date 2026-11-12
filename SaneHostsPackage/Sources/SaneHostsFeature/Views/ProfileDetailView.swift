@@ -332,13 +332,16 @@ struct ProfileDetailView: View {
     // MARK: - Bulk Actions Bar
 
     private var bulkActionsBar: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             Text("\(selectedEntries.count) selected")
                 .font(.system(size: 13, weight: .semibold))
                 .fontWeight(.medium)
                 .foregroundColor(.white)
+                .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
+                .layoutPriority(1)
 
-            Spacer()
+            Spacer(minLength: 4)
 
             Button {
                 if selectedEntries.count == filteredEntries.count {
@@ -618,7 +621,9 @@ struct ProfileDetailView: View {
     private func allowableHostnames(in entry: HostEntry) -> [String] {
         guard HostAllowlist.blockingAddresses.contains(entry.ipAddress) else { return [] }
         let allowlist = AllowlistStore.shared.allowlist
-        return entry.hostnames.filter { !allowlist.allows($0) }
+        return entry.hostnames.filter {
+            !HostsParser.reservedHostnames.contains($0.lowercased()) && !allowlist.allows($0)
+        }
     }
 
     private func alwaysAllow(_ hostname: String) {

@@ -49,8 +49,12 @@ public struct HostAllowlist: Codable, Equatable, Sendable {
 
     /// Adds a domain. Returns false when the input is invalid or already listed.
     @discardableResult
+    /// Names that describe this Mac (localhost, ip6-loopback, ...) are never
+    /// allowed: allowing one would drop a standard loopback line from /etc/hosts.
     public mutating func add(_ raw: String) -> Bool {
-        guard let domain = Self.normalize(raw), !domains.contains(domain) else { return false }
+        guard let domain = Self.normalize(raw),
+              !HostsParser.reservedHostnames.contains(domain),
+              !domains.contains(domain) else { return false }
         domains.append(domain)
         domains.sort()
         return true
