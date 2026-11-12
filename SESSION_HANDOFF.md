@@ -4,6 +4,7 @@
 - Shipped: Allowed Sites, Update Now + weekly list updates, optional Protection Lock (Touch ID / Mac password; off by default), Choose File import, 30-list catalog, bulk-bar wrap fix, no Always Allow on loopback names. release.sh --full --deploy: appcast, dist ZIP, Homebrew cask (550b78c), email webhook, GitHub, site all at 1.1.27 (verified by curl 5:00 PM).
 - Proof: verify 154/154; upgrade_path_proof from 1.1.26 passed (UpgradePathTests); customer_ui_sweep passed with 1.1.27 Mini shots (outputs/customer-ui/portfolio-20261112, visual-audit-20261112-lock/VERDICT.md, -allowlist/VERDICT.md); release_preflight exit 0.
 - DONE 5:10 PM: Lemon Squeezy now lists only SaneHosts-1.1.27.zip (signed in with Google, uploaded, API byte proof sha256 d01a1caf..., 1.1.26 deleted per owner). release.sh --post-release-checks-only passed. Sign-in steps now in SaneProcess RELEASE_SOP (7412caf).
+- SEO 5:40 PM: 3 new guides live (how-to-allow-site-hosts-blocklist-mac, how-to-update-hosts-blocklists-mac, how-to-lock-hosts-file-touch-id-mac; TechArticle+FAQPage+Breadcrumb JSON-LD), home meta/JSON-LD name the new features, guides/sitemap (20 URLs, lastmod 2026-11-12)/llms.txt updated. release.sh --website-only deployed (social card + SEO audits passed); seo-check.sh sanehosts.com 0 fail; IndexNow HTTP 200 for 16 URLs. Renders: outputs/visual-audit-20261112-seo/.
 - Mini state: Protection Lock off, Existing Entries active, /etc/hosts 185,933 lines, SaneHosts 1.1.27 running.
 
 
