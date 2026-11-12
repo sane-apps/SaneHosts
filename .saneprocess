@@ -25,8 +25,8 @@ release:
   upgrade_path_test:
     scheme: SaneHostsFeature
     package_path: SaneHostsPackage
-    test_selector: ProfileStoreEssentialsPolicyTests/createsEssentialsAlongsideExistingEntries()
-    from_version: "1.1.22"
+    test_selector: UpgradePathTests/upgradeKeepsDataAndDefaults()
+    from_version: "1.1.26"
     timeout_seconds: 300
   reviewed_auto_reconcile_stashes:
     - stash_sha: "d92b0baac8c8a7aac77cf19143745c00089bf0d3"
