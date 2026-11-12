@@ -56,6 +56,7 @@ struct SaneHostsSettingsView: View {
 struct GeneralSettingsTab: View {
     @AppStorage("hideDockIcon") private var hideDockIcon = !SaneBackgroundAppDefaults.showDockIcon
     @AppStorage(BlocklistAutoUpdater.enabledKey) private var autoUpdateLists = true
+    @AppStorage(ProtectionLock.enabledKey) private var protectionLocked = false
     @State private var lastListCheck: Date?
     let updater: SPUUpdater?
     let updateEligibility: SaneUpdateEligibility
@@ -84,6 +85,20 @@ struct GeneralSettingsTab: View {
                     CompactDivider()
 
                     Text(listCheckDescription)
+                        .font(.system(size: 13, weight: .medium))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                }
+
+                CompactSection("Protection Lock", icon: "lock.fill", iconColor: .orange) {
+                    CompactToggle(label: "Require Touch ID to change protection", isOn: protectionLockBinding)
+
+                    CompactDivider()
+
+                    Text("Turning protection off, switching profiles, editing the active profile and changing Allowed Sites ask for Touch ID or your Mac password. Turning this lock off asks too. List updates still run.")
                         .font(.system(size: 13, weight: .medium))
                         .foregroundColor(.white)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -132,6 +147,19 @@ struct GeneralSettingsTab: View {
             updateCheckFrequency = SaneSparkleCheckFrequency.resolve(updateCheckInterval: interval)
             updater?.updateCheckInterval = SaneSparkleCheckFrequency.normalizedInterval(from: interval)
         }
+    }
+
+    private var protectionLockBinding: Binding<Bool> {
+        Binding(
+            get: { protectionLocked },
+            set: { newValue in
+                Task { @MainActor in
+                    if await ProtectionLock.setEnabled(newValue) {
+                        protectionLocked = ProtectionLock.isEnabled
+                    }
+                }
+            }
+        )
     }
 
     private var listCheckDescription: String {

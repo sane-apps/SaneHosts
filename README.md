@@ -33,6 +33,7 @@ Choose from 5 curated protection levels - each bundles the right blocklists for 
 - **Guided Setup** - Coach mark tutorial walks you through activation on first launch
 - **Remote Import** - Import curated sources, custom HTTPS blocklist URLs, or a hosts file from your Mac
 - **Allowed Sites** - Unblock a site a list breaks, in one place, on every profile (covers subdomains too)
+- **Protection Lock** - Optional: turning protection off, switching profiles, editing the active profile and changing Allowed Sites ask for Touch ID or your Mac password
 - **List Updates** - Update a profile's blocklists with one click, or let SaneHosts keep the active profile current every week
 - **Merge Profiles** - Combine multiple profiles with automatic deduplication
 - **Automatic DNS Flush** - DNS cache cleared when activating profiles

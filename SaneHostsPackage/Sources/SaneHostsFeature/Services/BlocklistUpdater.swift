@@ -97,7 +97,7 @@ public enum BlocklistUpdater {
 
         var warning: String?
         if didChange, store.activeProfile?.id == current.id {
-            warning = try await ProtectionController.activate(updated, interactive: interactive, store: store)
+            warning = try await ProtectionController.activate(updated, interactive: interactive, requireUnlock: false, store: store)
         } else {
             try await store.save(profile: updated)
         }

@@ -624,7 +624,16 @@ public final class ProfileStore {
 
     // MARK: - Entry Management
 
+    /// Edits to the active profile are applied by the next list update, so
+    /// the protection lock covers them too.
+    private func unlockIfActive(_ profile: Profile) async throws {
+        let isActive = profiles.first { $0.id == profile.id }?.isActive ?? profile.isActive
+        guard isActive else { return }
+        try await ProtectionController.unlock("change the active profile")
+    }
+
     public func addEntry(_ entry: HostEntry, to profile: Profile) async throws {
+        try await unlockIfActive(profile)
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
@@ -634,6 +643,7 @@ public final class ProfileStore {
     }
 
     public func addEntries(_ entries: [HostEntry], to profile: Profile, maxEntries: Int = BlocklistMerge.maxEntries) async throws {
+        try await unlockIfActive(profile)
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
@@ -643,12 +653,14 @@ public final class ProfileStore {
     }
 
     public func removeEntry(_ entry: HostEntry, from profile: Profile) async throws {
+        try await unlockIfActive(profile)
         var updated = try await fullProfile(for: profile)
         updated.entries.removeAll { $0.id == entry.id }
         try await save(profile: updated)
     }
 
     public func updateEntry(_ entry: HostEntry, in profile: Profile) async throws {
+        try await unlockIfActive(profile)
         var updated = try await fullProfile(for: profile)
         if let index = updated.entries.firstIndex(where: { $0.id == entry.id }) {
             updated.entries[index] = entry
@@ -664,6 +676,7 @@ public final class ProfileStore {
 
     /// One disk write for the whole batch.
     public func bulkUpdateEntries(ids: Set<UUID>, in profile: Profile, update: (inout HostEntry) -> Void) async throws {
+        try await unlockIfActive(profile)
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }
@@ -680,6 +693,7 @@ public final class ProfileStore {
 
     /// One disk write for the whole batch.
     public func bulkRemoveEntries(ids: Set<UUID>, from profile: Profile) async throws {
+        try await unlockIfActive(profile)
         guard let currentSummary = profiles.first(where: { $0.id == profile.id }) else {
             throw ProfileStoreError.profileNotFound
         }

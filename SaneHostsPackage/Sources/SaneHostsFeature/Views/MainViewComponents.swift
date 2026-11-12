@@ -120,6 +120,7 @@ struct TrialCountdownCard: View {
 
 struct ProfileRowView: View {
     let profile: Profile
+    @AppStorage(ProtectionLock.enabledKey) private var protectionLocked = false
 
     var body: some View {
         HStack(spacing: 12) {
@@ -133,6 +134,14 @@ struct ProfileRowView: View {
                         .fontWeight(profile.isActive ? .semibold : .regular)
                         .foregroundColor(.white)
                         .lineLimit(1)
+
+                    if profile.isActive, protectionLocked {
+                        Image(systemName: "lock.fill")
+                            .font(.subheadline)
+                            .foregroundColor(.white)
+                            .help("Protection lock is on")
+                            .accessibilityLabel("Protection lock on")
+                    }
 
                     if case let .remote(url, _) = profile.source {
                         Image(systemName: url.isFileURL ? "doc" : SaneIcons.profileRemote)

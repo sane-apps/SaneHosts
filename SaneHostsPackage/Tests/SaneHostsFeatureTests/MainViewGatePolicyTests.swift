@@ -84,6 +84,9 @@ struct MainViewGatePolicyTests {
         #expect(ProtectionUXCopy.authenticationRequirement == "Allow SaneHosts in Login Items once. After that, switching profiles does not ask for your password each time.")
         #expect(ProtectionUXCopy.deactivationImpact == "Turning it off removes this profile’s rules while leaving standard hosts entries.")
         #expect(!ProtectionUXCopy.deactivationImpact.localizedCaseInsensitiveContains("original hosts file"))
+        #expect(ProtectionUXCopy.authenticationRequirement(locked: false) == ProtectionUXCopy.authenticationRequirement)
+        #expect(ProtectionUXCopy.authenticationRequirement(locked: true).contains("Touch ID or your Mac password"))
+        #expect(!ProtectionUXCopy.authenticationRequirement(locked: true).contains("does not ask"))
     }
 
     @Test("Normal workspace restores the main window close control")
@@ -140,7 +143,7 @@ struct MainViewGatePolicyTests {
         )
 
         #expect(detailSource.contains("Text(ProtectionUXCopy.activePersistence)"))
-        #expect(detailSource.contains("Text(ProtectionUXCopy.authenticationRequirement)"))
+        #expect(detailSource.contains("Text(ProtectionUXCopy.authenticationRequirement(locked: protectionLocked))"))
         #expect(detailSource.contains("Text(ProtectionUXCopy.deactivationImpact)"))
         #expect(detailSource.contains(".foregroundColor(.white)"))
         #expect(layoutSource.contains("primaryProfile.isActive ? ProtectionUXCopy.turnOffActionTitle"))

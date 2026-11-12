@@ -98,7 +98,7 @@
       "name": "Is changing /etc/hosts safe?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Editing it by hand can break name resolution if you make a mistake, and there's no undo. SaneHosts asks macOS for Touch ID or your password before each change, keeps backups you can roll back to, and flushes the DNS cache for you."
+        "text": "Editing it by hand can break name resolution if you make a mistake, and there's no undo. SaneHosts writes it through a helper you approve once, keeps backups you can roll back to, and flushes the DNS cache for you."
       }
     }
   ]
@@ -315,7 +315,7 @@
             <thead><tr><th></th><th>SaneHosts</th><th>SwitchHosts</th><th>Gas Mask</th><th>Terminal + nano</th></tr></thead>
             <tbody>
                 <tr><th>Price</th><td>$14.99 once (14-day trial, no card)</td><td>Free</td><td>Free</td><td>Free</td></tr>
-                <tr><th>Latest release</th><td>1.1.26</td><td>5.0.2 (3 Sep 2026)</td><td>0.8.6 (29 Feb 2020)</td><td>n/a</td></tr>
+                <tr><th>Latest release</th><td>1.1.27</td><td>5.0.2 (3 Sep 2026)</td><td>0.8.6 (29 Feb 2020)</td><td>n/a</td></tr>
                 <tr><th>Apple silicon</th><td>Native (macOS 14+)</td><td>Apple silicon and universal builds</td><td>Intel-only binary, runs under Rosetta 2</td><td>n/a</td></tr>
                 <tr><th>Built for</th><td>Blocking ads, trackers, adult, gambling, social</td><td>Switching hosts setups</td><td>Managing and switching hosts files</td><td>Anything, by hand</td></tr>
                 <tr><th>Curated blocklists</th><td>30, five one-click levels</td><td>Remote hosts by URL</td><td>Remote hosts by URL</td><td>You find them</td></tr>
@@ -343,7 +343,7 @@
         </div>
         <div class="option-card winner-card">
             <div class="option-header"><div class="option-title">SaneHosts</div><span class="option-badge badge-sane">$14.99 One-Time</span></div>
-            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. You get 30 curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, macOS Touch ID or password approval before every change, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
+            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. You get 30 curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, Allowed Sites, weekly list updates, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
             <a href="https://sanehosts.com/#pricing" class="btn">Start the 14-day trial</a>
             <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">macOS 14 (Sonoma) or later. No credit card for the trial.</p>
         </div>
@@ -359,7 +359,7 @@
 <h3>Does editing the hosts file block ads in every app on a Mac?</h3>
 <p>Yes for any domain listed. The hosts file is checked before DNS for every app, not just browsers. It can't block ads served from the same domain as the content, and it doesn't hide empty ad boxes the way a browser extension can.</p>
 <h3>Is changing /etc/hosts safe?</h3>
-<p>Editing it by hand can break name resolution if you make a mistake, and there's no undo. SaneHosts asks macOS for Touch ID or your password before each change, keeps backups you can roll back to, and flushes the DNS cache for you.</p>
+<p>Editing it by hand can break name resolution if you make a mistake, and there's no undo. SaneHosts writes it through a helper you approve once, keeps backups you can roll back to, and flushes the DNS cache for you.</p>
 </section>
     </article>
 

@@ -1,9 +1,9 @@
 # SaneHosts
 
-> SaneHosts is a Mac app that blocks ads, trackers, malware and distracting sites system-wide by managing the Mac's built-in hosts file. No VPN, no cloud account, no subscription. Pick one of five protection levels or build profiles from 30 curated blocklists; macOS asks for Touch ID or your password before each change. $14.99 once after a 14-day trial (no credit card). macOS 14 Sonoma or later. Made by SaneApps.
+> SaneHosts is a Mac app that blocks ads, trackers, malware and distracting sites system-wide by managing the Mac's built-in hosts file. No VPN, no cloud account, no subscription. Pick one of five protection levels or build profiles from 30 curated blocklists. You approve its helper once in System Settings; after that, changes apply without a password prompt. $14.99 once after a 14-day trial (no credit card). macOS 14 Sonoma or later. Made by SaneApps.
 
 ## Facts
-- Current version: 1.1.26 (direct download)
+- Current version: 1.1.27 (direct download)
 - Price: $14.99 one-time after a 14-day trial with every feature, no card. Also in the SaneApps Bundle ($49.99 once).
 - Install: direct download from sanehosts.com, or Homebrew `brew install --cask sane-apps/tap/sanehosts`. It's a direct download, not Mac App Store, because writing the system hosts file needs local system access.
 - Requirements: macOS 14.0 Sonoma or later
@@ -21,6 +21,10 @@
 - 30 curated blocklists (Steven Black, Hagezi, AdGuard and more), import from files and URLs
 - Unlimited profiles (work, family, focus); merge, duplicate, switch from the menu bar
 - Works in every app (Safari, Chrome, Slack, games), not just browsers
+- Allowed Sites: unblock a site a list breaks, on every profile, subdomains included (right-click any entry, Always Allow)
+- Update Now on list-based profiles, plus a weekly update of the active profile; a failed download changes nothing
+- Import a hosts file from your Mac or an HTTPS list
+- Optional Touch ID lock: turning protection off, switching profiles, editing the active profile and changing Allowed Sites ask for Touch ID or the Mac password
 - Automatic DNS cache flush on every change; automatic backups and rollback
 - No Terminal needed
 

@@ -2,6 +2,7 @@ import SaneUI
 import SwiftUI
 
 struct ProfileDetailView: View {
+    @AppStorage(ProtectionLock.enabledKey) private var protectionLocked = false
     let profile: Profile
     let store: ProfileStore
     let onActivate: () -> Void
@@ -146,7 +147,7 @@ struct ProfileDetailView: View {
 
                     VStack(alignment: .leading, spacing: 6) {
                         Text(ProtectionUXCopy.activePersistence)
-                        Text(ProtectionUXCopy.authenticationRequirement)
+                        Text(ProtectionUXCopy.authenticationRequirement(locked: protectionLocked))
                         Text(ProtectionUXCopy.deactivationImpact)
                     }
                     .font(.callout)
@@ -621,21 +622,22 @@ struct ProfileDetailView: View {
     }
 
     private func alwaysAllow(_ hostname: String) {
-        var allowlist = AllowlistStore.shared.allowlist
-        guard allowlist.add(hostname) else { return }
-        do {
-            try AllowlistStore.shared.replace(with: allowlist)
-        } catch {
-            show(.error("Couldn’t save allowed sites: \(error.localizedDescription)"))
-            return
-        }
-        guard profile.isActive else {
-            show(.success("\(hostname) will stay unblocked when protection is on."))
-            return
-        }
         Task {
+            guard await ProtectionLock.authorize("allow \(hostname)") else { return }
+            var allowlist = AllowlistStore.shared.allowlist
+            guard allowlist.add(hostname) else { return }
             do {
-                let warning = try await ProtectionController.reapplyActiveProfile()
+                try AllowlistStore.shared.replace(with: allowlist)
+            } catch {
+                show(.error("Couldn’t save allowed sites: \(error.localizedDescription)"))
+                return
+            }
+            guard profile.isActive else {
+                show(.success("\(hostname) will stay unblocked when protection is on."))
+                return
+            }
+            do {
+                let warning = try await ProtectionController.reapplyActiveProfile(requireUnlock: false)
                 show(warning.map(DetailNotice.warning) ?? .success("\(hostname) is no longer blocked."))
             } catch {
                 if let message = HostsServiceError.actionErrorMessage(for: error, action: "\(hostname) was added to Allowed Sites, but couldn’t be applied") {

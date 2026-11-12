@@ -5,7 +5,7 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.27] - 2026-11-12
 
 - Adds **Allowed Sites**: list sites that should never be blocked, even when a
   blocklist includes them. Each site covers its subdomains, and the list applies
@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   active profile (Settings > General > Blocklists). Updates keep entries you
   turned off, keep your custom redirects, and change nothing if a list fails to
   download. The weekly update only writes when it needs no password prompt.
+- Adds an optional **Protection Lock** (Settings > General): when on, turning
+  protection off, switching profiles, editing the active profile and changing
+  Allowed Sites ask for Touch ID or your Mac password. Turning the lock off asks
+  too. Turning protection on never asks.
 - Adds **Choose File…** to the import sheet for hosts files and one-domain-per-line lists.
 - Protection levels now download a fresh copy of a list once the saved copy is
   a week old, instead of reusing the first download forever.

@@ -139,18 +139,19 @@ extension MainView {
 
     /// Saves the allowlist and, when protection is on, writes it to the hosts file.
     func saveAllowlist(_ allowlist: HostAllowlist) {
-        do {
-            try AllowlistStore.shared.replace(with: allowlist)
-        } catch {
-            activationError = "Couldn’t save allowed sites: \(error.localizedDescription)"
-            return
-        }
-        guard store.activeProfile != nil, !isActivating else { return }
-        isActivating = true
         Task {
+            guard await ProtectionLock.authorize("change Allowed Sites") else { return }
+            do {
+                try AllowlistStore.shared.replace(with: allowlist)
+            } catch {
+                activationError = "Couldn’t save allowed sites: \(error.localizedDescription)"
+                return
+            }
+            guard store.activeProfile != nil, !isActivating else { return }
+            isActivating = true
             defer { isActivating = false }
             do {
-                activationWarning = try await ProtectionController.reapplyActiveProfile()
+                activationWarning = try await ProtectionController.reapplyActiveProfile(requireUnlock: false)
             } catch {
                 activationError = HostsServiceError.actionErrorMessage(
                     for: error,

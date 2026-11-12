@@ -77,7 +77,7 @@
       "name": "Does SaneHosts install a root certificate or network driver?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. SaneHosts edits the system hosts file and macOS asks for Touch ID or your password before each change. AdGuard for Mac installs a network driver, and if you turn on HTTPS filtering it generates and installs its own root certificate."
+        "text": "No. SaneHosts edits only the system hosts file, through a helper you approve once in System Settings. AdGuard for Mac installs a network driver, and if you turn on HTTPS filtering it generates and installs its own root certificate."
       }
     },
     {
@@ -322,11 +322,11 @@
                 <tr><th>Ads from the same domain as content</th><td>Can filter page content</td><td>Can't block</td></tr>
                 <tr><th>HTTPS filtering</th><td>Yes, optional, with its own root certificate</td><td>Not used</td></tr>
                 <tr><th>Phishing and fraud protection</th><td>Yes</td><td>Malware domains via blocklists</td></tr>
-                <tr><th>What it changes on your Mac</th><td>Network driver; root certificate if HTTPS filtering is on</td><td>The hosts file, after Touch ID or password approval; automatic backups</td></tr>
+                <tr><th>What it changes on your Mac</th><td>Network driver; root certificate if HTTPS filtering is on</td><td>The hosts file, through a helper you approve once; automatic backups</td></tr>
                 <tr><th>Price</th><td>1-year or lifetime license; Personal 3 devices, Family 9</td><td>$14.99 once</td></tr>
                 <tr><th>Trial / refund</th><td>14-day trial; 30-day money back</td><td>14-day trial, no card</td></tr>
                 <tr><th>Platforms</th><td>License works on Windows, macOS, Android and iOS</td><td>Mac (macOS 14+)</td></tr>
-                <tr><th>Latest version</th><td>2.20</td><td>1.1.26</td></tr>
+                <tr><th>Latest version</th><td>2.20</td><td>1.1.27</td></tr>
             </tbody>
         </table>
         </div>
@@ -339,7 +339,7 @@
         </div>
         <div class="option-card winner-card">
             <div class="option-header"><div class="option-title">SaneHosts</div><span class="option-badge badge-sane">$14.99 One-Time</span></div>
-            <p>SaneHosts does one job: domain blocking through the hosts file. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. There's no network driver, no root certificate and no traffic passing through another app. macOS asks for Touch ID or your password before every change, backups are automatic, and the DNS cache is flushed for you. Hosts data stays on your Mac.</p>
+            <p>SaneHosts does one job: domain blocking through the hosts file. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. There's no network driver, no root certificate and no traffic passing through another app. you approve its helper once, backups are automatic, and the DNS cache is flushed for you. Hosts data stays on your Mac.</p>
             <p>The trade-off is real: it can't hide leftover ad boxes or block ads served from the same domain as the content.</p>
             <a href="https://sanehosts.com/#pricing" class="btn">Start the 14-day trial</a>
             <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">macOS 14 (Sonoma) or later. No credit card for the trial.</p>
@@ -350,7 +350,7 @@
 <h3>Is SaneHosts an alternative to AdGuard for Mac?</h3>
 <p>For some people. AdGuard for Mac filters web traffic with a network driver, can filter HTTPS and hides leftover ad boxes on pages. SaneHosts only blocks domains through your Mac's hosts file. If domain blocking across every app is enough for you, SaneHosts does it for $14.99 once with no root certificate or network driver.</p>
 <h3>Does SaneHosts install a root certificate or network driver?</h3>
-<p>No. SaneHosts edits the system hosts file and macOS asks for Touch ID or your password before each change. AdGuard for Mac installs a network driver, and if you turn on HTTPS filtering it generates and installs its own root certificate.</p>
+<p>No. SaneHosts edits only the system hosts file, through a helper you approve once in System Settings. AdGuard for Mac installs a network driver, and if you turn on HTTPS filtering it generates and installs its own root certificate.</p>
 <h3>Can a hosts file block YouTube ads?</h3>
 <p>Not reliably. A hosts file blocks whole domains, so it can't block ads served from the same domain as the content. AdGuard filters the content of pages too, and its site says it removes video ads, banners and pop-ups.</p>
 <h3>How much does AdGuard for Mac cost compared with SaneHosts?</h3>

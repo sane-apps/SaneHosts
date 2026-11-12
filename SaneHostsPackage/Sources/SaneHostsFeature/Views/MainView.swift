@@ -48,6 +48,11 @@ public enum ProtectionUXCopy {
     public static let turnOffActionTitle = "Turn Off Protection…"
     public static let activePersistence = "Protection stays active when SaneHosts is closed or quit."
     public static let authenticationRequirement = "Allow SaneHosts in Login Items once. After that, switching profiles does not ask for your password each time."
+    public static let lockedRequirement = "Protection lock is on. Turning protection off, switching profiles or editing this profile asks for Touch ID or your Mac password."
+
+    public static func authenticationRequirement(locked: Bool) -> String {
+        locked ? lockedRequirement : authenticationRequirement
+    }
     public static let deactivationImpact = "Turning it off removes this profile’s rules while leaving standard hosts entries."
     public static let quickDeactivationImpact = "Removes profile rules; keeps standard hosts entries"
 }
