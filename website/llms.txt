@@ -4,7 +4,7 @@
 
 ## Facts
 - Current version: 1.1.27 (direct download)
-- Price: $14.99 one-time after a 14-day trial with every feature, no card. Also in the SaneApps Bundle ($49.99 once).
+- Price: $14.99 one-time after a 14-day trial with every feature, no card. Also in the SaneApps Bundle ($34.99 once).
 - Install: direct download from sanehosts.com, or Homebrew `brew install --cask sane-apps/tap/sanehosts`. It's a direct download, not Mac App Store, because writing the system hosts file needs local system access.
 - Requirements: macOS 14.0 Sonoma or later
 - Privacy: hosts data stays on your Mac. No cloud account, no personal-content upload.
