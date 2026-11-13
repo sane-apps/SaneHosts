@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>How to Block YouTube on Mac for Studying (3 Methods Compared)</title>
-    <meta name="description" content="Block YouTube system-wide on macOS to stay focused. Compare browser extensions, Screen Time, and SaneHosts Focus Mode for distraction-free studying.">
+    <meta name="description" content="Block YouTube in every browser and app on your Mac to stay focused. Compare browser extensions, Screen Time and SaneHosts, with an optional Touch ID lock.">
     <meta name="keywords" content="block youtube mac, block youtube on mac for studying, how to block youtube macos, youtube blocker mac, block youtube system wide mac">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -13,7 +13,7 @@
     <link rel="canonical" href="https://sanehosts.com/how-to-block-youtube-mac" />
   <meta property="og:type" content="website">
   <meta property="og:title" content="How to Block YouTube on Mac for Studying (3 Methods Compared)">
-  <meta property="og:description" content="Block YouTube system-wide on macOS to stay focused. Compare browser extensions, Screen Time, and SaneHosts Focus Mode for distraction-free studying.">
+  <meta property="og:description" content="Block YouTube in every browser and app on your Mac to stay focused. Compare browser extensions, Screen Time and SaneHosts, with an optional Touch ID lock.">
   <meta property="og:url" content="https://sanehosts.com/how-to-block-youtube-mac">
   <meta property="og:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta property="og:image:secure_url" content="https://sanehosts.com/og-image.png?v=20260616-card">
@@ -24,7 +24,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sanehosts.com/how-to-block-youtube-mac">
   <meta name="twitter:title" content="How to Block YouTube on Mac for Studying (3 Methods Compared)">
-  <meta name="twitter:description" content="Block YouTube system-wide on macOS to stay focused. Compare browser extensions, Screen Time, and SaneHosts Focus Mode for distraction-free studying.">
+  <meta name="twitter:description" content="Block YouTube in every browser and app on your Mac to stay focused. Compare browser extensions, Screen Time and SaneHosts, with an optional Touch ID lock.">
   <meta name="twitter:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta name="twitter:image:alt" content="SaneHosts preview card for local Mac hosts file control">
 
@@ -38,10 +38,10 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "How to Block YouTube on Mac for Studying (3 Methods Compared)",
-    "description": "Block YouTube system-wide on macOS to stay focused. Compare browser extensions, Screen Time, and SaneHosts Focus Mode for distraction-free studying.",
+    "description": "Block YouTube in every browser and app on your Mac to stay focused. Compare browser extensions, Screen Time and SaneHosts, with an optional Touch ID lock.",
     "url": "https://sanehosts.com/how-to-block-youtube-mac",
     "image": "https://sanehosts.com/og-image.png?v=20260616-card",
-    "dateModified": "2026-06-16",
+    "dateModified": "2026-11-12",
     "author": {
       "@type": "Person",
       "name": "Mr. Sane"
@@ -53,6 +53,64 @@
     },
     "mainEntityOfPage": "https://sanehosts.com/how-to-block-youtube-mac"
   }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does Focus Mode block YouTube?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Focus Mode blocks social sites such as Facebook, Instagram, X, Reddit and TikTok. Add youtube.com, www.youtube.com, m.youtube.com and youtu.be to the profile to block YouTube too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I unblock YouTube after studying?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Switch to a profile without the YouTube names, or turn protection off. If Protection Lock is on, that asks for Touch ID or your Mac password first."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work in every browser?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Safari, Chrome, Firefox and every other app read the same hosts file, so switching browsers doesn't get around it."
+      }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "SaneHosts",
+      "item": "https://sanehosts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Guides",
+      "item": "https://sanehosts.com/guides"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to Block YouTube on Mac for Studying (3 Methods Compared)",
+      "item": "https://sanehosts.com/how-to-block-youtube-mac"
+    }
+  ]
+}
   </script>
 
 
@@ -211,6 +269,11 @@
 /* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
 @keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+        .faq h3 { margin-top: 28px; }
+        .related { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .related a { color: var(--accent); text-decoration: none; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; }
+        .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
 </style>
 </head>
 <body>
@@ -293,24 +356,41 @@
                 <div class="option-title">Option 3: The Sane Way</div>
                 <span class="option-badge badge-sane">$14.99 One-Time</span>
             </div>
-            <p><strong>SaneHosts</strong> blocks YouTube at the system level using your Mac's hosts file. Every browser, every app, even embedded YouTube players. The Focus Mode protection level includes social media and video distractions out of the box.</p>
+            <p><strong>SaneHosts</strong> blocks YouTube at the system level using your Mac's hosts file. Every browser, every app. Add four names to your profile: <code>youtube.com</code>, <code>www.youtube.com</code>, <code>m.youtube.com</code> and <code>youtu.be</code>. Focus Mode already blocks social sites such as Instagram and TikTok, but not YouTube, so add these to it.</p>
 
             <div class="pros-cons">
                 <div>
                     <strong>Why it wins</strong>
                     <ul class="pc-list">
-                        <li><span class="icon-check">&#10003;</span> <div><strong>Focus Mode:</strong> Blocks social media and video sites with one click</div></li>
+                        <li><span class="icon-check">&#10003;</span> <div><strong>Focus Mode:</strong> Blocks Facebook, Instagram, X, Reddit and TikTok with one click</div></li>
                         <li><span class="icon-check">&#10003;</span> <div><strong>System-Wide:</strong> Works in Safari, Chrome, Firefox, and all apps</div></li>
-                        <li><span class="icon-check">&#10003;</span> <div><strong>Admin Auth Required:</strong> Can't impulsively disable it</div></li>
+                        <li><span class="icon-check">&#10003;</span> <div><strong>Optional Touch ID Lock:</strong> Turning protection off asks first (<a href="how-to-lock-hosts-file-touch-id-mac.html" style="color: var(--accent);">how it works</a>)</div></li>
                         <li><span class="icon-check">&#10003;</span> <div><strong>Profiles:</strong> Switch between "Study" and "Free Time" configs</div></li>
                     </ul>
                 </div>
             </div>
 
             <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="btn">Get SaneHosts &mdash; $14.99</a>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Or <a href="https://sanehosts.com/#pricing" style="color: var(--accent);">start the 14-day trial</a>. Works on macOS 14 (Sonoma) and later.</p>
         </div>
 
+
+        <section class="faq">
+        <h2>Questions</h2>
+        <h3>Does Focus Mode block YouTube?</h3>
+        <p>No. Focus Mode blocks social sites such as Facebook, Instagram, X, Reddit and TikTok. Add youtube.com, www.youtube.com, m.youtube.com and youtu.be to the profile to block YouTube too.</p>
+        <h3>Can I unblock YouTube after studying?</h3>
+        <p>Yes. Switch to a profile without the YouTube names, or turn protection off. If Protection Lock is on, that asks for Touch ID or your Mac password first.</p>
+        <h3>Does it work in every browser?</h3>
+        <p>Yes. Safari, Chrome, Firefox and every other app read the same hosts file, so switching browsers doesn't get around it.</p>
+        </section>
+
+        <h2>Related guides</h2>
+        <div class="related">
+            <a href="how-to-lock-hosts-file-touch-id-mac.html">Lock it with Touch ID</a>
+            <a href="block-social-media.html">Block social media</a>
+            <a href="how-to-update-hosts-blocklists-mac.html">Keep lists up to date</a>
+        </div>
     </article>
 
     <footer>

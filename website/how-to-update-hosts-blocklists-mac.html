@@ -284,6 +284,8 @@
 /* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
 @keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+        .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
 </style>
 </head>
 <body>
@@ -314,7 +316,7 @@ sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder</pre>
         <h2>The SaneHosts way</h2>
         <ul class="plain">
             <li><strong>Update Now:</strong> any profile built from lists shows when its lists were last updated. Click Update Now to fetch fresh copies.</li>
-            <li><strong>Weekly updates:</strong> in Settings &gt; General &gt; Blocklists, turn on <em>Update lists every week</em>. SaneHosts refreshes the active profile while it runs. Once you have allowed SaneHosts in System Settings, it does this without asking for your password.</li>
+            <li><strong>Weekly updates:</strong> on by default. To check, open Settings &gt; General &gt; Blocklists and look for <em>Update lists every week</em>. SaneHosts refreshes the active profile while it runs. Once you have allowed SaneHosts in System Settings, it does this without asking for your password.</li>
             <li><strong>Files from your Mac:</strong> a profile imported from a file on your Mac reads that file again when you click Update Now.</li>
         </ul>
 

@@ -41,7 +41,7 @@
     "description": "Clean up your internet diet. Learn how to block known fake news, misinformation, and clickbait sites on macOS using the hosts file or SaneHosts.",
     "url": "https://sanehosts.com/block-fake-news",
     "image": "https://sanehosts.com/og-image.png?v=20260616-card",
-    "dateModified": "2026-06-16",
+    "dateModified": "2026-11-12",
     "author": {
       "@type": "Person",
       "name": "Mr. Sane"
@@ -53,6 +53,64 @@
     },
     "mainEntityOfPage": "https://sanehosts.com/block-fake-news"
   }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Who decides which sites are on the list?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Steven Black's fake-news list is maintained in public on GitHub. SaneHosts doesn't add or judge sites. If it blocks a site you trust, allow just that site."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Which SaneHosts level includes it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Kitchen Sink. You can also add the Fake News Sites list to any profile of your own."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does the list stay current?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "SaneHosts refreshes the active profile's lists every week by default, and Update Now refreshes them at once."
+      }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "SaneHosts",
+      "item": "https://sanehosts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Guides",
+      "item": "https://sanehosts.com/guides"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to Block Fake News & Clickbait on Mac",
+      "item": "https://sanehosts.com/block-fake-news"
+    }
+  ]
+}
   </script>
 
 
@@ -210,6 +268,11 @@
 /* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
 @keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+        .faq h3 { margin-top: 28px; }
+        .related { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .related a { color: var(--accent); text-decoration: none; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; }
+        .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
 </style>
 </head>
 <body>
@@ -302,7 +365,7 @@
                     <strong>Why it wins</strong>
                     <ul class="pc-list">
                         <li><span class="icon-check">✓</span> <div><strong>One-Click Import:</strong> Built-in "Fake News" category</div></li>
-                        <li><span class="icon-check">✓</span> <div><strong>System-Wide:</strong> Works in Safari, Chrome, and Apple News</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>System-Wide:</strong> Works in Safari, Chrome and every other app</div></li>
                         <li><span class="icon-check">✓</span> <div><strong>Auto-Updates:</strong> Stays current without manual work</div></li>
                         <li><span class="icon-check">✓</span> <div><strong>Private:</strong> No browser tracking</div></li>
                     </ul>
@@ -310,15 +373,32 @@
             </div>
 
             <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="btn">Get SaneHosts — $14.99</a>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Or <a href="https://sanehosts.com/#pricing" style="color: var(--accent);">start the 14-day trial</a>. Works on macOS 14 (Sonoma) and later.</p>
         </div>
 
+
+        <section class="faq">
+        <h2>Questions</h2>
+        <h3>Who decides which sites are on the list?</h3>
+        <p>Steven Black's fake-news list is maintained in public on GitHub. SaneHosts doesn't add or judge sites. If it blocks a site you trust, <a href="how-to-allow-site-hosts-blocklist-mac.html" style="color: var(--accent);">allow just that site</a>.</p>
+        <h3>Which SaneHosts level includes it?</h3>
+        <p>Kitchen Sink. You can also add the Fake News Sites list to any profile of your own.</p>
+        <h3>Does the list stay current?</h3>
+        <p>SaneHosts refreshes the active profile's lists every week by default, and Update Now refreshes them at once.</p>
+        </section>
+
+        <h2>Related guides</h2>
+        <div class="related">
+            <a href="how-to-allow-site-hosts-blocklist-mac.html">Unblock one site</a>
+            <a href="how-to-update-hosts-blocklists-mac.html">Keep lists up to date</a>
+            <a href="block-malware.html">Block malware domains</a>
+        </div>
     </article>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
-            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="block-social-media.html" style="color: var(--text-muted);">Block Social Media</a></p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="guides.html" style="color: var(--text-muted);">All Guides</a> • <a href="block-social-media.html" style="color: var(--text-muted);">Block Social Media</a></p>
         </div>
     </footer>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->

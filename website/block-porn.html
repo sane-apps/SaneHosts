@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Block Pornography on Mac (Free Parental Control)</title>
-    <meta name="description" content="Protect your family or yourself. Compare 3 ways to block porn and adult content system-wide on macOS: Manual hosts edits, DNS filters, and SaneHosts.">
+    <title>How to Block Porn on Mac System-Wide (3 Ways Compared)</title>
+    <meta name="description" content="Block adult sites in every browser and app on your Mac. Compare hosts file edits, family DNS filters and SaneHosts, with an optional Touch ID lock.">
     <meta name="keywords" content="block porn mac, parental control mac free, block adult sites macos, stop porn mac, hosts file porn block">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -12,8 +12,8 @@
     
     <link rel="canonical" href="https://sanehosts.com/block-porn" />
   <meta property="og:type" content="website">
-  <meta property="og:title" content="How to Block Pornography on Mac (Free Parental Control)">
-  <meta property="og:description" content="Protect your family or yourself. Compare 3 ways to block porn and adult content system-wide on macOS: Manual hosts edits, DNS filters, and SaneHosts.">
+  <meta property="og:title" content="How to Block Porn on Mac System-Wide (3 Ways Compared)">
+  <meta property="og:description" content="Block adult sites in every browser and app on your Mac. Compare hosts file edits, family DNS filters and SaneHosts, with an optional Touch ID lock.">
   <meta property="og:url" content="https://sanehosts.com/block-porn">
   <meta property="og:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta property="og:image:secure_url" content="https://sanehosts.com/og-image.png?v=20260616-card">
@@ -23,8 +23,8 @@
   <meta property="og:image:alt" content="SaneHosts preview card for local Mac hosts file control">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sanehosts.com/block-porn">
-  <meta name="twitter:title" content="How to Block Pornography on Mac (Free Parental Control)">
-  <meta name="twitter:description" content="Protect your family or yourself. Compare 3 ways to block porn and adult content system-wide on macOS: Manual hosts edits, DNS filters, and SaneHosts.">
+  <meta name="twitter:title" content="How to Block Porn on Mac System-Wide (3 Ways Compared)">
+  <meta name="twitter:description" content="Block adult sites in every browser and app on your Mac. Compare hosts file edits, family DNS filters and SaneHosts, with an optional Touch ID lock.">
   <meta name="twitter:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta name="twitter:image:alt" content="SaneHosts preview card for local Mac hosts file control">
 
@@ -37,11 +37,11 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "How to Block Pornography on Mac (Free Parental Control)",
-    "description": "Protect your family or yourself. Compare 3 ways to block porn and adult content system-wide on macOS: Manual hosts edits, DNS filters, and SaneHosts.",
+    "headline": "How to Block Porn on Mac System-Wide (3 Ways Compared)",
+    "description": "Block adult sites in every browser and app on your Mac. Compare hosts file edits, family DNS filters and SaneHosts, with an optional Touch ID lock.",
     "url": "https://sanehosts.com/block-porn",
     "image": "https://sanehosts.com/og-image.png?v=20260616-card",
-    "dateModified": "2026-06-16",
+    "dateModified": "2026-11-12",
     "author": {
       "@type": "Person",
       "name": "Mr. Sane"
@@ -53,6 +53,64 @@
     },
     "mainEntityOfPage": "https://sanehosts.com/block-porn"
   }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is SaneHosts a parental-control app?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. It blocks adult domains for everyone who uses the Mac. The optional Touch ID lock asks before protection can be turned off, but anyone with an admin password can still change the hosts file. For a child, pair it with Screen Time on a standard account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does it work in private browsing windows?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The hosts file applies to the whole Mac, so private windows and every other browser are covered too."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can changing DNS servers get around it?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. macOS reads the hosts file before it asks any DNS server, so switching DNS doesn't skip it."
+      }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "SaneHosts",
+      "item": "https://sanehosts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Guides",
+      "item": "https://sanehosts.com/guides"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to Block Pornography on Mac System-Wide",
+      "item": "https://sanehosts.com/block-porn"
+    }
+  ]
+}
   </script>
 
 
@@ -210,6 +268,11 @@
 /* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
 @keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+        .faq h3 { margin-top: 28px; }
+        .related { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .related a { color: var(--accent); text-decoration: none; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; }
+        .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
 </style>
 </head>
 <body>
@@ -226,7 +289,7 @@
     </nav>
 
     <article class="container">
-        <h1>How to Block Pornography on Mac (Free System-Wide Guide)</h1>
+        <h1>How to Block Pornography on Mac System-Wide</h1>
         <p>Whether you're setting up a computer for a child or practicing self-discipline, blocking adult content on macOS is a common need. Browser extensions (like "BlockSite") are easy to bypass—any savvy user can just disable the extension or use a private window.</p>
         <p>To truly block access, you need to cut it off at the system level. Here are three ways to do it.</p>
 
@@ -301,7 +364,7 @@
                 <div>
                     <strong>Why it wins</strong>
                     <ul class="pc-list">
-                        <li><span class="icon-check">✓</span> <div><strong>Optional Touch ID Lock:</strong> Turning protection off asks for Touch ID or your Mac password</div></li>
+                        <li><span class="icon-check">✓</span> <div><strong>Optional Touch ID Lock:</strong> Turning protection off asks for Touch ID or your Mac password (<a href="how-to-lock-hosts-file-touch-id-mac.html" style="color: var(--accent);">how it works</a>)</div></li>
                         <li><span class="icon-check">✓</span> <div><strong>Family Safe Preset:</strong> One click to set up</div></li>
                         <li><span class="icon-check">✓</span> <div><strong>Fast:</strong> Uses optimized local parsing, no lag</div></li>
                         <li><span class="icon-check">✓</span> <div><strong>Auto-Updates:</strong> Keeps the blocklist fresh</div></li>
@@ -310,15 +373,32 @@
             </div>
 
             <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="btn">Get SaneHosts — $14.99</a>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Or <a href="https://sanehosts.com/#pricing" style="color: var(--accent);">start the 14-day trial</a>. Works on macOS 14 (Sonoma) and later.</p>
         </div>
 
+
+        <section class="faq">
+        <h2>Questions</h2>
+        <h3>Is SaneHosts a parental-control app?</h3>
+        <p>No. It blocks adult domains for everyone who uses the Mac. The optional Touch ID lock asks before protection can be turned off, but anyone with an admin password can still change the hosts file. For a child, pair it with Screen Time on a standard account.</p>
+        <h3>Does it work in private browsing windows?</h3>
+        <p>Yes. The hosts file applies to the whole Mac, so private windows and every other browser are covered too.</p>
+        <h3>Can changing DNS servers get around it?</h3>
+        <p>No. macOS reads the hosts file before it asks any DNS server, so switching DNS doesn't skip it.</p>
+        </section>
+
+        <h2>Related guides</h2>
+        <div class="related">
+            <a href="how-to-lock-hosts-file-touch-id-mac.html">Lock it with Touch ID</a>
+            <a href="block-gambling.html">Block gambling sites</a>
+            <a href="how-to-allow-site-hosts-blocklist-mac.html">Unblock one site</a>
+        </div>
     </article>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
-            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="block-gambling.html" style="color: var(--text-muted);">Block Gambling</a></p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="guides.html" style="color: var(--text-muted);">All Guides</a> • <a href="block-gambling.html" style="color: var(--text-muted);">Block Gambling</a></p>
         </div>
     </footer>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->

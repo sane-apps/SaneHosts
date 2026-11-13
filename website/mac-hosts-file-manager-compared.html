@@ -6,12 +6,12 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hosts File Managers for Mac Compared (2026): SaneHosts, Gas Mask, SwitchHosts, Terminal</title>
-    <meta name="description" content="Looking for a Gas Mask alternative or a hosts file manager for Apple silicon? An honest comparison of SaneHosts, Gas Mask, SwitchHosts and editing /etc/hosts by hand: price, Apple silicon support, blocklists and safety.">
+    <title>Mac Hosts File Managers Compared: Gas Mask, SwitchHosts (2026)</title>
+    <meta name="description" content="Gas Mask alternative or hosts manager for Apple silicon? SaneHosts, Gas Mask, SwitchHosts and Terminal compared: price, Apple silicon, blocklists and safety.">
     <link rel="canonical" href="https://sanehosts.com/mac-hosts-file-manager-compared">
   <meta property="og:type" content="article">
-  <meta property="og:title" content="Hosts File Managers for Mac Compared (2026): SaneHosts, Gas Mask, SwitchHosts, Terminal">
-  <meta property="og:description" content="Looking for a Gas Mask alternative or a hosts file manager for Apple silicon? An honest comparison of SaneHosts, Gas Mask, SwitchHosts and editing /etc/hosts by hand: price, Apple silicon support, blocklists and safety.">
+  <meta property="og:title" content="Mac Hosts File Managers Compared: Gas Mask, SwitchHosts (2026)">
+  <meta property="og:description" content="Gas Mask alternative or hosts manager for Apple silicon? SaneHosts, Gas Mask, SwitchHosts and Terminal compared: price, Apple silicon, blocklists and safety.">
   <meta property="og:url" content="https://sanehosts.com/mac-hosts-file-manager-compared">
   <meta property="og:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta property="og:image:secure_url" content="https://sanehosts.com/og-image.png?v=20260616-card">
@@ -21,8 +21,8 @@
   <meta property="og:image:alt" content="SaneHosts preview card for local Mac hosts file control">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sanehosts.com/mac-hosts-file-manager-compared">
-  <meta name="twitter:title" content="Hosts File Managers for Mac Compared (2026): SaneHosts, Gas Mask, SwitchHosts, Terminal">
-  <meta name="twitter:description" content="Looking for a Gas Mask alternative or a hosts file manager for Apple silicon? An honest comparison of SaneHosts, Gas Mask, SwitchHosts and editing /etc/hosts by hand: price, Apple silicon support, blocklists and safety.">
+  <meta name="twitter:title" content="Mac Hosts File Managers Compared: Gas Mask, SwitchHosts (2026)">
+  <meta name="twitter:description" content="Gas Mask alternative or hosts manager for Apple silicon? SaneHosts, Gas Mask, SwitchHosts and Terminal compared: price, Apple silicon, blocklists and safety.">
   <meta name="twitter:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta name="twitter:image:alt" content="SaneHosts preview card for local Mac hosts file control">
   <meta name="twitter:site" content="@MrSaneApps">
@@ -33,12 +33,12 @@
 {
   "@context": "https://schema.org",
   "@type": ["TechArticle", "WebPage"],
-  "headline": "Hosts File Managers for Mac Compared (2026): SaneHosts, Gas Mask, SwitchHosts, Terminal",
-  "description": "Looking for a Gas Mask alternative or a hosts file manager for Apple silicon? An honest comparison of SaneHosts, Gas Mask, SwitchHosts and editing /etc/hosts by hand: price, Apple silicon support, blocklists and safety.",
+  "headline": "Mac Hosts File Managers Compared: Gas Mask, SwitchHosts (2026)",
+  "description": "Gas Mask alternative or hosts manager for Apple silicon? SaneHosts, Gas Mask, SwitchHosts and Terminal compared: price, Apple silicon, blocklists and safety.",
   "url": "https://sanehosts.com/mac-hosts-file-manager-compared",
   "image": "https://sanehosts.com/og-image.png?v=20260616-card",
   "datePublished": "2026-10-17",
-  "dateModified": "2026-10-17",
+  "dateModified": "2026-11-12",
   "author": {
     "@type": "Person",
     "name": "Mr. Sane"
@@ -285,7 +285,9 @@
         pre { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow-x: auto; margin: 0 0 24px; font-size: 0.85rem; color: var(--text-primary); }
         ul.plain { margin: 0 0 24px 20px; color: var(--text-secondary); }
         ul.plain li { margin-bottom: 8px; }
-    </style>
+            .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
+</style>
 </head>
 <body>
     <div class="gradient-bg"></div>
@@ -321,6 +323,7 @@
                 <tr><th>Curated blocklists</th><td>30, five one-click levels</td><td>Remote hosts by URL</td><td>Remote hosts by URL</td><td>You find them</td></tr>
                 <tr><th>DNS flush after changes</th><td>Automatic</td><td>Post-apply command option</td><td>—</td><td>Manual</td></tr>
                 <tr><th>Backups / undo</th><td>Automatic backups, roll back</td><td>Trash and restore entries</td><td>—</td><td>None</td></tr>
+                <tr><th>Allow one site, lock changes</th><td>Allowed Sites; optional Touch ID lock</td><td>—</td><td>—</td><td>n/a</td></tr>
                 <tr><th>Source code</th><td>Public on GitHub (PolyForm Shield)</td><td>Open source (Apache-2.0)</td><td>Public on GitHub</td><td>n/a</td></tr>
                 <tr><th>Platforms</th><td>Mac</td><td>Mac, Windows, Linux</td><td>Mac</td><td>Any</td></tr>
             </tbody>
@@ -343,7 +346,7 @@
         </div>
         <div class="option-card winner-card">
             <div class="option-header"><div class="option-title">SaneHosts</div><span class="option-badge badge-sane">$14.99 One-Time</span></div>
-            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. You get 30 curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, Allowed Sites, weekly list updates, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
+            <p>Built for blocking, not switching. Pick a protection level, from Essentials (~230K entries: ads, trackers, malware) up to Kitchen Sink (~500K), and click activate. You get 30 curated lists from Steven Black, Hagezi, AdGuard and more, profiles for work, family or focus, <a href="how-to-allow-site-hosts-blocklist-mac.html" style="color: var(--accent);">Allowed Sites</a>, <a href="how-to-update-hosts-blocklists-mac.html" style="color: var(--accent);">weekly list updates</a>, an optional <a href="how-to-lock-hosts-file-touch-id-mac.html" style="color: var(--accent);">Touch ID lock</a>, automatic backups, and automatic DNS flush. Hosts data stays on your Mac. SaneHosts is listed in the <a href="https://github.com/StevenBlack/hosts">StevenBlack/hosts</a> README.</p>
             <a href="https://sanehosts.com/#pricing" class="btn">Start the 14-day trial</a>
             <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">macOS 14 (Sonoma) or later. No credit card for the trial.</p>
         </div>

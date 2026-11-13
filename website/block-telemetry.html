@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>How to Block Windows & Google Telemetry on Mac</title>
+    <title>How to Block Microsoft & Google Telemetry on Mac</title>
     <meta name="description" content="Stop Microsoft Office, Google Chrome, and Adobe from tracking you on macOS. Block telemetry system-wide with the hosts file.">
     <meta name="keywords" content="block telemetry mac, stop google tracking mac, block microsoft office telemetry, hosts file privacy, macos privacy">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
@@ -12,7 +12,7 @@
     
     <link rel="canonical" href="https://sanehosts.com/block-telemetry" />
   <meta property="og:type" content="website">
-  <meta property="og:title" content="How to Block Windows &amp; Google Telemetry on Mac">
+  <meta property="og:title" content="How to Block Microsoft &amp; Google Telemetry on Mac">
   <meta property="og:description" content="Stop Microsoft Office, Google Chrome, and Adobe from tracking you on macOS. Block telemetry system-wide with the hosts file.">
   <meta property="og:url" content="https://sanehosts.com/block-telemetry">
   <meta property="og:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
@@ -23,7 +23,7 @@
   <meta property="og:image:alt" content="SaneHosts preview card for local Mac hosts file control">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://sanehosts.com/block-telemetry">
-  <meta name="twitter:title" content="How to Block Windows &amp; Google Telemetry on Mac">
+  <meta name="twitter:title" content="How to Block Microsoft &amp; Google Telemetry on Mac">
   <meta name="twitter:description" content="Stop Microsoft Office, Google Chrome, and Adobe from tracking you on macOS. Block telemetry system-wide with the hosts file.">
   <meta name="twitter:image" content="https://sanehosts.com/og-image.png?v=20260616-card">
   <meta name="twitter:image:alt" content="SaneHosts preview card for local Mac hosts file control">
@@ -37,11 +37,11 @@
   {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "headline": "How to Block Windows & Google Telemetry on Mac",
+    "headline": "How to Block Microsoft & Google Telemetry on Mac",
     "description": "Stop Microsoft Office, Google Chrome, and Adobe from tracking you on macOS. Block telemetry system-wide with the hosts file.",
     "url": "https://sanehosts.com/block-telemetry",
     "image": "https://sanehosts.com/og-image.png?v=20260616-card",
-    "dateModified": "2026-06-16",
+    "dateModified": "2026-11-12",
     "author": {
       "@type": "Person",
       "name": "Mr. Sane"
@@ -53,6 +53,64 @@
     },
     "mainEntityOfPage": "https://sanehosts.com/block-telemetry"
   }
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does the Privacy Shield level add?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "On top of Focus Mode it adds EasyPrivacy, a CNAME cloaking tracker list, a Windows and Office telemetry list and a Smart TV list. Levels build on each other, so it blocks social media too. For telemetry alone, add those lists to a profile of your own."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will blocking telemetry break apps?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It can. Updates, sign-in or sync sometimes use the same servers. If an app stops working, allow that one domain instead of turning protection off. How to allow a site."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I see what is being blocked?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Each profile lists its entries, and you can search them in the app."
+      }
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "SaneHosts",
+      "item": "https://sanehosts.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Guides",
+      "item": "https://sanehosts.com/guides"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "How to Block Microsoft & Google Telemetry on Mac",
+      "item": "https://sanehosts.com/block-telemetry"
+    }
+  ]
+}
   </script>
 
 
@@ -210,6 +268,11 @@
 /* motion: pure-CSS reading progress — 3px accent bar, scroll-driven; browsers without scroll-timeline support simply never show it */
 @keyframes shReadProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion: no-preference){@supports (animation-timeline: scroll(root)){body::before{content:"";position:fixed;top:0;left:0;width:100%;height:3px;background:var(--accent);transform-origin:0 50%;animation:shReadProgress linear both;animation-timeline:scroll(root);z-index:999;pointer-events:none}}}
+        .faq h3 { margin-top: 28px; }
+        .related { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px; }
+        .related a { color: var(--accent); text-decoration: none; padding: 10px 16px; border: 1px solid var(--border); border-radius: 10px; font-size: 0.95rem; }
+        .option-badge { white-space: nowrap; }
+        @media (max-width: 600px) { .pros-cons { grid-template-columns: 1fr; } .option-header { gap: 12px; } }
 </style>
 </head>
 <body>
@@ -226,7 +289,7 @@
     </nav>
 
     <article class="container">
-        <h1>How to Block Windows & Google Telemetry on Mac</h1>
+        <h1>How to Block Microsoft & Google Telemetry on Mac</h1>
         <p>Even on macOS, apps like Microsoft Office, Google Chrome, and VS Code constantly "phone home." They send usage data, crash reports, and identifiers back to their servers. While some is harmless, much of it is invasive.</p>
         <p>To create a true "Privacy Shield," you need to block these requests before they leave your Mac.</p>
 
@@ -298,7 +361,7 @@
                 <div class="option-title">Option 3: The Sane Way</div>
                 <span class="option-badge badge-sane">$14.99 One-Time</span>
             </div>
-            <p><strong>SaneHosts</strong> simplifies this by using the "Privacy Shield" preset. This includes curated blocklists from experts (like CrazyMax's WindowsSpyBlocker) tailored for hosts files.</p>
+            <p><strong>SaneHosts</strong> simplifies this by using the "Privacy Shield" preset. This includes curated blocklists from experts (like EasyPrivacy and Hagezi's Windows and Office telemetry list) tailored for hosts files.</p>
 
             <div class="pros-cons">
                 <div>
@@ -313,15 +376,32 @@
             </div>
 
             <a href="https://go.saneapps.com/buy/sanehosts?ref=website" class="btn">Get SaneHosts — $14.99</a>
-            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Compatible with macOS 14 (Sonoma) and later.</p>
+            <p style="text-align: center; font-size: 0.85rem; margin-top: 16px; color: var(--text-muted);">Or <a href="https://sanehosts.com/#pricing" style="color: var(--accent);">start the 14-day trial</a>. Works on macOS 14 (Sonoma) and later.</p>
         </div>
 
+
+        <section class="faq">
+        <h2>Questions</h2>
+        <h3>What does the Privacy Shield level add?</h3>
+        <p>On top of Focus Mode it adds EasyPrivacy, a CNAME cloaking tracker list, a Windows and Office telemetry list and a Smart TV list. Levels build on each other, so it blocks social media too. For telemetry alone, add those lists to a profile of your own.</p>
+        <h3>Will blocking telemetry break apps?</h3>
+        <p>It can. Updates, sign-in or sync sometimes use the same servers. If an app stops working, allow that one domain instead of turning protection off. <a href="how-to-allow-site-hosts-blocklist-mac.html" style="color: var(--accent);">How to allow a site</a>.</p>
+        <h3>Can I see what is being blocked?</h3>
+        <p>Yes. Each profile lists its entries, and you can search them in the app.</p>
+        </section>
+
+        <h2>Related guides</h2>
+        <div class="related">
+            <a href="how-to-allow-site-hosts-blocklist-mac.html">Unblock one site</a>
+            <a href="block-adobe.html">Block Adobe background traffic</a>
+            <a href="block-malware.html">Block malware domains</a>
+        </div>
     </article>
 
     <footer>
         <div class="container">
             <p>&copy; 2026 SaneApps. Built for a Sound Mind.</p>
-            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="block-adobe.html" style="color: var(--text-muted);">Block Adobe</a></p>
+            <p style="margin-top: 12px;"><a href="/" style="color: var(--text-muted);">Home</a> • <a href="guides.html" style="color: var(--text-muted);">All Guides</a> • <a href="block-adobe.html" style="color: var(--text-muted);">Block Adobe</a></p>
         </div>
     </footer>
     <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "c341056cf4e445beacc4857f54caf8a3"}'></script><!-- End Cloudflare Web Analytics -->
