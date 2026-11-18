@@ -194,18 +194,20 @@ class SaneHostsCustomerUIActionSweep
   }.freeze
 
   # 1.1.27 Mini captures (12 Nov 2026). Each image shows the surface it covers.
+  # Every image lives under outputs/customer-ui/: a run routed to the Mini copies that folder
+  # but not outputs/visual-audit-* (SaneMaster route sync), so images kept elsewhere go missing.
   SCREENSHOT_BY_ACTION = {
     'onboarding-and-tutorial-entry' => 'outputs/customer-ui/portfolio-20261112/onboarding-and-tutorial-entry.png',
     'menu-bar-profile-actions' => 'outputs/customer-ui/portfolio-20261112/menu-bar-profile-actions.png',
     'dock-and-app-menu-commands' => 'outputs/customer-ui/portfolio-20261112/dock-and-app-menu-commands.png',
-    'quick-actions-and-paid-access-gates' => 'outputs/visual-audit-20261112-allowlist/codex-shot-2026-11-12_12-42-53.png',
+    'quick-actions-and-paid-access-gates' => 'outputs/customer-ui/portfolio-20261112/quick-actions-and-paid-access-gates.png',
     'profile-lifecycle-actions' => 'outputs/customer-ui/portfolio-20261112/profile-lifecycle-actions.png',
-    'preset-template-import-actions' => 'outputs/visual-audit-20261112-allowlist/codex-shot-2026-11-12_13-06-14.png',
-    'activation-deactivation-hosts-write' => 'outputs/visual-audit-20261112-lock/03-turn-off-asks.png',
+    'preset-template-import-actions' => 'outputs/customer-ui/portfolio-20261112/preset-template-import-actions.png',
+    'activation-deactivation-hosts-write' => 'outputs/customer-ui/portfolio-20261112/activation-deactivation-hosts-write.png',
     'entry-crud-search-toggle-actions' => 'outputs/customer-ui/portfolio-20261112/entry-crud-search-toggle-actions.png',
     'bulk-entry-actions' => 'outputs/customer-ui/portfolio-20261112/bulk-entry-actions.png',
     'settings-license-about-update-support' => 'outputs/customer-ui/portfolio-20261112/settings-license-about-update-support.png',
-    'persistence-security-and-release-surfaces' => 'outputs/visual-audit-20261112-lock/01-settings-lock-section.png'
+    'persistence-security-and-release-surfaces' => 'outputs/customer-ui/portfolio-20261112/persistence-security-and-release-surfaces.png'
   }.freeze
 
   def initialize
