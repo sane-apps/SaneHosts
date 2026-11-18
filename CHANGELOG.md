@@ -5,6 +5,11 @@ All notable changes to SaneHosts will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.28] - 2026-11-18
+
+License checks are more reliable. A problem on the license server can no
+longer lock an app you paid for.
+
 ## [1.1.27] - 2026-11-12
 
 - Adds **Allowed Sites**: list sites that should never be blocked, even when a

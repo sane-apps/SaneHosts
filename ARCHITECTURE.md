@@ -130,6 +130,7 @@ stateDiagram-v2
 - **Release**: `./scripts/SaneMaster.rb release` (delegates to SaneProcess `release.sh`).
 - **DMGs**: uploaded to Cloudflare R2 (not committed to GitHub).
 - **Appcast**: Sparkle reads `SUFeedURL` from `SaneHosts/Info.plist` (sanehosts.com).
+- **Direct license keys**: checked by the SaneApps license server (`license.saneapps.com`, from 1.1.28) through shared SaneUI `LicenseService`. A server problem (no answer, an error page, a 5xx reply) keeps a paid copy unlocked. The direct build installs its own Donate copy at launch (`SaneHostsDirectSupport`).
 
 ## Testing Strategy
 

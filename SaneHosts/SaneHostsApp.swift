@@ -453,6 +453,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     static var updateEligibility: SaneUpdateEligibility = .notInstalledInApplications
 
     func applicationDidFinishLaunching(_: Notification) {
+        #if !APP_STORE && !SETAPP
+            SaneHostsDirectSupport.install()
+        #endif
         NSApp.appearance = NSAppearance(named: .darkAqua)
         // Move to /Applications if running from Downloads (Release only)
         #if !DEBUG
